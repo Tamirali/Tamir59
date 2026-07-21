@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>प्रोजेक्ट: मुख्य विशेषताएँ (Append Mode के साथ)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .future-chip { background: #fef9c3; color: #854d0e; border: 1px solid #facc15; padding: 2px 10px; border-radius: 20px; font-size: 10px; font-weight: 600; }
+        .tool-card { border-left: 5px solid #2563eb; background: white; margin-bottom: 20px; border-radius: 12px; padding: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body class="bg-gray-100 p-4">
+
+<div class="max-w-xl mx-auto">
+    <h1 class="text-2xl font-bold text-center mb-6 text-gray-800">📍 परियोजन प्रबंधन: मुख्य विशेषताएँ</h1>
+
+    <!-- 1. व्हाट्सएप टूल -->
+    <section class="tool-card border-green-500">
+        <h3 class="text-lg font-bold text-green-600 flex items-center gap-2 mb-2">
+            <i class="fab fa-whatsapp"></i> १. व्हाट्सएप संपर्क टूल
+            <span class="future-chip">फ्यूचर-रेडी</span>
+        </h3>
+        <p class="text-sm text-gray-600 mb-4"><strong>उपयोग:</strong> सीधे व्हाट्सएप पर संपर्क खोलें। यह टूल सभी से जुड़ा है।</p>
+        <div class="bg-green-50 p-4 rounded-lg border border-green-200">
+            <input type="number" id="target-phone" placeholder="91 के साथ नंबर (जैसे 9199********)" class="w-full p-2 mb-2 rounded border">
+            <textarea id="target-msg" placeholder="अपना संदेश यहाँ लिखें..." class="w-full p-2 mb-2 rounded border"></textarea>
+            <button onclick="launchWhatsApp()" class="bg-green-600 text-white w-full py-2 rounded font-bold">@ अभी भेजें</button>
+        </div>
+    </section>
+
+    <!-- 2. जादुई माइक टूल (Append Mode के साथ) -->
+    <section class="tool-card border-red-500">
+        <h3 class="text-lg font-bold text-red-600 flex items-center gap-2 mb-2">
+            <i class="fas fa-microphone"></i> २. जादुई माइक टूल
+            <span class="future-chip">Append Mode एक्टिव</span>
+        </h3>
+        <p class="text-sm text-gray-600 mb-4"><strong>उपयोग:</strong> बटन दबाकर लगातार बोलते रहें, यह पुरानी बात के आगे नया टेक्स्ट जोड़ता जाएगा। काम पूरा होने पर 'रुकें' बटन दबाएँ।</p>
+        <div class="bg-red-50 p-4 rounded-lg border border-red-200">
+            <textarea id="output-text" placeholder="आपकी आवाज़ यहाँ लगातार टेक्स्ट बनेगी (Append Mode)..." class="w-full p-2 mb-2 rounded border" rows="4"></textarea>
+            <button id="mic-btn" onclick="toggleMic()" class="bg-red-600 text-white w-full py-2 rounded font-bold transition-all">
+                🎙️ बोलना शुरू करें
+            </button>
+        </div>
+    </section>
+
+    <!-- 3. लाइव लोकेशन टूल -->
+    <section class="tool-card border-orange-500">
+        <h3 class="text-lg font-bold text-orange-600 flex items-center gap-2 mb-2">
+            <i class="fas fa-map-marker-alt"></i> ३. लाइव लोकेशन टूल
+            <span class="future-chip">फ्यूचर-रेडी</span>
+        </h3>
+        <p class="text-sm text-gray-600 mb-4"><strong>उपयोग:</strong> स्थान प्राप्त करने के लिए बटन दबाएँ। यह स्थान को ट्रैक करता है और लिंक प्रदान करता है।</p>
+        <div class="bg-orange-50 p-4 rounded-lg border border-orange-200">
+            <p id="geo-status" class="bg-white p-2 mb-2 text-center text-sm font-bold border rounded">⏳ लोकेशन अभी नहीं निकाली गई</p>
+            <button onclick="fetchLocation()" class="bg-orange-500 text-white w-full py-2 rounded font-bold">📍 लाइव लोकेशन निकालें</button>
+        </div>
+    </section>
+</div>
+
+<script>
+    // अलार्म फंक्शन (सभी टूल्स में कॉमन)
+    function triggerBeep() {
+        try {
+            let ctx = new (window.AudioContext || window.webkitAudioContext)();
+            let osc = ctx.createOscillator();
+            osc.connect(ctx.destination);
+            osc.start(); 
+            setTimeout(() => osc.stop(), 200);
+        } catch (e) {
+            console.log("AudioContext Blocked");
+        }
+    }
+
+    // व्हाट्सएप फंक्शन
+    function launchWhatsApp() {
+        let phone = document.getElementById('target-phone').value;
+        let msg = document.getElementById('target-msg').value;
+        if(!phone) { alert('कृपया पहले मोबाइल नंबर डालें!'); return; }
+        window.open('https://api.whatsapp.com/send?phone=' + phone + '&text=' + encodeURIComponent(msg), '_blank');
+        triggerBeep();
+    }
+
+    // ========================================================
+    // जादुई माइक - APPEND MODE (सस्टेन्ड डिक्टेशन) इंजन
+    // ========================================================
+    let recognition;
+    let isRecording = false;
+    let finalTranscript = ''; // पुराने और नए टेक्स्ट को सहेजने के लिए ग्लोबल वेरिएबल
+
+    function toggleMic() {
+        const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!Speech) { alert('आपका ब्राउज़र माइक सपोर्ट नहीं करता।'); return; }
+
+        let micBtn = document.getElementById('mic-btn');
+        let textArea = document.getElementById('output-text');
+        let waArea = document.getElementById('target-msg');
+
+        if (isRecording) {
+            // रिकॉर्डिंग रोकना और डेटा लॉक करना
+            recognition.stop();
+            isRecording = false;
+            micBtn.innerText = "🎙️ बोलना शुरू करें";
+            micBtn.className = "bg-red-600 text-white w-full py-2 rounded font-bold transition-all";
+            
+            // अंतिम बार व्हाट्सएप बॉक्स को अपडेट कर देना ताकि भेजने के लिए तैयार रहे
+            waArea.value = textArea.value;
+            triggerBeep();
+            return;
+        }
+
+        // नई रिकॉर्डिंग शुरू होने पर पुराना लिखा हुआ सुरक्षित रखना (Append Mode)
+        finalTranscript = textArea.value ? textArea.value + ' ' : ''; 
+
+        recognition = new Speech();
+        recognition.lang = 'hi-IN';
+        recognition.continuous = true;     // मुख्य सेटिंग: लगातार सुनने के लिए (रुकने पर भी बंद नहीं होगा)
+        recognition.interimResults = false; // केवल फाइनल शब्दों को जोड़ने के लिए
+
+        recognition.onresult = (e) => {
+            let interimTranscript = '';
+            for (let i = e.resultIndex; i < e.results.length; ++i) {
+                if (e.results[i].isFinal) {
+                    finalTranscript += e.results[i][0].transcript + ' ';
+                }
+            }
+            // रियल-टाइम में टेक्स्ट एरिया को अपडेट करना
+            textArea.value = finalTranscript.trim();
+            waArea.value = finalTranscript.trim(); // जब तक आप लिख रहे हैं व्हाट्सएप बॉक्स में भी रीयलटाइम डेटा अपडेट होता रहेगा
+        };
+
+        recognition.onerror = (err) => {
+            console.error("माइक एरर:", err);
+            if(err.error !== 'no-speech') {
+                alert("माइक में कोई समस्या आई, कृपया दोबारा कोशिश करें।");
+                isRecording = false;
+                micBtn.innerText = "🎙️ बोलना शुरू करें";
+                micBtn.className = "bg-red-600 text-white w-full py-2 rounded font-bold transition-all";
+            }
+        };
+
+        recognition.onend = () => {
+            // अगर सिस्टम की वजह से माइक अपने आप बंद हो जाए तो सुरक्षा चक्र (जब तक यूजर खुद स्टॉप न करे)
+            if (isRecording) {
+                recognition.start(); 
+            }
+        };
+
+        recognition.start();
+        isRecording = true;
+        micBtn.innerText = "⏹️ रुकें (टेक्स्ट लॉक करें...)";
+        micBtn.className = "bg-amber-600 text-white w-full py-2 rounded font-bold animate-pulse transition-all";
+    }
+
+    // लोकेशन फंक्शन
+    function fetchLocation() {
+        let status = document.getElementById('geo-status');
+        status.innerText = '⏳ लोकेशन ढूँढ रहा हूँ...';
+        
+        if (!navigator.geolocation) {
+            status.innerText = '❌ GPS सपोर्ट उपलब्ध नहीं है';
+            return;
+        }
+
+        navigator.geolocation.getCurrentPosition((pos) => {
+            let link = `https://maps.google.com/?q=${pos.coords.latitude},${pos.coords.longitude}`;
+            status.innerText = '✅ लोकेशन मिली!';
+            document.getElementById('target-msg').value = 'मेरी लोकेशन: ' + link;
+            triggerBeep();
+        }, () => {
+            status.innerText = '❌ GPS अनुमति नहीं मिली';
+        });
+    }
+</script>
+
+</body>
+</html>
