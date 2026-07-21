@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>महासंग्रह — फ़ोटो एडिटर</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <style>
+    :root {
+      --bg-color: #0f172a;
+      --card-bg: #1e293b;
+      --accent-color: #38bdf8;
+      --accent-hover: #0284c7;
+      --text-color: #f8fafc;
+      --text-dim: #94a3b8;
+      --border-color: #334155;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      padding: 15px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .studio-shell {
+      width: 100%;
+      max-width: 600px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 10px;
+    }
+
+    .brand { font-size: 1.3rem; font-weight: bold; }
+    .brand span { color: var(--accent-color); }
+
+    .studio-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 15px;
+    }
+
+    /* Image Display Area */
+    .image-stage {
+      width: 100%;
+      min-height: 250px;
+      max-height: 400px;
+      background-color: var(--bg-color);
+      border: 2px dashed var(--border-color);
+      border-radius: 12px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .image-stage img {
+      max-width: 100%;
+      max-height: 380px;
+      object-fit: contain;
+      display: none;
+    }
+
+    .placeholder-text {
+      color: var(--text-dim);
+      text-align: center;
+    }
+
+    /* Controls */
+    .filter-control {
+      margin-bottom: 12px;
+    }
+
+    .filter-control label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      margin-bottom: 5px;
+      color: var(--text-dim);
+    }
+
+    input[type=range] {
+      width: 100%;
+      accent-color: var(--accent-color);
+    }
+
+    /* Buttons */
+    .btn {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+      text-decoration: none;
+    }
+
+    .btn-primary { background-color: var(--accent-color); color: #000; }
+    .btn-secondary { background-color: var(--border-color); color: var(--text-color); }
+    
+    .disabled {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    /* Hidden Canvas for Processing Download */
+    #hiddenCanvas { display: none; }
+  </style>
+</head>
+<body>
+
+<main class="studio-shell">
+  <header>
+    <div class="brand">महासंग्रह <span>AI</span></div>
+    <div>फ़ोटो एडिटर</div>
+  </header>
+
+  <!-- Photo Preview Card -->
+  <section class="studio-card">
+    <div class="image-stage">
+      <p id="placeholderText" class="placeholder-text">
+        <i class="fa-solid fa-image fa-2x"></i><br><br>
+        गैलरी से फ़ोटो चुनने के लिए नीचे बटन दबाएँ
+      </p>
+      <img id="previewImg" alt="Preview"/>
+    </div>
+
+    <!-- Gallery File Input -->
+    <input type="file" id="imageInput" accept="image/*" style="display:none;" onchange="loadImage(event)"/>
+    
+    <button class="btn btn-primary" onclick="document.getElementById('imageInput').click()">
+      <i class="fa-solid fa-folder-open"></i> गैलरी से फ़ोटो चुनें
+    </button>
+  </section>
+
+  <!-- Filter Tools Card -->
+  <section class="studio-card">
+    <div class="filter-control">
+      <label>उजाला (Brightness) <span id="bVal">100%</span></label>
+      <input type="range" id="brightness" min="0" max="200" value="100" oninput="updateFilters()"/>
+    </div>
+
+    <div class="filter-control">
+      <label>कंट्रास्ट (Contrast) <span id="cVal">100%</span></label>
+      <input type="range" id="contrast" min="0" max="200" value="100" oninput="updateFilters()"/>
+    </div>
+
+    <div class="filter-control">
+      <label>रंग की चमक (Saturate) <span id="sVal">100%</span></label>
+      <input type="range" id="saturate" min="0" max="200" value="100" oninput="updateFilters()"/>
+    </div>
+
+    <div class="filter-control">
+      <label>ब्लैक एंड व्हाइट (Grayscale) <span id="gVal">0%</span></label>
+      <input type="range" id="grayscale" min="0" max="100" value="0" oninput="updateFilters()"/>
+    </div>
+
+    <button id="downloadBtn" class="btn btn-primary disabled" onclick="downloadPhoto()">
+      <i class="fa-solid fa-download"></i> एडिट की गई फ़ोटो डाउनलोड करें
+    </button>
+    
+    <button class="btn btn-secondary" onclick="resetFilters()">
+      <i class="fa-solid fa-rotate-left"></i> रीसेट करें
+    </button>
+  </section>
+</main>
+
+<canvas id="hiddenCanvas"></canvas>
+
+<script>
+  const imageInput = document.getElementById('imageInput');
+  const previewImg = document.getElementById('previewImg');
+  const placeholderText = document.getElementById('placeholderText');
+  const downloadBtn = document.getElementById('downloadBtn');
+
+  // Sliders
+  const brightness = document.getElementById('brightness');
+  const contrast = document.getElementById('contrast');
+  const saturate = document.getElementById('saturate');
+  const grayscale = document.getElementById('grayscale');
+
+  // 1. गैलरी से फ़ोटो लोड करना
+  function loadImage(event) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        previewImg.src = e.target.result;
+        previewImg.style.display = 'block';
+        placeholderText.style.display = 'none';
+        downloadBtn.classList.remove('disabled');
+        resetFilters();
+      }
+      reader.readAsDataURL(file);
+    }
+  }
+
+  // 2. फ़िल्टर लागू करना (Live Effect)
+  function updateFilters() {
+    if (!previewImg.src) return;
+
+    const filterString = `
+      brightness(${brightness.value}%)
+      contrast(${contrast.value}%)
+      saturate(${saturate.value}%)
+      grayscale(${grayscale.value}%)
+    `;
+
+    previewImg.style.filter = filterString;
+
+    // मान दिखाएँ
+    document.getElementById('bVal').innerText = brightness.value + '%';
+    document.getElementById('cVal').innerText = contrast.value + '%';
+    document.getElementById('sVal').innerText = saturate.value + '%';
+    document.getElementById('gVal').innerText = grayscale.value + '%';
+  }
+
+  // 3. रीसेट करना
+  function resetFilters() {
+    brightness.value = 100;
+    contrast.value = 100;
+    saturate.value = 100;
+    grayscale.value = 0;
+    updateFilters();
+  }
+
+  // 4. डाउनलोड करना
+  function downloadPhoto() {
+    if (!previewImg.src) return;
+
+    const canvas = document.getElementById('hiddenCanvas');
+    const ctx = canvas.getContext('2d');
+
+    canvas.width = previewImg.naturalWidth;
+    canvas.height = previewImg.naturalHeight;
+
+    // कैनवास पर फ़िल्टर लागू करके इमेज बनाना
+    ctx.filter = `
+      brightness(${brightness.value}%)
+      contrast(${contrast.value}%)
+      saturate(${saturate.value}%)
+      grayscale(${grayscale.value}%)
+    `;
+
+    ctx.drawImage(previewImg, 0, 0, canvas.width, canvas.height);
+
+    // फाइल डाउनलोड लिंक बनाना
+    const link = document.createElement('a');
+    link.download = 'edited-photo.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  }
+</script>
+
+</body>
+</html>
