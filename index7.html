@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎵 7 Suron Ka Jhankar Piano - Clear Sound</title>
+    <style>
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; user-select: none; -webkit-user-select: none; }
+        body {
+            background: linear-gradient(145deg, #070a14, #121824);
+            min-height: 100vh; display: flex; justify-content: center; align-items: flex-start;
+            padding: 15px; margin: 0; color: #d6e2ff;
+        }
+        .panel {
+            background: rgba(22, 30, 49, 0.95); backdrop-filter: blur(15px);
+            border-radius: 25px; padding: 20px; max-width: 850px; width: 100%;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.8); border: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .header-area { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; gap: 10px; }
+        h1 { font-weight: 600; font-size: 20px; margin: 0; color: #e1ebff; letter-spacing: 0.5px; flex: 1; }
+        h1 span { background: linear-gradient(135deg, #f97316, #f59e0b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        .nav-btn-box { display: flex; gap: 8px; }
+        .arrow-btn {
+            background: linear-gradient(135deg, #00b4db, #0083b0); border: none; border-radius: 8px;
+            padding: 8px 14px; font-weight: bold; font-size: 13px; color: #fff; cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,180,219,0.25); transition: 0.2s; display: flex; align-items: center; gap: 5px;
+        }
+        .arrow-btn.orange {
+            background: linear-gradient(135deg, #ff9900, #cc7a00);
+            box-shadow: 0 4px 10px rgba(255,153,0,0.25);
+        }
+        .arrow-btn:hover { transform: translateY(-1px); }
+
+        .top-control-hub {
+            background: #0d1321; border-radius: 15px; padding: 15px;
+            margin-bottom: 20px; border: 1px solid #2d4266; display: flex; flex-direction: column; gap: 12px;
+        }
+        .master-vol-box {
+            background: #161f33; padding: 10px 15px; border-radius: 10px;
+            border: 1px solid #3b5585; display: flex; align-items: center; gap: 12px;
+        }
+        .master-slider { flex: 1; accent-color: #ff9900; height: 8px; cursor: pointer; }
+        .voice-row { display: flex; align-items: center; gap: 10px; justify-content: center; flex-wrap: wrap; }
+        
+        .voice-record-btn {
+            background: #364f7a; border: none; border-radius: 50px; padding: 10px 25px;
+            font-size: 14px; font-weight: 700; color: white; cursor: pointer; border: 1px solid #5273ab;
+        }
+        .voice-record-btn.recording { background: #b83232; border-color: #ff5c5c; animation: pulse 1.5s infinite; }
+        
+        .rec-control-btn {
+            border: none; border-radius: 4px; padding: 6px 12px; font-weight: bold; font-size: 11.5px; cursor: pointer; display: none;
+        }
+        .rec-play { background: #22c55e; color: #000; }
+        .rec-cancel { background: #ef4444; color: #fff; }
+        .rec-clear { background: #dc2626; color: #fff; }
+
+        .main-file-label {
+            background: #1c2a45; color: #abc1e6; padding: 8px 18px; border-radius: 50px;
+            cursor: pointer; font-size: 12.5px; border: 1px solid #3b5585;
+        }
+        canvas { width: 100%; height: 35px; background: #080c14; border-radius: 6px; }
+
+        .bass-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            background: linear-gradient(135deg, #1a2744, #0f1a30);
+            padding: 10px 24px;
+            border-radius: 14px;
+            border: 2px solid #ff9900;
+            box-shadow: 0 0 25px rgba(255,153,0,0.15);
+            margin: 4px 0;
+        }
+        .bass-controls-label {
+            color: #ff9900;
+            font-weight: 700;
+            font-size: 15px;
+            letter-spacing: 0.5px;
+        }
+        .bass-btn {
+            background: linear-gradient(135deg, #2a3a5a, #1a2a4a);
+            border: 2px solid #4a6a9a;
+            border-radius: 10px;
+            padding: 8px 22px;
+            color: #ffffff;
+            font-weight: 800;
+            font-size: 18px;
+            cursor: pointer;
+            transition: 0.3s;
+            min-width: 70px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .bass-btn:hover { 
+            background: linear-gradient(135deg, #3a5a7a, #2a4a6a);
+            border-color: #ff9900;
+            transform: scale(1.05);
+        }
+        .bass-btn:active { transform: scale(0.92); }
+        .bass-btn.minus { border-color: #f97316; }
+        .bass-btn.plus { border-color: #22c55e; }
+        .bass-value {
+            color: #ff9900;
+            font-weight: 800;
+            font-size: 22px;
+            min-width: 65px;
+            text-align: center;
+            background: rgba(0,0,0,0.3);
+            padding: 4px 12px;
+            border-radius: 8px;
+            border: 1px solid #3b5585;
+        }
+
+        .piano-grid {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin: 15px 0;
+            flex-wrap: wrap;
+        }
+        .piano-btn {
+            background: linear-gradient(180deg, #f8fafc, #e2e8f0);
+            border: none;
+            border-radius: 14px;
+            padding: 20px 14px;
+            min-width: 60px;
+            height: 130px;
+            color: #1e293b;
+            font-weight: 800;
+            font-size: 20px;
+            cursor: pointer;
+            transition: 0.08s;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.5);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            border: 1px solid rgba(255,255,255,0.1);
+            position: relative;
+        }
+        .piano-btn .sur-label { font-size: 24px; font-weight: 900; color: #0f172a; }
+        .piano-btn .key-label { font-size: 11px; opacity: 0.4; font-weight: 600; color: #334155; }
+        .piano-btn:hover { transform: translateY(-4px); box-shadow: 0 8px 30px rgba(245,158,11,0.25); }
+        .piano-btn.active {
+            background: linear-gradient(180deg, #fcd34d, #f59e0b);
+            transform: translateY(5px);
+            box-shadow: 0 2px 35px rgba(245,158,11,0.6);
+        }
+        .piano-btn.recording-active {
+            border-color: #ef4444;
+            box-shadow: 0 0 25px rgba(239,68,68,0.3);
+        }
+
+        .final-section { text-align: center; padding-top: 15px; border-top: 1px solid #232f47; display: flex; flex-direction: column; align-items: center; gap: 10px; margin-top: 15px; }
+        
+        .front-preview-box { display: none; background: #111a2e; border: 1px dashed #4a638c; padding: 12px; border-radius: 12px; width: 100%; max-width: 500px; text-align: center; }
+        .front-play-btn { background: #22c55e; border: none; border-radius: 50px; padding: 8px 25px; font-weight: bold; font-size: 13px; color: #000; cursor: pointer; margin-bottom: 8px; margin-right: 5px; }
+        .save-profile-btn { background: #eab308; border: none; border-radius: 50px; padding: 8px 25px; font-weight: bold; font-size: 13px; color: #000; cursor: pointer; }
+
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); justify-content: center; align-items: center; z-index: 1000; }
+        .modal-content { background: #121824; border: 2px solid #00b4db; padding: 20px; border-radius: 20px; max-width: 600px; width: 95%; max-height: 85vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
+        .modal-content.orange-border { border-color: #ff9900; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #2d3d5c; padding-bottom: 8px; }
+        .close-modal { font-size: 22px; cursor: pointer; color: #ff5277; font-weight: bold; }
+        .project-item { display: flex; justify-content: space-between; align-items: center; background: #192338; padding: 10px 12px; margin-bottom: 8px; border-radius: 8px; font-size: 13px; gap: 10px; }
+        .item-actions { display: flex; gap: 6px; }
+        .inline-play-btn { background: #22c55e; border: none; border-radius: 4px; padding: 5px 12px; font-size: 11px; font-weight: bold; cursor: pointer; color: #000; }
+        .inline-delete-btn { background: #ef4444; border: none; border-radius: 4px; padding: 5px 12px; font-size: 11px; font-weight: bold; cursor: pointer; color: #fff; }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(184, 50, 50, 0.5); }
+            70% { box-shadow: 0 0 0 10px rgba(184, 50, 50, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(184, 50, 50, 0); }
+        }
+
+        @media (max-width: 600px) {
+            .piano-btn { min-width: 44px; height: 95px; padding: 12px 6px; }
+            .piano-btn .sur-label { font-size: 18px; }
+            .piano-btn .key-label { font-size: 9px; }
+            .bass-controls { padding: 8px 14px; gap: 10px; flex-wrap: wrap; }
+            .bass-btn { padding: 6px 14px; font-size: 14px; min-width: 50px; }
+            .bass-value { font-size: 16px; min-width: 50px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="panel">
+    <div class="header-area">
+        <h1>🎹 <span>7 Suron Ka Jhankar Piano</span> <span style="font-size:12px; opacity:0.6; font-weight:normal;">v3.3</span></h1>
+        <div class="nav-btn-box">
+            <button class="arrow-btn orange" id="arrowBtn1">➔ 📂 प्रोजेक्ट्स</button>
+        </div>
+    </div>
+    
+    <div class="top-control-hub">
+        <div class="master-vol-box">
+            <span style="font-weight: bold; color: #ff9900; font-size:13px;">🎛️ मास्टर वॉल्यूम:</span>
+            <input type="range" class="master-slider" id="masterVolSlider" min="0" max="1" step="0.02" value="0.5">
+            <span id="volLabel" style="min-width: 35px; font-weight: bold; font-size:13px;">50%</span>
+        </div>
+        
+        <div class="voice-row">
+            <button class="voice-record-btn" id="voiceRecordBtn">🎤 रिकॉर्डिंग शुरू करें</button>
+            
+            <button class="rec-control-btn rec-play" id="recPlayBtn">▶️ Play</button>
+            <button class="rec-control-btn rec-cancel" id="recCancelBtn">❌ Cancel</button>
+            <button class="rec-control-btn rec-clear" id="recClearBtn">🧹 Clear</button>
+
+            <span id="voiceOrTxt" style="color: #8fa4cc; font-size:12px;">या</span>
+            <label class="main-file-label" for="mainAudioFile" id="mainFileLbl">📂 ऑडियो लोड करें</label>
+            <input type="file" id="mainAudioFile" accept="audio/*" style="display:none;">
+            <span id="voiceStatus" style="color: #ffd966; font-weight: bold; font-size:14px;">⏱️ 00:00</span>
+        </div>
+        
+        <div style="display: flex; justify-content: center; width: 100%;">
+            <div class="bass-controls">
+                <span class="bass-controls-label">🔊 बास</span>
+                <button class="bass-btn minus" id="bassDownBtn">➖</button>
+                <span class="bass-value" id="bassDisplay">50%</span>
+                <button class="bass-btn plus" id="bassUpBtn">➕</button>
+            </div>
+        </div>
+        
+        <div id="mainFileNameDisplay" style="font-size:11px; text-align:center; color:#a2b7dd; display:none;"></div>
+        <canvas id="visualizer"></canvas>
+    </div>
+
+    <!-- 7 Sur Piano Buttons -->
+    <div class="piano-grid" id="pianoGrid">
+        <button class="piano-btn" data-sur="सा" data-freq="261.63" data-key="A">
+            <span class="sur-label">सा</span>
+            <span class="key-label">A</span>
+        </button>
+        <button class="piano-btn" data-sur="रे" data-freq="293.66" data-key="S">
+            <span class="sur-label">रे</span>
+            <span class="key-label">S</span>
+        </button>
+        <button class="piano-btn" data-sur="गा" data-freq="329.63" data-key="D">
+            <span class="sur-label">गा</span>
+            <span class="key-label">D</span>
+        </button>
+        <button class="piano-btn" data-sur="मा" data-freq="349.23" data-key="F">
+            <span class="sur-label">मा</span>
+            <span class="key-label">F</span>
+        </button>
+        <button class="piano-btn" data-sur="पा" data-freq="392.00" data-key="G">
+            <span class="sur-label">पा</span>
+            <span class="key-label">G</span>
+        </button>
+        <button class="piano-btn" data-sur="धा" data-freq="440.00" data-key="H">
+            <span class="sur-label">धा</span>
+            <span class="key-label">H</span>
+        </button>
+        <button class="piano-btn" data-sur="नी" data-freq="493.88" data-key="J">
+            <span class="sur-label">नी</span>
+            <span class="key-label">J</span>
+        </button>
+    </div>
+
+    <div class="final-section">
+        <div class="front-preview-box" id="frontPreviewBox">
+            <p style="margin:0 0 8px 0; font-size:12px; color:#a3e635; font-weight:bold;">✨ नया ऑडियो मिक्स रेडी है!</p>
+            <button class="front-play-btn" id="frontPlayBtn">▶️ तुरंत सुनें</button>
+            <button class="save-profile-btn" id="saveProfileBtn">⭐ प्रोफाइल में सेव करें</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="modalArrow1">
+    <div class="modal-content orange-border">
+        <div class="modal-header">
+            <h3 style="margin:0; color:#ff9900;">➔ 📁 प्रोजेक्ट्स फ़ोल्डर</h3>
+            <span class="close-modal" id="closeArrow1">&times;</span>
+        </div>
+        <div id="projectFolderList"></div>
+    </div>
+</div>
+
+<script>
+    // ===== AudioContext =====
+    let audioCtx = null;
+    
+    function getAudioContext() {
+        if (!audioCtx) {
+            try {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            } catch(e) {
+                alert('आपका ब्राउज़र ऑडियो को सपोर्ट नहीं करता।');
+                return null;
+            }
+        }
+        return audioCtx;
+    }
+
+    const S = {
+        masterKeyVolume: 0.5,
+        isVoiceRecording: false,
+        voiceSeconds: 0,
+        voiceTimerInterval: null,
+        generatedWavBlob: null,
+        previewAudioElement: new Audio(),
+        currentRecordedBlobUrl: null,
+        voiceBuffer: null,
+        reverbNode: null,
+        bassLevel: 0.5
+    };
+
+    let recordingDestinationNode = null;
+    let mainVoiceRecorder = null;
+    let mainVoiceChunks = [];
+    let audioAnimationId = null;
+    let activeStream = null;
+
+    // DOM Elements
+    const masterVolSlider = document.getElementById('masterVolSlider');
+    const volLabel = document.getElementById('volLabel');
+    const voiceRecordBtn = document.getElementById('voiceRecordBtn');
+    const recPlayBtn = document.getElementById('recPlayBtn');
+    const recCancelBtn = document.getElementById('recCancelBtn');
+    const recClearBtn = document.getElementById('recClearBtn');
+    const mainAudioFile = document.getElementById('mainAudioFile');
+    const mainFileLbl = document.getElementById('mainFileLbl');
+    const voiceOrTxt = document.getElementById('voiceOrTxt');
+    const mainFileNameDisplay = document.getElementById('mainFileNameDisplay');
+    const voiceStatus = document.getElementById('voiceStatus');
+    const frontPreviewBox = document.getElementById('frontPreviewBox');
+    const frontPlayBtn = document.getElementById('frontPlayBtn');
+    const saveProfileBtn = document.getElementById('saveProfileBtn');
+    const arrowBtn1 = document.getElementById('arrowBtn1');
+    const modalArrow1 = document.getElementById('modalArrow1');
+    const closeArrow1 = document.getElementById('closeArrow1');
+    const projectFolderList = document.getElementById('projectFolderList');
+    const canvas = document.getElementById('visualizer');
+    const canvasCtx = canvas.getContext('2d');
+    const pianoBtns = document.querySelectorAll('.piano-btn');
+    const bassDownBtn = document.getElementById('bassDownBtn');
+    const bassUpBtn = document.getElementById('bassUpBtn');
+    const bassDisplay = document.getElementById('bassDisplay');
+
+    // ===== BASS CONTROL =====
+    function updateBassDisplay() {
+        const percent = Math.round(S.bassLevel * 100);
+        bassDisplay.textContent = percent + '%';
+    }
+
+    function changeBass(delta) {
+        S.bassLevel = Math.max(0.05, Math.min(1, S.bassLevel + delta));
+        updateBassDisplay();
+    }
+
+    bassDownBtn.addEventListener('click', () => changeBass(-0.05));
+    bassUpBtn.addEventListener('click', () => changeBass(0.05));
+
+    // ===== REVERB =====
+    function createReverb() {
+        const ctx = getAudioContext();
+        if (!ctx) return null;
+        try {
+            const convolver = ctx.createConvolver();
+            const sampleRate = ctx.sampleRate;
+            const length = sampleRate * 1.8;
+            const impulse = ctx.createBuffer(2, length, sampleRate);
+            const left = impulse.getChannelData(0);
+            const right = impulse.getChannelData(1);
+            for (let i = 0; i < length; i++) {
+                const decay = Math.exp(-i / (sampleRate * 0.6));
+                const noise = (Math.random() * 2 - 1) * decay;
+                left[i] = noise * 0.5;
+                right[i] = noise * 0.5;
+            }
+            convolver.buffer = impulse;
+            return { convolver };
+        } catch(e) {
+            return null;
+        }
+    }
+
+    // ===== PIANO SOUND - CLEAN & CLEAR =====
+    function playPianoNote(frequency, duration = 1.0) {
+        const ctx = getAudioContext();
+        if (!ctx) return;
+        if (ctx.state === 'suspended') ctx.resume();
+        
+        const now = ctx.currentTime;
+        
+        if (!S.reverbNode) {
+            S.reverbNode = createReverb();
+        }
+        
+        // Main oscillator - clean sine wave
+        const osc = ctx.createOscillator();
+        osc.type = 'sine';
+        osc.frequency.value = frequency;
+        
+        // Second oscillator - very slight detune for warmth (reduced)
+        const osc2 = ctx.createOscillator();
+        osc2.type = 'sine';
+        osc2.frequency.value = frequency * 1.001;
+        const gain2 = ctx.createGain();
+        gain2.gain.value = 0.15; // Reduced
+        
+        // Bass oscillator - reduced level
+        const oscBass = ctx.createOscillator();
+        oscBass.type = 'sine';
+        oscBass.frequency.value = frequency / 2;
+        const bassGain = ctx.createGain();
+        bassGain.gain.value = S.bassLevel * 0.06; // Reduced
+        
+        // Harmonic - very subtle
+        const osc3 = ctx.createOscillator();
+        osc3.type = 'sine';
+        osc3.frequency.value = frequency * 2.001;
+        const osc3Gain = ctx.createGain();
+        osc3Gain.gain.value = 0.02; // Reduced
+        
+        // Master gain with clean envelope
+        const masterGain = ctx.createGain();
+        const vol = S.masterKeyVolume * 0.20; // Reduced overall volume
+        
+        masterGain.gain.setValueAtTime(0.001, now);
+        masterGain.gain.linearRampToValueAtTime(vol, now + 0.01);
+        masterGain.gain.exponentialRampToValueAtTime(vol * 0.5, now + 0.1);
+        masterGain.gain.exponentialRampToValueAtTime(vol * 0.15, now + 0.5);
+        masterGain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+        
+        // Connect
+        osc.connect(masterGain);
+        osc2.connect(gain2);
+        gain2.connect(masterGain);
+        oscBass.connect(bassGain);
+        bassGain.connect(masterGain);
+        osc3.connect(osc3Gain);
+        osc3Gain.connect(masterGain);
+        
+        // Output with reverb
+        if (S.reverbNode) {
+            // Dry signal
+            const dryGain = ctx.createGain();
+            dryGain.gain.value = 0.5;
+            masterGain.connect(dryGain);
+            dryGain.connect(ctx.destination);
+            
+            // Wet signal (reverb) - reduced
+            const reverbGain = ctx.createGain();
+            reverbGain.gain.value = 0.25;
+            masterGain.connect(S.reverbNode.convolver);
+            S.reverbNode.convolver.connect(reverbGain);
+            reverbGain.connect(ctx.destination);
+            
+            // Recording
+            if (S.isVoiceRecording && recordingDestinationNode) {
+                const recDry = ctx.createGain();
+                recDry.gain.value = 0.5;
+                masterGain.connect(recDry);
+                recDry.connect(recordingDestinationNode);
+                
+                const recWet = ctx.createGain();
+                recWet.gain.value = 0.25;
+                masterGain.connect(S.reverbNode.convolver);
+                S.reverbNode.convolver.connect(recWet);
+                recWet.connect(recordingDestinationNode);
+            }
+        } else {
+            masterGain.connect(ctx.destination);
+            if (S.isVoiceRecording && recordingDestinationNode) {
+                masterGain.connect(recordingDestinationNode);
+            }
+        }
+        
+        osc.start(now);
+        osc.stop(now + duration);
+        osc2.start(now);
+        osc2.stop(now + duration);
+        oscBass.start(now);
+        oscBass.stop(now + duration);
+        osc3.start(now);
+        osc3.stop(now + duration);
+    }
+
+    // ===== PIANO BUTTON EVENTS =====
+    pianoBtns.forEach(btn => {
+        const freq = parseFloat(btn.dataset.freq);
+        const startNote = (e) => {
+            e.preventDefault();
+            playPianoNote(freq);
+            btn.classList.add('active');
+            if (S.isVoiceRecording) btn.classList.add('recording-active');
+        };
+        const endNote = (e) => {
+            btn.classList.remove('active');
+            btn.classList.remove('recording-active');
+        };
+        btn.addEventListener('mousedown', startNote);
+        btn.addEventListener('mouseup', endNote);
+        btn.addEventListener('mouseleave', endNote);
+        btn.addEventListener('touchstart', startNote, {passive: false});
+        btn.addEventListener('touchend', endNote, {passive: false});
+    });
+
+    // ===== KEYBOARD =====
+    const keyToSur = { 'a': 0, 's': 1, 'd': 2, 'f': 3, 'g': 4, 'h': 5, 'j': 6 };
+    document.addEventListener('keydown', (e) => {
+        const key = e.key.toLowerCase();
+        if (key in keyToSur) {
+            const btn = pianoBtns[keyToSur[key]];
+            if (btn && !btn.classList.contains('active')) {
+                playPianoNote(parseFloat(btn.dataset.freq));
+                btn.classList.add('active');
+                if (S.isVoiceRecording) btn.classList.add('recording-active');
+            }
+        }
+    });
+    document.addEventListener('keyup', (e) => {
+        const key = e.key.toLowerCase();
+        if (key in keyToSur) {
+            const btn = pianoBtns[keyToSur[key]];
+            if (btn) {
+                btn.classList.remove('active');
+                btn.classList.remove('recording-active');
+            }
+        }
+    });
+
+    // ===== MASTER VOLUME =====
+    masterVolSlider.addEventListener('input', (e) => {
+        S.masterKeyVolume = parseFloat(e.target.value);
+        volLabel.textContent = `${Math.round(S.masterKeyVolume * 100)}%`;
+    });
+
+    // ===== RECORDING =====
+    voiceRecordBtn.addEventListener('click', () => {
+        const ctx = getAudioContext();
+        if (!ctx) return;
+        
+        if (!S.isVoiceRecording) {
+            if (ctx.state === 'suspended') ctx.resume();
+            S.isVoiceRecording = true;
+            mainVoiceChunks = [];
+            
+            voiceRecordBtn.classList.add('recording');
+            voiceRecordBtn.textContent = '🛑 बंद करें';
+            
+            recPlayBtn.style.display = 'none';
+            recCancelBtn.style.display = 'none';
+            recClearBtn.style.display = 'none';
+            mainFileLbl.style.display = 'none';
+            voiceOrTxt.style.display = 'none';
+            frontPreviewBox.style.display = 'none';
+
+            S.voiceSeconds = 0;
+            S.voiceTimerInterval = setInterval(() => {
+                S.voiceSeconds++;
+                const m = Math.floor(S.voiceSeconds / 60).toString().padStart(2, '0');
+                const s = (S.voiceSeconds % 60).toString().padStart(2, '0');
+                voiceStatus.textContent = `⏱️ ${m}:${s}`;
+            }, 1000);
+
+            navigator.mediaDevices.getUserMedia({
+                audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
+            }).then(stream => {
+                activeStream = stream;
+                
+                const mixedDestination = ctx.createMediaStreamDestination();
+                recordingDestinationNode = mixedDestination;
+
+                const micSrcNode = ctx.createMediaStreamSource(stream);
+                // Reduce mic volume to prevent clipping
+                const micGain = ctx.createGain();
+                micGain.gain.value = 0.4;
+                micSrcNode.connect(micGain);
+                micGain.connect(mixedDestination);
+
+                const analyser = ctx.createAnalyser();
+                analyser.fftSize = 64;
+                micGain.connect(analyser);
+
+                const draw = () => {
+                    if (!S.isVoiceRecording) return;
+                    audioAnimationId = requestAnimationFrame(draw);
+                    const dataArray = new Uint8Array(analyser.frequencyBinCount);
+                    analyser.getByteFrequencyData(dataArray);
+                    canvasCtx.fillStyle = '#080c14';
+                    canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
+                    let x = 0;
+                    const barWidth = (canvas.width / analyser.frequencyBinCount) * 2.5;
+                    for (let i = 0; i < analyser.frequencyBinCount; i++) {
+                        let barHeight = dataArray[i] / 4;
+                        canvasCtx.fillStyle = 'rgb(' + (barHeight + 120) + ',100,240)';
+                        canvasCtx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
+                        x += barWidth + 1;
+                    }
+                };
+                draw();
+
+                mainVoiceRecorder = new MediaRecorder(mixedDestination.stream);
+                mainVoiceRecorder.ondataavailable = e => mainVoiceChunks.push(e.data);
+                mainVoiceRecorder.onstop = async () => {
+                    S.generatedWavBlob = new Blob(mainVoiceChunks, { type: 'audio/wav' });
+                    S.currentRecordedBlobUrl = URL.createObjectURL(S.generatedWavBlob);
+                    
+                    voiceStatus.textContent = '✅ सुरक्षित';
+                    recPlayBtn.style.display = 'inline-block';
+                    recCancelBtn.style.display = 'inline-block';
+                    recClearBtn.style.display = 'inline-block';
+                    frontPreviewBox.style.display = 'block';
+                    S.previewAudioElement.src = S.currentRecordedBlobUrl;
+                };
+                mainVoiceRecorder.start();
+            }).catch(err => {
+                alert("माइक परमिशन आवश्यक है!");
+                recCancelBtn.dispatchEvent(new Event('click'));
+            });
+        } else {
+            S.isVoiceRecording = false;
+            clearInterval(S.voiceTimerInterval);
+            cancelAnimationFrame(audioAnimationId);
+            
+            voiceRecordBtn.classList.remove('recording');
+            voiceRecordBtn.textContent = '🎤 रिकॉर्डिंग शुरू करें';
+            
+            pianoBtns.forEach(btn => btn.classList.remove('recording-active'));
+            
+            if (mainVoiceRecorder && mainVoiceRecorder.state === 'recording') {
+                mainVoiceRecorder.stop();
+            }
+            if (activeStream) {
+                activeStream.getTracks().forEach(t => t.stop());
+            }
+        }
+    });
+
+    recPlayBtn.addEventListener('click', () => {
+        if (S.currentRecordedBlobUrl) {
+            S.previewAudioElement.src = S.currentRecordedBlobUrl;
+            S.previewAudioElement.play();
+        }
+    });
+
+    recCancelBtn.addEventListener('click', () => {
+        S.previewAudioElement.pause();
+    });
+
+    recClearBtn.addEventListener('click', () => {
+        if (confirm("क्या आप इस रिकॉर्डिंग को पूरी तरह साफ करना चाहते हैं?")) {
+            S.isVoiceRecording = false;
+            clearInterval(S.voiceTimerInterval);
+            cancelAnimationFrame(audioAnimationId);
+            
+            voiceRecordBtn.classList.remove('recording');
+            voiceRecordBtn.textContent = '🎤 रिकॉर्डिंग शुरू करें';
+            
+            pianoBtns.forEach(btn => btn.classList.remove('recording-active'));
+            
+            if (mainVoiceRecorder && mainVoiceRecorder.state === 'recording') {
+                try { mainVoiceRecorder.stop(); } catch(e) {}
+            }
+            if (activeStream) {
+                activeStream.getTracks().forEach(t => t.stop());
+            }
+            
+            S.currentRecordedBlobUrl = null;
+            S.generatedWavBlob = null;
+            mainVoiceChunks = [];
+            
+            voiceStatus.textContent = '⏱️ 00:00';
+            recPlayBtn.style.display = 'none';
+            recCancelBtn.style.display = 'none';
+            recClearBtn.style.display = 'none';
+            
+            mainFileLbl.style.display = 'inline-block';
+            voiceOrTxt.style.display = 'inline-block';
+            mainFileNameDisplay.style.display = 'none';
+            mainAudioFile.value = "";
+            frontPreviewBox.style.display = 'none';
+            canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
+            alert("रिकॉर्डिंग फ़ाइल पूरी तरह साफ़ कर दी गई है!");
+        }
+    });
+
+    // ===== FILE LOAD =====
+    mainAudioFile.addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        mainFileNameDisplay.style.display = 'block';
+        mainFileNameDisplay.textContent = `📁 फ़ाइल: ${file.name}`;
+        voiceStatus.textContent = '⏳ लोडिंग...';
+        try {
+            const ctx = getAudioContext();
+            if (!ctx) return;
+            if (ctx.state === 'suspended') ctx.resume();
+            const buffer = await ctx.decodeAudioData(await file.arrayBuffer());
+            S.voiceBuffer = buffer;
+            voiceStatus.textContent = '✅ रेडी';
+        } catch {
+            alert('फ़ाइल लोड करने में त्रुटि!');
+        }
+    });
+
+    // ===== PROJECT FOLDER =====
+    function renderProjectFolder() {
+        projectFolderList.innerHTML = '';
+        const savedTracks = JSON.parse(localStorage.getItem('livecue_profile_tracks') || '[]');
+        if (savedTracks.length === 0) {
+            projectFolderList.innerHTML = `<p style="text-align:center; color:#8fa4cc; font-size:12px;">कोई सेव किया हुआ गाना नहीं मिला।</p>`;
+            return;
+        }
+        savedTracks.forEach((track, index) => {
+            const item = document.createElement('div');
+            item.className = 'project-item';
+            item.innerHTML = `
+                <div>
+                    <span style="color:#eab308; font-weight:bold;">#${index + 1}</span> 
+                    <span style="color:#fff; margin-left:5px;">${track.name}</span>
+                    <div style="font-size:10px; color:#8fa4cc; margin-top:2px;">🕒 ${track.date}</div>
+                </div>
+                <div class="item-actions">
+                    <button class="inline-play-btn" id="playSaved-${index}">▶️ Play</button>
+                    <button class="inline-delete-btn" id="deleteSaved-${index}">🗑️ Delete</button>
+                </div>
+            `;
+            item.querySelector(`#playSaved-${index}`).addEventListener('click', () => {
+                S.previewAudioElement.src = track.dataUrl;
+                S.previewAudioElement.play();
+            });
+            item.querySelector(`#deleteSaved-${index}`).addEventListener('click', () => {
+                if (confirm(`क्या आप सचमुच "${track.name}" को डिलीट करना चाहते हैं?`)) {
+                    savedTracks.splice(index, 1);
+                    localStorage.setItem('livecue_profile_tracks', JSON.stringify(savedTracks));
+                    renderProjectFolder();
+                }
+            });
+            projectFolderList.appendChild(item);
+        });
+    }
+
+    arrowBtn1.addEventListener('click', () => {
+        renderProjectFolder();
+        modalArrow1.style.display = 'flex';
+    });
+
+    closeArrow1.addEventListener('click', () => {
+        modalArrow1.style.display = 'none';
+        S.previewAudioElement.pause();
+    });
+
+    // ===== FRONT PLAY & SAVE =====
+    frontPlayBtn.addEventListener('click', () => {
+        if (S.previewAudioElement.paused) {
+            S.previewAudioElement.play();
+            frontPlayBtn.textContent = '⏸️ पॉज़ करें';
+        } else {
+            S.previewAudioElement.pause();
+            frontPlayBtn.textContent = '▶️ तुरंत सुनें';
+        }
+    });
+
+    S.previewAudioElement.addEventListener('ended', () => {
+        frontPlayBtn.textContent = '▶️ तुरंत सुनें';
+    });
+
+    saveProfileBtn.addEventListener('click', () => {
+        if (!S.generatedWavBlob) return;
+        const trackName = prompt("इस मिक्स्ड ट्रैक का नाम दर्ज करें:", "My Jhankar Piano Mix");
+        if (!trackName) return;
+
+        const reader = new FileReader();
+        reader.readAsDataURL(S.generatedWavBlob);
+        reader.onloadend = function() {
+            const savedTracks = JSON.parse(localStorage.getItem('livecue_profile_tracks') || '[]');
+            savedTracks.push({ name: trackName, date: new Date().toLocaleString('hi-IN'), dataUrl: reader.result });
+            localStorage.setItem('livecue_profile_tracks', JSON.stringify(savedTracks));
+            alert(`📥 "${trackName}" सफलतापूर्वक सुरक्षित कर दिया गया है!`);
+        };
+    });
+
+    // ===== CLOSE MODAL =====
+    modalArrow1.addEventListener('click', (e) => {
+        if (e.target === modalArrow1) {
+            modalArrow1.style.display = 'none';
+            S.previewAudioElement.pause();
+        }
+    });
+
+    // ===== RESUME AUDIO =====
+    document.addEventListener('click', function resumeAudio() {
+        const ctx = getAudioContext();
+        if (ctx && ctx.state === 'suspended') {
+            ctx.resume();
+        }
+    }, { once: false });
+
+    // ===== INIT =====
+    updateBassDisplay();
+</script>
+</body>
+</html>
