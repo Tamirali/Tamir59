@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>तामीर अली LED प्रो - GitHub संस्करण</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Poppins', sans-serif;
+            background: #0b0b0b;
+            color: #fff;
+            text-align: center;
+            padding: 15px 12px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease;
+        }
+
+        h3 {
+            color: #ff6e2b;
+            font-size: 22px;
+            letter-spacing: 2px;
+            text-shadow: 0 0 15px #ff6e2b66;
+            margin-bottom: 14px;
+            border-bottom: 2px dashed #ff6e2b;
+            padding-bottom: 8px;
+            display: inline-block;
+        }
+
+        /* ===== LED स्क्रीन ===== */
+        .led-screen {
+            background: #0a0a0a;
+            border: 4px solid #2a2a2a;
+            height: 200px;
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+            border-radius: 18px;
+            box-shadow: 0 0 30px #ff5722, inset 0 0 20px #222;
+            margin-bottom: 22px;
+            transition: box-shadow 0.2s ease, background-color 0.3s ease;
+        }
+
+        /* स्क्रॉल कंटेनर - JavaScript द्वारा नियंत्रित */
+        #scrollContainer {
+            display: flex;
+            flex-wrap: nowrap;
+            align-items: center;
+            justify-content: flex-start;
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: auto;
+            will-change: transform;
+            z-index: 2;
+            /* एनीमेशन JS से चलेगा */
+        }
+
+        .scroll-item {
+            white-space: nowrap;
+            font-size: 48px;
+            font-weight: 700;
+            padding: 0 30px;
+            color: #00FF00;
+            text-shadow: 0 0 20px currentColor, 0 0 40px currentColor;
+            letter-spacing: 2px;
+            transition: color 0.15s, font-size 0.3s, font-weight 0.3s, font-style 0.3s, text-decoration 0.3s;
+            font-family: 'Poppins', 'Segoe UI', sans-serif;
+            line-height: 1.4;
+            display: inline-block;
+        }
+
+        @media (max-width: 600px) {
+            .scroll-item {
+                font-size: 28px;
+                padding: 0 15px;
+            }
+            .led-screen {
+                height: 150px;
+            }
+        }
+
+        /* बैनर का पता (नीचे दाएं) */
+        .address-tag {
+            position: absolute;
+            bottom: 6px;
+            right: 16px;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(3px);
+            padding: 4px 14px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 500;
+            color: #ffb085;
+            border: 1px solid #ff6e2b55;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            box-shadow: 0 0 12px #ff572244;
+            pointer-events: none;
+            z-index: 5;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        /* ===== टेक्स्ट इफेक्ट्स ===== */
+        .scroll-item.zoom-effect {
+            animation: zoomer 1.2s ease-in-out infinite alternate;
+        }
+        @keyframes zoomer {
+            0% { transform: scale(0.7); text-shadow: 0 0 20px currentColor; }
+            100% { transform: scale(1.25); text-shadow: 0 0 50px currentColor, 0 0 80px currentColor; }
+        }
+
+        .scroll-item.wave-effect {
+            animation: waver 0.9s ease-in-out infinite alternate;
+        }
+        @keyframes waver {
+            0% { transform: translateY(-25px) rotate(-2deg); }
+            100% { transform: translateY(25px) rotate(2deg); }
+        }
+
+        .scroll-item.glow-pulse {
+            animation: pulseGlow 1.4s ease-in-out infinite alternate;
+        }
+        @keyframes pulseGlow {
+            0% { filter: brightness(0.9) drop-shadow(0 0 15px currentColor); }
+            100% { filter: brightness(1.6) drop-shadow(0 0 45px currentColor); }
+        }
+
+        .scroll-item.oil-effect {
+            animation: oilSlick 3s ease-in-out infinite alternate;
+        }
+        @keyframes oilSlick {
+            0% { text-shadow: 0 0 30px #ff00ff, 0 0 60px #00ffff, 0 0 90px #ff00ff; }
+            50% { text-shadow: 0 0 40px #00ffff, 0 0 80px #ff00ff, 0 0 120px #ffff00; }
+            100% { text-shadow: 0 0 30px #ffff00, 0 0 60px #ff00ff, 0 0 90px #00ffff; }
+        }
+
+        .scroll-item.typewriter {
+            overflow: hidden;
+            border-right: 3px solid currentColor;
+            white-space: nowrap;
+            animation: typing 2s steps(20) 1s forwards, blink-caret 0.75s step-end infinite;
+            width: 0;
+        }
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+        @keyframes blink-caret {
+            50% { border-color: transparent; }
+        }
+
+        .scroll-item.glitch {
+            animation: glitch 1.5s infinite;
+        }
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-5px, 3px); }
+            40% { transform: translate(5px, -3px); }
+            60% { transform: translate(-3px, 5px); }
+            80% { transform: translate(3px, -5px); }
+            100% { transform: translate(0); }
+        }
+
+        /* ===== सेलिब्रेशन / सिंबल इफेक्ट्स (नीचे) ===== */
+        .celebration-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+            overflow: hidden;
+        }
+
+        .firecracker {
+            position: absolute;
+            font-size: 22px;
+            animation: firecrackerFall 1.8s ease-in forwards;
+            z-index: 12;
+        }
+        @keyframes firecrackerFall {
+            0% { transform: translateY(-20px) scale(0.5) rotate(0deg); opacity: 0; }
+            20% { opacity: 1; }
+            100% { transform: translateY(120px) scale(1.2) rotate(360deg); opacity: 0; }
+        }
+
+        .wedding-symbol {
+            position: absolute;
+            font-size: 30px;
+            animation: weddingFloatBottom 3s ease-in-out infinite;
+            z-index: 11;
+            filter: drop-shadow(0 0 15px #ff6b6b);
+        }
+        @keyframes weddingFloatBottom {
+            0% { transform: translateY(0px) scale(1) rotate(0deg); }
+            50% { transform: translateY(-15px) scale(1.2) rotate(5deg); }
+            100% { transform: translateY(0px) scale(1) rotate(0deg); }
+        }
+
+        .sparkle-effect {
+            position: absolute;
+            font-size: 18px;
+            animation: sparkleBottom 1.2s ease-in-out infinite alternate;
+            z-index: 9;
+        }
+        @keyframes sparkleBottom {
+            0% { transform: scale(0.5) rotate(0deg); opacity: 0.3; }
+            100% { transform: scale(1.5) rotate(180deg); opacity: 1; }
+        }
+
+        .gift-box {
+            position: absolute;
+            font-size: 28px;
+            animation: giftBounceBottom 2s ease-in-out infinite;
+            z-index: 13;
+            filter: drop-shadow(0 0 20px #ffd700);
+        }
+        @keyframes giftBounceBottom {
+            0% { transform: translateY(0px) rotate(0deg) scale(1); }
+            25% { transform: translateY(-12px) rotate(-5deg) scale(1.1); }
+            75% { transform: translateY(-6px) rotate(5deg) scale(1.05); }
+            100% { transform: translateY(0px) rotate(0deg) scale(1); }
+        }
+
+        .continuous-fire {
+            position: absolute;
+            font-size: 20px;
+            animation: continuousFireBottom 2.5s ease-in-out infinite;
+            z-index: 14;
+        }
+        @keyframes continuousFireBottom {
+            0% { transform: translateY(0) scale(0.8) rotate(0deg); opacity: 0.7; }
+            50% { transform: translateY(-20px) scale(1.3) rotate(180deg); opacity: 1; }
+            100% { transform: translateY(0) scale(0.8) rotate(360deg); opacity: 0.7; }
+        }
+
+        .star {
+            position: absolute;
+            font-size: 20px;
+            animation: starFallBottom 2.5s linear forwards;
+            z-index: 8;
+        }
+        @keyframes starFallBottom {
+            0% { transform: translateY(-30px) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            100% { transform: translateY(150px) rotate(720deg); opacity: 0; }
+        }
+
+        .rain-drop {
+            position: absolute;
+            font-size: 18px;
+            animation: rainFall 1.8s linear forwards;
+            z-index: 7;
+        }
+        @keyframes rainFall {
+            0% { transform: translateY(-20px) scale(0.5); opacity: 0; }
+            10% { opacity: 0.8; }
+            100% { transform: translateY(150px) scale(1); opacity: 0; }
+        }
+
+        /* ===== कंट्रोल पैनल ===== */
+        .panel {
+            background: #141414;
+            padding: 22px 20px;
+            border-radius: 24px;
+            border: 1px solid #2c2c2c;
+            max-width: 750px;
+            width: 100%;
+            text-align: left;
+            box-shadow: 0 8px 30px rgba(255, 87, 34, 0.15);
+            backdrop-filter: blur(4px);
+            margin-top: 6px;
+        }
+
+        .label-text {
+            font-size: 14px;
+            color: #ff6e2b;
+            font-weight: 600;
+            margin: 16px 0 6px 0;
+            display: block;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 14px 16px;
+            margin-bottom: 10px;
+            border-radius: 14px;
+            border: 1px solid #2e2e2e;
+            background: #1f1f1f;
+            color: #f0f0f0;
+            font-size: 16px;
+            transition: 0.2s;
+            outline: none;
+            font-weight: 500;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #ff6e2b;
+            box-shadow: 0 0 0 3px #ff572244;
+            background: #262626;
+        }
+
+        .color-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin: 8px 0 10px 0;
+        }
+
+        .c-btn {
+            height: 52px;
+            border: none;
+            border-radius: 14px;
+            cursor: pointer;
+            font-weight: 700;
+            color: #fff;
+            text-shadow: 0 2px 6px #00000099;
+            font-size: 16px;
+            transition: 0.2s ease;
+            box-shadow: 0 4px 0 #00000055;
+            letter-spacing: 0.5px;
+        }
+        .c-btn:hover {
+            transform: scale(0.96);
+            filter: brightness(1.2);
+        }
+        .c-btn:active {
+            transform: scale(0.92);
+            box-shadow: 0 1px 0 #000;
+        }
+
+        .style-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin: 8px 0 10px 0;
+        }
+        .style-btn {
+            padding: 10px;
+            border: none;
+            border-radius: 10px;
+            background: #2a2a2a;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .style-btn:hover {
+            background: #3a3a3a;
+            transform: scale(0.96);
+        }
+        .style-btn.active {
+            background: #ff6e2b;
+            box-shadow: 0 0 15px #ff6e2b66;
+        }
+
+        .action-btn {
+            background: linear-gradient(145deg, #ff6b6b, #ee5a24);
+            color: #fff;
+            border: none;
+            padding: 14px;
+            width: 100%;
+            border-radius: 16px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 12px;
+            box-shadow: 0 6px 0 #992b00, 0 8px 25px #ff572266;
+            transition: 0.08s linear;
+            letter-spacing: 1px;
+        }
+        .action-btn:active {
+            transform: translateY(6px);
+            box-shadow: 0 2px 0 #992b00;
+        }
+
+        .update-btn {
+            background: linear-gradient(145deg, #ff5722, #e64a19);
+            color: #fff;
+            border: none;
+            padding: 18px 12px;
+            width: 100%;
+            border-radius: 18px;
+            font-size: 20px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 18px;
+            box-shadow: 0 8px 0 #992b00, 0 8px 25px #ff572266;
+            transition: 0.08s linear;
+            letter-spacing: 2px;
+        }
+        .update-btn:active {
+            transform: translateY(6px);
+            box-shadow: 0 2px 0 #992b00;
+        }
+        .update-btn:hover {
+            background: #ff6a2e;
+            box-shadow: 0 8px 0 #992b00, 0 12px 35px #ff572288;
+        }
+
+        .pause-btn {
+            background: linear-gradient(145deg, #4a90e2, #2c6fb0);
+            color: #fff;
+            border: none;
+            padding: 14px;
+            width: 100%;
+            border-radius: 16px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 12px;
+            box-shadow: 0 6px 0 #1a4a7a, 0 8px 25px #4a90e266;
+            transition: 0.08s linear;
+            letter-spacing: 1px;
+        }
+        .pause-btn:active {
+            transform: translateY(6px);
+            box-shadow: 0 2px 0 #1a4a7a;
+        }
+
+        .footer-note {
+            margin-top: 25px;
+            font-size: 13px;
+            color: #555;
+            letter-spacing: 0.5px;
+            border-top: 1px solid #222;
+            padding-top: 18px;
+            width: 100%;
+            max-width: 750px;
+        }
+        .footer-note span {
+            color: #ff6e2b;
+        }
+    </style>
+</head>
+<body>
+
+    <h3>🚩 तामीर अली · LED कंट्रोल प्रो</h3>
+
+    <!-- ===== LED बोर्ड ===== -->
+    <div class="led-screen" id="board">
+        <div id="scrollContainer">
+            <!-- JavaScript से भरा जाएगा -->
+        </div>
+
+        <div class="address-tag">
+            📍 तामीर अली · गाँव जसौली शेख पट्टी · पोस्ट सिवान · बिहार · पिन 841241 · WhatsApp: 8797221991
+        </div>
+
+        <div class="celebration-container" id="celebrationContainer"></div>
+    </div>
+
+    <!-- ===== कंट्रोल पैनल ===== -->
+    <div class="panel">
+
+        <span class="label-text">✏️ बैनर टेक्स्ट बदलें (लंबा टेक्स्ट भी चलेगा)</span>
+        <input type="text" id="textInp" placeholder="तामीर अली · गाँव जसौली शेख पट्टी · सिवान · बिहार · पिन 841241 · WhatsApp: 8797221991" oninput="updateText()" />
+
+        <span class="label-text">🎨 4 रंग (क्लिक करें)</span>
+        <div class="color-grid">
+            <button class="c-btn" style="background:#00FF00; color:#000;" onclick="applyColor('#00FF00')">हरा</button>
+            <button class="c-btn" style="background:#00FFFF; color:#000;" onclick="applyColor('#00FFFF')">आसमानी</button>
+            <button class="c-btn" style="background:#FFFF00; color:#000;" onclick="applyColor('#FFFF00')">पीला</button>
+            <button class="c-btn" style="background:#FFFFFF; color:#000;" onclick="applyColor('#FFFFFF')">सफेद</button>
+        </div>
+
+        <span class="label-text">🌀 टेक्स्ट इफेक्ट</span>
+        <select id="effSel" onchange="applyEffect()">
+            <option value="none">कोई नहीं (सिर्फ स्क्रॉल)</option>
+            <option value="zoom-effect">🔍 ज़ूम</option>
+            <option value="wave-effect">🌊 लहर</option>
+            <option value="glow-pulse">✨ ग्लो पल्स</option>
+            <option value="oil-effect">🛢️ तेल (ऑयल)</option>
+            <option value="typewriter">⌨️ टाइपिंग</option>
+            <option value="glitch">⚡ ग्लिच</option>
+        </select>
+
+        <span class="label-text">🧭 स्क्रॉल दिशा</span>
+        <select id="dirSel" onchange="changeDirection()">
+            <option value="left" selected>➡️ दाएँ से बाएँ</option>
+            <option value="right">⬅️ बाएँ से दाएँ</option>
+            <option value="up">⬆️ नीचे से ऊपर</option>
+            <option value="down">⬇️ ऊपर से नीचे</option>
+        </select>
+
+        <span class="label-text">⚡ रफ्तार (Speed)</span>
+        <select id="spdSel" onchange="changeSpeed()">
+            <option value="1">🐢 धीमी</option>
+            <option value="3" selected>▶️ सामान्य</option>
+            <option value="6">🚀 तेज़</option>
+            <option value="10">⚡ सुपरफास्ट</option>
+        </select>
+
+        <span class="label-text">📏 फॉन्ट साइज़</span>
+        <select id="fontSizeSel" onchange="changeFontSize()">
+            <option value="28px">छोटा (28px)</option>
+            <option value="48px" selected>मध्यम (48px)</option>
+            <option value="64px">बड़ा (64px)</option>
+            <option value="80px">बहुत बड़ा (80px)</option>
+        </select>
+
+        <span class="label-text">🎨 स्क्रीन बैकग्राउंड</span>
+        <select id="bgColorSel" onchange="changeBg()">
+            <option value="#0a0a0a" selected>काला (डिफॉल्ट)</option>
+            <option value="#1a0000">गहरा लाल</option>
+            <option value="#001a00">गहरा हरा</option>
+            <option value="#001a1a">गहरा नीला</option>
+            <option value="#1a1a00">गहरा पीला</option>
+            <option value="#1a0a1a">गहरा बैंगनी</option>
+            <option value="#2a2a2a">ग्रे</option>
+        </select>
+
+        <span class="label-text">✒️ टेक्स्ट स्टाइल (टॉगल)</span>
+        <div class="style-grid">
+            <button class="style-btn" id="boldBtn" onclick="toggleStyle('bold')">बोल्ड</button>
+            <button class="style-btn" id="italicBtn" onclick="toggleStyle('italic')">इटैलिक</button>
+            <button class="style-btn" id="underlineBtn" onclick="toggleStyle('underline')">अंडरलाइन</button>
+        </div>
+
+        <button class="pause-btn" id="pauseBtn" onclick="togglePause()">⏸️ स्क्रॉल रोकें</button>
+
+        <button class="action-btn" onclick="toggleDisco()">💃 डिस्को मोड</button>
+        <button class="action-btn" onclick="startStarFall()">⭐ स्टार फॉल</button>
+        <button class="action-btn" onclick="startRain()">🌧️ बारिश</button>
+        <button class="action-btn" onclick="startCelebration()">🎉 सेलिब्रेशन</button>
+
+        <button class="update-btn" onclick="refreshBanner()">🔁 बैनर अपडेट करें</button>
+    </div>
+
+    <div class="footer-note">
+        <span>✦</span> तामीर अली · गाँव जसौली शेख पट्टी · सिवान · बिहार · पिन 841241 · WhatsApp: 8797221991 <span>✦</span>
+    </div>
+
+    <script>
+        // ============================================================
+        // 🚀 पूरा प्रोजेक्ट JavaScript द्वारा नियंत्रित – GitHub पर भी चलेगा
+        // ============================================================
+
+        // ----- DOM Ref -----
+        const container = document.getElementById('scrollContainer');
+        const boardEl = document.getElementById('board');
+        const textInput = document.getElementById('textInp');
+        const effSelect = document.getElementById('effSel');
+        const dirSelect = document.getElementById('dirSel');
+        const spdSelect = document.getElementById('spdSel');
+        const fontSizeSel = document.getElementById('fontSizeSel');
+        const bgColorSel = document.getElementById('bgColorSel');
+        const celebrationContainer = document.getElementById('celebrationContainer');
+
+        // ----- State -----
+        let currentColor = '#00FF00';
+        let isPaused = false;
+        let boldActive = false;
+        let italicActive = false;
+        let underlineActive = false;
+        let animationFrame = null;
+        let pos = 0;
+        let containerWidth = 0;
+        let textWidth = 0;
+        let speedFactor = 3; // pixels per frame
+        let direction = 'left'; // left, right, up, down
+
+        // ----- डिफॉल्ट टेक्स्ट -----
+        const defaultText = '✨ तामीर अली · गाँव जसौली शेख पट्टी · सिवान · बिहार · पिन 841241 · WhatsApp: 8797221991 ✨';
+
+        // ----- टेक्स्ट अपडेट (एक ही बार) -----
+        function updateText() {
+            let text = textInput.value.trim();
+            if (!text) text = defaultText;
+
+            container.innerHTML = '';
+            const item = document.createElement('span');
+            item.className = 'scroll-item';
+            item.textContent = text;
+            container.appendChild(item);
+
+            applyEffect();
+            applyColor(currentColor);
+            changeFontSize();
+            // री-पोजीशन
+            pos = 0;
+            container.style.transform = getTransform(pos);
+            // साइज रीकैल्कुलेट
+            setTimeout(calculateSizes, 50);
+        }
+
+        // ----- साइज कैल्कुलेट करें -----
+        function calculateSizes() {
+            const rect = boardEl.getBoundingClientRect();
+            containerWidth = rect.width;
+            // कंटेनर की चौड़ाई ज्ञात करें
+            const items = container.querySelectorAll('.scroll-item');
+            if (items.length === 0) return;
+            const item = items[0];
+            textWidth = item.scrollWidth;
+            // अगर टेक्स्ट स्क्रीन से छोटा है तो उसे सेंटर करें
+            if (textWidth < containerWidth) {
+                // डिफॉल्ट स्क्रॉल न करें, बल्कि सेंटर में रखें
+                // लेकिन हम स्क्रॉल ही रखेंगे, ताकि वह चले
+            }
+        }
+
+        // ----- ट्रांसफॉर्म स्ट्रिंग बनाएं -----
+        function getTransform(pos) {
+            if (direction === 'left') {
+                return `translateX(${pos}px)`;
+            } else if (direction === 'right') {
+                return `translateX(${pos}px)`;
+            } else if (direction === 'up') {
+                return `translateY(${pos}px)`;
+            } else if (direction === 'down') {
+                return `translateY(${pos}px)`;
+            }
+            return `translateX(${pos}px)`;
+        }
+
+        // ----- एनीमेशन लूप (requestAnimationFrame) -----
+        function animate() {
+            if (!isPaused) {
+                const step = speedFactor;
+
+                if (direction === 'left') {
+                    pos -= step;
+                    // अगर पूरा टेक्स्ट बाईं ओर से बाहर चला जाए, तो दाईं ओर से पुनः लाएं
+                    if (pos < -textWidth) {
+                        pos = containerWidth;
+                    }
+                } else if (direction === 'right') {
+                    pos += step;
+                    if (pos > containerWidth) {
+                        pos = -textWidth;
+                    }
+                } else if (direction === 'up') {
+                    pos -= step;
+                    if (pos < -textWidth) {
+                        pos = container.offsetHeight || 200; // roughly
+                    }
+                } else if (direction === 'down') {
+                    pos += step;
+                    if (pos > (container.offsetHeight || 200)) {
+                        pos = -textWidth;
+                    }
+                }
+
+                container.style.transform = getTransform(pos);
+            }
+            animationFrame = requestAnimationFrame(animate);
+        }
+
+        // ----- एनीमेशन शुरू करें -----
+        function startAnimation() {
+            if (animationFrame) {
+                cancelAnimationFrame(animationFrame);
+                animationFrame = null;
+            }
+            calculateSizes();
+            // अगर कंटेनर खाली है तो डिफॉल्ट डालें
+            if (container.children.length === 0) {
+                updateText();
+            }
+            animate();
+        }
+
+        // ----- रंग लागू करें -----
+        function applyColor(clr) {
+            currentColor = clr;
+            const items = container.querySelectorAll('.scroll-item');
+            items.forEach(el => el.style.color = clr);
+            boardEl.style.boxShadow = `0 0 40px ${clr}, inset 0 0 25px #222`;
+            items.forEach(el => el.classList.remove('oil-effect'));
+        }
+
+        // ----- इफेक्ट लागू करें -----
+        function applyEffect() {
+            const effect = effSelect.value;
+            const items = container.querySelectorAll('.scroll-item');
+            items.forEach(el => {
+                el.classList.remove('zoom-effect', 'wave-effect', 'glow-pulse', 'oil-effect', 'typewriter', 'glitch');
+                if (effect !== 'none') {
+                    el.classList.add(effect);
+                }
+            });
+        }
+
+        // ----- फॉन्ट साइज़ -----
+        function changeFontSize() {
+            const size = fontSizeSel.value;
+            const items = container.querySelectorAll('.scroll-item');
+            items.forEach(el => el.style.fontSize = size);
+            setTimeout(calculateSizes, 50);
+        }
+
+        // ----- बैकग्राउंड -----
+        function changeBg() {
+            boardEl.style.backgroundColor = bgColorSel.value;
+        }
+
+        // ----- दिशा बदलें -----
+        function changeDirection() {
+            direction = dirSelect.value;
+            pos = 0;
+            // reset position
+            container.style.transform = getTransform(0);
+            setTimeout(calculateSizes, 50);
+        }
+
+        // ----- स्पीड बदलें -----
+        function changeSpeed() {
+            speedFactor = parseInt(spdSelect.value);
+        }
+
+        // ----- स्टाइल टॉगल -----
+        function toggleStyle(type) {
+            const items = container.querySelectorAll('.scroll-item');
+            if (type === 'bold') {
+                boldActive = !boldActive;
+                items.forEach(el => el.style.fontWeight = boldActive ? '900' : '700');
+                document.getElementById('boldBtn').classList.toggle('active');
+            } else if (type === 'italic') {
+                italicActive = !italicActive;
+                items.forEach(el => el.style.fontStyle = italicActive ? 'italic' : 'normal');
+                document.getElementById('italicBtn').classList.toggle('active');
+            } else if (type === 'underline') {
+                underlineActive = !underlineActive;
+                items.forEach(el => el.style.textDecoration = underlineActive ? 'underline' : 'none');
+                document.getElementById('underlineBtn').classList.toggle('active');
+            }
+        }
+
+        // ----- पॉज़/प्ले -----
+        function togglePause() {
+            const btn = document.getElementById('pauseBtn');
+            isPaused = !isPaused;
+            btn.textContent = isPaused ? '▶️ स्क्रॉल चलाएं' : '⏸️ स्क्रॉल रोकें';
+        }
+
+        // ----- रिफ्रेश -----
+        function refreshBanner() {
+            changeDirection();
+            changeSpeed();
+            applyEffect();
+            applyColor(currentColor);
+            changeFontSize();
+            changeBg();
+            // रीसेट पोजीशन
+            pos = 0;
+            container.style.transform = getTransform(0);
+            setTimeout(calculateSizes, 50);
+        }
+
+        // ============================================================
+        // सेलिब्रेशन / डिस्को / स्टार / बारिश (पिछले कोड से)
+        // ============================================================
+
+        // ===== डिस्को मोड =====
+        let discoInterval = null;
+        let isDiscoOn = false;
+
+        function toggleDisco() {
+            if (isDiscoOn) {
+                clearInterval(discoInterval);
+                isDiscoOn = false;
+                document.body.style.backgroundColor = '#0b0b0b';
+                document.querySelector('.action-btn').textContent = '💃 डिस्को मोड';
+                return;
+            }
+            isDiscoOn = true;
+            document.querySelector('.action-btn').textContent = '⏹️ डिस्को बंद करें';
+            discoInterval = setInterval(() => {
+                const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#ffa500', '#ff1493'];
+                const randomColor = colors[Math.floor(Math.random() * colors.length)];
+                document.body.style.backgroundColor = randomColor;
+            }, 300);
+        }
+
+        // ===== स्टार फॉल =====
+        let starInterval = null;
+
+        function startStarFall() {
+            if (starInterval) {
+                clearInterval(starInterval);
+                starInterval = null;
+                celebrationContainer.innerHTML = '';
+                document.querySelector('.action-btn').textContent = '⭐ स्टार फॉल';
+                return;
+            }
+            document.querySelector('.action-btn').textContent = '⏹️ स्टार बंद करें';
+            starInterval = setInterval(() => {
+                const star = document.createElement('div');
+                star.className = 'star';
+                const emojis = ['⭐', '🌟', '✨', '💫'];
+                star.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                star.style.left = Math.random() * 90 + 5 + '%';
+                star.style.top = '-10%';
+                star.style.fontSize = (Math.random() * 15 + 15) + 'px';
+                star.style.animationDuration = (Math.random() * 2 + 1.5) + 's';
+                celebrationContainer.appendChild(star);
+                setTimeout(() => star.remove(), 3000);
+            }, 400);
+        }
+
+        // ===== बारिश =====
+        let rainInterval = null;
+
+        function startRain() {
+            if (rainInterval) {
+                clearInterval(rainInterval);
+                rainInterval = null;
+                celebrationContainer.innerHTML = '';
+                document.querySelector('.action-btn').textContent = '🌧️ बारिश';
+                return;
+            }
+            document.querySelector('.action-btn').textContent = '⏹️ बारिश बंद करें';
+            rainInterval = setInterval(() => {
+                const drop = document.createElement('div');
+                drop.className = 'rain-drop';
+                const emojis = ['💧', '🌧️', '💦'];
+                drop.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                drop.style.left = Math.random() * 95 + 2 + '%';
+                drop.style.top = '-5%';
+                drop.style.fontSize = (Math.random() * 12 + 15) + 'px';
+                drop.style.animationDuration = (Math.random() * 1 + 1.2) + 's';
+                celebrationContainer.appendChild(drop);
+                setTimeout(() => drop.remove(), 2500);
+            }, 150);
+        }
+
+        // ===== सेलिब्रेशन =====
+        let celebrationInterval = null;
+        let isCelebrationRunning = false;
+
+        function startCelebration() {
+            if (isCelebrationRunning) {
+                stopCelebration();
+                return;
+            }
+
+            isCelebrationRunning = true;
+            document.querySelector('.action-btn').textContent = '⏹️ सेलिब्रेशन बंद करें';
+
+            celebrationContainer.innerHTML = '';
+
+            function createContinuousFire() {
+                if (!isCelebrationRunning) return;
+                const fire = document.createElement('div');
+                fire.className = 'continuous-fire';
+                const emojis = ['🧨', '🎆', '🎇', '💥', '✨'];
+                fire.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                fire.style.left = Math.random() * 80 + 10 + '%';
+                fire.style.top = (Math.random() * 30 + 60) + '%';
+                fire.style.fontSize = (Math.random() * 15 + 18) + 'px';
+                celebrationContainer.appendChild(fire);
+                setTimeout(() => fire.remove(), 2500);
+            }
+
+            function createWeddingSymbol() {
+                if (!isCelebrationRunning) return;
+                const symbol = document.createElement('div');
+                symbol.className = 'wedding-symbol';
+                const symbols = ['👰', '🤵', '💑', '👩‍❤️‍👨', '💍', '🌸'];
+                symbol.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+                symbol.style.left = Math.random() * 80 + 10 + '%';
+                symbol.style.top = (Math.random() * 30 + 60) + '%';
+                symbol.style.fontSize = (Math.random() * 15 + 25) + 'px';
+                celebrationContainer.appendChild(symbol);
+                setTimeout(() => symbol.remove(), 3000);
+            }
+
+            function createSparkle() {
+                if (!isCelebrationRunning) return;
+                const sparkle = document.createElement('div');
+                sparkle.className = 'sparkle-effect';
+                const emojis = ['✨', '⭐', '🌟', '💫', '⚡'];
+                sparkle.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                sparkle.style.left = Math.random() * 85 + 5 + '%';
+                sparkle.style.top = (Math.random() * 30 + 60) + '%';
+                sparkle.style.fontSize = (Math.random() * 12 + 15) + 'px';
+                celebrationContainer.appendChild(sparkle);
+                setTimeout(() => sparkle.remove(), 1200);
+            }
+
+            function createGift() {
+                if (!isCelebrationRunning) return;
+                const gift = document.createElement('div');
+                gift.className = 'gift-box';
+                const emojis = ['🎁', '🎀', '🎂', '🧁'];
+                gift.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                gift.style.left = Math.random() * 80 + 10 + '%';
+                gift.style.top = (Math.random() * 30 + 60) + '%';
+                gift.style.fontSize = (Math.random() * 15 + 22) + 'px';
+                celebrationContainer.appendChild(gift);
+                setTimeout(() => gift.remove(), 2500);
+            }
+
+            function createFirecracker() {
+                if (!isCelebrationRunning) return;
+                const cracker = document.createElement('div');
+                cracker.className = 'firecracker';
+                const emojis = ['🧨', '🎆', '💥', '🎇', '🔥'];
+                cracker.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                cracker.style.left = Math.random() * 85 + 5 + '%';
+                cracker.style.top = (Math.random() * 30 + 50) + '%';
+                cracker.style.fontSize = (Math.random() * 15 + 18) + 'px';
+                celebrationContainer.appendChild(cracker);
+                setTimeout(() => cracker.remove(), 1800);
+            }
+
+            const interval1 = setInterval(createContinuousFire, 300);
+            const interval2 = setInterval(createWeddingSymbol, 800);
+            const interval3 = setInterval(createSparkle, 200);
+            const interval4 = setInterval(createGift, 600);
+            const interval5 = setInterval(createFirecracker, 400);
+
+            celebrationInterval = [interval1, interval2, interval3, interval4, interval5];
+            boardEl.style.boxShadow = '0 0 60px #ff00ff, 0 0 120px #00ffff, 0 0 180px #ff00ff';
+        }
+
+        function stopCelebration() {
+            isCelebrationRunning = false;
+            document.querySelector('.action-btn').textContent = '🎉 सेलिब्रेशन';
+            if (celebrationInterval) {
+                celebrationInterval.forEach(interval => clearInterval(interval));
+                celebrationInterval = null;
+            }
+            celebrationContainer.innerHTML = '';
+            boardEl.style.boxShadow = '0 0 30px #ff5722, inset 0 0 20px #222';
+        }
+
+        // ============================================================
+        // पेज लोड होने पर
+        // ============================================================
+        window.addEventListener('load', function() {
+            // डिफॉल्ट टेक्स्ट सेट करें
+            textInput.placeholder = defaultText;
+            // कंटेनर में टेक्स्ट डालें
+            updateText();
+            // डिफॉल्ट रंग
+            applyColor('#00FF00');
+            // बैकग्राउंड
+            changeBg();
+            // स्पीड सेट करें
+            changeSpeed();
+            // दिशा सेट करें
+            changeDirection();
+            // एनीमेशन शुरू करें
+            setTimeout(() => {
+                startAnimation();
+            }, 100);
+
+            // विंडो रीसाइज पर साइज रीकैल्कुलेट करें
+            window.addEventListener('resize', function() {
+                setTimeout(calculateSizes, 100);
+            });
+        });
+
+        // इनपुट पर एंटर दबाने पर अपडेट
+        textInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                updateText();
+            }
+        });
+
+        // cleanup on page unload
+        window.addEventListener('beforeunload', function() {
+            if (animationFrame) {
+                cancelAnimationFrame(animationFrame);
+                animationFrame = null;
+            }
+        });
+    </script>
+
+</body>
+</html>
