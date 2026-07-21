@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aql ki Jeet - Vocal Focus Lip Sync</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .app-container {
+            background: #ffffff;
+            width: 100%;
+            max-width: 450px;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            border: 2px solid #4a90e2;
+        }
+        .header-banner {
+            background: #4a90e2;
+            color: white;
+            text-align: center;
+            padding: 12px;
+            font-weight: bold;
+            font-size: 16px;
+            letter-spacing: 1px;
+        }
+        .page {
+            display: flex;
+            padding: 25px;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .avatar-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin-bottom: 25px;
+            transition: transform 0.02s ease;
+        }
+        .cartoon-img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid #4a90e2;
+        }
+
+        /* --- Eyebrows --- */
+        .eyebrow {
+            position: absolute;
+            width: 22px;
+            height: 4px;
+            background: #3a2214; 
+            border-radius: 3px;
+            top: 48px;
+            transition: transform 0.02s ease;
+        }
+        .eyebrow-left { left: 72px; transform: rotate(-5deg); }
+        .eyebrow-right { right: 72px; transform: rotate(5deg); }
+
+        /* --- Eyes --- */
+        .eye-overlay {
+            width: 16px;
+            height: 16px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #2d3748;
+            animation: blinkAnimate 4s infinite;
+        }
+        .eye-left { left: 75px; }
+        .eye-right { right: 75px; }
+        .pupil { width: 6px; height: 6px; background: #2d3748; border-radius: 50%; }
+
+        @keyframes blinkAnimate {
+            0%, 90%, 100% { transform: scaleY(1); }
+            95% { transform: scaleY(0.1); }
+        }
+
+        /* --- Lips: Middle Cut --- */
+        .dynamic-mouth {
+            position: absolute;
+            width: 23px;
+            height: 2px;
+            background: transparent;
+            border-bottom: 3px solid #e53e3e;
+            bottom: 76px; 
+            left: 50%;
+            transform: translateX(-50%);
+            transition: height 0.01s ease, width 0.01s ease, background 0.01s ease, border-radius 0.01s ease;
+        }
+
+        .status-text {
+            font-size: 14px;
+            color: #718096;
+            margin-bottom: 20px;
+            font-style: italic;
+            text-align: center;
+            min-height: 20px;
+            font-weight: 500;
+        }
+        .file-info-box {
+            background: #f7fafc;
+            border: 1px dashed #e2e8f0;
+            padding: 10px;
+            border-radius: 8px;
+            width: 100%;
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 13px;
+            color: #4a5568;
+            display: none;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .btn-choose { background: #4a90e2; }
+        .btn-control { background: #ecc94b; color: #2d3748; }
+        .btn-exit { background: #718096; }
+        .hidden { display: none !important; }
+        #audioInput { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="header-banner">अक्ल की जीत (Aql ki Jeet) Portal</div>
+
+    <div class="page">
+        <div id="avatarBox" class="avatar-container">
+            <img class="cartoon-img" src="https://openclipart.org/image/800px/277081" alt="Cartoon Face">
+            
+            <div class="eyebrow eyebrow-left" id="browLeft"></div>
+            <div class="eyebrow eyebrow-right" id="browRight"></div>
+            
+            <div class="eye-overlay eye-left"><div class="pupil"></div></div>
+            <div class="eye-overlay eye-right"><div class="pupil"></div></div>
+
+            <div class="dynamic-mouth" id="mouth"></div>
+        </div>
+        
+        <div id="status" class="status-text">अपने मोबाइल से कोई भी ऑडियो फाइल चुनें...</div>
+        <div id="fileInfo" class="file-info-box"></div>
+        
+        <input type="file" id="audioInput" accept="audio/*" onchange="handleAudioSelect(event)">
+        
+        <button class="btn btn-choose" onclick="triggerFilePicker()">
+            🎵 मोबाइल ऑडियो फाइल चुनें
+        </button>
+        
+        <button id="playPauseBtn" class="btn btn-control hidden" onclick="togglePlayback()">
+            ▶ Play Audio
+        </button>
+
+        <button class="btn btn-exit" onclick="exitApp()">Exit App</button>
+    </div>
+</div>
+
+<script>
+    let audioContext = null;
+    let audioBuffer = null;
+    let sourceNode = null;
+    let filterNode = null;
+    let processorNode = null;
+    
+    let isPlaying = false;
+    let startTime = 0;
+    let pausedAt = 0;
+
+    const avatarBox = document.getElementById('avatarBox');
+    const statusText = document.getElementById('status');
+    const fileInfo = document.getElementById('fileInfo');
+    const playPauseBtn = document.getElementById('playPauseBtn');
+    const mouthElement = document.getElementById('mouth');
+    const browLeft = document.getElementById('browLeft');
+    const browRight = document.getElementById('browRight');
+
+    function triggerFilePicker() {
+        document.getElementById('audioInput').click();
+    }
+
+    function handleAudioSelect(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        statusText.innerText = "फ़ाइल लोड और प्रोसेस हो रही है...";
+        stopAudio();
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const arrayBuffer = e.target.result;
+            
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+
+            audioContext.decodeAudioData(arrayBuffer, function(buffer) {
+                audioBuffer = buffer;
+                fileInfo.innerText = `चुनी गई फाइल: ${file.name}`;
+                fileInfo.style.display = "block";
+                statusText.innerText = "ऑडियो तैयार है! प्ले बटन दबाएं।";
+                playPauseBtn.innerText = "▶ Play Audio";
+                playPauseBtn.classList.remove('hidden');
+                pausedAt = 0;
+                isPlaying = false;
+            }, function(err) {
+                statusText.innerText = "Error: डिकोडिंग फेल हो गई।";
+                console.error(err);
+            });
+        };
+        reader.readAsArrayBuffer(file);
+    }
+
+    function playAudio() {
+        if (!audioBuffer) return;
+
+        if (audioContext.state === 'suspended') {
+            audioContext.resume();
+        }
+
+        sourceNode = audioContext.createBufferSource();
+        sourceNode.buffer = audioBuffer;
+        
+        // NEW: Vocal Bandpass Filter (Music ka bass aur extra noise filter karne ke liye)
+        filterNode = audioContext.createBiquadFilter();
+        filterNode.type = "bandpass";
+        filterNode.frequency.value = 1000; // Human Voice Frequency center (300Hz - 3000Hz)
+        filterNode.Q.value = 1.2;          // Sharp filter to isolate vocals precisely
+
+        // Super fast processing node (256 samples)
+        processorNode = audioContext.createScriptProcessor(256, 1, 1);
+
+        processorNode.onaudioprocess = function(e) {
+            if (!isPlaying) return;
+            
+            const inputData = e.inputBuffer.getChannelData(0);
+            let inputLength = inputData.length;
+            let sum = 0;
+
+            for (let i = 0; i < inputLength; i++) {
+                sum += Math.abs(inputData[i]);
+            }
+            
+            let vocalVolume = sum / inputLength;
+
+            // Highly targeted sensitivity check for voice frequency only
+            if (vocalVolume > 0.002) { 
+                let mouthHeight = Math.min(4 + (vocalVolume * 180), 26); 
+                let mouthWidth = Math.min(23 + (vocalVolume * 90), 34);
+                let scaleFace = 1 + Math.min(vocalVolume * 3.5, 0.08);
+                let browMove = Math.min(vocalVolume * 55, 6);
+
+                mouthElement.style.height = `${mouthHeight}px`;
+                mouthElement.style.width = `${mouthWidth}px`;
+                mouthElement.style.background = "#e53e3e"; 
+                mouthElement.style.borderBottom = "none";
+                mouthElement.style.borderRadius = "50%";
+                avatarBox.style.transform = `scale(${scaleFace})`;
+                
+                browLeft.style.transform = `translateY(-${browMove}px) rotate(-8deg)`;
+                browRight.style.transform = `translateY(-${browMove}px) rotate(8deg)`;
+            } else {
+                // Music gap or vocal stop means instant closure
+                closeMouthToLine();
+            }
+        };
+
+        // CONNECTIONS: Source -> Filter (Isolates Vocals) -> Processor (Tracks Vol) -> Destination
+        sourceNode.connect(filterNode);
+        filterNode.connect(processorNode);
+        processorNode.connect(audioContext.destination);
+        
+        // Pure unfiltered original track connects to speakers so music quality remains 100% fine
+        sourceNode.connect(audioContext.destination);
+
+        sourceNode.start(0, pausedAt);
+        startTime = audioContext.currentTime - pausedAt;
+        isPlaying = true;
+        
+        statusText.innerText = "🔊 वोकल-फोकस लिप सिंक एक्टिव है...";
+        playPauseBtn.innerText = "⏸ Pause Audio";
+
+        sourceNode.onended = () => {
+            if (audioContext.currentTime - startTime >= audioBuffer.duration) {
+                stopAudio();
+                statusText.innerText = "🏁 ऑडियो पूरा हो गया है।";
+                playPauseBtn.innerText = "▶ Play Again";
+            }
+        };
+    }
+
+    function pauseAudio() {
+        if (!isPlaying || !sourceNode) return;
+        sourceNode.stop();
+        if(processorNode) processorNode.disconnect();
+        if(filterNode) filterNode.disconnect();
+        pausedAt = audioContext.currentTime - startTime;
+        isPlaying = false;
+        statusText.innerText = "⏸ ऑडियो होल्ड पर है...";
+        playPauseBtn.innerText = "▶ Resume Audio";
+        closeMouthToLine();
+    }
+
+    function stopAudio() {
+        if (sourceNode) { try { sourceNode.stop(); } catch(e){} }
+        if (processorNode) { try { processorNode.disconnect(); } catch(e){} }
+        if (filterNode) { try { filterNode.disconnect(); } catch(e){} }
+        isPlaying = false;
+        pausedAt = 0;
+        closeMouthToLine();
+    }
+
+    function closeMouthToLine() {
+        mouthElement.style.height = "2px";
+        mouthElement.style.width = "23px";
+        mouthElement.style.background = "transparent";
+        mouthElement.style.borderBottom = "3px solid #e53e3e";
+        mouthElement.style.borderRadius = "0px";
+        avatarBox.style.transform = "scale(1)";
+        browLeft.style.transform = "rotate(-5deg)";
+        browRight.style.transform = "rotate(5deg)";
+    }
+
+    function togglePlayback() {
+        if (isPlaying) {
+            pauseAudio();
+        } else {
+            playAudio();
+        }
+    }
+
+    function exitApp() {
+        if(confirm("क्या आप बाहर जाना चाहते हैं?")) {
+            stopAudio();
+            statusText.innerText = "एप्लिकेशन बंद किया गया।";
+        }
+    }
+</script>
+</body>
+</html>
