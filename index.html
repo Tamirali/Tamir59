@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>महासंग्रह: अक्ल की जीत और तौहीद दर्शन</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body, html {
+            width: 100%;
+            height: 100%;
+            font-family: 'Arial', sans-serif;
+            background-color: #020205;
+            color: #fff;
+            overflow-x: hidden; 
+        }
+
+        /* मोबाइल स्क्रीन फ्रेम */
+        .mobile-screen {
+            display: flex;
+            flex-direction: column;
+            width: 100vw;
+            min-height: 100vh;
+            max-width: 450px;
+            border: 6px solid #333;
+            border-radius: 20px;
+            margin: 0 auto;
+            position: relative;
+            background-color: #000;
+            overflow-y: auto;
+            box-shadow: 0 0 30px rgba(0,0,0,0.8);
+        }
+
+        /* 1. ऊपर का हिस्सा - 55% (ब्रह्मांड / सौरमंडल) */
+        .universe-section {
+            height: 55vh; 
+            background: radial-gradient(circle, #080818 0%, #010103 100%);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 3px solid #222;
+            overflow: hidden;
+        }
+
+        /* सिंगुलैरिटी बिंदु */
+        .singularity {
+            width: 15px;
+            height: 15px;
+            background-color: #ffffff;
+            border-radius: 50%;
+            position: absolute;
+            box-shadow: 0 0 25px #fff, 0 0 50px #00ffcc;
+            display: none;
+            z-index: 10;
+        }
+
+        .singularity-heartbeat {
+            animation: heartbeat 0.8s ease-in-out 4 alternate forwards;
+        }
+
+        @keyframes heartbeat {
+            0% { transform: scale(1); box-shadow: 0 0 25px #fff; }
+            100% { transform: scale(3); box-shadow: 0 0 60px #00ffcc, 0 0 120px #fff; }
+        }
+
+        /* बिग बैंग फ़्लैश */
+        .big-bang-flash {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: #fff;
+            opacity: 0;
+            z-index: 15;
+            pointer-events: none;
+        }
+
+        .flash-active {
+            animation: flashAnim 0.8s ease-out forwards;
+        }
+
+        @keyframes flashAnim {
+            0% { opacity: 0; }
+            20% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        /* सौरमंडल फ़ील्ड */
+        .cosmos {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 2s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cosmos.visible {
+            opacity: 1;
+        }
+
+        .sun {
+            width: 30px;
+            height: 30px;
+            background: radial-gradient(circle, #ffea00, #ff6600);
+            border-radius: 50%;
+            position: absolute;
+            box-shadow: 0 0 25px #ff6600;
+            z-index: 5;
+        }
+
+        /* ग्रहों की कक्षाएं */
+        .orbit {
+            border: 1px dashed rgba(255, 255, 255, 0.08);
+            border-radius: 50%;
+            position: absolute;
+            animation: orbitRotate linear infinite;
+        }
+
+        @keyframes orbitRotate { 100% { transform: rotate(360deg); } }
+
+        .planet { border-radius: 50%; position: absolute; top: 0; left: 50%; transform: translateX(-50%); }
+
+        .mercury-orbit { width: 45px; height: 45px; animation-duration: 3s; }
+        .mercury { width: 3px; height: 3px; background: #888; }
+
+        .venus-orbit { width: 65px; height: 65px; animation-duration: 5s; }
+        .venus { width: 5px; height: 5px; background: #e3bb76; }
+
+        .earth-orbit { width: 95px; height: 95px; animation-duration: 8s; }
+        .earth-system {
+            width: 24px;
+            height: 24px;
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .earth { width: 8px; height: 8px; background: #2f729e; box-shadow: 0 0 6px #2f729e; border-radius: 50%; z-index: 2; }
+        .moon-orbit { width: 22px; height: 22px; border: 0.5px dotted rgba(255, 255, 255, 0.3); border-radius: 50%; position: absolute; animation: orbitRotate 2s linear infinite; }
+        .moon { width: 3px; height: 3px; background: #e0e0e0; position: absolute; top: 0; left: 50%; transform: translateX(-50%); border-radius: 50%; }
+
+        .mars-orbit { width: 125px; height: 125px; animation-duration: 11s; }
+        .mars { width: 5px; height: 5px; background: #c1440e; }
+        .jupiter-orbit { width: 160px; height: 160px; animation-duration: 15s; }
+        .jupiter { width: 11px; height: 11px; background: #b07f35; }
+        .saturn-orbit { width: 195px; height: 195px; animation-duration: 20s; }
+        .saturn { width: 9px; height: 9px; background: #e2bf7d; }
+        .uranus-orbit { width: 230px; height: 230px; animation-duration: 25s; }
+        .uranus { width: 7px; height: 7px; background: #73c6b6; }
+        .neptune-orbit { width: 265px; height: 265px; animation-duration: 30s; }
+        .neptune { width: 6px; height: 6px; background: #3f51b5; }
+
+        /* हॉरिजॉन्टल लाइब्रेरी रिबन सेक्शन */
+        .library-horizontal-section {
+            background: #0f0f1a;
+            border-bottom: 2px solid #1a1a2e;
+            padding: 12px 10px;
+            display: none; 
+            flex-direction: column;
+        }
+
+        .library-horizontal-section h4 {
+            color: #00ffcc;
+            font-size: 13px;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+            text-align: center;
+        }
+
+        .horizontal-scroll-container {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* स्क्रोलबार का डिज़ाईन */
+        .horizontal-scroll-container::-webkit-scrollbar {
+            height: 4px;
+        }
+        .horizontal-scroll-container::-webkit-scrollbar-thumb {
+            background: #00ffcc;
+            border-radius: 10px;
+        }
+
+        .library-hz-btn {
+            flex: 0 0 auto;
+            background: #161626;
+            color: #fff;
+            padding: 10px 16px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: bold;
+            border: 1px solid #333;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            white-space: nowrap;
+        }
+
+        .library-hz-btn:hover {
+            border-color: #00ffcc;
+            background: #222;
+        }
+
+        .library-hz-btn.active {
+            background: #00ffcc;
+            color: #000;
+            border-color: #00ffcc;
+        }
+
+        /* 2. नीचे का हिस्सा - लाइव संदेश डिस्प्ले */
+        .bottom-section {
+            background-color: #0b0b12;
+            padding: 15px;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            flex-grow: 1;
+        }
+
+        .bottom-section.visible {
+            opacity: 1;
+        }
+
+        .bottom-section h3 {
+            color: #00ffcc;
+            font-size: 15px;
+            margin-bottom: 5px;
+            text-align: center;
+        }
+
+        .bottom-section p {
+            font-size: 13px;
+            line-height: 1.4;
+            color: #d1d1e0;
+            text-align: justify;
+        }
+
+        .highlight {
+            color: #ff9900;
+            font-weight: bold;
+        }
+
+        /* 3. शुरुआती पॉप-अप विंडो */
+        .modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: #11111a;
+            border: 2px solid #ff9900;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 0 25px rgba(255, 153, 0, 0.4);
+        }
+
+        .modal-content h2 {
+            color: #ff9900;
+            font-size: 17px;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+
+        .modal-content p {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #e0e0e0;
+            margin-bottom: 22px;
+        }
+
+        .click-btn {
+            background: linear-gradient(135deg, #00ffcc, #00a896);
+            color: #000;
+            font-size: 14px;
+            font-weight: bold;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(0, 255, 200, 0.4);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="mobile-screen">
+        
+        <div class="universe-section" id="universeSec">
+            <div class="singularity" id="singularityNode"></div>
+            <div class="big-bang-flash" id="flashOverlay"></div>
+            
+            <div class="cosmos" id="cosmosField">
+                <div class="sun"></div>
+                <div class="orbit mercury-orbit"><div class="planet mercury"></div></div>
+                <div class="orbit venus-orbit"><div class="planet venus"></div></div>
+                <div class="orbit earth-orbit">
+                    <div class="earth-system">
+                        <div class="earth"></div>
+                        <div class="moon-orbit"><div class="moon"></div></div>
+                    </div>
+                </div>
+                <div class="orbit mars-orbit"><div class="planet mars"></div></div>
+                <div class="orbit jupiter-orbit"><div class="planet jupiter"></div></div>
+                <div class="orbit saturn-orbit"><div class="planet saturn"></div></div>
+                <div class="orbit uranus-orbit"><div class="planet uranus"></div></div>
+                <div class="orbit neptune-orbit"><div class="planet neptune"></div></div>
+            </div>
+        </div>
+
+        <div class="library-horizontal-section" id="libraryHzSec">
+            <h4>📚 महासंग्रह डिजिटल लाइब्रेरी (👉 उंगली से सरकाएं)</h4>
+            <div class="horizontal-scroll-container" id="hzScrollContainer">
+                <!-- JavaScript द्वारा 1 से 59 बटन अपने आप यहाँ बनेंगे -->
+            </div>
+        </div>
+
+        <div class="bottom-section" id="liveMessageSec">
+            <h3>महासंग्रह: अक्ल की जीत</h3>
+            <p>
+                "बिना हलचल के पानी में <span class="highlight">बुलबुला</span> नहीं बनता और धमाके से कभी <span class="highlight">व्यवस्था</span> नहीं बनती। 
+                एक मोटर कार बनाने के लिए भी एक <strong>'सोच'</strong> की ज़रूरत होती है, इसी तरह हमारा ब्रह्मांड भी उसी सर्वोच्च चेतना की सोच का हिस्सा है, 
+                जो महा-धमाके से फटने के बाद भी आज तक सारा सिस्टम प्रॉपर काम कर रहा है।"
+            </p>
+        </div>
+
+        <div class="modal-overlay" id="startModal">
+            <div class="modal-content">
+                <h2>महासंग्रह: अक्ल की जीत</h2>
+                <p>
+                    "बिना हलचल के पानी में <strong>बुलबुला</strong> नहीं बनता और धमाके से कभी <strong>व्यवस्था (System)</strong> नहीं बनती। 
+                    एक motor car बनाने के लिए भी एक <strong>'सोच'</strong> की ज़रूरत होती है, इसी तरह ब्रह्मांड भी एक सोच का हिस्सा है 
+                    जो धमाका से फटने के बाद भी सारा system proper काम कर रहा है।"
+                </p>
+                <button class="click-btn" onclick="triggerBigBang()">यहाँ क्लिक करें ➔</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // 1 से 59 फाइल के लिंक ऑटोमैटिक बनाने का लॉजिक
+        const TOTAL_FILES = 59;
+        const container = document.getElementById('hzScrollContainer');
+        const colors = ['#ff9900', '#00ffcc', '#ff3333', '#e67e22', '#9b59b6', '#2ecc71', '#f1c40f', '#3498db', '#e74c3c', '#1abc9c', '#34495e', '#d35400', '#7f8c8d', '#8e44ad', '#27ae60'];
+
+        for (let i = 1; i <= TOTAL_FILES; i++) {
+            const btn = document.createElement('a');
+            btn.href = `index${i}.html`;
+            btn.className = 'library-hz-btn';
+            btn.style.borderLeft = `3px solid ${colors[(i - 1) % colors.length]}`;
+            btn.innerHTML = `📖 चैप्टर ${i}`;
+            container.appendChild(btn);
+        }
+
+        function triggerBigBang() {
+            document.getElementById('startModal').style.display = 'none';
+
+            const singularity = document.getElementById('singularityNode');
+            const flash = document.getElementById('flashOverlay');
+            const cosmos = document.getElementById('cosmosField');
+            const liveMessage = document.getElementById('liveMessageSec');
+            const libraryHz = document.getElementById('libraryHzSec');
+
+            singularity.style.display = 'block';
+            singularity.classList.add('singularity-heartbeat');
+            flash.classList.remove('flash-active');
+            cosmos.classList.remove('visible');
+            liveMessage.classList.remove('visible');
+            libraryHz.style.display = 'none';
+
+            // 3.2 सेकंड का हार्टबीट टाइमर
+            setTimeout(() => {
+                singularity.style.display = 'none';
+                singularity.classList.remove('singularity-heartbeat');
+                
+                flash.classList.add('flash-active');
+                cosmos.classList.add('visible');
+                liveMessage.classList.add('visible');
+                
+                // हॉरिजॉन्टल फ़ाइल बार को फ्लेक्स डिस्प्ले के रूप में ओपन करना
+                libraryHz.style.display = 'flex';
+
+            }, 3200); 
+        }
+    </script>
+</body>
+</html>
