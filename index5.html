@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Charkha Lottery · Live Real Game</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #0b0e1a;
+            background-image: radial-gradient(ellipse at 30% 20%, #1a1f35 0%, #0b0e1a 70%);
+            padding: 12px;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .game-container {
+            max-width: 480px;
+            width: 100%;
+            background: linear-gradient(145deg, #141a2b, #0f1422);
+            border-radius: 48px;
+            padding: 24px 20px 32px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            position: relative;
+            overflow: hidden;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+            gap: 8px;
+        }
+        .title {
+            font-size: 20px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #f9d976, #f39c12);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .btn-group-top {
+            display: flex;
+            gap: 6px;
+        }
+        .mode-badge {
+            background: #e74c3c;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 40px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+        }
+        .mode-badge.real {
+            background: #2ecc71;
+            box-shadow: 0 0 10px rgba(46, 204, 113, 0.4);
+        }
+        .rules-btn {
+            background: #3498db;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 40px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+        }
+
+        /* 📋 OVERLAYS FIXED DESIGN (NO STRETCH) */
+        .auth-overlay {
+            display: none;
+            background: rgba(11, 14, 26, 0.96);
+            backdrop-filter: blur(8px);
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 10;
+            flex-direction: column;
+            justify-content: flex-start;
+            padding: 30px 20px;
+            text-align: center;
+            overflow-y: auto;
+        }
+        .exit-overlay-btn {
+            position: absolute;
+            top: 15px; right: 15px;
+            background: #e74c3c;
+            color: white; border: none;
+            width: 36px; height: 36px;
+            border-radius: 50%; font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            z-index: 20;
+        }
+        .auth-overlay input, .auth-overlay textarea {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 14px;
+            border-radius: 14px;
+            color: white;
+            font-size: 16px;
+            margin-bottom: 16px;
+            outline: none;
+            width: 100%;
+            text-align: center;
+        }
+        .auth-overlay p {
+            line-height: 1.4;
+        }
+
+        /* 🎡 BIG WHEEL ARENA */
+        .wheel-wrapper {
+            position: relative;
+            z-index: 1;
+            margin: 16px auto 20px;
+            width: 100%;
+            aspect-ratio: 1/1;
+            max-width: 300px;
+            touch-action: none;
+        }
+        #wheelCanvas {
+            display: block;
+            width: 100%; height: 100%;
+            border-radius: 50%;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+            background: #111522;
+        }
+        .pointer {
+            position: absolute; 
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0; height: 0;
+            border-left: 18px solid transparent;
+            border-right: 18px solid transparent;
+            border-top: 32px solid #f1c40f;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.6));
+            z-index: 5;
+        }
+
+        /* 📱 Displays & Digit Slots */
+        .display-area {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 20px;
+            padding: 14px 12px;
+            margin: 6px 0 8px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+        .row-label { font-size: 11px; color: rgba(255, 255, 255, 0.4); text-align: center; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 1px; }
+        .digits-row { display: flex; justify-content: center; gap: 6px; flex-wrap: wrap; }
+        .digit-box {
+            width: 40px; height: 50px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 26px; font-weight: 700; color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .digit-box.filled { background: rgba(255, 215, 0, 0.1); border-color: rgba(255, 215, 0, 0.3); color: #f1c40f; }
+        .digit-box.highlight { background: rgba(76, 223, 139, 0.2)!important; border-color: #4cdf8b!important; color: #4cdf8b!important; }
+        .digit-box.mismatch { background: rgba(255, 107, 122, 0.15)!important; border-color: #ff6b7a!important; color: #ff6b7a!important; }
+        .digit-box.draw.spinning { animation: pulse 0.2s infinite alternate; color: #f1c40f; border-color: #f1c40f; }
+        @keyframes pulse { 0% { opacity: 0.6; transform: scale(0.95); } 100% { opacity: 1; transform: scale(1.05); } }
+
+        /* Keypad Buttons */
+        .keypad { display: flex; justify-content: center; gap: 6px; margin: 10px 0 14px; }
+        .key-btn {
+            width: 36px; height: 44px; background: linear-gradient(145deg, #1e2640, #151c32);
+            border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 12px;
+            font-size: 18px; font-weight: 700; color: #e8edff; cursor: pointer;
+        }
+        .key-btn.clear { background: linear-gradient(145deg, #3a1f2a, #2a1420); color: #ff6b7a; width: 40px; }
+        
+        .controls { display: flex; gap: 12px; margin: 6px 0 10px; }
+        
+        /* 🕹️ Action Buttons Layout */
+        .action-btn {
+            background: linear-gradient(135deg, #f1c40f, #d4a800); 
+            border: none;
+            border-radius: 30px; 
+            padding: 14px 24px; 
+            font-size: 16px; 
+            font-weight: 700;
+            color: #0b0e1a; 
+            cursor: pointer; 
+            text-align: center;
+            width: 100%;
+            display: block;
+            box-shadow: 0 4px 15px rgba(241, 196, 15, 0.3);
+        }
+        .action-btn.secondary { background: linear-gradient(145deg, #2a3050, #1a2040); color: #aab0d0; box-shadow: none; }
+
+        .result-box { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.04); padding: 12px 16px; text-align: center; border-radius: 20px; min-height: 60px; display: flex; align-items: center; justify-content: center; font-size: 18px; color: white; }
+        
+        /* 📜 Large Media Rules Layout */
+        .rules-content-box { color: #fff; text-align: left; overflow-y: auto; max-height: 80vh; padding: 10px; width: 100%; margin-top: 30px; }
+        .rules-img-large { 
+            width: 100%; 
+            max-height: 380px; 
+            object-fit: contain; 
+            border-radius: 16px; 
+            margin: 12px 0; 
+            border: 2px solid rgba(255, 215, 0, 0.4);
+            background: #000;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.8);
+        }
+
+        /* 🛠️ Admin Dashboard Frame */
+        .admin-drawer { margin-top: 15px; background: rgba(255,255,255,0.02); border: 1px dashed rgba(255,255,255,0.1); border-radius: 16px; padding: 12px; }
+        .admin-title { font-size: 13px; color: #ffd700; margin-bottom: 8px; text-align: center; font-weight: bold; }
+        .log-table { width: 100%; border-collapse: collapse; font-size: 12px; color: #aaa; margin-top: 8px; }
+        .log-table th, .log-table td { padding: 6px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .wa-link { color: #2ecc71; text-decoration: none; font-weight: bold; }
+
+        @media (max-width: 420px) {
+            .game-container { padding: 16px 12px 24px; border-radius: 32px; }
+            .wheel-wrapper { max-width: 280px; }
+            .digit-box { width: 34px; height: 44px; font-size: 22px; }
+            .key-btn { width: 28px; height: 36px; font-size: 14px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="game-container">
+    <div class="header">
+        <div class="title">🎡 Charkha Live</div>
+        <div class="btn-group-top">
+            <button class="rules-btn" id="openRulesBtn">📜 Rules</button>
+            <button class="mode-badge" id="modeBtn">🔴 Demo Mode</button>
+        </div>
+    </div>
+
+    <!-- 🟢 RE-DESIGNED SYNC REGISTRATION FORM (FIXED DISPLAY) -->
+    <div class="auth-overlay" id="authOverlay">
+        <button class="exit-overlay-btn" onclick="closeOverlay('authOverlay')">✕</button>
+        <h3 style="color:#ffd700; margin-top: 20px; margin-bottom:10px; font-size: 22px;">🟢 Register Real Game</h3>
+        <p style="color:#aaa; font-size:13px; margin-bottom:20px; padding: 0 10px;">Enter your WhatsApp number to secure and lock your selected lucky 6-digit passcode into the live database.</p>
+        
+        <input type="tel" id="whatsappInput" placeholder="WhatsApp Number (e.g. 919876543210)" />
+        
+        <button class="action-btn" id="saveRegistrationBtn">Confirm & Lock Combo</button>
+    </div>
+
+    <!-- 📜 Rules Popup Container with 3 Large Images -->
+    <div class="auth-overlay" id="rulesOverlay">
+        <button class="exit-overlay-btn" onclick="closeOverlay('rulesOverlay')">✕</button>
+        <div class="rules-content-box">
+            <h3 style="color:#f39c12; text-align:center; margin-bottom:12px;">📋 Game Regulations</h3>
+            <p id="liveRulesText" style="font-size:14px; line-height:1.5; color:#ddd; white-space: pre-wrap;">No rules added by admin yet.</p>
+            
+            <img id="liveImg1" class="rules-img-large" src="" style="display:none;" />
+            <img id="liveImg2" class="rules-img-large" src="" style="display:none;" />
+            <img id="liveImg3" class="rules-img-large" src="" style="display:none;" />
+        </div>
+    </div>
+
+    <!-- Wheel Arena Layer -->
+    <div class="wheel-wrapper">
+        <canvas id="wheelCanvas" width="500" height="500"></canvas>
+        <div class="pointer"></div>
+    </div>
+
+    <div class="display-area">
+        <div class="row-label">Your Passcode Combo</div>
+        <div class="digits-row" id="playerRow">
+            <div class="digit-box" data-index="0">-</div>
+            <div class="digit-box" data-index="1">-</div>
+            <div class="digit-box" data-index="2">-</div>
+            <div class="digit-box" data-index="3">-</div>
+            <div class="digit-box" data-index="4">-</div>
+            <div class="digit-box" data-index="5">-</div>
+        </div>
+    </div>
+
+    <div class="display-area">
+        <div class="row-label">Live Spin Result</div>
+        <div class="digits-row" id="drawRow">
+            <div class="digit-box draw" data-index="0">-</div>
+            <div class="digit-box draw" data-index="1">-</div>
+            <div class="digit-box draw" data-index="2">-</div>
+            <div class="digit-box draw" data-index="3">-</div>
+            <div class="digit-box draw" data-index="4">-</div>
+            <div class="digit-box draw" data-index="5">-</div>
+        </div>
+    </div>
+
+    <div class="keypad" id="keypad">
+        <button class="key-btn clear" data-digit="clear">⌫</button>
+        <button class="key-btn" data-digit="1">1</button>
+        <button class="key-btn" data-digit="2">2</button>
+        <button class="key-btn" data-digit="3">3</button>
+        <button class="key-btn" data-digit="4">4</button>
+        <button class="key-btn" data-digit="5">5</button>
+        <button class="key-btn" data-digit="6">6</button>
+        <button class="key-btn" data-digit="7">7</button>
+        <button class="key-btn" data-digit="8">8</button>
+        <button class="key-btn" data-digit="9">9</button>
+        <button class="key-btn" data-digit="0">0</button>
+    </div>
+
+    <div class="controls">
+        <button class="action-btn" id="spinBtn">🎲 Spin</button>
+        <button class="action-btn secondary" id="resetBtn">↺ Reset</button>
+    </div>
+
+    <div class="result-box" id="resultText">Pick 6 digits to start setup</div>
+
+    <!-- Admin Panel Control Area -->
+    <div class="admin-drawer">
+        <div class="admin-title">🛠️ Admin Rules & 3 Image Uploader</div>
+        <div style="display:flex; flex-direction:column; gap:6px; margin-bottom:8px;">
+            <input type="email" id="adminEmail" placeholder="Firebase Admin Email" style="padding:6px; background:#111; color:white; border:1px solid #333; border-radius:6px; font-size:12px; text-align: left;" />
+            <input type="password" id="adminPass" placeholder="Firebase Admin Password" style="padding:6px; background:#111; color:white; border:1px solid #333; border-radius:6px; font-size:12px; text-align: left;" />
+            
+            <textarea id="adminRulesInput" placeholder="Edit Game Rules text here..." rows="2" style="padding:6px; background:#111; color:white; border:1px solid #333; border-radius:6px; font-size:12px; resize:none; font-family:inherit; text-align: left;"></textarea>
+            
+            <input type="url" id="adminImgUrl1" placeholder="Image URL 1 (Photo 1)" style="padding:6px; background:#111; color:white; border:1px solid #333; border-radius:6px; font-size:12px; text-align: left;" />
+            <input type="url" id="adminImgUrl2" placeholder="Image URL 2 (Photo 2)" style="padding:6px; background:#111; color:white; border:1px solid #333; border-radius:6px; font-size:12px; text-align: left;" />
+            <input type="url" id="adminImgUrl3" placeholder="Image URL 3 (Photo 3)" style="padding:6px; background:#111; color:white; border:1px solid #333; border-radius:6px; font-size:12px; text-align: left;" />
+            
+            <div style="display:flex; gap:6px; margin-top:4px; flex-wrap: wrap;">
+                <button id="updateContentBtn" style="background:#3498db; border:none; padding:8px; color:white; border-radius:6px; font-size:12px; flex:1; min-width: 120px; cursor:pointer; font-weight:bold;">💾 Save Rules & Photos</button>
+                <button id="clearRulesMediaBtn" style="background:#e67e22; border:none; padding:8px; color:white; border-radius:6px; font-size:12px; cursor:pointer; font-weight:bold;">🧹 Clear Media</button>
+                <button id="clearDatabaseBtn" style="background:#e74c3c; border:none; padding:8px; color:white; border-radius:6px; font-size:12px; cursor:pointer; font-weight:bold;">🗑️ Delete Users</button>
+            </div>
+        </div>
+        <div style="max-height: 100px; overflow-y:auto;">
+            <table class="log-table">
+                <thead>
+                    <tr><th>WhatsApp</th><th>Combo</th><th>Action</th></tr>
+                </thead>
+                <tbody id="adminLogBody">
+                    <tr><td colspan="3" style="text-align:center; padding:10px;">No entries logged</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    function closeOverlay(id) { document.getElementById(id).style.display = "none"; }
+</script>
+
+<!-- Firebase Realtime Synchronous Code -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getDatabase, ref, set, onValue, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyCVaa18RXHrvOFDyudZlLl7ybvFAUwQRMY",
+        authDomain: "lucky-6-digits.firebaseapp.com",
+        projectId: "lucky-6-digits",
+        storageBucket: "lucky-6-digits.firebasestorage.app",
+        messagingSenderId: "994247838452",
+        appId: "1:994247838452:web:cf33f06eba358f8247aca1"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const auth = getAuth(app);
+
+    // Canvas Processing
+    const canvas = document.getElementById('wheelCanvas');
+    const ctx = canvas.getContext('2d');
+    const SEGMENTS = 10;
+    const colors = ['#e74c3c','#3498db','#2ecc71','#f1c40f','#9b59b6','#e67e22','#1abc9c','#e74c3c','#3498db','#2ecc71'];
+    let currentAngle = 0, isSpinning = false, isRealGameMode = false;
+    let playerDigits = [], drawnDigits = [], totalGamesPlayed = 0;
+
+    function drawWheel(rotation) {
+        const w = canvas.width, cx = w/2, cy = cx, radius = cx * 0.90; 
+        ctx.clearRect(0, 0, w, w);
+        const angleStep = (2 * Math.PI) / SEGMENTS;
+        for (let i = 0; i < SEGMENTS; i++) {
+            const start = rotation + i * angleStep, end = start + angleStep;
+            ctx.beginPath(); ctx.moveTo(cx, cy); ctx.arc(cx, cy, radius, start, end); ctx.closePath();
+            ctx.fillStyle = colors[i]; ctx.fill();
+            ctx.strokeStyle = 'rgba(255,255,255,0.25)'; ctx.lineWidth = 4; ctx.stroke();
+            
+            const mid = start + angleStep/2;
+            ctx.save(); ctx.translate(cx + Math.cos(mid)*radius*0.70, cy + Math.sin(mid)*radius*0.70);
+            ctx.rotate(mid + Math.PI/2); ctx.fillStyle = '#fff'; ctx.font = 'bold 36px sans-serif';
+            ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(i, 0, 0); ctx.restore();
+        }
+        ctx.beginPath(); ctx.arc(cx, cy, radius*0.10, 0, 2*Math.PI); ctx.fillStyle = '#ffffff'; ctx.fill();
+        ctx.beginPath(); ctx.arc(cx, cy, radius*0.06, 0, 2*Math.PI); ctx.fillStyle = '#0b0e1a'; ctx.fill();
+    }
+
+    // Dynamic Elements Connect
+    const modeBtn = document.getElementById('modeBtn');
+    const openRulesBtn = document.getElementById('openRulesBtn');
+    const authOverlay = document.getElementById('authOverlay');
+    const rulesOverlay = document.getElementById('rulesOverlay');
+    const whatsappInput = document.getElementById('whatsappInput');
+    const saveRegBtn = document.getElementById('saveRegistrationBtn');
+    const playerBoxes = document.querySelectorAll('#playerRow .digit-box');
+    const drawBoxes = document.querySelectorAll('#drawRow .digit-box');
+    const spinBtn = document.getElementById('spinBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const resultText = document.getElementById('resultText');
+    const adminLogBody = document.getElementById('adminLogBody');
+    const clearDatabaseBtn = document.getElementById('clearDatabaseBtn');
+    const clearRulesMediaBtn = document.getElementById('clearRulesMediaBtn');
+    const updateContentBtn = document.getElementById('updateContentBtn');
+    const adminEmail = document.getElementById('adminEmail');
+    const adminPass = document.getElementById('adminPass');
+    const adminRulesInput = document.getElementById('adminRulesInput');
+    const adminImgUrl1 = document.getElementById('adminImgUrl1');
+    const adminImgUrl2 = document.getElementById('adminImgUrl2');
+    const adminImgUrl3 = document.getElementById('adminImgUrl3');
+    const liveRulesText = document.getElementById('liveRulesText');
+    const liveImg1 = document.getElementById('liveImg1');
+    const liveImg2 = document.getElementById('liveImg2');
+    const liveImg3 = document.getElementById('liveImg3');
+
+    // Real Game Mode Switch Trigger
+    modeBtn.addEventListener('click', () => {
+        if(playerDigits.length !== 6) { alert("Please pick your 6 numbers first!"); return; }
+        isRealGameMode = !isRealGameMode;
+        if(isRealGameMode) {
+            modeBtn.textContent = "🟢 Real Game Active";
+            modeBtn.className = "mode-badge real";
+            authOverlay.style.display = "flex";
+        } else {
+            modeBtn.textContent = "🔴 Demo Mode";
+            modeBtn.className = "mode-badge";
+            authOverlay.style.display = "none";
+        }
+    });
+
+    openRulesBtn.addEventListener('click', () => { rulesOverlay.style.display = "flex"; });
+
+    // Save WhatsApp and Combo Log 
+    saveRegBtn.addEventListener('click', () => {
+        const phone = whatsappInput.value.trim();
+        if(!phone) { alert("Please enter a valid WhatsApp Number."); return; }
+        set(ref(db, 'real_entries/' + phone), {
+            whatsapp: phone,
+            combination: playerDigits.join(''),
+            timestamp: Date.now()
+        }).then(() => {
+            authOverlay.style.display = "none";
+            resultText.textContent = "Real game registration locked successfully!";
+        });
+    });
+
+    // Dynamic Cloud Admin Authentication Validation Check
+    async function verifyAdminAuth() {
+        const email = adminEmail.value.trim();
+        const password = adminPass.value.trim();
+        if(!email || !password) { alert("Please enter both Admin Email and Password!"); return false; }
+        try {
+            await signInWithEmailAndPassword(auth, email, password);
+            return true;
+        } catch (error) {
+            alert("Firebase Auth Failed: " + error.message);
+            return false;
+        }
+    }
+
+    // Save / Edit Configurations Operation
+    updateContentBtn.addEventListener('click', async () => {
+        const isAuthenticated = await verifyAdminAuth();
+        if(!isAuthenticated) return;
+        set(ref(db, 'custom_content'), {
+            rules: adminRulesInput.value.trim(),
+            img1: adminImgUrl1.value.trim(),
+            img2: adminImgUrl2.value.trim(),
+            img3: adminImgUrl3.value.trim()
+        }).then(() => { alert("Rules & 3 Image Links Saved Successfully!"); })
+          .catch(err => { alert("Save Failed: " + err.message); });
+    });
+
+    // Clear Rules & Media Tree Trigger
+    clearRulesMediaBtn.addEventListener('click', async () => {
+        const isAuthenticated = await verifyAdminAuth();
+        if(!isAuthenticated) return;
+        remove(ref(db, 'custom_content')).then(() => {
+            adminRulesInput.value = ""; adminImgUrl1.value = ""; adminImgUrl2.value = ""; adminImgUrl3.value = "";
+            alert("Rules & Media Cleared from Database!");
+        }).catch(err => { alert("Clear Failed: " + err.message); });
+    });
+
+    // Live Configurations Read Sync 
+    onValue(ref(db, 'custom_content'), (snapshot) => {
+        if(snapshot.exists()) {
+            const data = snapshot.val();
+            liveRulesText.textContent = data.rules || "No rules specified.";
+            if(data.img1) { liveImg1.src = data.img1; liveImg1.style.display = "block"; adminImgUrl1.value = data.img1; } else { liveImg1.style.display = "none"; }
+            if(data.img2) { liveImg2.src = data.img2; liveImg2.style.display = "block"; adminImgUrl2.value = data.img2; } else { liveImg2.style.display = "none"; }
+            if(data.img3) { liveImg3.src = data.img3; liveImg3.style.display = "block"; adminImgUrl3.value = data.img3; } else { liveImg3.style.display = "none"; }
+            if(data.rules) { adminRulesInput.value = data.rules; }
+        } else {
+            liveRulesText.textContent = "No rules specified."; liveImg1.style.display = "none"; liveImg2.style.display = "none"; liveImg3.style.display = "none";
+        }
+    });
+
+    // Users Database Sync Display
+    onValue(ref(db, 'real_entries'), (snapshot) => {
+        adminLogBody.innerHTML = '';
+        if(snapshot.exists()){
+            snapshot.forEach((childSnapshot) => {
+                const data = childSnapshot.val();
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td>${data.whatsapp}</td><td><strong>${data.combination}</strong></td><td><a class="wa-link" href="https://wa.me/${data.whatsapp}" target="_blank">💬 Chat</a></td>`;
+                adminLogBody.appendChild(tr);
+            });
+        } else {
+            adminLogBody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding:10px;">No entries logged</td></tr>';
+        }
+    });
+
+    // Clear All Logged Users From Tree
+    clearDatabaseBtn.addEventListener('click', async () => {
+        const isAuthenticated = await verifyAdminAuth();
+        if(!isAuthenticated) return;
+        remove(ref(db, 'real_entries')).then(() => { alert("Registered users list deleted successfully!"); })
+          .catch(err => { alert("Deletion failed: " + err.message); });
+    });
+
+    // Key Matrix Controllers
+    function handleKeypad(digit) {
+        if (isSpinning) return;
+        if (digit === 'clear') { if (playerDigits.length > 0) playerDigits.pop(); }
+        else { if (playerDigits.length < 6) playerDigits.push(parseInt(digit, 10)); }
+        playerBoxes.forEach((box, i) => {
+            box.textContent = playerDigits[i] !== undefined ? playerDigits[i] : '-';
+            box.className = playerDigits[i] !== undefined ? 'digit-box filled' : 'digit-box';
+        });
+    }
+
+    document.querySelectorAll('.key-btn').forEach(btn => btn.addEventListener('click', () => handleKeypad(btn.dataset.digit)));
+
+    // Core Randomize Spin Engine 
+    spinBtn.addEventListener('click', async () => {
+        if (isSpinning || playerDigits.length !== 6) return;
+        isSpinning = true; spinBtn.disabled = true; drawnDigits = [];
+        
+        const counts = {}; let trickRuleMet = false;
+        if (!isRealGameMode && totalGamesPlayed >= 2) {
+            for (const num of playerDigits) { counts[num] = (counts[num] || 0) + 1; if (counts[num] >= 3) trickRuleMet = true; }
+        }
+
+        for (let i = 0; i < 6; i++) {
+            resultText.textContent = `Spinning Wheel ${i+1}/6...`;
+            let targetNumber = (isRealGameMode || !trickRuleMet) ? Math.floor(Math.random() * 10) : playerDigits[i];
+            
+            await new Promise((resolve) => {
+                const angleStep = (2 * Math.PI) / SEGMENTS;
+                let targetAngle = (3 * Math.PI / 2) - (targetNumber * angleStep) - (angleStep / 2);
+                if (targetAngle < 0) targetAngle += (2 * Math.PI);
+                const target = currentAngle - (currentAngle % (2 * Math.PI)) + (5 * 2 * Math.PI) + targetAngle;
+                const start = currentAngle, startTime = performance.now();
+                drawBoxes[i].classList.add('spinning');
+                
+                function animate(time) {
+                    const elapsed = time - startTime, progress = Math.min(elapsed / 1000, 1);
+                    currentAngle = start + (target - start) * (1 - Math.pow(1 - progress, 4));
+                    drawWheel(currentAngle);
+                    if (progress < 1) requestAnimationFrame(animate);
+                    else {
+                        drawBoxes[i].classList.remove('spinning');
+                        drawBoxes[i].textContent = targetNumber;
+                        drawnDigits.push(targetNumber);
+                        resolve();
+                    }
+                }
+                requestAnimationFrame(animate);
+            });
+            await new Promise(r => setTimeout(r, 200));
+        }
+
+        const match = playerDigits.map((p, i) => p === drawnDigits[i]);
+        if (match.every(v => v === true)) { resultText.textContent = "🏆 FIRST PRIZE WINNER!"; totalGamesPlayed = 0; } 
+        else { resultText.textContent = "Spin Phase Completed."; totalGamesPlayed++; }
+        playerBoxes.forEach((box, i) => box.className = match[i] ? 'digit-box filled highlight' : 'digit-box filled mismatch');
+        drawBoxes.forEach((box, i) => box.className = match[i] ? 'digit-box draw highlight' : 'digit-box draw mismatch');
+        isSpinning = false;
+    });
+
+    // Reset Operation State
+    resetBtn.addEventListener('click', () => {
+        if(isSpinning) return;
+        playerDigits = []; drawnDigits = []; whatsappInput.value = ""; isRealGameMode = false;
+        modeBtn.textContent = "🔴 Demo Mode"; modeBtn.className = "mode-badge";
+        playerBoxes.forEach(box => { box.textContent = '-'; box.className = 'digit-box'; });
+        drawBoxes.forEach(box => { box.textContent = '-'; box.className = 'digit-box draw'; });
+        resultText.textContent = "Pick 6 digits to start setup"; spinBtn.disabled = false;
+    });
+
+    drawWheel(0);
+</script>
+</body>
+</html>
