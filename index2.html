@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Continuous Chain Photo Motion Portal - Independent Speeds</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        h2 {
+            margin-bottom: 15px;
+            color: #2c3e50;
+            text-align: center;
+            font-size: 1.4rem;
+        }
+        .upload-section {
+            margin-bottom: 15px;
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+        input[type="file"] {
+            display: none;
+        }
+        .custom-file-upload {
+            border: 2px dashed #3498db;
+            display: inline-block;
+            padding: 12px 24px;
+            cursor: pointer;
+            background-color: #fff;
+            color: #3498db;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: all 0.3s;
+            width: 100%;
+        }
+        .custom-file-upload:hover {
+            background-color: #3498db;
+            color: #fff;
+        }
+        .control-box {
+            width: 100%;
+            max-width: 500px;
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .slider-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .slider-row {
+            display: flex;
+            gap: 10px;
+        }
+        .slider-row .slider-group {
+            flex: 1;
+        }
+        .slider-label {
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: #34495e;
+            display: flex;
+            justify-content: space-between;
+        }
+        .control-slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            outline: none;
+            accent-color: #3498db;
+        }
+        .container {
+            position: relative;
+            max-width: 100%;
+            width: 500px;
+            border: 3px solid #34495e;
+            border-radius: 10px;
+            overflow: hidden;
+            background-color: #ddd;
+            display: none;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        }
+        #baseImage {
+            width: 100%;
+            display: block;
+            height: auto;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+        .moving-patch {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        .moving-patch img {
+            width: 100%;
+            height: 100%;
+            object-fit: fill;
+        }
+        .controls {
+            margin-top: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            width: 100%;
+            max-width: 500px;
+        }
+        button {
+            flex: 1;
+            min-width: 140px;
+            padding: 12px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            color: white;
+            transition: background 0.2s, transform 0.1s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        button:active {
+            transform: scale(0.98);
+        }
+        button:disabled {
+            background-color: #bdc3c7 !important;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        .btn-updown { background-color: #2ecc71; }
+        .btn-updown.active { background-color: #27ae60; }
+        .btn-leftright { background-color: #9b59b6; }
+        .btn-leftright.active { background-color: #8e44ad; }
+        
+        .btn-step-save { background-color: #00bcd4; width: 100%; flex: none; font-size: 1rem; }
+        .btn-undo { background-color: #f39c12; }
+        .btn-stop { background-color: #e74c3c; }
+        .btn-save { background-color: #ff5722; width: 100%; flex: none; margin-top: 5px; font-size: 1.05rem; }
+        
+        .status-text {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            text-align: center;
+            max-width: 500px;
+            background: #fff;
+            padding: 8px;
+            border-radius: 5px;
+            width: 100%;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+    </style>
+    <!-- GIF जनरेट करने के लिए लाइब्रेरी -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gifshot/0.3.2/gifshot.min.js"></script>
+</head>
+<body>
+
+    <h2>Multi-Size Square Photo Motion Portal</h2>
+
+    <!-- फोटो अपलोड -->
+    <div class="upload-section">
+        <label for="file-upload" class="custom-file-upload">
+            📁 अपने मोबाइल से फोटो चुनें
+        </label>
+        <input id="file-upload" type="file" accept="image/*">
+    </div>
+
+    <!-- आकार और गति कंट्रोल बॉक्स -->
+    <div class="control-box">
+        <!-- मेन मोशन साइज स्लाइडर -->
+        <div class="slider-group">
+            <div class="slider-label">
+                <span>🔴 मोशन हिस्से का मुख्य साइज:</span>
+                <span id="sizeVal">40px</span>
+            </div>
+            <input type="range" id="sizeSlider" class="control-slider" min="10" max="100" value="40">
+        </div>
+
+        <!-- चौड़ाई और ऊंचाई -->
+        <div class="slider-row">
+            <div class="slider-group">
+                <div class="slider-label">
+                    <span>↔️ चौड़ाई (Horizontal):</span>
+                    <span id="widthVal">1.0x</span>
+                </div>
+                <input type="range" id="widthSlider" class="control-slider" min="0.2" max="3" step="0.1" value="1.0">
+            </div>
+            
+            <div class="slider-group">
+                <div class="slider-label">
+                    <span>↕️ ऊंचाई (Vertical):</span>
+                    <span id="heightVal">1.0x</span>
+                </div>
+                <input type="range" id="heightSlider" class="control-slider" min="0.2" max="3" step="0.1" value="1.0">
+            </div>
+        </div>
+        
+        <!-- स्पीड स्लाइडर -->
+        <div class="slider-group">
+            <div class="slider-label">
+                <span>⚡ मोशन की स्पीड (गति):</span>
+                <span id="speedVal">1.2x</span>
+            </div>
+            <input type="range" id="speedSlider" class="control-slider" min="0.1" max="5" step="0.1" value="1.2">
+        </div>
+    </div>
+
+    <!-- मुख्य कंटेनर -->
+    <div class="container" id="imageContainer">
+        <img id="baseImage" src="" alt="Base Image">
+    </div>
+
+    <div class="status-text" id="statusMsg">कृपया पहले एक फोटो अपलोड करें।</div>
+
+    <!-- कंट्रोल पैनल -->
+    <div class="controls">
+        <button class="btn-updown" id="upDownBtn" disabled>Up ↕️ Down</button>
+        <button class="btn-leftright" id="leftRightBtn" disabled>Left ↔️ Right</button>
+        
+        <!-- 💾 स्टेप लॉक करने का बटन -->
+        <button class="btn-step-save" id="stepSaveBtn" disabled>💾 Save This Step (Lock Motion)</button>
+        
+        <!-- ↩️ लास्ट सेव्ड पॉइंट को हटाने का बटन -->
+        <button class="btn-undo" id="undoBtn" disabled>↩️ Undo Last Saved Step</button>
+        <button class="btn-stop" id="stopBtn" disabled>Reset All 🟥</button>
+        
+        <!-- 🎬 फाइनल कंबाइंड डाउनलोड बटन -->
+        <button class="btn-save" id="saveBtn" disabled>🎬 Download Complete Chain GIF</button>
+    </div>
+
+    <script>
+        const fileUpload = document.getElementById('file-upload');
+        const baseImage = document.getElementById('baseImage');
+        const imageContainer = document.getElementById('imageContainer');
+        const upDownBtn = document.getElementById('upDownBtn');
+        const leftRightBtn = document.getElementById('leftRightBtn');
+        const stepSaveBtn = document.getElementById('stepSaveBtn');
+        const undoBtn = document.getElementById('undoBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const saveBtn = document.getElementById('saveBtn');
+        const statusMsg = document.getElementById('statusMsg');
+        
+        const sizeSlider = document.getElementById('sizeSlider');
+        const sizeVal = document.getElementById('sizeVal');
+        const widthSlider = document.getElementById('widthSlider');
+        const widthVal = document.getElementById('widthVal');
+        const heightSlider = document.getElementById('heightSlider');
+        const heightVal = document.getElementById('heightVal');
+        const speedSlider = document.getElementById('speedSlider');
+        const speedVal = document.getElementById('speedVal');
+
+        let imageSrcUrl = "";
+        let activeMode = null;
+        
+        // एडिट हो रहा अस्थायी हिस्सा
+        let currentEditingPatch = null; 
+        
+        // परमानेंट चेन डेटाबेस (जिसमें प्रत्येक पॉइंट का अपना स्वतंत्र डेटा रहेगा)
+        let savedPatchesArray = []; 
+        
+        let animationFrameId = null;
+        const moveRange = 15;   
+
+        sizeSlider.addEventListener('input', () => sizeVal.innerText = sizeSlider.value + "px");
+        widthSlider.addEventListener('input', () => widthVal.innerText = widthSlider.value + "x");
+        heightSlider.addEventListener('input', () => heightVal.innerText = heightSlider.value + "x");
+        speedSlider.addEventListener('input', function() {
+            speedVal.innerText = speedSlider.value + "x";
+            // अगर कोई लाइव पॉइंट एडिट हो रहा है, तो उसकी स्पीड तुरंत अपडेट करें
+            if (currentEditingPatch) {
+                currentEditingPatch.speed = parseFloat(speedSlider.value);
+            }
+        });
+
+        // फोटो अपलोड
+        fileUpload.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    imageSrcUrl = event.target.result;
+                    baseImage.src = imageSrcUrl;
+                    
+                    baseImage.onload = function() {
+                        imageContainer.style.display = 'block';
+                        clearAllPatches();
+                        
+                        upDownBtn.disabled = false;
+                        leftRightBtn.disabled = false;
+                        stopBtn.disabled = false;
+                        statusMsg.innerText = "मोड और स्पीड चुनें, फिर स्क्रीन पर पॉइंट सेट करें।";
+                    }
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        upDownBtn.addEventListener('click', function() {
+            activeMode = 'updown';
+            upDownBtn.classList.add('active');
+            leftRightBtn.classList.remove('active');
+            statusMsg.innerText = "मोड: Up-Down सेट। स्क्रीन पर टच करें और फिर 'Save This Step' दबाएं।";
+            startAnimationLoop();
+        });
+
+        leftRightBtn.addEventListener('click', function() {
+            activeMode = 'leftright';
+            leftRightBtn.classList.add('active');
+            upDownBtn.classList.remove('active');
+            statusMsg.innerText = "मोड: Left-Right सेट। स्क्रीन पर टच करें और फिर 'Save This Step' दबाएं।";
+            startAnimationLoop();
+        });
+
+        // स्क्रीन क्लिक पर नया पॉइंट जोड़ना
+        imageContainer.addEventListener('click', function(e) {
+            if (!activeMode) {
+                alert("कृपया पहले Up-Down या Left-Right मोड चुनें!");
+                return;
+            }
+
+            // पुराने अनसेव्ड हिस्से को हटाना
+            if (currentEditingPatch) {
+                currentEditingPatch.divElement.remove();
+            }
+
+            const rect = imageContainer.getBoundingClientRect();
+            const touchX = e.clientX - rect.left;
+            const touchY = e.clientY - rect.top;
+            
+            const baseSize = parseInt(sizeSlider.value);
+            const currentW = Math.round(baseSize * parseFloat(widthSlider.value));
+            const currentH = Math.round(baseSize * parseFloat(heightSlider.value));
+            
+            const x1 = touchX - (currentW / 2);
+            const y1 = touchY - (currentH / 2);
+
+            const patchDiv = document.createElement('div');
+            patchDiv.className = 'moving-patch';
+            patchDiv.style.clipPath = `polygon(${x1}px ${y1}px, ${x1 + currentW}px ${y1}px, ${x1 + currentW}px ${y1 + currentH}px, ${x1}px ${y1 + currentH}px)`;
+            
+            const imgEl = document.createElement('img');
+            imgEl.src = imageSrcUrl;
+            patchDiv.appendChild(imgEl);
+            imageContainer.appendChild(patchDiv);
+            
+            // नया अस्थायी पॉइंट - जिसमें इसकी खुद की अलग स्पीड और ऑफसेट शामिल है
+            currentEditingPatch = {
+                element: imgEl,
+                divElement: patchDiv,
+                mode: activeMode,
+                w: currentW,
+                h: currentH,
+                x: x1,
+                y: y1,
+                speed: parseFloat(speedSlider.value),
+                offset: 0,
+                dir: 1
+            };
+            
+            stepSaveBtn.disabled = false;
+            statusMsg.innerText = "नया पॉइंट चुना गया। इसकी स्पीड अलग लॉक करने के लिए 'Save This Step' दबाएं!";
+        });
+
+        // 💾 पॉइंट को हमेशा के लिए स्वतंत्र स्पीड के साथ लॉक करना
+        stepSaveBtn.addEventListener('click', function() {
+            if (currentEditingPatch) {
+                savedPatchesArray.push(currentEditingPatch);
+                currentEditingPatch = null; 
+                
+                stepSaveBtn.disabled = true;
+                undoBtn.disabled = false;
+                saveBtn.disabled = false;
+                
+                statusMsg.innerText = `पॉइंट लॉक हो गया! कुल सक्रिय हिस्से: ${savedPatchesArray.length}। अब दूसरे हिस्से के लिए अलग स्पीड/मोड चुनकर टच करें।`;
+            }
+        });
+
+        // ↩️ हमेशा सिर्फ आखिरी बार सेव किया हुआ पॉइंट ही हटेगा
+        undoBtn.addEventListener('click', function() {
+            if (currentEditingPatch) {
+                currentEditingPatch.divElement.remove();
+                currentEditingPatch = null;
+                stepSaveBtn.disabled = true;
+            }
+
+            if (savedPatchesArray.length > 0) {
+                const lastSavedPatch = savedPatchesArray.pop();
+                lastSavedPatch.divElement.remove();
+                
+                statusMsg.innerText = `आखिरी बार सेव किया गया पॉइंट सफलतापूर्वक डिलीट हुआ। एक्टिव पॉइंट: ${savedPatchesArray.length}`;
+                
+                if (savedPatchesArray.length === 0) {
+                    undoBtn.disabled = true;
+                    saveBtn.disabled = true;
+                }
+            }
+        });
+
+        // ऑल रीसेट
+        stopBtn.addEventListener('click', function() {
+            clearAllPatches();
+            statusMsg.innerText = "पूरी चेन रीसेट कर दी गई है। नए सिरे से पॉइंट बनाना शुरू करें।";
+        });
+
+        // सुधरा हुआ लाइव मोशन एनीमेशन लूप (हर पॉइंट अपनी खुद की स्पीड पर चलेगा)
+        function startAnimationLoop() {
+            if (animationFrameId) return;
+            function animate() {
+                // 1. हर सेव्ड पॉइंट को उसकी खुद की स्पीड के अनुसार अपडेट करना
+                savedPatchesArray.forEach(patch => {
+                    patch.offset += patch.dir * patch.speed;
+                    if (Math.abs(patch.offset) > moveRange) {
+                        patch.dir *= -1;
+                    }
+                    if (patch.mode === 'updown') patch.element.style.transform = `translate(0px, ${patch.offset}px)`;
+                    if (patch.mode === 'leftright') patch.element.style.transform = `translate(${patch.offset}px, 0px)`;
+                });
+
+                // 2. वर्तमान में सेलेक्ट हो रहे अस्थायी पॉइंट को अपडेट करना
+                if (currentEditingPatch) {
+                    currentEditingPatch.offset += currentEditingPatch.dir * currentEditingPatch.speed;
+                    if (Math.abs(currentEditingPatch.offset) > moveRange) {
+                        currentEditingPatch.dir *= -1;
+                    }
+                    if (currentEditingPatch.mode === 'updown') currentEditingPatch.element.style.transform = `translate(0px, ${currentEditingPatch.offset}px)`;
+                    if (currentEditingPatch.mode === 'leftright') currentEditingPatch.element.style.transform = `translate(${currentEditingPatch.offset}px, 0px)`;
+                }
+
+                animationFrameId = requestAnimationFrame(animate);
+            }
+            animationFrameId = requestAnimationFrame(animate);
+        }
+
+        function clearAllPatches() {
+            if (animationFrameId) {
+                cancelAnimationFrame(animationFrameId);
+                animationFrameId = null;
+            }
+            if (currentEditingPatch) {
+                currentEditingPatch.divElement.remove();
+                currentEditingPatch = null;
+            }
+            const activePatches = document.querySelectorAll('.moving-patch');
+            activePatches.forEach(p => p.remove());
+            savedPatchesArray = [];
+            activeMode = null;
+            upDownBtn.classList.remove('active');
+            leftRightBtn.classList.remove('active');
+            undoBtn.disabled = true;
+            saveBtn.disabled = true;
+            stepSaveBtn.disabled = true;
+        }
+
+        // 🎬 अलग-अलग स्पीड को मिलाकर फाइनल कंबाइंड GIF बनाना
+        saveBtn.addEventListener('click', function() {
+            if (savedPatchesArray.length === 0) {
+                alert("डाउनलोड करने से पहले कम से कम एक पॉइंट सेव करें।");
+                return;
+            }
+            
+            saveBtn.disabled = true;
+            statusMsg.innerText = "पूरी अलग-अलग मोशन स्पीड चेन को मिलाकर फाइनल GIF तैयार हो रहा है...";
+            
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = baseImage.naturalWidth;
+            canvas.height = baseImage.naturalHeight;
+            
+            const scaleX = canvas.width / baseImage.clientWidth;
+            const scaleY = canvas.height / baseImage.clientHeight;
+            
+            const frames = [];
+            const totalFrames = 24; // बेहतर स्मूथनेस के लिए फ्रेम बढ़ाए गए हैं
+            
+            // GIF जनरेशन के लिए हर पैच का लोकल डेटा रीसेट करें
+            savedPatchesArray.forEach(patch => {
+                patch.localOffset = 0;
+                patch.localDir = 1;
+            });
+            
+            for (let f = 0; f < totalFrames; f++) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(baseImage, 0, 0, canvas.width, canvas.height);
+                
+                savedPatchesArray.forEach(patch => {
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.rect(patch.x * scaleX, patch.y * scaleY, patch.w * scaleX, patch.h * scaleY);
+                    ctx.clip();
+                    
+                    let offsetX = 0;
+                    let offsetY = 0;
+                    if (patch.mode === 'leftright') offsetX = patch.localOffset * scaleX;
+                    if (patch.mode === 'updown') offsetY = patch.localOffset * scaleY;
+                    
+                    ctx.drawImage(baseImage, offsetX, offsetY, canvas.width, canvas.height);
+                    ctx.restore();
+                    
+                    // हर पैच अपने फ्रेम में खुद की स्वतंत्र स्पीड से बढ़ेगा
+                    patch.localOffset += patch.localDir * patch.speed;
+                    if (Math.abs(patch.localOffset) > moveRange) {
+                        patch.localDir *= -1;
+                    }
+                });
+                
+                frames.push(canvas.toDataURL('image/jpeg', 0.85));
+            }
+            
+            gifshot.createGIF({
+                images: frames,
+                gifWidth: canvas.width > 600 ? 600 : canvas.width,
+                gifHeight: canvas.width > 600 ? (600 * canvas.height / canvas.width) : canvas.height,
+                interval: 0.04,
+                numFrames: totalFrames
+            }, function(obj) {
+                if (!obj.error) {
+                    const link = document.createElement('a');
+                    link.download = `Multi_Speed_Chain_Motion_${Date.now()}.gif`;
+                    link.href = obj.image;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    statusMsg.innerText = "अलग-अलग स्पीड वाली कम्प्लीट मोशन चेन GIF गैलरी में सुरक्षित सेव हो गई है! 🎉";
+                } else {
+                    statusMsg.innerText = "GIF जनरेट करने में कोई समस्या आई।";
+                }
+                saveBtn.disabled = false;
+            });
+        });
+    </script>
+</body>
+</html>
