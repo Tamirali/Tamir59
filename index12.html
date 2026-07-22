@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🎙️ अक्ल की जीत — प्ले बटन के साथ</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #0e2723;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+    }
+    .container {
+      max-width: 700px;
+      width: 100%;
+      background: #fbf5e9;
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+      overflow: hidden;
+      padding: 24px;
+    }
+    h1 {
+      font-size: 1.2rem;
+      color: #17332f;
+      text-align: center;
+      margin-bottom: 12px;
+    }
+    .stage {
+      background: #3f7568;
+      border-radius: 16px;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      position: relative;
+      margin-bottom: 20px;
+    }
+    .portrait {
+      width: 200px;
+      height: auto;
+      filter: drop-shadow(0 8px 16px rgba(0,0,0,0.3));
+    }
+    .speech-bubble {
+      position: absolute;
+      top: -6px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #fff;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.8rem;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+      opacity: 0;
+      transition: opacity 0.3s;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+    .speech-bubble.show {
+      opacity: 1;
+    }
+    .upload-zone {
+      border: 2px dashed #9a8d79;
+      padding: 12px;
+      border-radius: 10px;
+      text-align: center;
+      cursor: pointer;
+      background: #fff;
+      margin-bottom: 12px;
+      transition: 0.2s;
+    }
+    .upload-zone:hover {
+      border-color: #3f7568;
+      background: #f5f0e8;
+    }
+    .upload-zone input {
+      display: none;
+    }
+    .audio-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: #fff;
+      padding: 10px 16px;
+      border-radius: 50px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      margin: 12px 0;
+    }
+    .play-btn {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      border: none;
+      background: #bf4d3c;
+      color: #fff;
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: 0.2s;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(191,77,60,0.35);
+    }
+    .play-btn:hover {
+      transform: scale(1.05);
+    }
+    .play-btn.playing {
+      background: #e67e22;
+    }
+    .play-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .progress-wrap {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .progress-wrap input[type="range"] {
+      flex: 1;
+      height: 4px;
+      accent-color: #bf4d3c;
+      cursor: pointer;
+    }
+    .time {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #5a4d3d;
+      min-width: 34px;
+      text-align: center;
+    }
+    .controls-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+    .controls-row label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #4a3f33;
+    }
+    .controls-row input[type="range"] {
+      width: 60px;
+      accent-color: #3f7568;
+      cursor: pointer;
+    }
+    .emotion-grid {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+    .emotion-btn {
+      background: #eee2cc;
+      border: 2px solid transparent;
+      border-radius: 8px;
+      padding: 4px 10px;
+      font-weight: 700;
+      font-size: 0.7rem;
+      cursor: pointer;
+      transition: 0.2s;
+      flex: 1;
+      min-width: 50px;
+      text-align: center;
+    }
+    .emotion-btn.active {
+      border-color: #e9b949;
+      background: #f5edd9;
+    }
+    .emotion-btn:hover {
+      background: #e5ddd0;
+    }
+    .speech-row {
+      display: flex;
+      gap: 6px;
+      margin-top: 8px;
+    }
+    .speech-row input {
+      flex: 1;
+      padding: 6px 12px;
+      border: 1.5px solid #d0c4b4;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      outline: none;
+    }
+    .speech-row input:focus {
+      border-color: #e9b949;
+    }
+    .speech-row button {
+      background: #e9b949;
+      border: none;
+      border-radius: 8px;
+      padding: 6px 16px;
+      font-weight: 700;
+      font-size: 0.7rem;
+      cursor: pointer;
+      color: #2d241b;
+    }
+    .status {
+      font-size: 0.7rem;
+      color: #5a4d3d;
+      padding: 4px 0 0 4px;
+      min-height: 20px;
+    }
+    .footer {
+      font-size: 0.55rem;
+      color: #8a7a68;
+      text-align: center;
+      margin-top: 12px;
+      border-top: 1px solid #e0d6c8;
+      padding-top: 8px;
+    }
+    kbd {
+      background: #ece4d8;
+      padding: 0 6px;
+      border-radius: 3px;
+      border: 1px solid #d0c4b4;
+      font-size: 0.55rem;
+    }
+    @media (max-width: 480px) {
+      .container { padding: 16px; }
+      .portrait { width: 150px; }
+      .play-btn { width: 44px; height: 44px; font-size: 1.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <h1>🎙️ अक्ल की जीत — बालक कोट पैंट</h1>
+
+  <!-- STAGE -->
+  <div class="stage" id="stageArea">
+    <div class="speech-bubble" id="speechBubble">नमस्ते! 👋</div>
+    <svg class="portrait" viewBox="0 0 380 470">
+      <path d="M81 412c14-74 55-111 109-111s97 37 111 111v58H81z" fill="#d9a63a" />
+      <path d="M119 343c20 30 45 45 73 45 29 0 53-15 72-45l23 23c-21 40-53 60-95 60-43 0-76-20-98-60z" fill="#f5cf70" opacity=".55" />
+      <path d="M160 294h62v58c-5 18-15 28-31 28-16 0-26-10-31-28z" fill="#b96d45" />
+      <path d="M111 118c10-63 151-74 171 7 15 61-5 168-90 196-83-28-104-134-81-203z" fill="#cc8155" />
+      <ellipse cx="111" cy="209" rx="23" ry="34" fill="#cc8155" />
+      <ellipse cx="275" cy="209" rx="23" ry="34" fill="#cc8155" />
+      <path d="M100 161c-9-56 7-108 56-125 56-20 119 5 132 61 5 22 1 49-9 66-7-56-41-82-95-75-41 5-64 31-76 80z" fill="#202e2b" />
+      <path d="M121 112c12-51 52-77 99-71 39 5 65 29 72 65-33-32-68-42-106-29-31 10-52 31-65 62z" fill="#2c403b" />
+      <path id="browL" d="M132 167c17-11 34-11 50-1" fill="none" stroke="#433025" stroke-width="7" stroke-linecap="round" />
+      <path id="browR" d="M210 166c17-10 34-9 48 2" fill="none" stroke="#433025" stroke-width="7" stroke-linecap="round" />
+      <ellipse id="eyeL" cx="155" cy="190" rx="6" ry="8" fill="#1b302c" />
+      <ellipse id="eyeR" cx="235" cy="191" rx="6" ry="8" fill="#1b302c" />
+      <path d="M192 187c-2 20-7 39-13 54 8 8 18 9 28 2" fill="none" stroke="#a65e3f" stroke-width="5" stroke-linecap="round" />
+      <path id="mouthClosed" d="M164 269c18 8 37 8 56 0" fill="none" stroke="#6e2929" stroke-width="6" stroke-linecap="round" />
+      <ellipse id="mouthOpen" cx="192" cy="273" rx="26" ry="0" fill="#6e2929" opacity="0" />
+    </svg>
+  </div>
+
+  <!-- UPLOAD -->
+  <label class="upload-zone" id="uploadLabel">
+    🎵 ऑडियो फ़ाइल चुनें
+    <input type="file" id="audioInput" accept="audio/*" />
+  </label>
+
+  <!-- AUDIO BAR -->
+  <div class="audio-bar">
+    <button class="play-btn" id="playBtn" disabled>▶️</button>
+    <div class="progress-wrap">
+      <span class="time" id="currentTime">0:00</span>
+      <input type="range" id="seekBar" min="0" max="100" value="0" />
+      <span class="time" id="duration">0:00</span>
+    </div>
+  </div>
+
+  <!-- CONTROLS -->
+  <div class="controls-row">
+    <label>🔊 <input type="range" id="volumeSlider" min="0" max="100" value="80" /></label>
+    <label>⏩ <input type="range" id="speedSlider" min="50" max="200" value="100" step="5" /> <span id="speedLabel">1.0x</span></label>
+    <label>🎨 <input type="color" id="lipColor" value="#6e2929" style="width:28px;border:1px solid #ddd;border-radius:4px;padding:2px;" /></label>
+  </div>
+
+  <!-- EMOTION -->
+  <div class="emotion-grid">
+    <button class="emotion-btn active" data-emotion="neutral">😐 Neutral</button>
+    <button class="emotion-btn" data-emotion="happy">😊 Happy</button>
+    <button class="emotion-btn" data-emotion="sad">😢 Sad</button>
+    <button class="emotion-btn" data-emotion="angry">😠 Angry</button>
+    <button class="emotion-btn" data-emotion="surprised">😮 Surprised</button>
+  </div>
+
+  <!-- SPEECH BUBBLE -->
+  <div class="speech-row">
+    <input type="text" id="speechText" placeholder="बोलें..." value="नमस्ते! 👋" />
+    <button id="speechBtn">Show</button>
+  </div>
+
+  <div class="status" id="status">ऑडियो अपलोड करें</div>
+  <div class="footer">
+    <kbd>Space</kbd> Play/Pause · <kbd>←</kbd><kbd>→</kbd> Seek · <kbd>↑</kbd><kbd>↓</kbd> Volume
+  </div>
+
+  <!-- Hidden Audio Element -->
+  <audio id="audioPlayer" style="display:none;"></audio>
+</div>
+
+<script>
+  (function() {
+    const audioInput = document.getElementById('audioInput');
+    const playBtn = document.getElementById('playBtn');
+    const audioPlayer = document.getElementById('audioPlayer');
+    const seekBar = document.getElementById('seekBar');
+    const currentTimeLabel = document.getElementById('currentTime');
+    const durationLabel = document.getElementById('duration');
+    const volumeSlider = document.getElementById('volumeSlider');
+    const speedSlider = document.getElementById('speedSlider');
+    const speedLabel = document.getElementById('speedLabel');
+    const status = document.getElementById('status');
+    const lipColor = document.getElementById('lipColor');
+    const uploadLabel = document.getElementById('uploadLabel');
+
+    // SVG elements
+    const mouthOpen = document.getElementById('mouthOpen');
+    const mouthClosed = document.getElementById('mouthClosed');
+    const eyeL = document.getElementById('eyeL');
+    const eyeR = document.getElementById('eyeR');
+    const browL = document.getElementById('browL');
+    const browR = document.getElementById('browR');
+
+    // Speech bubble
+    const speechText = document.getElementById('speechText');
+    const speechBtn = document.getElementById('speechBtn');
+    const speechBubble = document.getElementById('speechBubble');
+
+    // Emotion buttons
+    const emotionBtns = document.querySelectorAll('.emotion-btn');
+
+    // ===== STATE =====
+    let isPlaying = false;
+    let mouthInterval = null;
+    let blinkInterval = null;
+    let blinkEnabled = true;
+    let showEyes = true;
+
+    // ===== AUDIO UPLOAD =====
+    audioInput.addEventListener('change', function(e) {
+      const file = this.files[0];
+      if (!file) return;
+      const url = URL.createObjectURL(file);
+      audioPlayer.src = url;
+      audioPlayer.load();
+      playBtn.disabled = false;
+      status.textContent = '✅ ' + file.name + ' — तैयार';
+      uploadLabel.textContent = '✅ ' + file.name;
+      uploadLabel.style.borderColor = '#27ae60';
+      // Reset seek
+      seekBar.value = 0;
+      currentTimeLabel.textContent = '0:00';
+      audioPlayer.addEventListener('loadedmetadata', function() {
+        durationLabel.textContent = formatTime(audioPlayer.duration);
+      });
+    });
+
+    // ===== PLAY / PAUSE =====
+    playBtn.addEventListener('click', togglePlay);
+
+    function togglePlay() {
+      if (!audioPlayer.src) {
+        alert('कृपया पहले ऑडियो फ़ाइल अपलोड करें!');
+        return;
+      }
+      if (audioPlayer.paused) {
+        audioPlayer.play().then(() => {
+          isPlaying = true;
+          playBtn.textContent = '⏸️';
+          playBtn.classList.add('playing');
+          status.textContent = '▶️ चल रहा है...';
+          startLipSync();
+        }).catch(err => {
+          alert('Play error: ' + err.message);
+        });
+      } else {
+        audioPlayer.pause();
+        isPlaying = false;
+        playBtn.textContent = '▶️';
+        playBtn.classList.remove('playing');
+        status.textContent = '⏸️ रुका हुआ';
+        stopLipSync();
+      }
+    }
+
+    // ===== LIP SYNC =====
+    function startLipSync() {
+      clearInterval(mouthInterval);
+      mouthInterval = setInterval(() => {
+        if (!audioPlayer.paused && audioPlayer.currentTime > 0) {
+          // Get volume from audio element if possible
+          let volume = audioPlayer.volume;
+          // Simple random simulation based on time
+          const val = Math.random();
+          const gap = Math.floor(val * 12) + 2; // 2 to 14
+          mouthOpen.setAttribute('ry', gap);
+          mouthOpen.style.opacity = gap > 4 ? '1' : '0';
+          mouthClosed.style.opacity = gap > 4 ? '0' : '1';
+          // Blink random
+          if (Math.random() < 0.02 && blinkEnabled) {
+            eyeL.setAttribute('ry', '1');
+            eyeR.setAttribute('ry', '1');
+            setTimeout(() => {
+              eyeL.setAttribute('ry', '8');
+              eyeR.setAttribute('ry', '8');
+            }, 120);
+          }
+        }
+      }, 80);
+    }
+
+    function stopLipSync() {
+      clearInterval(mouthInterval);
+      mouthOpen.setAttribute('ry', '0');
+      mouthOpen.style.opacity = '0';
+      mouthClosed.style.opacity = '1';
+    }
+
+    // ===== SEEK =====
+    audioPlayer.addEventListener('timeupdate', () => {
+      if (audioPlayer.duration) {
+        const pct = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+        seekBar.value = pct;
+        currentTimeLabel.textContent = formatTime(audioPlayer.currentTime);
+      }
+    });
+
+    seekBar.addEventListener('input', (e) => {
+      if (audioPlayer.duration) {
+        const seek = (e.target.value / 100) * audioPlayer.duration;
+        audioPlayer.currentTime = seek;
+      }
+    });
+
+    audioPlayer.addEventListener('ended', () => {
+      isPlaying = false;
+      playBtn.textContent = '▶️';
+      playBtn.classList.remove('playing');
+      stopLipSync();
+      status.textContent = '⏹️ समाप्त';
+      seekBar.value = 0;
+      currentTimeLabel.textContent = '0:00';
+    });
+
+    // ===== VOLUME =====
+    volumeSlider.addEventListener('input', (e) => {
+      audioPlayer.volume = e.target.value / 100;
+    });
+    // Default volume
+    audioPlayer.volume = 0.8;
+
+    // ===== SPEED =====
+    speedSlider.addEventListener('input', (e) => {
+      const speed = e.target.value / 100;
+      audioPlayer.playbackRate = speed;
+      speedLabel.textContent = speed.toFixed(1) + 'x';
+    });
+
+    // ===== LIP COLOR =====
+    lipColor.addEventListener('input', (e) => {
+      const c = e.target.value;
+      mouthOpen.setAttribute('fill', c);
+      mouthClosed.setAttribute('stroke', c);
+    });
+
+    // ===== EMOTION =====
+    const EMOTIONS = {
+      neutral: { eyesY: 190, mouthY: 273, mouthX: 192, width: 26, gap: 8 },
+      happy: { eyesY: 182, mouthY: 268, mouthX: 192, width: 32, gap: 12 },
+      sad: { eyesY: 194, mouthY: 278, mouthX: 192, width: 22, gap: 5 },
+      angry: { eyesY: 184, mouthY: 276, mouthX: 190, width: 28, gap: 6 },
+      surprised: { eyesY: 178, mouthY: 264, mouthX: 192, width: 36, gap: 18 },
+    };
+
+    function applyEmotion(name) {
+      const p = EMOTIONS[name];
+      if (!p) return;
+      // Eyes
+      eyeL.setAttribute('cy', p.eyesY);
+      eyeR.setAttribute('cy', p.eyesY + 1);
+      // Mouth
+      mouthOpen.setAttribute('cy', p.mouthY);
+      mouthOpen.setAttribute('cx', p.mouthX);
+      mouthOpen.setAttribute('rx', p.width);
+      const w = p.width;
+      const x = p.mouthX;
+      const y = p.mouthY;
+      mouthClosed.setAttribute('d', `M${x-w} ${y-4}c${w} 8 ${w*2-4} 8 ${w*2} 0`);
+      // Gap will be set by lip sync, but we set max gap
+      // We'll store max gap in data attribute for lip sync
+      mouthOpen.dataset.maxGap = p.gap;
+    }
+
+    emotionBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        emotionBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        applyEmotion(btn.dataset.emotion);
+      });
+    });
+    // Apply neutral by default
+    applyEmotion('neutral');
+
+    // ===== SPEECH BUBBLE =====
+    speechBtn.addEventListener('click', () => {
+      const text = speechText.value.trim() || 'नमस्ते! 👋';
+      speechBubble.textContent = text;
+      speechBubble.classList.add('show');
+      clearTimeout(speechBubble._timer);
+      speechBubble._timer = setTimeout(() => {
+        speechBubble.classList.remove('show');
+      }, 4000);
+    });
+    speechText.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') speechBtn.click();
+    });
+
+    // ===== KEYBOARD SHORTCUTS =====
+    document.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+      if (e.key === ' ' || e.key === 'Space') {
+        e.preventDefault();
+        togglePlay();
+      }
+      if (e.key === 'ArrowRight' && audioPlayer.duration) {
+        e.preventDefault();
+        audioPlayer.currentTime = Math.min(audioPlayer.currentTime + 3, audioPlayer.duration);
+      }
+      if (e.key === 'ArrowLeft' && audioPlayer.duration) {
+        e.preventDefault();
+        audioPlayer.currentTime = Math.max(audioPlayer.currentTime - 3, 0);
+      }
+      if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        let v = Math.min(100, parseInt(volumeSlider.value) + 5);
+        volumeSlider.value = v;
+        audioPlayer.volume = v / 100;
+      }
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        let v = Math.max(0, parseInt(volumeSlider.value) - 5);
+        volumeSlider.value = v;
+        audioPlayer.volume = v / 100;
+      }
+    });
+
+    // ===== UTILITY =====
+    function formatTime(t) {
+      if (!t || isNaN(t)) return '0:00';
+      const m = Math.floor(t / 60);
+      const s = Math.floor(t % 60);
+      return m + ':' + (s < 10 ? '0' : '') + s;
+    }
+
+    // ===== BLINK LOOP =====
+    function startBlinkLoop() {
+      clearInterval(blinkInterval);
+      blinkInterval = setInterval(() => {
+        if (!blinkEnabled || !showEyes) return;
+        if (Math.random() < 0.3) {
+          eyeL.setAttribute('ry', '1');
+          eyeR.setAttribute('ry', '1');
+          setTimeout(() => {
+            eyeL.setAttribute('ry', '8');
+            eyeR.setAttribute('ry', '8');
+          }, 120);
+        }
+      }, 1000);
+    }
+    startBlinkLoop();
+
+    // ===== CLEANUP =====
+    window.addEventListener('beforeunload', () => {
+      clearInterval(mouthInterval);
+      clearInterval(blinkInterval);
+    });
+
+    // ===== INIT STATUS =====
+    status.textContent = '📂 ऑडियो अपलोड करें';
+
+  })();
+</script>
+
+</body>
+</html>
