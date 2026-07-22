@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Try-On (GitHub Hosted)</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+        body { background: #18181b; color: #f4f4f5; padding: 20px; min-height: 100vh; }
+        .container { max-width: 450px; margin: auto; display: flex; flex-direction: column; gap: 15px; }
+        h2 { text-align: center; color: #fff; margin-bottom: 5px; }
+        input[type="text"] { width: 100%; padding: 12px; background: #27272a; border: 1px solid #3f3f46; color: #fff; border-radius: 8px; font-size: 14px; }
+        .btn-green { background: #22c55e; color: white; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .file-box { background: #27272a; padding: 12px; border-radius: 8px; border: 1px dashed #52525b; text-align: center; }
+        .file-box input { width: 100%; color: #a1a1aa; }
+        .btn-red { background: #ef4444; color: white; padding: 14px; border: none; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; }
+        #status { text-align: center; color: #eab308; font-size: 14px; min-height: 20px; font-weight: 500; word-break: break-all; }
+        .result-box { width: 100%; text-align: center; margin-top: 10px; }
+        .result-box img { max-width: 100%; border-radius: 12px; border: 1px solid #3f3f46; display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>AI Try-On Studio</h2>
+        
+        <input type="text" id="replicateKey" placeholder="Replicate Token (r8_...)">
+        <input type="text" id="imgbbKey" placeholder="ImgBB Key">
+        <button class="btn-green" onclick="saveKeys()">Save Keys</button>
+
+        <div class="file-box">
+            <p style="margin-bottom: 5px; font-size: 12px; color: #a1a1aa;">📸 मॉडल फोटो चुनें</p>
+            <input type="file" id="modelInput" accept="image/*">
+        </div>
+
+        <div class="file-box">
+            <p style="margin-bottom: 5px; font-size: 12px; color: #a1a1aa;">👕 कपड़े की फोटो चुनें</p>
+            <input type="file" id="garmentInput" accept="image/*">
+        </div>
+
+        <button class="btn-red" onclick="runAITryOn()">🤖 AI ट्राई-ऑन शुरू करें</button>
+
+        <div id="status"></div>
+
+        <div class="result-box">
+            <img id="outputImage" alt="AI Result">
+        </div>
+    </div>
+
+    <script>
+        // Load saved keys
+        document.getElementById('replicateKey').value = localStorage.getItem('replicate_token') || '';
+        document.getElementById('imgbbKey').value = localStorage.getItem('imgbb_key') || '';
+
+        function saveKeys() {
+            const repKey = document.getElementById('replicateKey').value.trim();
+            const imgKey = document.getElementById('imgbbKey').value.trim();
+            localStorage.setItem('replicate_token', repKey);
+            localStorage.setItem('imgbb_key', imgKey);
+            document.getElementById('status').innerText = '✅ Keys सफलतापूर्वक सेव हो गईं!';
+        }
+
+        async function uploadToImgBB(file, apiKey) {
+            const formData = new FormData();
+            formData.append('image', file);
+            const res = await fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
+                method: 'POST',
+                body: formData
+            });
+            const data = await res.json();
+            if (!data.success) throw new Error('ImgBB API Key सही नहीं है!');
+            return data.data.url;
+        }
+
+        async function runAITryOn() {
+            const status = document.getElementById('status');
+            const outputImg = document.getElementById('outputImage');
+            const repToken = document.getElementById('replicateKey').value.trim();
+            const imgToken = document.getElementById('imgbbKey').value.trim();
+            
+            const modelFile = document.getElementById('modelInput').files[0];
+            const garmentFile = document.getElementById('garmentInput').files[0];
+
+            if (!repToken || !imgToken) {
+                alert('कृपया Replicate और ImgBB दोनों Keys डालें!');
+                return;
+            }
+            if (!modelFile || !garmentFile) {
+                alert('कृपया मॉडल और कपड़ा दोनों फोटो चुनें!');
+                return;
+            }
+
+            outputImg.style.display = 'none';
+
+            try {
+                // Step 1: Upload Images
+                status.innerText = '⏳ 1/3: फोटो इंटरनेट पर अपलोड हो रही है...';
+                const modelUrl = await uploadToImgBB(modelFile, imgToken);
+                const garmentUrl = await uploadToImgBB(garmentFile, imgToken);
+
+                // Step 2: Call Replicate via CORS Gateway
+                status.innerText = '⏳ 2/3: AI मॉडल प्रोसेस हो रहा है...';
+                
+                // Using Corsproxy Network with custom header handling
+                const proxyUrl = 'https://corsproxy.io/?';
+                const targetUrl = 'https://api.replicate.com/v1/predictions';
+
+                const response = await fetch(proxyUrl + encodeURIComponent(targetUrl), {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${repToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        version: "c87e6b95d17384768862804006c35c345f061e3895e54d320478065440d995cb",
+                        input: {
+                            human_img: modelUrl,
+                            garm_img: garmentUrl,
+                            garment_des: "clothing"
+                        }
+                    })
+                });
+
+                let data = await response.json();
+                
+                if (data.error) throw new Error(data.detail || data.error);
+                if (!data.id) throw new Error('Replicate API Token अमान्य या समाप्त हो गया है!');
+
+                const predId = data.id;
+                status.innerText = '⏳ 3/3: AI कपड़े बदल रहा है... (15-20 सेकंड प्रतीक्षा करें)';
+
+                // Step 3: Poll for Result
+                for (let i = 0; i < 30; i++) {
+                    await new Promise(resolve => setTimeout(resolve, 3000));
+
+                    const pollRes = await fetch(proxyUrl + encodeURIComponent(`https://api.replicate.com/v1/predictions/${predId}`), {
+                        headers: {
+                            'Authorization': `Bearer ${repToken}`
+                        }
+                    });
+                    
+                    const pollData = await pollRes.json();
+
+                    if (pollData.status === 'succeeded') {
+                        const finalResultUrl = Array.isArray(pollData.output) ? pollData.output[0] : pollData.output;
+                        outputImg.src = finalResultUrl;
+                        outputImg.style.display = 'block';
+                        status.innerText = '🎉 AI ट्राई-ऑन सफल!';
+                        return;
+                    } else if (pollData.status === 'failed') {
+                        throw new Error('AI जनरेशन फेल हो गया: ' + (pollData.error || 'अज्ञात कारण'));
+                    }
+                }
+                throw new Error('समय समाप्त हो गया। फिर से कोशिश करें!');
+
+            } catch (err) {
+                status.innerText = '❌ एरर: ' + err.message;
+            }
+        }
+    </script>
+</body>
+</html>
