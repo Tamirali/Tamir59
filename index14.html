@@ -1,0 +1,1550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>🎵 Alternating Lip Sync · Two Heroes</title>
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        :root {
+            --bg: #0a0c18;
+            --border: rgba(255,255,255,0.06);
+            --accent: #a78bfa;
+            --text: #f0f0f0;
+            --text2: rgba(255,255,255,0.5);
+            --shadow: 0 20px 60px rgba(0,0,0,0.7);
+        }
+        body {
+            background: var(--bg);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            padding: 16px;
+            color: var(--text);
+            overflow-x: hidden;
+        }
+        .app {
+            width: 100%;
+            max-width: 1100px;
+            background: var(--bg);
+            border-radius: 40px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            padding: 24px 28px 28px;
+            backdrop-filter: blur(8px);
+            background: rgba(10,12,24,0.92);
+        }
+        @media (max-width:700px) {
+            .app { padding:14px 12px 18px; border-radius:24px; }
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo h1 {
+            font-size: 22px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #c4b5fd, #f472b6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .logo .badge {
+            font-size: 10px;
+            background: rgba(167,139,250,0.15);
+            border: 1px solid rgba(167,139,250,0.2);
+            padding: 2px 14px;
+            border-radius: 40px;
+            color: var(--accent);
+            -webkit-text-fill-color: var(--accent);
+            font-weight: 500;
+        }
+        .actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .file-btn {
+            background: rgba(167,139,250,0.12);
+            border: 1px solid rgba(167,139,250,0.2);
+            color: #fff;
+            padding: 9px 20px;
+            border-radius: 40px;
+            font-size: 13px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition:0.25s;
+            position:relative;
+        }
+        .file-btn:hover {
+            background: rgba(167,139,250,0.22);
+            border-color: rgba(167,139,250,0.35);
+            transform:scale(1.02);
+        }
+        .file-btn input {
+            position:absolute;
+            opacity:0;
+            width:100%;
+            height:100%;
+            left:0; top:0;
+            cursor:pointer;
+        }
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: var(--text2);
+        }
+        .dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: #6b7280;
+            transition:0.3s;
+        }
+        .dot.playing { background:#4ade80; box-shadow:0 0 16px rgba(74,222,128,0.4); }
+        .dot.paused { background:#facc15; box-shadow:0 0 16px rgba(250,204,21,0.3); }
+        .dot.loading { background:#60a5fa; box-shadow:0 0 16px rgba(96,165,250,0.3); animation:pulse 0.8s infinite; }
+        @keyframes pulse { 0%,100%{ opacity:1; transform:scale(1); } 50%{ opacity:0.4; transform:scale(0.8); } }
+        .stage {
+            position: relative;
+            border-radius: 28px;
+            overflow: hidden;
+            background: radial-gradient(ellipse at 50% 80%, #141a2e, #070912);
+            border: 1px solid var(--border);
+            box-shadow: inset 0 0 80px rgba(0,0,0,0.6), 0 8px 32px rgba(0,0,0,0.3);
+            aspect-ratio: 16 / 9;
+            min-height: 240px;
+            touch-action: none;
+            margin-bottom: 16px;
+        }
+        #stageCanvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+        .stage-overlay {
+            position: absolute;
+            bottom: 14px;
+            left: 0; right: 0;
+            text-align: center;
+            pointer-events: none;
+            font-size: 12px;
+            color: rgba(255,255,255,0.15);
+            letter-spacing: 2px;
+            font-weight: 300;
+        }
+        .stage-overlay span {
+            background: rgba(0,0,0,0.35);
+            padding: 4px 18px;
+            border-radius: 40px;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.03);
+        }
+        .track-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 8px;
+            padding: 0 4px;
+        }
+        .track-name {
+            font-weight: 500;
+            font-size: 15px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 300px;
+        }
+        .track-name.empty { color: var(--text2); font-weight: 400; }
+        .track-count { font-size: 12px; color: var(--text2); }
+        .progress-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            padding: 0 4px;
+        }
+        .progress-track {
+            flex: 1;
+            height: 4px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 4px;
+            position: relative;
+            cursor: pointer;
+            transition: height 0.15s;
+        }
+        .progress-track:hover { height: 6px; }
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            border-radius: 4px;
+            background: linear-gradient(90deg, #a78bfa, #f472b6);
+            transition: width 0.08s linear;
+        }
+        .time-display {
+            font-size: 13px;
+            font-variant-numeric: tabular-nums;
+            color: var(--text2);
+            min-width: 100px;
+            text-align: right;
+            letter-spacing: 0.2px;
+        }
+        .controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            flex-wrap: wrap;
+            padding: 4px 0 10px;
+        }
+        .ctrl-btn {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.06);
+            color: var(--text);
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            cursor: pointer;
+            transition:0.2s;
+        }
+        .ctrl-btn:hover {
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(255,255,255,0.12);
+            transform:scale(1.05);
+        }
+        .ctrl-btn:active { transform:scale(0.92); }
+        .ctrl-btn.play-btn {
+            background: rgba(167,139,250,0.18);
+            border-color: rgba(167,139,250,0.25);
+            width: 54px; height: 54px;
+            font-size: 24px;
+        }
+        .ctrl-btn.play-btn:hover {
+            background: rgba(167,139,250,0.28);
+            border-color: rgba(167,139,250,0.4);
+            box-shadow: 0 0 30px rgba(167,139,250,0.15);
+        }
+        .ctrl-btn.play-btn.paused {
+            background: rgba(250,204,21,0.12);
+            border-color: rgba(250,204,21,0.2);
+        }
+        .ctrl-btn.play-btn.paused:hover { background: rgba(250,204,21,0.22); }
+        .vol-wrap {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: 6px;
+        }
+        .vol-wrap input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 70px;
+            height: 3px;
+            border-radius: 4px;
+            background: rgba(255,255,255,0.12);
+            outline: none;
+        }
+        .vol-wrap input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 14px; height: 14px;
+            border-radius: 50%;
+            background: #a78bfa;
+            cursor: pointer;
+            box-shadow: 0 0 16px rgba(167,139,250,0.25);
+            border: 2px solid rgba(255,255,255,0.1);
+        }
+        .vol-wrap input[type="range"]::-moz-range-thumb {
+            width: 14px; height: 14px;
+            border-radius: 50%;
+            background: #a78bfa;
+            cursor: pointer;
+            border: 2px solid rgba(255,255,255,0.1);
+        }
+        .ctrl-btn.vol-btn { width:38px; height:38px; font-size:15px; }
+        @media (max-width:500px) {
+            .vol-wrap input[type="range"] { width:44px; }
+            .ctrl-btn { width:38px; height:38px; font-size:15px; }
+            .ctrl-btn.play-btn { width:46px; height:46px; font-size:20px; }
+            .track-name { max-width:140px; font-size:13px; }
+        }
+        .playlist-section {
+            margin-top: 12px;
+            border-top: 1px solid var(--border);
+            padding-top: 12px;
+        }
+        .pl-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .pl-header h3 {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text2);
+            letter-spacing: 0.3px;
+        }
+        .pl-header .count {
+            font-size: 11px;
+            color: var(--text2);
+            background: rgba(255,255,255,0.04);
+            padding: 2px 12px;
+            border-radius: 20px;
+        }
+        .playlist {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            max-height: 160px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+        .playlist::-webkit-scrollbar { width:4px; }
+        .playlist::-webkit-scrollbar-thumb { background: rgba(167,139,250,0.3); border-radius:10px; }
+        .pl-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 6px 12px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid transparent;
+            transition:0.2s;
+            cursor: pointer;
+            gap: 8px;
+        }
+        .pl-item:hover {
+            background: rgba(255,255,255,0.05);
+            border-color: rgba(255,255,255,0.04);
+        }
+        .pl-item.active {
+            background: rgba(167,139,250,0.08);
+            border-color: rgba(167,139,250,0.15);
+        }
+        .pl-item .pl-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+            flex: 1;
+        }
+        .pl-item .pl-idx {
+            font-size: 10px;
+            color: var(--text2);
+            width: 20px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+        .pl-item .pl-name {
+            font-size: 13px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .pl-item .pl-status { font-size: 11px; flex-shrink:0; }
+        .pl-item .pl-remove {
+            background: none;
+            border: none;
+            color: var(--text2);
+            font-size: 13px;
+            cursor: pointer;
+            padding: 2px 6px;
+            border-radius: 6px;
+            opacity: 0.2;
+            transition:0.2s;
+            flex-shrink:0;
+        }
+        .pl-item:hover .pl-remove { opacity:0.6; }
+        .pl-item .pl-remove:hover {
+            background: rgba(248,113,113,0.15);
+            color: #f87171;
+            opacity:1;
+        }
+        .empty-pl {
+            text-align: center;
+            padding: 20px 10px;
+            color: var(--text2);
+            font-size: 13px;
+            opacity:0.5;
+        }
+        .empty-pl .big { font-size:32px; display:block; margin-bottom:6px; }
+        .tap-hint {
+            position: absolute;
+            top: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 13px;
+            background: rgba(0,0,0,0.5);
+            padding: 4px 16px;
+            border-radius: 30px;
+            color: rgba(255,255,255,0.4);
+            pointer-events: none;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.04);
+            white-space: nowrap;
+        }
+        .lip-indicator {
+            position: absolute;
+            bottom: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 30px;
+            background: rgba(0,0,0,0.4);
+            padding: 4px 18px;
+            border-radius: 30px;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.04);
+            pointer-events: none;
+            font-size: 11px;
+            color: rgba(255,255,255,0.3);
+        }
+        .lip-indicator .active {
+            color: #a78bfa;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+<div class="app">
+    <div class="header">
+        <div class="logo">
+            <h1>🕺 Alternating Lips</h1>
+            <span class="badge">🎤 LIVE</span>
+        </div>
+        <div class="actions">
+            <div class="file-btn">
+                📁 Add Songs
+                <input type="file" id="fileInput" accept="audio/*" multiple />
+            </div>
+            <div class="status">
+                <span class="dot stopped" id="statusDot"></span>
+                <span id="statusLabel">No songs</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="stage">
+        <canvas id="stageCanvas"></canvas>
+        <div class="stage-overlay"><span>✦ alternating lip sync ✦</span></div>
+        <div class="tap-hint">👆 Tap any hero for flying hand</div>
+        <div class="lip-indicator">
+            <span id="lipLabel1">🔵 Hero 1</span>
+            <span id="lipLabel2">🔴 Hero 2</span>
+        </div>
+    </div>
+
+    <div class="track-row">
+        <span class="track-name empty" id="trackName">🎧 No track selected</span>
+        <span class="track-count" id="trackCount">0 songs</span>
+    </div>
+
+    <div class="progress-area">
+        <div class="progress-track" id="progressTrack">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <span class="time-display" id="timeDisplay">0:00 / 0:00</span>
+    </div>
+
+    <div class="controls">
+        <button class="ctrl-btn" id="prevBtn" title="Previous">⏮</button>
+        <button class="ctrl-btn play-btn paused" id="playBtn" title="Play / Pause">▶</button>
+        <button class="ctrl-btn" id="nextBtn" title="Next">⏭</button>
+        <div class="vol-wrap">
+            <button class="ctrl-btn vol-btn" id="muteBtn" title="Mute">🔊</button>
+            <input type="range" id="volumeSlider" min="0" max="1.5" step="0.01" value="0.8" />
+        </div>
+    </div>
+
+    <div class="playlist-section">
+        <div class="pl-header">
+            <h3>📋 Playlist</h3>
+            <span class="count" id="plCount">0 tracks</span>
+        </div>
+        <div class="playlist" id="playlistContainer">
+            <div class="empty-pl">
+                <span class="big">🎶</span>
+                Add audio files to make the heroes dance
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ──────────────────────────────────────────────────────────────
+    //  ALTERNATING LIP SYNC · Two Heroes, one sings at a time
+    // ──────────────────────────────────────────────────────────────
+
+    const canvas = document.getElementById('stageCanvas');
+    const ctx = canvas.getContext('2d');
+    const fileInput = document.getElementById('fileInput');
+    const playBtn = document.getElementById('playBtn');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const muteBtn = document.getElementById('muteBtn');
+    const volumeSlider = document.getElementById('volumeSlider');
+    const progressFill = document.getElementById('progressFill');
+    const progressTrack = document.getElementById('progressTrack');
+    const timeDisplay = document.getElementById('timeDisplay');
+    const trackName = document.getElementById('trackName');
+    const trackCount = document.getElementById('trackCount');
+    const plCount = document.getElementById('plCount');
+    const playlistContainer = document.getElementById('playlistContainer');
+    const statusDot = document.getElementById('statusDot');
+    const statusLabel = document.getElementById('statusLabel');
+    const lipLabel1 = document.getElementById('lipLabel1');
+    const lipLabel2 = document.getElementById('lipLabel2');
+
+    let W, H;
+    function resize() {
+        const rect = canvas.parentElement.getBoundingClientRect();
+        W = rect.width;
+        H = rect.height;
+        canvas.width = W;
+        canvas.height = H;
+        canvas.style.width = W + 'px';
+        canvas.style.height = H + 'px';
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    // ─── AUDIO STATE ───
+    let audioCtx = null, analyser = null, dataArray = null, gainNode = null, sourceNode = null;
+    let isPlaying = false, isMuted = false, volumeGain = 0.8;
+    let currentIndex = -1, playlist = [];
+    let startTime = 0, pausedAt = 0, duration = 0;
+    let animId = null, isDragging = false;
+    let amplitude = 0, dancePhase = 0;
+
+    // Stars
+    const stars = [];
+    for (let i=0; i<80; i++) {
+        stars.push({
+            x: Math.random(), y: Math.random(),
+            r: 0.5+Math.random()*2.5,
+            a: 0.2+Math.random()*0.5,
+            speed: 0.2+Math.random()*0.8
+        });
+    }
+
+    // ─── HERO STATES for special moves ───
+    const heroStates = [
+        { special: false, hand: null, timer: 0, duration: 1.8, 
+          startX: 0, startY: 0, targetX: 0, targetY: 0, progress: 0 },
+        { special: false, hand: null, timer: 0, duration: 1.8,
+          startX: 0, startY: 0, targetX: 0, targetY: 0, progress: 0 }
+    ];
+
+    // ─── PLAYLIST FUNCTIONS ───
+    function updatePlaylistUI() {
+        const n = playlist.length;
+        trackCount.textContent = n + ' songs';
+        plCount.textContent = n + ' tracks';
+        if (n === 0) {
+            playlistContainer.innerHTML = `
+                <div class="empty-pl">
+                    <span class="big">🎶</span>
+                    Add audio files to make the heroes dance
+                </div>
+            `;
+            trackName.textContent = '🎧 No track selected';
+            trackName.className = 'track-name empty';
+            statusDot.className = 'dot stopped';
+            statusLabel.textContent = 'No songs';
+            return;
+        }
+        let html = '';
+        playlist.forEach((item, idx) => {
+            const active = idx === currentIndex ? 'active' : '';
+            const status = idx === currentIndex ? (isPlaying ? '▶' : '⏸') : '';
+            const name = item.name.length > 38 ? item.name.slice(0,36)+'…' : item.name;
+            html += `
+                <div class="pl-item ${active}" data-idx="${idx}">
+                    <div class="pl-left">
+                        <span class="pl-idx">${idx+1}</span>
+                        <span class="pl-name">${name}</span>
+                    </div>
+                    <span class="pl-status">${status}</span>
+                    <button class="pl-remove" data-idx="${idx}">✕</button>
+                </div>
+            `;
+        });
+        playlistContainer.innerHTML = html;
+        document.querySelectorAll('.pl-item').forEach(el => {
+            el.addEventListener('click', (e) => {
+                if (e.target.closest('.pl-remove')) return;
+                const idx = parseInt(el.dataset.idx);
+                if (idx === currentIndex) { togglePlay(); return; }
+                playTrack(idx);
+            });
+        });
+        document.querySelectorAll('.pl-remove').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                removeTrack(parseInt(btn.dataset.idx));
+            });
+        });
+        if (currentIndex >=0 && currentIndex < playlist.length) {
+            trackName.textContent = playlist[currentIndex].name;
+            trackName.className = 'track-name';
+            statusLabel.textContent = isPlaying ? 'Playing' : 'Paused';
+            statusDot.className = 'dot ' + (isPlaying ? 'playing' : 'paused');
+        } else {
+            trackName.textContent = '🎧 No track selected';
+            trackName.className = 'track-name empty';
+        }
+    }
+
+    function addTracks(files) {
+        let added = 0;
+        for (const f of files) {
+            if (f.type.startsWith('audio/')) {
+                playlist.push({ name: f.name, file: f, data: null });
+                added++;
+            }
+        }
+        if (added === 0) return;
+        if (playlist.length > 0 && currentIndex === -1) {
+            currentIndex = 0;
+            loadAndPlay(0);
+        } else {
+            updatePlaylistUI();
+            if (playlist.length > 0) {
+                statusDot.className = 'dot paused';
+                statusLabel.textContent = 'Ready';
+            }
+        }
+    }
+
+    function removeTrack(idx) {
+        if (playlist.length === 0) return;
+        const was = isPlaying && idx === currentIndex;
+        if (was) stopAudio();
+        playlist.splice(idx, 1);
+        if (playlist.length === 0) {
+            currentIndex = -1;
+            trackName.textContent = '🎧 No track selected';
+            trackName.className = 'track-name empty';
+            statusDot.className = 'dot stopped';
+            statusLabel.textContent = 'No songs';
+            progressFill.style.width = '0%';
+            timeDisplay.textContent = '0:00 / 0:00';
+            updatePlaylistUI();
+            return;
+        }
+        if (idx < currentIndex) currentIndex--;
+        else if (idx === currentIndex) {
+            currentIndex = Math.min(idx, playlist.length - 1);
+            loadAndPlay(currentIndex);
+        }
+        updatePlaylistUI();
+    }
+
+    function getCtx() {
+        if (!audioCtx) audioCtx = new(window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        return audioCtx;
+    }
+
+    async function loadAndPlay(idx) {
+        if (idx < 0 || idx >= playlist.length) return;
+        const track = playlist[idx];
+        if (!track) return;
+        try {
+            const ctx = getCtx();
+            let data = track.data;
+            if (!data) {
+                const buf = await track.file.arrayBuffer();
+                data = await ctx.decodeAudioData(buf);
+                track.data = data;
+            }
+            currentIndex = idx;
+            duration = data.duration;
+            pausedAt = 0;
+            isPlaying = false;
+            playBtn.textContent = '▶';
+            playBtn.className = 'ctrl-btn play-btn paused';
+            updatePlaylistUI();
+            playTrack(idx);
+        } catch (e) {
+            console.error(e);
+            statusDot.className = 'dot error';
+            statusLabel.textContent = 'Error';
+            alert('Could not load audio. Try another file.');
+        }
+    }
+
+    function playTrack(idx) {
+        if (idx < 0 || idx >= playlist.length) return;
+        const track = playlist[idx];
+        if (!track || !track.data) { loadAndPlay(idx); return; }
+        stopAudio();
+        const ctx = getCtx();
+        const data = track.data;
+        duration = data.duration;
+        pausedAt = 0;
+        sourceNode = ctx.createBufferSource();
+        sourceNode.buffer = data;
+        analyser = ctx.createAnalyser();
+        analyser.fftSize = 512;
+        analyser.smoothingTimeConstant = 0.85;
+        dataArray = new Uint8Array(analyser.frequencyBinCount);
+        gainNode = ctx.createGain();
+        gainNode.gain.value = isMuted ? 0 : volumeGain;
+        sourceNode.connect(gainNode);
+        gainNode.connect(analyser);
+        analyser.connect(ctx.destination);
+        sourceNode.start(0, pausedAt);
+        startTime = ctx.currentTime;
+        isPlaying = true;
+        currentIndex = idx;
+        playBtn.textContent = '⏸';
+        playBtn.className = 'ctrl-btn play-btn';
+        statusDot.className = 'dot playing';
+        statusLabel.textContent = 'Playing';
+        trackName.textContent = track.name;
+        trackName.className = 'track-name';
+        updatePlaylistUI();
+        dancePhase = 0;
+        heroStates.forEach(s => { s.special = false; s.timer = 0; });
+        sourceNode.onended = () => {
+            if (isPlaying) {
+                isPlaying = false;
+                playBtn.textContent = '▶';
+                playBtn.className = 'ctrl-btn play-btn paused';
+                statusDot.className = 'dot paused';
+                statusLabel.textContent = 'Finished';
+                progressFill.style.width = '100%';
+                updateTimeDisplay(duration);
+                const next = (currentIndex + 1) % playlist.length;
+                if (next !== currentIndex && playlist.length > 1) {
+                    setTimeout(() => playTrack(next), 500);
+                } else {
+                    updatePlaylistUI();
+                }
+            }
+        };
+    }
+
+    function stopAudio() {
+        if (sourceNode) {
+            try { sourceNode.stop(); } catch(e) {}
+            sourceNode.disconnect();
+            sourceNode = null;
+        }
+        isPlaying = false;
+        playBtn.textContent = '▶';
+        playBtn.className = 'ctrl-btn play-btn paused';
+        if (currentIndex >= 0 && currentIndex < playlist.length) {
+            statusDot.className = 'dot paused';
+            statusLabel.textContent = 'Paused';
+        }
+        updatePlaylistUI();
+    }
+
+    function togglePlay() {
+        if (playlist.length === 0) { alert('Add some songs first!'); return; }
+        if (currentIndex === -1) { currentIndex = 0; loadAndPlay(0); return; }
+        const ctx = getCtx();
+        if (ctx.state === 'suspended') ctx.resume();
+        if (isPlaying) {
+            if (sourceNode) {
+                const elapsed = (ctx.currentTime - startTime) + pausedAt;
+                pausedAt = Math.min(elapsed, duration);
+                try { sourceNode.stop(); } catch(e) {}
+                sourceNode.disconnect();
+                sourceNode = null;
+            }
+            isPlaying = false;
+            playBtn.textContent = '▶';
+            playBtn.className = 'ctrl-btn play-btn paused';
+            statusDot.className = 'dot paused';
+            statusLabel.textContent = 'Paused';
+            updatePlaylistUI();
+        } else {
+            const track = playlist[currentIndex];
+            if (!track || !track.data) { loadAndPlay(currentIndex); return; }
+            const data = track.data;
+            duration = data.duration;
+            if (pausedAt >= duration) pausedAt = 0;
+            sourceNode = ctx.createBufferSource();
+            sourceNode.buffer = data;
+            analyser = ctx.createAnalyser();
+            analyser.fftSize = 512;
+            analyser.smoothingTimeConstant = 0.85;
+            dataArray = new Uint8Array(analyser.frequencyBinCount);
+            gainNode = ctx.createGain();
+            gainNode.gain.value = isMuted ? 0 : volumeGain;
+            sourceNode.connect(gainNode);
+            gainNode.connect(analyser);
+            analyser.connect(ctx.destination);
+            sourceNode.start(0, pausedAt);
+            startTime = ctx.currentTime;
+            isPlaying = true;
+            playBtn.textContent = '⏸';
+            playBtn.className = 'ctrl-btn play-btn';
+            statusDot.className = 'dot playing';
+            statusLabel.textContent = 'Playing';
+            trackName.textContent = track.name;
+            trackName.className = 'track-name';
+            updatePlaylistUI();
+            sourceNode.onended = () => {
+                if (isPlaying) {
+                    isPlaying = false;
+                    playBtn.textContent = '▶';
+                    playBtn.className = 'ctrl-btn play-btn paused';
+                    statusDot.className = 'dot paused';
+                    statusLabel.textContent = 'Finished';
+                    const next = (currentIndex + 1) % playlist.length;
+                    if (next !== currentIndex && playlist.length > 1) {
+                        setTimeout(() => playTrack(next), 500);
+                    } else {
+                        updatePlaylistUI();
+                    }
+                }
+            };
+        }
+    }
+
+    function nextTrack() {
+        if (playlist.length === 0) return;
+        const n = (currentIndex + 1) % playlist.length;
+        if (n === currentIndex && playlist.length === 1) {
+            pausedAt = 0;
+            if (isPlaying) { togglePlay(); setTimeout(togglePlay, 100); } else playTrack(currentIndex);
+            return;
+        }
+        playTrack(n);
+    }
+
+    function prevTrack() {
+        if (playlist.length === 0) return;
+        const n = (currentIndex - 1 + playlist.length) % playlist.length;
+        playTrack(n);
+    }
+
+    volumeSlider.addEventListener('input', () => {
+        volumeGain = parseFloat(volumeSlider.value);
+        if (gainNode && !isMuted) gainNode.gain.value = volumeGain;
+        if (isMuted && volumeGain > 0.01) {
+            isMuted = false;
+            muteBtn.textContent = '🔊';
+            if (gainNode) gainNode.gain.value = volumeGain;
+        }
+    });
+    muteBtn.addEventListener('click', () => {
+        isMuted = !isMuted;
+        muteBtn.textContent = isMuted ? '🔇' : '🔊';
+        if (gainNode) gainNode.gain.value = isMuted ? 0 : volumeGain;
+    });
+
+    function updateTimeDisplay(cur) {
+        const total = duration || 0;
+        const cm = Math.floor(cur/60), cs = Math.floor(cur%60);
+        const tm = Math.floor(total/60), ts = Math.floor(total%60);
+        timeDisplay.textContent = `${cm}:${String(cs).padStart(2,'0')} / ${tm}:${String(ts).padStart(2,'0')}`;
+        const pct = total > 0 ? Math.min(100, (cur/total)*100) : 0;
+        progressFill.style.width = pct + '%';
+    }
+
+    progressTrack.addEventListener('click', (e) => {
+        if (duration <= 0) return;
+        const r = progressTrack.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width;
+        seekTo(x * duration);
+    });
+    progressTrack.addEventListener('mousedown', () => { isDragging = true; });
+    document.addEventListener('mouseup', () => { isDragging = false; });
+    progressTrack.addEventListener('mousemove', (e) => {
+        if (!isDragging || duration <= 0) return;
+        const r = progressTrack.getBoundingClientRect();
+        const x = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width));
+        seekTo(x * duration);
+    });
+
+    function seekTo(time) {
+        if (!playlist[currentIndex] || !playlist[currentIndex].data) return;
+        const was = isPlaying;
+        if (was) {
+            if (sourceNode) { try { sourceNode.stop(); } catch(e) {} sourceNode.disconnect(); sourceNode = null; }
+            isPlaying = false;
+        }
+        pausedAt = Math.max(0, Math.min(time, duration));
+        if (was) {
+            const ctx = getCtx();
+            const track = playlist[currentIndex];
+            const data = track.data;
+            sourceNode = ctx.createBufferSource();
+            sourceNode.buffer = data;
+            analyser = ctx.createAnalyser();
+            analyser.fftSize = 512;
+            analyser.smoothingTimeConstant = 0.85;
+            dataArray = new Uint8Array(analyser.frequencyBinCount);
+            gainNode = ctx.createGain();
+            gainNode.gain.value = isMuted ? 0 : volumeGain;
+            sourceNode.connect(gainNode);
+            gainNode.connect(analyser);
+            analyser.connect(ctx.destination);
+            sourceNode.start(0, pausedAt);
+            startTime = ctx.currentTime;
+            isPlaying = true;
+            playBtn.textContent = '⏸';
+            playBtn.className = 'ctrl-btn play-btn';
+            statusDot.className = 'dot playing';
+            statusLabel.textContent = 'Playing';
+            sourceNode.onended = () => {
+                if (isPlaying) {
+                    isPlaying = false;
+                    playBtn.textContent = '▶';
+                    playBtn.className = 'ctrl-btn play-btn paused';
+                    statusDot.className = 'dot paused';
+                    statusLabel.textContent = 'Finished';
+                    const n = (currentIndex + 1) % playlist.length;
+                    if (n !== currentIndex && playlist.length > 1) setTimeout(() => playTrack(n), 500);
+                    else updatePlaylistUI();
+                }
+            };
+        } else {
+            updateTimeDisplay(pausedAt);
+        }
+    }
+
+    fileInput.addEventListener('change', (e) => {
+        const files = e.target.files;
+        if (files.length > 0) { addTracks(files); }
+        fileInput.value = '';
+    });
+
+    playBtn.addEventListener('click', togglePlay);
+    nextBtn.addEventListener('click', nextTrack);
+    prevBtn.addEventListener('click', prevTrack);
+    document.addEventListener('keydown', (e) => {
+        if (e.target.tagName === 'INPUT') return;
+        if (e.code === 'Space') { e.preventDefault(); togglePlay(); }
+        if (e.code === 'ArrowRight') { e.preventDefault(); nextTrack(); }
+        if (e.code === 'ArrowLeft') { e.preventDefault(); prevTrack(); }
+    });
+
+    function getAmp() {
+        if (!analyser || !isPlaying || !dataArray) return 0;
+        analyser.getByteFrequencyData(dataArray);
+        let sum = 0;
+        for (let i=0; i<dataArray.length; i++) sum += dataArray[i];
+        const avg = sum / dataArray.length;
+        return Math.min(1, avg / 128);
+    }
+
+    function getFreq() {
+        if (!analyser || !isPlaying || !dataArray) return new Float32Array(32).fill(0);
+        analyser.getByteFrequencyData(dataArray);
+        const out = new Float32Array(32);
+        const step = Math.max(1, Math.floor(dataArray.length / 32));
+        for (let i=0; i<32; i++) {
+            let s = 0;
+            for (let j=0; j<step && i*step+j<dataArray.length; j++) s += dataArray[i*step+j];
+            out[i] = s / step / 255;
+        }
+        return out;
+    }
+
+    // ─── HERO POSITION HELPER ───
+    function getHeroPosition(heroIdx, phase, amp) {
+        const baseX = (heroIdx === 0) ? W * 0.28 : W * 0.72;
+        const baseY = H * 0.62;
+        const scale = Math.min(W, H) / 210;
+        const swayAmount = 40 * scale * (0.3 + amp * 0.3);
+        const sway = Math.sin(phase * 0.5 + heroIdx * 1.8) * swayAmount;
+        const bob = Math.sin(phase * 0.7 + heroIdx * 1.8) * 6 * scale + amp * 8 * scale;
+        const state = heroStates[heroIdx];
+        let offX = 0, offY = 0;
+        if (state.special) {
+            const t = state.progress;
+            offX = (state.targetX - state.startX) * t;
+            offY = (state.targetY - state.startY) * t;
+        }
+        return { x: baseX + sway + offX, y: baseY + bob + offY };
+    }
+
+    // ─── DRAW HERO with ALTERNATING LIP SYNC ───
+    function drawHero(heroIdx, cx, cy, scale, amp, phase, specialHand, offsetX, offsetY, lipWeight) {
+        const s = scale;
+        const swayAmount = 40 * s * (0.3 + amp * 0.3);
+        const sway = Math.sin(phase * 0.5 + heroIdx * 1.8) * swayAmount;
+        const finalX = cx + sway + offsetX;
+        const bob = Math.sin(phase * 0.7 + heroIdx * 1.8) * 6 * s + amp * 8 * s;
+        const finalY = cy + bob + offsetY;
+
+        let spinAngle = 0;
+        if (amp > 0.5 && Math.sin(phase * 2 + heroIdx * 1.8) > 0.7) {
+            spinAngle = Math.sin(phase * 0.5 + heroIdx * 1.8) * 0.15;
+        }
+
+        const legSwing = 0.4 + amp * 0.6;
+        const legL = Math.sin(phase * 1.3 + heroIdx * 1.8 + spinAngle) * legSwing * s * 22;
+        const legR = Math.sin(phase * 1.3 + Math.PI + heroIdx * 1.8 + spinAngle * 0.5) * legSwing * s * 22;
+
+        const armSwing = 0.5 + amp * 0.7;
+        let aL = Math.sin(phase * 0.9 + 0.5 + heroIdx * 1.8 + spinAngle * 0.3) * armSwing * s * 28;
+        let aR = Math.sin(phase * 0.9 + 0.5 + Math.PI * 0.6 + heroIdx * 1.8 + spinAngle * 0.3) * armSwing * s * 28;
+
+        if (specialHand === 'left') { aL = -60 * s; }
+        else if (specialHand === 'right') { aR = -60 * s; }
+
+        const headTilt = Math.sin(phase * 0.4 + heroIdx * 1.8) * 0.04 + spinAngle * 0.1;
+
+        ctx.save();
+        ctx.translate(finalX - cx, 0);
+
+        // ---- legs ----
+        const legLen = 60 * s;
+        ctx.save();
+        ctx.shadowBlur = 20;
+        ctx.shadowColor = 'rgba(0,0,0,0.2)';
+        for (const [lx, angle] of [[-16 * s, legL], [16 * s, legR]]) {
+            const endX = lx + Math.sin(angle * 0.5) * 8 * s;
+            const endY = finalY + legLen + 6 * s + Math.cos(angle * 0.5) * 4 * s;
+            ctx.beginPath();
+            ctx.moveTo(cx + lx, finalY + 10 * s);
+            ctx.lineTo(cx + endX, endY);
+            ctx.lineWidth = 12 * s;
+            ctx.strokeStyle = '#1a1f35';
+            ctx.lineCap = 'round';
+            ctx.stroke();
+            ctx.shadowBlur = 0;
+            ctx.beginPath();
+            ctx.moveTo(cx + lx, finalY + 10 * s);
+            ctx.lineTo(cx + endX, endY);
+            ctx.lineWidth = 6 * s;
+            ctx.strokeStyle = '#4a3f6b';
+            ctx.stroke();
+            ctx.shadowBlur = 20;
+        }
+        ctx.restore();
+
+        // ---- body ----
+        const torsoW = 44 * s;
+        const torsoH = 58 * s;
+        ctx.shadowBlur = 30;
+        const grad = ctx.createLinearGradient(cx, finalY - 10 * s, cx, finalY + torsoH);
+        const hue1 = 260 + heroIdx * 20;
+        const hue2 = 300 + heroIdx * 20;
+        grad.addColorStop(0, `hsl(${hue1}, 70%, 50%)`);
+        grad.addColorStop(0.5, `hsl(${hue1 + 20}, 80%, 65%)`);
+        grad.addColorStop(1, `hsl(${hue2}, 70%, 50%)`);
+        ctx.beginPath();
+        ctx.roundRect(cx - torsoW / 2, finalY - 10 * s - 4, torsoW, torsoH + 8, 12 * s);
+        ctx.fillStyle = grad;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+        ctx.lineWidth = 1.5 * s;
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.roundRect(cx - torsoW / 2 + 4 * s, finalY + 26 * s, torsoW - 8 * s, 8 * s, 4 * s);
+        ctx.fillStyle = 'rgba(255,215,0,0.2)';
+        ctx.fill();
+
+        // ---- arms ----
+        const armLen = 52 * s;
+        ctx.save();
+        ctx.shadowBlur = 20;
+        const armColors = [`hsl(${260 + heroIdx * 20}, 80%, 70%)`, `hsl(${340 + heroIdx * 20}, 80%, 70%)`];
+        for (let i = 0; i < 2; i++) {
+            const side = i === 0 ? -1 : 1;
+            const ax = cx + side * (torsoW / 2 - 4 * s);
+            const ay = i === 0 ? aL : aR;
+            let endX, endY;
+            if ( (i === 0 && specialHand === 'left') || (i === 1 && specialHand === 'right') ) {
+                const headY = finalY - 38 * s + Math.sin(phase * 0.4 + heroIdx * 1.8) * 3 * s;
+                endX = cx + side * 12 * s;
+                endY = headY - 40 * s;
+            } else {
+                endX = ax + side * 8 * s + ay * 0.3 + Math.sin(phase * 0.2 + i + heroIdx) * 4 * s;
+                endY = finalY + 2 * s + armLen + ay * 0.5;
+            }
+            ctx.beginPath();
+            ctx.moveTo(ax, finalY + 2 * s);
+            ctx.lineTo(endX, endY);
+            ctx.lineWidth = 10 * s;
+            ctx.strokeStyle = '#1a1f35';
+            ctx.stroke();
+            ctx.shadowBlur = 0;
+            ctx.beginPath();
+            ctx.moveTo(ax, finalY + 2 * s);
+            ctx.lineTo(endX, endY);
+            ctx.lineWidth = 5 * s;
+            ctx.strokeStyle = armColors[i];
+            ctx.stroke();
+            ctx.shadowBlur = 20;
+            const gradH = ctx.createRadialGradient(endX, endY, 2 * s, endX, endY, 12 * s);
+            gradH.addColorStop(0, `rgba(255,255,255,${0.2 + amp * 0.3})`);
+            gradH.addColorStop(1, 'rgba(167,139,250,0)');
+            ctx.beginPath();
+            ctx.arc(endX, endY, 12 * s, 0, Math.PI * 2);
+            ctx.fillStyle = gradH;
+            ctx.fill();
+        }
+        ctx.restore();
+
+        // ---- head ----
+        const headR = 34 * s;
+        const headY = finalY - 38 * s + Math.sin(phase * 0.4 + heroIdx * 1.8) * 3 * s;
+        ctx.save();
+        ctx.translate(cx, headY);
+        ctx.rotate(headTilt);
+        ctx.shadowBlur = 30;
+        ctx.shadowColor = 'rgba(0,0,0,0.2)';
+        const headGrad = ctx.createRadialGradient(-8 * s, -10 * s, 4 * s, 0, 0, headR);
+        headGrad.addColorStop(0, '#fce8dc');
+        headGrad.addColorStop(0.7, '#f5d6c6');
+        headGrad.addColorStop(1, '#eac0ae');
+        ctx.beginPath();
+        ctx.arc(0, 0, headR, 0, Math.PI * 2);
+        ctx.fillStyle = headGrad;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        ctx.strokeStyle = 'rgba(180,140,120,0.1)';
+        ctx.lineWidth = 1.5 * s;
+        ctx.stroke();
+
+        // hair
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = 'rgba(0,0,0,0.1)';
+        for (let i = -3; i <= 3; i++) {
+            const hx = i * 12 * s;
+            const hy = -headR + 2 * s + Math.abs(i) * 3 * s;
+            ctx.beginPath();
+            ctx.ellipse(hx, hy, 8 * s, 12 * s + Math.abs(i) * 2 * s, 0.1 * i, 0, Math.PI * 2);
+            ctx.fillStyle = i === 0 ? '#5c3d2e' : '#4a3024';
+            ctx.fill();
+        }
+        ctx.shadowBlur = 0;
+
+        // eyes
+        const eyeY = -2 * s;
+        const eyeOff = 14 * s;
+        const lookX = Math.sin(phase * 0.3 + heroIdx * 1.8) * 3 * s;
+        const lookY = Math.cos(phase * 0.5 + heroIdx * 1.8) * 2 * s;
+        for (const side of [-1, 1]) {
+            const ex = side * eyeOff + lookX * 0.3;
+            const ey = eyeY + lookY * 0.2;
+            ctx.shadowBlur = 4;
+            ctx.shadowColor = 'rgba(0,0,0,0.05)';
+            ctx.beginPath();
+            ctx.ellipse(ex, ey, 12 * s, 14 * s, 0, 0, Math.PI * 2);
+            ctx.fillStyle = '#fefcf9';
+            ctx.fill();
+            ctx.shadowBlur = 0;
+            const irisX = ex + side * 3 * s + lookX * 0.4;
+            const irisY = ey + lookY * 0.3;
+            const irisG = ctx.createRadialGradient(irisX - 2 * s, irisY - 3 * s, 1 * s, irisX, irisY, 9 * s);
+            irisG.addColorStop(0, '#6b4c3b');
+            irisG.addColorStop(0.6, '#3d281e');
+            irisG.addColorStop(1, '#1f110b');
+            ctx.beginPath();
+            ctx.arc(irisX, irisY, 9 * s, 0, Math.PI * 2);
+            ctx.fillStyle = irisG;
+            ctx.fill();
+            ctx.shadowBlur = 0;
+            ctx.beginPath();
+            ctx.arc(ex + side * 3 * s - 3 * s, ey - 4 * s, 3.5 * s, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(255,255,255,0.7)';
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(ex + side * 5 * s + 2 * s, ey + 3 * s, 1.8 * s, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(255,255,255,0.3)';
+            ctx.fill();
+        }
+
+        // eyebrows
+        ctx.strokeStyle = '#8b6b5a';
+        ctx.lineWidth = 2.5 * s;
+        ctx.lineCap = 'round';
+        for (const side of [-1, 1]) {
+            const bx = side * 22 * s;
+            const by = -20 * s + Math.sin(phase * 0.3 + heroIdx * 1.8) * 2 * s;
+            ctx.beginPath();
+            ctx.moveTo(bx - 12 * s, by - 2 * s);
+            ctx.quadraticCurveTo(bx, by - 8 * s - amp * 3 * s, bx + 12 * s, by - 2 * s);
+            ctx.stroke();
+        }
+
+        // ---- MOUTH with ALTERNATING LIP SYNC ----
+        // lipWeight = 0..1, controls how much this hero's mouth opens
+        const baseOpen = 4 * s;
+        const maxOpen = 20 * s;
+        const lipFactor = 0.2 + 0.8 * lipWeight; // when lipWeight=0, still 20% open
+        const mouthOpen = baseOpen + amp * maxOpen * lipFactor;
+        const mouthY = 14 * s;
+        ctx.shadowBlur = 6;
+        ctx.shadowColor = 'rgba(0,0,0,0.05)';
+        // upper lip
+        ctx.beginPath();
+        ctx.moveTo(-16 * s, mouthY - 2 * s);
+        ctx.quadraticCurveTo(-8 * s, mouthY - 10 * s - mouthOpen * 0.3, 0, mouthY - 6 * s - mouthOpen * 0.2);
+        ctx.quadraticCurveTo(8 * s, mouthY - 10 * s - mouthOpen * 0.3, 16 * s, mouthY - 2 * s);
+        ctx.fillStyle = '#d4787a';
+        ctx.fill();
+        // lower lip
+        ctx.beginPath();
+        ctx.moveTo(-16 * s, mouthY + 2 * s);
+        ctx.quadraticCurveTo(-8 * s, mouthY + 12 * s + mouthOpen * 0.5, 0, mouthY + 8 * s + mouthOpen * 0.4);
+        ctx.quadraticCurveTo(8 * s, mouthY + 12 * s + mouthOpen * 0.5, 16 * s, mouthY + 2 * s);
+        ctx.fillStyle = '#e0888a';
+        ctx.fill();
+        // inner mouth (if open enough)
+        if (mouthOpen > 8 * s) {
+            ctx.shadowBlur = 0;
+            ctx.beginPath();
+            ctx.ellipse(0, mouthY + 2 * s + mouthOpen * 0.1, 12 * s, mouthOpen * 0.25, 0, 0, Math.PI * 2);
+            ctx.fillStyle = '#6a2a2a';
+            ctx.fill();
+            if (mouthOpen > 16 * s) {
+                ctx.beginPath();
+                ctx.ellipse(3 * s, mouthY + 6 * s + mouthOpen * 0.15, 8 * s, 5 * s + mouthOpen * 0.08, 0, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(200,120,100,0.4)';
+                ctx.fill();
+            }
+        }
+
+        // blush
+        ctx.globalAlpha = 0.15 + amp * 0.1;
+        for (const side of [-1, 1]) {
+            const bx = side * 34 * s;
+            const by = 14 * s;
+            const g = ctx.createRadialGradient(bx, by, 2 * s, bx, by, 18 * s);
+            g.addColorStop(0, '#f5a0a0');
+            g.addColorStop(1, 'rgba(245,160,160,0)');
+            ctx.beginPath();
+            ctx.arc(bx, by, 18 * s, 0, Math.PI * 2);
+            ctx.fillStyle = g;
+            ctx.fill();
+        }
+        ctx.restore(); // head transform
+
+        // aura
+        ctx.save();
+        const aura = ctx.createRadialGradient(cx, finalY + 20 * s, 10 * s, cx, finalY + 20 * s, 140 * s);
+        const aIntensity = 0.04 + amp * 0.14;
+        aura.addColorStop(0, `rgba(167,139,250,${aIntensity})`);
+        aura.addColorStop(0.5, `rgba(244,114,182,${aIntensity * 0.4})`);
+        aura.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.fillStyle = aura;
+        ctx.fillRect(cx - 160 * s, finalY - 130 * s, 320 * s, 260 * s);
+        ctx.restore();
+
+        ctx.restore(); // overall translate
+    }
+
+    // ─── DRAW STAGE ───
+    function drawStage() {
+        if (W === 0 || H === 0) return;
+        ctx.clearRect(0, 0, W, H);
+
+        // background
+        const bgGrad = ctx.createRadialGradient(W/2, H*0.7, 50, W/2, H*0.7, W*0.7);
+        bgGrad.addColorStop(0, '#1a1f35');
+        bgGrad.addColorStop(0.6, '#0d0f1a');
+        bgGrad.addColorStop(1, '#05060a');
+        ctx.fillStyle = bgGrad;
+        ctx.fillRect(0, 0, W, H);
+
+        // floor
+        const floorY = H * 0.78;
+        ctx.save();
+        ctx.globalAlpha = 0.12;
+        const floorGrad = ctx.createLinearGradient(0, floorY, 0, H);
+        floorGrad.addColorStop(0, 'rgba(167,139,250,0)');
+        floorGrad.addColorStop(0.3, `rgba(167,139,250,${0.04 + amplitude * 0.08})`);
+        floorGrad.addColorStop(1, `rgba(167,139,250,${0.02 + amplitude * 0.04})`);
+        ctx.fillStyle = floorGrad;
+        ctx.fillRect(0, floorY, W, H - floorY);
+        ctx.globalAlpha = 0.08 + amplitude * 0.06;
+        ctx.beginPath();
+        ctx.moveTo(0, floorY);
+        ctx.lineTo(W, floorY);
+        ctx.strokeStyle = 'rgba(167,139,250,0.3)';
+        ctx.lineWidth = 1 + amplitude * 2;
+        ctx.shadowColor = `rgba(167,139,250,${amplitude * 0.2})`;
+        ctx.shadowBlur = 20;
+        ctx.stroke();
+        ctx.restore();
+
+        // stars
+        for (const st of stars) {
+            const sx = st.x * W;
+            const sy = st.y * H;
+            const bright = st.a * (0.6 + 0.4 * Math.sin(performance.now() * 0.001 * st.speed + st.x * 10));
+            ctx.save();
+            ctx.globalAlpha = bright * 0.4;
+            ctx.beginPath();
+            ctx.arc(sx, sy, st.r * (0.8 + 0.4 * amplitude), 0, Math.PI * 2);
+            ctx.fillStyle = '#fff';
+            ctx.shadowColor = `rgba(167,139,250,${bright * 0.2})`;
+            ctx.shadowBlur = 10;
+            ctx.fill();
+            ctx.restore();
+        }
+
+        // music waves
+        const freq = getFreq();
+        ctx.save();
+        ctx.globalAlpha = 0.05 + amplitude * 0.06;
+        for (let i = 0; i < 3; i++) {
+            const yOff = H * 0.3 + i * 50;
+            ctx.beginPath();
+            for (let x = 0; x <= W; x += 2) {
+                const idx = Math.floor((x / W) * freq.length);
+                const val = freq[idx] || 0;
+                const y = yOff + Math.sin(x * 0.02 + performance.now() * 0.001 + i) * (10 + val * 30);
+                x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+            }
+            ctx.strokeStyle = `rgba(167,139,250,${0.1 + amplitude * 0.2})`;
+            ctx.lineWidth = 1.5;
+            ctx.shadowColor = `rgba(167,139,250,${amplitude * 0.1})`;
+            ctx.shadowBlur = 20;
+            ctx.stroke();
+        }
+        ctx.restore();
+
+        // ─── compute alternating lip sync weights ───
+        // Use a slow oscillation: one hero leads, then the other
+        const lipOsc = Math.sin(dancePhase * 0.4); // -1 .. 1
+        const lipWeight1 = 0.5 + 0.5 * lipOsc;   // 0 .. 1
+        const lipWeight2 = 0.5 - 0.5 * lipOsc;   // 1 .. 0 (opposite)
+
+        // update indicators
+        lipLabel1.textContent = (lipWeight1 > lipWeight2) ? '🔵 Hero 1 ●' : '🔵 Hero 1';
+        lipLabel2.textContent = (lipWeight2 > lipWeight1) ? '🔴 Hero 2 ●' : '🔴 Hero 2';
+        lipLabel1.style.color = (lipWeight1 > lipWeight2) ? '#a78bfa' : 'rgba(255,255,255,0.3)';
+        lipLabel2.style.color = (lipWeight2 > lipWeight1) ? '#a78bfa' : 'rgba(255,255,255,0.3)';
+
+        // ─── draw TWO heroes with alternating lip sync ───
+        const scale = Math.min(W, H) / 210;
+        const cy = H * 0.62;
+        const basePositions = [W * 0.28, W * 0.72];
+
+        for (let idx = 0; idx < 2; idx++) {
+            const state = heroStates[idx];
+            let offX = 0, offY = 0;
+            if (state.special) {
+                const t = state.progress;
+                offX = (state.targetX - state.startX) * t;
+                offY = (state.targetY - state.startY) * t;
+            }
+            const lipWeight = idx === 0 ? lipWeight1 : lipWeight2;
+            drawHero(
+                idx,
+                basePositions[idx], cy,
+                scale,
+                amplitude,
+                dancePhase + idx * 1.8,
+                state.hand,
+                offX, offY,
+                lipWeight
+            );
+        }
+
+        // beat ring
+        if (amplitude > 0.1) {
+            ctx.save();
+            const r = 50 + amplitude * 70;
+            ctx.globalAlpha = 0.1 + amplitude * 0.15;
+            ctx.beginPath();
+            ctx.arc(W/2, cy + 20, r, 0, Math.PI * 2);
+            ctx.strokeStyle = `rgba(167,139,250,${0.1 + amplitude * 0.2})`;
+            ctx.lineWidth = 2 + amplitude * 5;
+            ctx.shadowColor = `rgba(167,139,250,${amplitude * 0.3})`;
+            ctx.shadowBlur = 50;
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        // sparkles
+        if (amplitude > 0.25) {
+            const n = Math.floor(amplitude * 12) + 4;
+            for (let i=0; i<n; i++) {
+                const ang = Math.random() * Math.PI * 2;
+                const r = 30 + Math.random() * 180;
+                const sx = W/2 + Math.cos(ang) * r;
+                const sy = cy + 20 + Math.sin(ang) * r * 0.6;
+                const sz = 2 + Math.random() * 7 * amplitude;
+                ctx.save();
+                ctx.globalAlpha = 0.3 + Math.random() * 0.4;
+                ctx.shadowColor = `rgba(255,255,255,${0.2 + Math.random() * 0.3})`;
+                ctx.shadowBlur = 20 + Math.random() * 30;
+                ctx.fillStyle = `hsl(${240 + Math.random() * 60}, 100%, 80%)`;
+                ctx.beginPath();
+                ctx.arc(sx, sy, sz, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        // track name
+        if (currentIndex >= 0 && playlist[currentIndex]) {
+            ctx.save();
+            ctx.globalAlpha = 0.15;
+            ctx.fillStyle = '#fff';
+            ctx.font = '11px system-ui, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('🎵 ' + playlist[currentIndex].name.slice(0, 28), W/2, H - 14);
+            ctx.restore();
+        }
+    }
+
+    // ─── TAP / CLICK HANDLER ───
+    function handleTap(clientX, clientY) {
+        if (!playlist.length || !isPlaying) return;
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+        const canvasX = (clientX - rect.left) * scaleX;
+        const canvasY = (clientY - rect.top) * scaleY;
+
+        const phase = dancePhase;
+        const amp = amplitude;
+        const positions = [];
+        for (let idx = 0; idx < 2; idx++) {
+            const pos = getHeroPosition(idx, phase, amp);
+            positions.push(pos);
+        }
+
+        const threshold = 60;
+        for (let idx = 0; idx < 2; idx++) {
+            const dx = canvasX - positions[idx].x;
+            const dy = canvasY - positions[idx].y;
+            if (dx*dx + dy*dy < threshold * threshold) {
+                triggerSpecial(idx);
+                break;
+            }
+        }
+    }
+
+    function triggerSpecial(idx) {
+        const state = heroStates[idx];
+        if (state.special) return;
+        const hand = Math.random() < 0.5 ? 'left' : 'right';
+        const range = 80;
+        const targetX = (Math.random() - 0.5) * range * 2;
+        const targetY = (Math.random() - 0.5) * range * 1.5 - 30;
+        state.special = true;
+        state.hand = hand;
+        state.timer = 0;
+        state.duration = 1.2 + Math.random() * 0.8;
+        state.startX = 0;
+        state.startY = 0;
+        state.targetX = targetX;
+        state.targetY = targetY;
+        state.progress = 0;
+    }
+
+    // ─── UPDATE SPECIAL STATES ───
+    function updateSpecialStates(delta) {
+        for (let idx = 0; idx < heroStates.length; idx++) {
+            const state = heroStates[idx];
+            if (state.special) {
+                state.timer += delta;
+                state.progress = Math.min(1, state.timer / state.duration);
+                if (state.progress >= 1) {
+                    state.special = false;
+                    state.hand = null;
+                    state.timer = 0;
+                    state.progress = 0;
+                }
+            }
+        }
+    }
+
+    // ─── CANVAS EVENTS ───
+    canvas.addEventListener('click', (e) => {
+        handleTap(e.clientX, e.clientY);
+    });
+    canvas.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        const t = e.touches[0];
+        handleTap(t.clientX, t.clientY);
+    }, { passive: false });
+
+    // ─── ANIMATION LOOP ───
+    let lastTime = 0;
+    function animate(time) {
+        const delta = lastTime ? (time - lastTime) / 1000 : 0.016;
+        lastTime = time;
+
+        const raw = getAmp();
+        amplitude += (raw - amplitude) * 0.15;
+        const bpm = 100 + amplitude * 40;
+        const speed = bpm / 60;
+        dancePhase += 0.016 * speed * 1.3;
+
+        updateSpecialStates(delta);
+
+        if (isPlaying && sourceNode && audioCtx && !isDragging) {
+            const elapsed = (audioCtx.currentTime - startTime) + pausedAt;
+            const cur = Math.min(elapsed, duration);
+            updateTimeDisplay(cur);
+        }
+
+        drawStage();
+        animId = requestAnimationFrame(animate);
+    }
+
+    // ─── POLYFILL roundRect ───
+    if (!CanvasRenderingContext2D.prototype.roundRect) {
+        CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
+            if (r > w/2) r = w/2;
+            if (r > h/2) r = h/2;
+            this.moveTo(x + r, y);
+            this.arcTo(x + w, y, x + w, y + h, r);
+            this.arcTo(x + w, y + h, x, y + h, r);
+            this.arcTo(x, y + h, x, y, r);
+            this.arcTo(x, y, x + w, y, r);
+            return this;
+        };
+    }
+
+    animate(0);
+
+    // drag-drop
+    document.addEventListener('dragover', e => e.preventDefault());
+    document.addEventListener('drop', e => {
+        e.preventDefault();
+        const files = e.dataTransfer.files;
+        if (files.length) {
+            const audio = [];
+            for (const f of files) if (f.type.startsWith('audio/')) audio.push(f);
+            if (audio.length) addTracks(audio);
+            else alert('Drop audio files only.');
+        }
+    });
+
+    window.addEventListener('resize', () => { resize(); });
+    updatePlaylistUI();
+    console.log('🕺🕺 Alternating Lip Sync ready!');
+</script>
+</body>
+</html>
