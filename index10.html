@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="theme-color" content="#142f2b" />
+    <title>Tamir Ali Visfot News · Accurate Character Swap Studio</title>
+    <style>
+        :root {
+            --ink: #17332f;
+            --ink-soft: #536863;
+            --paper: #fbf5e9;
+            --red: #bf4d3c;
+            --red-deep: #8f332a;
+            --gold: #e9b949;
+            --green: #3f7568;
+            --white: #fffdf7;
+            --shadow: 0 24px 70px rgba(8, 31, 27, 0.32);
+            --record-red: #e74c3c;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { min-width: 320px; background: #0a1f1b; }
+        body {
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: grid;
+            place-items: center;
+            overflow-x: hidden;
+            color: var(--ink);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #0a1f1b;
+        }
+        button, input { font: inherit; }
+        button { cursor: pointer; border: none; outline: none; }
+
+        .shell {
+            position: relative;
+            width: 100%;
+            max-width: 520px;
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background: var(--paper);
+            box-shadow: var(--shadow);
+        }
+        @media (min-width: 600px) {
+            .shell {
+                border-radius: 32px 12px 32px 12px;
+                min-height: min(920px, 100dvh);
+                max-height: 98dvh;
+                margin: 8px auto;
+            }
+        }
+
+        .stage {
+            position: relative;
+            flex: 0 0 auto;
+            min-height: 440px;
+            padding: 20px 16px;
+            overflow: hidden;
+            color: var(--white);
+            background: linear-gradient(180deg, rgba(13, 38, 34, 0.15), rgba(13, 38, 34, 0.70)), var(--green);
+            border-bottom: 4px solid var(--gold);
+        }
+        .stage-mark {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+        .stage-mark h1 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #f5cf70;
+            text-transform: uppercase;
+        }
+        
+        .rec-btn-top {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 99px;
+            font-weight: 700;
+            font-size: 0.75rem;
+            color: #fff;
+            background: var(--red);
+            box-shadow: 0 4px 16px rgba(191, 77, 60, 0.35);
+            transition: background 0.3s;
+        }
+        .rec-btn-top.recording {
+            background: var(--record-red);
+            animation: pulse-rec-btn 1s infinite;
+        }
+        @keyframes pulse-rec-btn {
+            0%, 100% { box-shadow: 0 4px 24px rgba(231, 76, 60, 0.6); }
+            50% { box-shadow: 0 4px 10px rgba(231, 76, 60, 0.2); }
+        }
+
+        .portrait-wrap {
+            position: relative;
+            width: clamp(200px, 55vw, 290px);
+            margin: 10px auto 0;
+            border-radius: 16px;
+        }
+        .portrait-wrap img {
+            display: block;
+            width: 100%;
+            height: auto;
+            border-radius: 16px;
+            object-fit: cover;
+            aspect-ratio: 380 / 470;
+        }
+        .mouth-overlay {
+            --lip-x: 0px;
+            --lip-y: 24px;
+            --lip-scale: 0.96;
+            position: absolute;
+            left: calc(50% + var(--lip-x));
+            bottom: calc(18% + 38px + var(--lip-y));
+            width: calc(28% * var(--lip-scale));
+            height: calc(9% * var(--lip-scale));
+            transform: translateX(-50%);
+            z-index: 3;
+            pointer-events: none;
+        }
+        .mouth-overlay svg { width: 100%; height: 100%; display: block; }
+        #mouthOpenOverlay { opacity: 0; }
+        #mouthClosedOverlay { opacity: 1; }
+
+        .news-ticker {
+            position: absolute;
+            bottom: 0; left: 0; width: 100%;
+            background: var(--red); color: #fff;
+            display: flex; align-items: center;
+            font-size: 0.75rem; font-weight: bold;
+            overflow: hidden; border-top: 2px solid var(--gold);
+        }
+        .ticker-title { background: var(--gold); color: #000; padding: 4px 10px; white-space: nowrap; z-index: 2; }
+        .ticker-text { white-space: nowrap; padding-left: 100%; display: inline-block; animation: marquee 12s linear infinite; }
+        @keyframes marquee { 0% { transform: translate(0, 0); } 100% { transform: translate(-100%, 0); } }
+
+        .panel { flex: 1; display: flex; flex-direction: column; padding: 16px; background: var(--paper); overflow-y: auto; gap: 10px; }
+        .controls-box { padding: 10px; border: 1px solid rgba(23, 51, 47, 0.1); border-radius: 12px; background: rgba(255, 253, 247, 0.7); }
+        .slider-group { display: flex; gap: 8px; margin-top: 6px; }
+        .slider-item { flex: 1; font-size: 0.65rem; }
+        .slider-item input { width: 100%; }
+
+        .upload-zone {
+            border: 1.5px dashed #9a8d79; padding: 10px; text-align: center;
+            border-radius: 8px; cursor: pointer; font-size: 0.85rem; background: #fdfaf3;
+        }
+
+        .save-btn {
+            background: #2d8f7a; color: #fff; padding: 12px; border-radius: 8px;
+            font-weight: 700; font-size: 0.95rem; text-align: center; width: 100%;
+        }
+        .save-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .audio-progress {
+            font-size: 0.7rem; font-weight: bold; color: var(--green);
+            text-align: center; margin-top: 4px;
+        }
+
+        .workflow-hint {
+            background: #f0ebe0; border-radius: 8px; padding: 8px 12px;
+            font-size: 0.68rem; color: #3d4f49; border-left: 3px solid var(--gold);
+        }
+        .hidden-canvas { position: absolute; top: -9999px; left: -9999px; width: 380px; height: 470px; opacity: 0; }
+        
+        .toast-msg {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.85); color: #fff; padding: 10px 20px;
+            border-radius: 40px; font-size: 0.85rem; z-index: 999; text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <main class="shell">
+
+        <section class="stage" id="stageArea">
+            <header class="stage-mark">
+                <h1>📰 तामीर अली न्यूज़ Studio</h1>
+                <button class="rec-btn-top" id="recBtnTop">
+                    <span id="recBtnLabel">🎙️ Start Scene Recording</span>
+                </button>
+            </header>
+
+            <div class="portrait-wrap" id="portraitWrap">
+                <img id="faceImage" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 380 470'%3E%3Crect width='380' height='470' fill='%231b2a26'/%3E%3Ccircle cx='190' cy='180' r='70' fill='%233a5a52'/%3E%3Ctext x='190' y='310' font-family='system-ui' font-size='24' fill='%239aa8a2' text-anchor='middle'%3EUpload Avatar%3C/text%3E%3C/svg%3E" alt="Face" />
+                <div class="mouth-overlay" id="mouthOverlay">
+                    <svg viewBox="0 0 120 60" preserveAspectRatio="xMidYMid meet">
+                        <path id="mouthClosedOverlay" d="M10 32 Q60 28 110 32 M12 32 Q60 35 108 32" fill="none" stroke="#803328" stroke-width="6" stroke-linecap="round" />
+                        <g id="mouthOpenOverlay">
+                            <ellipse cx="60" cy="36" rx="46" ry="20" fill="#42130e" />
+                            <path d="M22 28 Q60 30 98 28 Q60 24 22 28Z" fill="#ffffff" />
+                            <path d="M28 44 Q60 38 92 44 Q60 50 28 44Z" fill="#c95b53" />
+                        </g>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="news-ticker">
+                <div class="ticker-title">NEWS</div>
+                <div class="ticker-text">तामीर अली विस्फोटक न्यूज़: Multi-Character Synchronized Recording Mode...</div>
+            </div>
+        </section>
+
+        <section class="panel">
+            <div class="workflow-hint">
+                💡 <b>सटीक कैरेक्टर चेंज गाइड:</b><br>
+                1. ऑडियो लोड करें और पहला Avatar अपलोड करें।<br>
+                2. <b>🎙️ Record</b> दबाएं। जब बात पूरी हो जाए तो पॉज़ करें।<br>
+                3. नया Avatar अपलोड करें (कैनवास तुरंत नए चेहरे में बदल जाएगा)।<br>
+                4. फिर से <b>🎙️ Resume</b> दबाएं। अंत में <b>💾 Merge Video</b> दबाएं!
+            </div>
+
+            <label class="upload-zone">
+                🎵 1. मुख्य ऑडियो अपलोड करें (MP3/WAV)
+                <input type="file" id="audioInput" accept="audio/*" hidden />
+            </label>
+
+            <label class="upload-zone">
+                👤 2. Avatar / चेहरा बदलें
+                <input type="file" id="faceInput" accept="image/*" hidden />
+            </label>
+
+            <div class="audio-progress" id="audioProgress">⏱️ Audio: 0.0s / 0.0s</div>
+
+            <button class="save-btn" id="saveBtn" disabled>💾 Merge & Download Final Video</button>
+
+            <div class="controls-box">
+                <b style="font-size:0.75rem;">🎯 लिप पॉजीशनिंग (Lip Adjustment)</b>
+                <div class="slider-group">
+                    <div class="slider-item">L/R <input type="range" id="lipX" min="-50" max="50" value="0" /></div>
+                    <div class="slider-item">U/D <input type="range" id="lipY" min="-50" max="50" value="24" /></div>
+                    <div class="slider-item">Size <input type="range" id="lipScale" min="50" max="150" value="96" /></div>
+                </div>
+            </div>
+        </section>
+
+        <canvas id="recordCanvas" class="hidden-canvas" width="380" height="470"></canvas>
+    </main>
+
+    <script>
+        (function() {
+            'use strict';
+
+            const faceInput = document.getElementById('faceInput');
+            const faceImage = document.getElementById('faceImage');
+            const audioInput = document.getElementById('audioInput');
+            const mouthOverlay = document.getElementById('mouthOverlay');
+            const mouthOpen = document.getElementById('mouthOpenOverlay');
+            const mouthClosed = document.getElementById('mouthClosedOverlay');
+            const portraitWrap = document.getElementById('portraitWrap');
+            const stageArea = document.getElementById('stageArea');
+            const recBtnTop = document.getElementById('recBtnTop');
+            const recBtnLabel = document.getElementById('recBtnLabel');
+            const saveBtn = document.getElementById('saveBtn');
+            const recordCanvas = document.getElementById('recordCanvas');
+            const audioProgress = document.getElementById('audioProgress');
+
+            const lipX = document.getElementById('lipX');
+            const lipY = document.getElementById('lipY');
+            const lipScale = document.getElementById('lipScale');
+
+            const audioElement = new Audio();
+            let audioContext, analyserNode, sourceNode, audioDestinationNode;
+            
+            let isRecording = false;
+            let mediaRecorder;
+            let videoChunks = [];
+            let allRecordedBlobs = []; 
+            let animFrame, drawInterval;
+
+            // In-Memory Image element specifically for Canvas Rendering to avoid Caching issues
+            const canvasFaceImage = new Image();
+            canvasFaceImage.crossOrigin = "anonymous";
+
+            function updateLips() {
+                mouthOverlay.style.setProperty('--lip-x', lipX.value + 'px');
+                mouthOverlay.style.setProperty('--lip-y', lipY.value + 'px');
+                mouthOverlay.style.setProperty('--lip-scale', lipScale.value / 100);
+            }
+            [lipX, lipY, lipScale].forEach(el => el.addEventListener('input', updateLips));
+
+            // Face Avatar Input with Instant Refresh Fix
+            faceInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (ev) => {
+                        const imgUri = ev.target.result;
+                        faceImage.src = imgUri;
+                        
+                        // Force update internal canvas image object instantly
+                        canvasFaceImage.src = imgUri;
+                        canvasFaceImage.onload = () => {
+                            drawStageToCanvas(); // Force instant canvas redraw
+                            showToast('✅ नया कैरेक्टर पूरी तरह अपडेट हो गया!', 'success');
+                        };
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Set initial SVG to canvas image
+            canvasFaceImage.src = faceImage.src;
+
+            // Audio Input
+            audioInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    audioElement.src = URL.createObjectURL(file);
+                    audioElement.load();
+                    allRecordedBlobs = [];
+                    saveBtn.disabled = true;
+                    showToast('🎵 ऑडियो लोड हो गया!', 'success');
+                }
+            });
+
+            audioElement.addEventListener('loadedmetadata', updateProgressUI);
+            audioElement.addEventListener('timeupdate', updateProgressUI);
+
+            function updateProgressUI() {
+                const cur = audioElement.currentTime.toFixed(1);
+                const dur = (audioElement.duration || 0).toFixed(1);
+                audioProgress.textContent = `⏱️ Audio: ${cur}s / ${dur}s`;
+            }
+
+            function setupAudioNodes() {
+                if (!audioContext) {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    analyserNode = audioContext.createAnalyser();
+                    analyserNode.fftSize = 256;
+                    sourceNode = audioContext.createMediaElementSource(audioElement);
+                    audioDestinationNode = audioContext.createMediaStreamDestination();
+
+                    sourceNode.connect(analyserNode);
+                    sourceNode.connect(audioContext.destination);
+                    sourceNode.connect(audioDestinationNode);
+                }
+            }
+
+            function animateMouth() {
+                if (audioElement.paused || audioElement.ended) {
+                    mouthOpen.style.opacity = 0;
+                    mouthClosed.style.opacity = 1;
+                    portraitWrap.style.transform = 'scale(1)';
+                    return;
+                }
+                const samples = new Uint8Array(analyserNode.fftSize);
+                analyserNode.getByteTimeDomainData(samples);
+                let energy = 0;
+                for (const s of samples) {
+                    const norm = (s - 128) / 128;
+                    energy += norm * norm;
+                }
+                const rms = Math.sqrt(energy / samples.length);
+                const open = Math.min(1, Math.max(0, (rms - 0.01) * 8));
+                
+                mouthOpen.style.opacity = open;
+                mouthClosed.style.opacity = 1 - open;
+                portraitWrap.style.transform = `scale(${1 + open * 0.02})`;
+                animFrame = requestAnimationFrame(animateMouth);
+            }
+
+            // Canvas Drawing System
+            const ctx = recordCanvas.getContext('2d');
+            function drawStageToCanvas() {
+                const w = 380, h = 470;
+                ctx.clearRect(0, 0, w, h);
+
+                ctx.fillStyle = '#1f3f38';
+                ctx.fillRect(0, 0, w, h);
+
+                const stageRect = stageArea.getBoundingClientRect();
+                const wrapRect = portraitWrap.getBoundingClientRect();
+                const mouthRect = mouthOverlay.getBoundingClientRect();
+
+                const wrapX = (wrapRect.left - stageRect.left) / stageRect.width * w;
+                const wrapY = (wrapRect.top - stageRect.top) / stageRect.height * h;
+                const wrapW = wrapRect.width / stageRect.width * w;
+                const wrapH = wrapRect.height / stageRect.height * h;
+
+                // Always draw the updated Canvas Face Image
+                const img = canvasFaceImage;
+                if (img.complete && img.naturalWidth > 0) {
+                    ctx.save();
+                    ctx.beginPath();
+                    if (ctx.roundRect) ctx.roundRect(wrapX, wrapY, wrapW, wrapH, 16);
+                    else ctx.rect(wrapX, wrapY, wrapW, wrapH);
+                    ctx.clip();
+                    ctx.drawImage(img, wrapX, wrapY, wrapW, wrapH);
+                    ctx.restore();
+                }
+
+                // Mouth Drawing
+                const mouthXCenter = ((mouthRect.left + mouthRect.width / 2) - stageRect.left) / stageRect.width * w;
+                const mouthYCenter = ((mouthRect.top + mouthRect.height / 2) - stageRect.top) / stageRect.height * h;
+                const mouthW = (mouthRect.width / stageRect.width) * w;
+                const mouthH = (mouthRect.height / stageRect.height) * h;
+                const lipScaleVal = (parseFloat(lipScale.value) || 100) / 100;
+
+                ctx.strokeStyle = '#803328';
+                ctx.lineWidth = Math.max(3, 6 * lipScaleVal);
+                ctx.lineCap = 'round';
+                ctx.beginPath();
+                ctx.moveTo(mouthXCenter - mouthW*0.4, mouthYCenter - 4*lipScaleVal);
+                ctx.quadraticCurveTo(mouthXCenter, mouthYCenter - 10*lipScaleVal, mouthXCenter + mouthW*0.4, mouthYCenter - 4*lipScaleVal);
+                ctx.stroke();
+
+                const openVal = parseFloat(mouthOpen.style.opacity) || 0;
+                if (openVal > 0.05) {
+                    ctx.save();
+                    ctx.globalAlpha = Math.min(openVal, 1);
+                    ctx.fillStyle = '#42130e';
+                    ctx.beginPath(); ctx.ellipse(mouthXCenter, mouthYCenter + 2*lipScaleVal, mouthW*0.45, mouthH*0.45, 0, 0, 2*Math.PI); ctx.fill();
+                    ctx.fillStyle = '#ffffff';
+                    ctx.beginPath(); ctx.ellipse(mouthXCenter, mouthYCenter - 2*lipScaleVal, mouthW*0.32, mouthH*0.18, 0, 0, 2*Math.PI); ctx.fill();
+                    ctx.restore();
+                }
+
+                ctx.fillStyle = 'rgba(191,77,60,0.95)'; ctx.fillRect(0, h - 28, w, 28);
+                ctx.fillStyle = '#e9b949'; ctx.font = 'bold 10px system-ui'; ctx.fillText('BREAKING NEWS  |  तामीर अली विस्फोटक न्यूज़', 10, h - 8);
+            }
+
+            // RECORDING CONTROL
+            recBtnTop.addEventListener('click', async () => {
+                if (!audioElement.src) {
+                    showToast('⚠️ पहले ऑडियो लोड करें!', 'error');
+                    return;
+                }
+
+                setupAudioNodes();
+                if (audioContext.state === 'suspended') await audioContext.resume();
+
+                if (isRecording) {
+                    // PAUSE RECORDING & AUDIO
+                    audioElement.pause();
+                    mediaRecorder.stop();
+                    isRecording = false;
+                    recBtnLabel.textContent = '🎙️ Resume Scene Recording';
+                    recBtnTop.classList.remove('recording');
+                    clearInterval(drawInterval);
+                    cancelAnimationFrame(animFrame);
+                    showToast('⏸️ सीन पॉज़ हुआ। अब नया Avatar चुनें!', 'info');
+                    return;
+                }
+
+                if (audioElement.ended) {
+                    audioElement.currentTime = 0;
+                    allRecordedBlobs = [];
+                }
+
+                // Force one immediate canvas update before recording frame captures
+                drawStageToCanvas();
+
+                drawInterval = setInterval(drawStageToCanvas, 33);
+                const canvasStream = recordCanvas.captureStream(30);
+                const tracks = [canvasStream.getVideoTracks()[0]];
+
+                if (audioDestinationNode && audioDestinationNode.stream.getAudioTracks().length > 0) {
+                    tracks.push(audioDestinationNode.stream.getAudioTracks()[0]);
+                }
+
+                const combinedStream = new MediaStream(tracks);
+                let mimeType = 'video/webm;codecs=vp9,opus';
+                if (!MediaRecorder.isTypeSupported(mimeType)) mimeType = 'video/webm';
+
+                mediaRecorder = new MediaRecorder(combinedStream, { mimeType });
+                videoChunks = [];
+
+                mediaRecorder.ondataavailable = e => { if (e.data.size > 0) videoChunks.push(e.data); };
+
+                mediaRecorder.onstop = () => {
+                    const sceneBlob = new Blob(videoChunks, { type: mimeType });
+                    allRecordedBlobs.push(sceneBlob);
+                    saveBtn.disabled = false;
+                };
+
+                mediaRecorder.start(100); // Send data chunks every 100ms for high responsiveness
+                audioElement.play();
+                animateMouth();
+
+                isRecording = true;
+                recBtnLabel.textContent = '⏹ Pause & Change Avatar';
+                recBtnTop.classList.add('recording');
+                showToast('🔴 रिकॉर्डिंग चालू...', 'info');
+            });
+
+            audioElement.onended = () => {
+                if (isRecording) {
+                    mediaRecorder.stop();
+                    isRecording = false;
+                    recBtnLabel.textContent = '🎙️ Start Scene Recording';
+                    recBtnTop.classList.remove('recording');
+                    clearInterval(drawInterval);
+                    cancelAnimationFrame(animFrame);
+                    showToast('🏁 पूरा ऑडियो समाप्त!', 'success');
+                }
+            };
+
+            // MERGE & DOWNLOAD ALL SCENES INTO ONE FINAL VIDEO
+            saveBtn.addEventListener('click', () => {
+                if (!allRecordedBlobs.length) return;
+                
+                const finalBlob = new Blob(allRecordedBlobs, { type: 'video/webm' });
+                const url = URL.createObjectURL(finalBlob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'MultiCharacter_Studio_' + Date.now() + '.webm';
+                a.click();
+                setTimeout(() => URL.revokeObjectURL(url), 5000);
+                showToast('💾 पूरा वीडियो डाउनलोड हो गया!', 'success');
+            });
+
+            function showToast(msg, type = 'info') {
+                const existing = document.querySelector('.toast-msg'); if (existing) existing.remove();
+                const div = document.createElement('div'); div.className = 'toast-msg'; div.textContent = msg;
+                document.body.appendChild(div);
+                setTimeout(() => { div.remove(); }, 3000);
+            }
+
+            updateLips();
+            drawStageToCanvas();
+        })();
+    </script>
+</body>
+</html>
