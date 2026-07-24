@@ -1,0 +1,1401 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="theme-color" content="#142f2b" />
+    <title>Tamir Ali · मल्टी-किरदार स्टूडियो</title>
+    <style>
+        :root {
+            --ink: #17332f;
+            --ink-soft: #536863;
+            --paper: #fbf5e9;
+            --red: #bf4d3c;
+            --red-deep: #8f332a;
+            --gold: #e9b949;
+            --green: #3f7568;
+            --white: #fffdf7;
+            --shadow: 0 24px 70px rgba(8, 31, 27, 0.32);
+            --record-red: #e74c3c;
+            --pause-blue: #2d7a8f;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { min-width: 320px; background: #0a1f1b; }
+        body {
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: grid;
+            place-items: center;
+            overflow-x: hidden;
+            color: var(--ink);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #0a1f1b;
+        }
+        button, input { font: inherit; }
+        button { cursor: pointer; border: none; outline: none; }
+
+        .shell {
+            position: relative;
+            width: 100%;
+            max-width: 520px;
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background: var(--paper);
+            box-shadow: var(--shadow);
+            border-radius: 0;
+        }
+        @media (min-width: 600px) {
+            .shell {
+                border-radius: 32px 12px 32px 12px;
+                min-height: min(920px, 100dvh);
+                max-height: 98dvh;
+                margin: 8px auto;
+                box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+            }
+        }
+
+        .stage {
+            position: relative;
+            flex: 0 0 auto;
+            min-height: 460px;
+            padding: clamp(20px, 4vw, 36px) clamp(16px, 3vw, 28px);
+            overflow: hidden;
+            color: var(--white);
+            background: linear-gradient(180deg, rgba(13, 38, 34, 0.15), rgba(13, 38, 34, 0.70)), var(--green);
+            border-bottom: 4px solid var(--gold);
+        }
+        .stage-mark {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .stage-mark h1 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #f5cf70;
+            text-transform: uppercase;
+            flex: 1;
+            min-width: 120px;
+        }
+        .stage-top-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .rec-btn-top {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 20px 8px 14px;
+            border-radius: 99px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: #fff;
+            background: var(--red);
+            transition: all 0.25s ease;
+            box-shadow: 0 4px 20px rgba(191, 77, 60, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            white-space: nowrap;
+        }
+        .rec-btn-top:active { transform: scale(0.94); }
+        .rec-btn-top .dot {
+            width: 12px; height: 12px;
+            border-radius: 50%;
+            background: #fff;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+        .rec-btn-top.recording {
+            background: var(--record-red);
+            animation: pulse-rec-btn 1s infinite;
+            box-shadow: 0 4px 28px rgba(231, 76, 60, 0.55);
+        }
+        .rec-btn-top.recording .dot { animation: pulse-dot 0.8s ease-in-out infinite; }
+        .rec-btn-top.paused {
+            background: var(--pause-blue);
+            box-shadow: 0 4px 20px rgba(45, 122, 143, 0.4);
+            animation: none;
+        }
+        .rec-btn-top.paused .dot { background: #ffd700; animation: none; }
+
+        @keyframes pulse-rec-btn {
+            0%,100% { box-shadow: 0 4px 28px rgba(231, 76, 60, 0.55); }
+            50% { box-shadow: 0 4px 44px rgba(231, 76, 60, 0.25); }
+        }
+        @keyframes pulse-dot {
+            0%,100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.3; transform: scale(0.6); }
+        }
+
+        .rec-indicator {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 3px 10px;
+            border-radius: 99px;
+            background: rgba(0, 0, 0, 0.45);
+            font-size: 0.55rem;
+            color: rgba(255, 255, 255, 0.7);
+            flex-shrink: 0;
+        }
+        .rec-indicator .dot { width: 8px; height: 8px; border-radius: 50%; background: #666; }
+        .rec-indicator.active .dot { background: var(--record-red); animation: pulse-rec 1s infinite; }
+        .rec-indicator.paused .dot { background: #ffd700; animation: none; }
+        @keyframes pulse-rec { 50% { opacity: 0.4; } }
+
+        .portrait-wrap {
+            position: relative;
+            width: clamp(220px, 60vw, 320px);
+            margin: 10px auto 0;
+            transform-origin: 50% 80%;
+            border-radius: 16px;
+        }
+        .portrait-wrap img {
+            display: block;
+            width: 100%; height: auto;
+            border-radius: 16px;
+            object-fit: cover;
+            aspect-ratio: 380 / 470;
+        }
+        .mouth-overlay {
+            --lip-x: 0px;
+            --lip-y: 24px;
+            --lip-scale: 1;
+            --lip-rotate: 0deg;
+            position: absolute;
+            left: calc(50% + var(--lip-x));
+            bottom: calc(18% + 38px + var(--lip-y));
+            width: calc(28% * var(--lip-scale));
+            height: calc(9% * var(--lip-scale));
+            transform: translateX(-50%) rotate(var(--lip-rotate));
+            z-index: 3;
+            pointer-events: none;
+        }
+        .mouth-overlay svg { width: 100%; height: 100%; display: block; }
+        #mouthOpenOverlay { opacity: 0; transform-origin: center; }
+        #mouthClosedOverlay { opacity: 1; transform-origin: center; }
+
+        .news-ticker {
+            position: absolute;
+            bottom: 0; left: 0; width: 100%;
+            background: var(--red); color: #fff;
+            display: flex; align-items: center;
+            font-size: 0.75rem; font-weight: bold;
+            overflow: hidden; border-top: 2px solid var(--gold);
+        }
+        .ticker-title { background: var(--gold); color: #000; padding: 4px 10px; white-space: nowrap; z-index: 2; }
+        .ticker-text { white-space: nowrap; padding-left: 100%; display: inline-block; animation: marquee 12s linear infinite; }
+        @keyframes marquee { 0% { transform: translate(0,0); } 100% { transform: translate(-100%,0); } }
+
+        .char-badge {
+            display: inline-block;
+            font-size: 0.55rem;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 2px 10px;
+            border-radius: 20px;
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 4px;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 16px;
+            background: var(--paper);
+            overflow-y: auto;
+            gap: 10px;
+        }
+
+        .workflow-hint {
+            background: #f0ebe0;
+            border-radius: 8px;
+            padding: 6px 12px;
+            font-size: 0.7rem;
+            color: #3d4f49;
+            border-left: 3px solid var(--gold);
+            text-align: center;
+            line-height: 1.5;
+        }
+        .workflow-hint .highlight {
+            background: var(--gold);
+            color: #1f2e2a;
+            padding: 0 6px;
+            border-radius: 4px;
+            font-weight: 700;
+        }
+
+        .audio-status {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255, 253, 247, 0.8);
+            padding: 8px 14px;
+            border-radius: 12px;
+            border: 1px solid rgba(23, 51, 47, 0.08);
+            flex-wrap: wrap;
+            font-size: 0.7rem;
+            color: var(--ink-soft);
+        }
+        .audio-status .time {
+            font-weight: 700;
+            color: var(--ink);
+            font-size: 0.85rem;
+            font-variant-numeric: tabular-nums;
+        }
+        .audio-status .label {
+            font-weight: 600;
+        }
+        .progress-bar {
+            flex: 1;
+            min-width: 80px;
+            height: 4px;
+            background: rgba(0,0,0,0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .progress-bar .fill {
+            height: 100%;
+            background: var(--green);
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.1s;
+        }
+        .progress-bar .fill.playing { background: var(--record-red); }
+        .progress-bar .fill.paused { background: var(--pause-blue); }
+
+        .upload-zone {
+            border: 1.5px dashed #9a8d79;
+            padding: 12px;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-size: 0.9rem;
+        }
+        .upload-zone:hover { background: rgba(154, 141, 121, 0.06); }
+        .upload-zone.disabled {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        .save-btn {
+            background: #2d8f7a;
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1rem;
+            box-shadow: 0 2px 16px rgba(63, 117, 104, 0.5);
+            transition: 0.2s;
+            width: 100%;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .save-btn:active { transform: scale(0.97); }
+        .save-btn:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; transform: none; background: var(--green); }
+        .save-btn.has-video { background: #1f7a64; box-shadow: 0 2px 20px rgba(45, 143, 122, 0.5); }
+
+        .lips-section {
+            background: rgba(255, 253, 247, 0.8);
+            border: 1px solid rgba(23, 51, 47, 0.08);
+            border-radius: 12px;
+            padding: 14px 16px;
+        }
+        .lips-section .lips-title {
+            font-weight: 700;
+            font-size: 0.8rem;
+            color: var(--ink);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .lips-section .lips-title .badge {
+            background: var(--gold);
+            color: #1f2e2a;
+            font-size: 0.55rem;
+            padding: 1px 10px;
+            border-radius: 99px;
+            font-weight: 600;
+        }
+
+        .lip-grid-3x3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+        .lip-grid-btn {
+            background: var(--green);
+            color: #fff;
+            padding: 14px 4px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-align: center;
+            transition: all 0.15s ease;
+            box-shadow: 0 2px 8px rgba(63, 117, 104, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            min-height: 56px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .lip-grid-btn:active { transform: scale(0.92); }
+        .lip-grid-btn .icon { font-size: 1.3rem; line-height: 1; }
+        .lip-grid-btn .label { font-size: 0.55rem; font-weight: 600; opacity: 0.85; letter-spacing: 0.3px; }
+        .lip-grid-btn.reset-btn { background: #9a8d79; }
+        .lip-grid-btn .val { font-size: 0.6rem; background: rgba(255,255,255,0.15); padding: 1px 8px; border-radius: 10px; font-weight: 600; }
+
+        .lip-values {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(0, 0, 0, 0.06);
+        }
+        .lip-values .val-item {
+            text-align: center;
+            font-size: 0.6rem;
+            color: var(--ink-soft);
+            background: rgba(255, 255, 255, 0.5);
+            padding: 4px 2px;
+            border-radius: 6px;
+            border: 1px solid rgba(0, 0, 0, 0.04);
+        }
+        .lip-values .val-item .v { font-weight: 700; color: var(--ink); font-size: 0.75rem; }
+
+        .gallery-list {
+            max-height: 140px;
+            overflow-y: auto;
+            border-top: 1px solid rgba(0,0,0,0.06);
+            padding-top: 8px;
+            margin-top: 4px;
+        }
+        .gallery-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 4px;
+            border-bottom: 1px solid rgba(0,0,0,0.04);
+            font-size: 0.7rem;
+            gap: 6px;
+        }
+        .gallery-item .name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .gallery-item .actions { display: flex; gap: 4px; flex-shrink: 0; }
+        .gallery-item button { color: #fff; padding: 2px 12px; border-radius: 20px; font-size: 0.6rem; transition: 0.15s; }
+        .gallery-item .play-btn { background: var(--green); }
+        .gallery-item .del-btn { background: #b91c1c; }
+        .empty-gallery { color: var(--ink-soft); font-size: 0.7rem; padding: 8px 0; text-align: center; }
+
+        .hidden-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 380px;
+            height: 470px;
+            pointer-events: none;
+            opacity: 0;
+            z-index: -1;
+            transform: scale(0.01);
+        }
+
+        .toast-msg {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.85);
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            z-index: 999;
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.1);
+            max-width: 90%;
+            text-align: center;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        .toast-msg.success { border-color: #6ee7b7; }
+        .toast-msg.error { border-color: #fca5a5; }
+        .toast-msg.info { border-color: #93c5fd; }
+
+        .controls-box {
+            padding: 12px;
+            border: 1px solid rgba(23, 51, 47, 0.1);
+            border-radius: 12px;
+            background: rgba(255, 253, 247, 0.7);
+        }
+
+        .char-counter {
+            font-size: 0.7rem;
+            color: var(--ink-soft);
+            text-align: center;
+            padding: 4px;
+            background: rgba(255,255,255,0.5);
+            border-radius: 6px;
+        }
+
+        .audio-only-info {
+            font-size: 0.6rem;
+            color: var(--green);
+            font-weight: 600;
+            background: rgba(63, 117, 104, 0.1);
+            padding: 2px 10px;
+            border-radius: 99px;
+            display: inline-block;
+        }
+
+        @media (max-width: 420px) {
+            .stage-mark h1 { font-size: 0.85rem; min-width: 80px; }
+            .rec-btn-top { padding: 6px 14px; font-size: 0.7rem; }
+            .rec-btn-top .dot { width: 10px; height: 10px; }
+            .rec-indicator { font-size: 0.5rem; padding: 2px 8px; }
+            .lip-grid-btn { padding: 10px 2px; font-size: 0.9rem; min-height: 44px; }
+            .lip-grid-btn .icon { font-size: 1.1rem; }
+            .lip-grid-btn .label { font-size: 0.45rem; }
+            .lip-grid-btn .val { font-size: 0.5rem; }
+            .lip-values { grid-template-columns: repeat(2, 1fr); gap: 4px; }
+            .workflow-hint { font-size: 0.6rem; }
+            .audio-status { font-size: 0.6rem; }
+            .audio-status .time { font-size: 0.7rem; }
+        }
+        @media (max-width: 360px) {
+            .lip-grid-3x3 { gap: 4px; }
+            .lip-grid-btn { padding: 8px 2px; min-height: 38px; font-size: 0.8rem; }
+            .lip-grid-btn .icon { font-size: 0.9rem; }
+        }
+    </style>
+</head>
+<body>
+
+<main class="shell">
+
+    <section class="stage" id="stageArea">
+        <header class="stage-mark">
+            <h1>📰 तामीर अली · मल्टी-किरदार</h1>
+            <div class="stage-top-actions">
+                <button class="rec-btn-top" id="masterBtn">
+                    <span class="dot" id="masterDot"></span>
+                    <span id="masterLabel">🎙️ Start Studio</span>
+                </button>
+                <div class="rec-indicator" id="recIndicator">
+                    <span class="dot"></span>
+                    <span id="recIndicatorLabel">IDLE</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="portrait-wrap" id="portraitWrap">
+            <img id="faceImage" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 380 470'%3E%3Crect width='380' height='470' fill='%231b2a26'/%3E%3Ccircle cx='190' cy='180' r='70' fill='%233a5a52'/%3E%3Ctext x='190' y='310' font-family='system-ui' font-size='24' fill='%239aa8a2' text-anchor='middle'%3EUpload Face%3C/text%3E%3C/svg%3E" alt="Face" />
+            <div class="mouth-overlay" id="mouthOverlay">
+                <svg viewBox="0 0 120 60" preserveAspectRatio="xMidYMid meet">
+                    <path id="mouthClosedOverlay" d="M10 32 Q60 28 110 32 M12 32 Q60 35 108 32" fill="none" stroke="#803328" stroke-width="6" stroke-linecap="round" />
+                    <g id="mouthOpenOverlay">
+                        <ellipse cx="60" cy="36" rx="46" ry="20" fill="#42130e" />
+                        <path d="M22 28 Q60 30 98 28 Q60 24 22 28Z" fill="#ffffff" />
+                        <path d="M28 44 Q60 38 92 44 Q60 50 28 44Z" fill="#c95b53" />
+                    </g>
+                </svg>
+            </div>
+        </div>
+
+        <div style="text-align:center; margin-top:4px;">
+            <span class="char-badge" id="charBadge">👤 कोई किरदार नहीं</span>
+            <span style="display:inline-block; margin-left:8px; font-size:0.55rem; background:rgba(255,255,255,0.1); padding:1px 8px; border-radius:12px;" id="charCounter">किरदार: 0</span>
+        </div>
+
+        <div class="news-ticker">
+            <div class="ticker-title">BREAKING NEWS</div>
+            <div class="ticker-text">एक ऑडियो — अनेक किरदार • पॉज़ करें → चेहरा बदलें → रिज्यूम करें</div>
+        </div>
+    </section>
+
+    <section class="panel">
+
+        <div class="workflow-hint">
+            ⚡ <span class="highlight">एक ऑडियो</span> लोड करें → <span class="highlight">चेहरा</span> लोड करें →
+            <span class="highlight">▶ Start</span> (ऑडियो + रिकॉर्डिंग) →
+            <span class="highlight">⏸ Pause</span> → <span class="highlight">नया चेहरा</span> लोड करें →
+            <span class="highlight">▶ Resume</span> (ऑडियो वहीं से) → <span class="highlight">💾 Download</span>
+        </div>
+
+        <!-- ─── AUDIO STATUS ─── -->
+        <div class="audio-status">
+            <span class="label">🎧 एक ही ऑडियो</span>
+            <span class="time" id="audioTimeDisplay">00:00 / 00:00</span>
+            <div class="progress-bar">
+                <div class="fill" id="progressFill"></div>
+            </div>
+            <span style="font-size:0.6rem; color:var(--ink-soft);" id="statusText">⏹ बंद</span>
+            <span class="audio-only-info" id="charCountBadge">👥 0 किरदार</span>
+        </div>
+
+        <button class="save-btn" id="saveBtn" disabled>💾 Download Final Video</button>
+
+        <!-- ─── ONLY ONE AUDIO UPLOAD ─── -->
+        <label class="upload-zone" id="audioUploadZone">
+            🎵 मुख्य ऑडियो फाइल चुनें (MP3, WAV) — <span style="font-size:0.65rem; color:var(--ink-soft);">एक बार लोड करें</span>
+            <input type="file" id="audioInput" accept="audio/*" hidden />
+        </label>
+
+        <!-- ─── FACE UPLOAD (किरदार बदलने के लिए) ─── -->
+        <label class="upload-zone" id="faceUploadZone">
+            📸 किरदार का चेहरा (JPEG, PNG) — <span style="font-size:0.65rem; color:var(--ink-soft);">पॉज़ में बदलें</span>
+            <input type="file" id="faceInput" accept="image/*" hidden />
+        </label>
+
+        <div class="lips-section">
+            <div class="lips-title">
+                📌 LIPS Adjust — 3x3 कंट्रोल
+                <span class="badge">स्क्रीन & वीडियो एक जैसा</span>
+            </div>
+            <div class="lip-grid-3x3" id="lipControls">
+                <button class="lip-grid-btn" data-axis="y" data-dir="-1"><span class="icon">⬆</span><span class="label">UP</span></button>
+                <button class="lip-grid-btn" data-axis="y" data-dir="1"><span class="icon">⬇</span><span class="label">DOWN</span></button>
+                <button class="lip-grid-btn" data-axis="x" data-dir="-1"><span class="icon">⬅</span><span class="label">LEFT</span></button>
+                <button class="lip-grid-btn" data-axis="x" data-dir="1"><span class="icon">➡</span><span class="label">RIGHT</span></button>
+                <button class="lip-grid-btn" data-axis="scale" data-dir="-1"><span class="icon">➖</span><span class="label">SIZE−</span></button>
+                <button class="lip-grid-btn" data-axis="scale" data-dir="1"><span class="icon">➕</span><span class="label">SIZE+</span></button>
+                <button class="lip-grid-btn" data-axis="rotate" data-dir="-1"><span class="icon">↺</span><span class="label">ROTATE−</span></button>
+                <button class="lip-grid-btn" data-axis="rotate" data-dir="1"><span class="icon">↻</span><span class="label">ROTATE+</span></button>
+                <button class="lip-grid-btn reset-btn" id="lipReset"><span class="icon">↺</span><span class="label">RESET</span></button>
+            </div>
+            <div class="lip-values">
+                <div class="val-item">UP/DOWN <span class="v" id="lipYVal">24px</span></div>
+                <div class="val-item">LEFT/RIGHT <span class="v" id="lipXVal">0px</span></div>
+                <div class="val-item">SIZE <span class="v" id="lipScaleVal">100%</span></div>
+                <div class="val-item">ROTATE <span class="v" id="lipRotateVal">0°</span></div>
+            </div>
+        </div>
+
+        <div class="controls-box" style="max-height:170px; overflow-y:auto;">
+            <b style="font-size:0.8rem;">📁 Saved Videos</b>
+            <div id="galleryList" class="gallery-list">
+                <div class="empty-gallery">No saved videos yet.</div>
+            </div>
+        </div>
+
+        <div class="char-counter" id="charCounterDisplay">📋 कुल किरदार: 0 — ⏹ बंद</div>
+    </section>
+
+    <canvas id="recordCanvas" class="hidden-canvas" width="380" height="470"></canvas>
+</main>
+
+<script>
+    (function() {
+        'use strict';
+
+        // ─── DOM REFS ───
+        const faceInput = document.getElementById('faceInput');
+        const faceImage = document.getElementById('faceImage');
+        const audioInput = document.getElementById('audioInput');
+        const mouthOverlay = document.getElementById('mouthOverlay');
+        const mouthOpen = document.getElementById('mouthOpenOverlay');
+        const mouthClosed = document.getElementById('mouthClosedOverlay');
+        const portraitWrap = document.getElementById('portraitWrap');
+        const stageArea = document.getElementById('stageArea');
+        const masterBtn = document.getElementById('masterBtn');
+        const masterLabel = document.getElementById('masterLabel');
+        const masterDot = document.getElementById('masterDot');
+        const recIndicator = document.getElementById('recIndicator');
+        const recIndicatorLabel = document.getElementById('recIndicatorLabel');
+        const saveBtn = document.getElementById('saveBtn');
+        const galleryList = document.getElementById('galleryList');
+        const recordCanvas = document.getElementById('recordCanvas');
+        const charBadge = document.getElementById('charBadge');
+        const charCounterDisplay = document.getElementById('charCounterDisplay');
+        const statusText = document.getElementById('statusText');
+        const faceUploadZone = document.getElementById('faceUploadZone');
+        const audioUploadZone = document.getElementById('audioUploadZone');
+        const audioTimeDisplay = document.getElementById('audioTimeDisplay');
+        const progressFill = document.getElementById('progressFill');
+        const charCounter = document.getElementById('charCounter');
+        const charCountBadge = document.getElementById('charCountBadge');
+
+        const lipXVal = document.getElementById('lipXVal');
+        const lipYVal = document.getElementById('lipYVal');
+        const lipScaleVal = document.getElementById('lipScaleVal');
+        const lipRotateVal = document.getElementById('lipRotateVal');
+
+        // ─── LIP STATE ───
+        let lipX = 0, lipY = 24, lipScale = 100, lipRotate = 0;
+
+        function updateLipDisplay() {
+            lipXVal.textContent = lipX + 'px';
+            lipYVal.textContent = lipY + 'px';
+            lipScaleVal.textContent = lipScale + '%';
+            lipRotateVal.textContent = lipRotate + '°';
+            mouthOverlay.style.setProperty('--lip-x', lipX + 'px');
+            mouthOverlay.style.setProperty('--lip-y', lipY + 'px');
+            mouthOverlay.style.setProperty('--lip-scale', (lipScale / 100) + '');
+            mouthOverlay.style.setProperty('--lip-rotate', lipRotate + 'deg');
+        }
+
+        document.querySelectorAll('.lip-grid-btn[data-axis]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const axis = btn.dataset.axis;
+                const dir = parseInt(btn.dataset.dir, 10);
+                let step = 1;
+                if (axis === 'scale') step = 2;
+                if (axis === 'rotate') step = 5;
+                if (axis === 'x') lipX = Math.min(50, Math.max(-50, lipX + dir * step));
+                else if (axis === 'y') lipY = Math.min(50, Math.max(-50, lipY + dir * step));
+                else if (axis === 'scale') lipScale = Math.min(150, Math.max(50, lipScale + dir * step));
+                else if (axis === 'rotate') lipRotate = Math.min(45, Math.max(-45, lipRotate + dir * step));
+                updateLipDisplay();
+            });
+        });
+
+        document.getElementById('lipReset').addEventListener('click', () => {
+            lipX = 0; lipY = 24; lipScale = 100; lipRotate = 0;
+            updateLipDisplay();
+            showToast('↺ लिप सेटिंग्स रीसेट', 'info');
+        });
+
+        // ─── MASTER STATE ───
+        let audioContext = null;
+        let audioBuffer = null;
+        let sourceNode = null;
+        let analyserNode = null;
+        let audioDestinationNode = null;
+
+        let isPlaying = false;
+        let isRecording = false;
+        let isPaused = false;
+        let mediaRecorder = null;
+        let recordedChunks = [];
+        let animFrame = null;
+        let canvasStream = null;
+        let canvasTrack = null;
+        let recordedBlob = null;
+        let drawInterval = null;
+        let faceName = 'कोई किरदार नहीं';
+        let isStopping = false;
+        let characterCount = 0;
+
+        // ─── AUDIO OFFSET TRACKING ───
+        let audioOffset = 0;
+        let audioDuration = 0;
+        let audioStartTime = 0;
+
+        const ctx = recordCanvas.getContext('2d');
+        const CANVAS_W = 380, CANVAS_H = 470;
+
+        // ─── UI HELPERS ───
+        function updateUIState() {
+            const total = audioDuration || 1;
+            const progress = Math.min(1, audioOffset / total);
+            progressFill.style.width = (progress * 100) + '%';
+
+            const currentStr = formatTime(audioOffset);
+            const totalStr = formatTime(audioDuration);
+            audioTimeDisplay.textContent = currentStr + ' / ' + totalStr;
+
+            charCountBadge.textContent = '👥 ' + characterCount + ' किरदार';
+
+            if (isRecording && !isPaused) {
+                masterLabel.textContent = '⏸ Pause Studio';
+                masterBtn.classList.add('recording');
+                masterBtn.classList.remove('paused');
+                masterDot.style.background = '#e74c3c';
+                recIndicator.classList.add('active');
+                recIndicator.classList.remove('paused');
+                recIndicatorLabel.textContent = 'REC';
+                statusText.textContent = '🔴 रिकॉर्डिंग';
+                charCounterDisplay.textContent = '📋 कुल किरदार: ' + characterCount + ' — 🔴 रिकॉर्डिंग';
+                faceUploadZone.classList.add('disabled');
+                audioUploadZone.classList.add('disabled');
+                progressFill.className = 'fill playing';
+            } else if (isRecording && isPaused) {
+                masterLabel.textContent = '▶ Resume Studio';
+                masterBtn.classList.remove('recording');
+                masterBtn.classList.add('paused');
+                masterDot.style.background = '#ffd700';
+                recIndicator.classList.remove('active');
+                recIndicator.classList.add('paused');
+                recIndicatorLabel.textContent = '⏸ PAUSED';
+                statusText.textContent = '⏸ पॉज़ — चेहरा बदलें';
+                charCounterDisplay.textContent = '📋 कुल किरदार: ' + characterCount + ' — ⏸ पॉज़';
+                faceUploadZone.classList.remove('disabled');
+                audioUploadZone.classList.add('disabled');
+                progressFill.className = 'fill paused';
+            } else {
+                masterLabel.textContent = '🎙️ Start Studio';
+                masterBtn.classList.remove('recording', 'paused');
+                masterDot.style.background = '#fff';
+                recIndicator.classList.remove('active', 'paused');
+                recIndicatorLabel.textContent = 'IDLE';
+                statusText.textContent = '⏹ बंद';
+                charCounterDisplay.textContent = '📋 कुल किरदार: ' + characterCount + ' — ⏹ बंद';
+                faceUploadZone.classList.remove('disabled');
+                audioUploadZone.classList.remove('disabled');
+                progressFill.className = 'fill';
+            }
+        }
+
+        function formatTime(seconds) {
+            if (!seconds || isNaN(seconds)) return '00:00';
+            const m = Math.floor(seconds / 60);
+            const s = Math.floor(seconds % 60);
+            return String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+        }
+
+        // ─── INIT AUDIO ───
+        function initAudioContext() {
+            if (!audioContext) {
+                audioContext = new(window.AudioContext || window.webkitAudioContext)();
+                audioDestinationNode = audioContext.createMediaStreamDestination();
+            }
+            return audioContext;
+        }
+
+        // ─── FACE UPLOAD (किरदार बदलना) ───
+        faceInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    faceImage.src = ev.target.result;
+                    faceName = file.name.replace(/\.[^/.]+$/, '');
+                    charBadge.textContent = '👤 ' + faceName;
+                    // अगर पॉज़ में है तो किरदार काउंट न बढ़ाएँ, बस चेहरा बदलें
+                    if (isRecording && isPaused) {
+                        showToast('✅ किरदार बदला: ' + faceName + ' (पॉज़ में)', 'success');
+                    } else if (!isRecording) {
+                        showToast('✅ किरदार लोड: ' + faceName, 'success');
+                    } else {
+                        showToast('✅ चेहरा बदला: ' + faceName, 'success');
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // ─── AUDIO UPLOAD (सिर्फ एक बार) ───
+        audioInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                try {
+                    // अगर पहले से कोई ऑडियो चल रहा है तो रीसेट करें
+                    if (isPlaying) {
+                        stopAudio();
+                    }
+                    if (isRecording) {
+                        showToast('⚠️ रिकॉर्डिंग चल रही है — पहले Stop करें', 'error');
+                        return;
+                    }
+                    audioOffset = 0;
+                    initAudioContext();
+                    const arrayBuffer = await file.arrayBuffer();
+                    audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+                    audioDuration = audioBuffer.duration;
+                    characterCount = 0;
+                    charCounter.textContent = 'किरदार: 0';
+                    showToast('🎵 ऑडियो लोड: ' + file.name + ' (' + formatTime(audioDuration) + ')', 'success');
+                    updateUIState();
+                } catch (err) {
+                    showToast('⚠️ Audio error: ' + err.message, 'error');
+                }
+            }
+        });
+
+        // ─── LIP SYNC ───
+        function animateFace() {
+            if (!isPlaying || !analyserNode) return;
+            const samples = new Uint8Array(analyserNode.fftSize);
+            analyserNode.getByteTimeDomainData(samples);
+            let energy = 0;
+            for (const s of samples) {
+                const norm = (s - 128) / 128;
+                energy += norm * norm;
+            }
+            const rms = Math.sqrt(energy / samples.length);
+            const open = Math.min(1, Math.max(0, (rms - 0.01) * 8));
+            mouthOpen.style.opacity = open;
+            mouthClosed.style.opacity = 1 - open;
+            portraitWrap.style.transform = `scale(${1 + open * 0.02})`;
+            animFrame = requestAnimationFrame(animateFace);
+        }
+
+        // ─── STOP AUDIO ───
+        function stopAudio() {
+            if (sourceNode) {
+                try { sourceNode.stop(); } catch (_) {}
+                sourceNode = null;
+            }
+            isPlaying = false;
+            mouthOpen.style.opacity = 0;
+            mouthClosed.style.opacity = 1;
+            portraitWrap.style.transform = 'scale(1)';
+            if (animFrame) {
+                cancelAnimationFrame(animFrame);
+                animFrame = null;
+            }
+        }
+
+        // ─── START / RESUME AUDIO ───
+        async function startAudio(resumeOffset) {
+            if (!audioBuffer) {
+                showToast('⚠️ पहले ऑडियो फाइल अपलोड करें।', 'error');
+                return false;
+            }
+            const offset = resumeOffset !== undefined ? resumeOffset : audioOffset;
+            if (offset >= audioDuration) {
+                showToast('⚠️ ऑडियो खत्म हो चुका है — रीसेट करें', 'info');
+                audioOffset = 0;
+                return false;
+            }
+
+            initAudioContext();
+            try {
+                if (audioContext.state === 'suspended') {
+                    await audioContext.resume();
+                }
+
+                sourceNode = audioContext.createBufferSource();
+                analyserNode = audioContext.createAnalyser();
+                sourceNode.buffer = audioBuffer;
+                analyserNode.fftSize = 256;
+
+                sourceNode.connect(analyserNode);
+                sourceNode.connect(audioContext.destination);
+                if (audioDestinationNode) {
+                    sourceNode.connect(audioDestinationNode);
+                }
+
+                sourceNode.start(0, offset);
+                audioStartTime = audioContext.currentTime;
+                isPlaying = true;
+
+                animateFace();
+
+                // Update position during playback
+                function updatePosition() {
+                    if (!isPlaying || !audioContext) return;
+                    const elapsed = audioContext.currentTime - audioStartTime;
+                    const pos = Math.min(audioDuration, offset + elapsed);
+                    audioOffset = pos;
+                    updateUIState();
+                    if (pos < audioDuration) {
+                        requestAnimationFrame(updatePosition);
+                    }
+                }
+                updatePosition();
+
+                sourceNode.onended = () => {
+                    isPlaying = false;
+                    audioOffset = audioDuration;
+                    updateUIState();
+
+                    if (isRecording && !isPaused) {
+                        pauseRecordingAndAudio();
+                        showToast('⏸ ऑडियो खत्म → रिकॉर्डिंग पॉज़', 'info');
+                    } else {
+                        stopAudio();
+                        updateUIState();
+                    }
+                };
+
+                return true;
+            } catch (err) {
+                showToast('⚠️ Playback error: ' + err.message, 'error');
+                return false;
+            }
+        }
+
+        // ─── PAUSE RECORDING + AUDIO ───
+        function pauseRecordingAndAudio() {
+            if (isStopping) return;
+            if (mediaRecorder && isRecording && !isPaused) {
+                try {
+                    mediaRecorder.pause();
+                    isPaused = true;
+                    stopAudio();
+                    showToast('⏸ पॉज़ — किरदार बदल सकते हैं', 'info');
+                    updateUIState();
+                } catch (e) {
+                    showToast('⚠️ पॉज़ एरर: ' + e.message, 'error');
+                }
+            }
+        }
+
+        // ─── RESUME RECORDING + AUDIO ───
+        async function resumeRecordingAndAudio() {
+            if (isStopping) return;
+            if (mediaRecorder && isRecording && isPaused) {
+                try {
+                    // अगर ऑडियो खत्म हो चुका है तो रीसेट करें
+                    if (audioOffset >= audioDuration) {
+                        audioOffset = 0;
+                        showToast('🔄 ऑडियो रीसेट', 'info');
+                    }
+
+                    const audioOk = await startAudio(audioOffset);
+                    if (!audioOk) {
+                        showToast('⚠️ ऑडियो शुरू नहीं हो पाया', 'error');
+                        return;
+                    }
+
+                    mediaRecorder.resume();
+                    isPaused = false;
+                    characterCount++;
+                    charCounter.textContent = 'किरदार: ' + characterCount;
+                    showToast('▶ रिज्यूम — किरदार #' + characterCount, 'success');
+                    updateUIState();
+                } catch (e) {
+                    showToast('⚠️ रिज्यूम एरर: ' + e.message, 'error');
+                }
+            }
+        }
+
+        // ─── STOP RECORDING FINAL ───
+        function stopRecordingFinal() {
+            if (isStopping) return;
+            isStopping = true;
+
+            stopAudio();
+            if (mediaRecorder && isRecording) {
+                try {
+                    mediaRecorder.stop();
+                } catch (e) { /* ignore */ }
+            }
+
+            isRecording = false;
+            isPaused = false;
+            updateUIState();
+
+            stopCanvasDraw();
+            if (canvasTrack) {
+                try { canvasTrack.stop(); } catch (_) {}
+                canvasTrack = null;
+            }
+            canvasStream = null;
+
+            isStopping = false;
+        }
+
+        // ─── CANVAS DRAW ───
+        function drawStageToCanvas() {
+            const w = CANVAS_W, h = CANVAS_H;
+            ctx.clearRect(0, 0, w, h);
+
+            const grad = ctx.createLinearGradient(0, 0, 0, h);
+            grad.addColorStop(0, '#3f7568');
+            grad.addColorStop(1, '#1f3f38');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, w, h);
+
+            const stageRect = stageArea.getBoundingClientRect();
+            if (stageRect.width === 0 || stageRect.height === 0) return;
+
+            const wrapRect = portraitWrap.getBoundingClientRect();
+            const mouthRect = mouthOverlay.getBoundingClientRect();
+
+            const wrapX = (wrapRect.left - stageRect.left) / stageRect.width * w;
+            const wrapY = (wrapRect.top - stageRect.top) / stageRect.height * h;
+            const wrapW = wrapRect.width / stageRect.width * w;
+            const wrapH = wrapRect.height / stageRect.height * h;
+
+            const img = faceImage;
+            if (img.complete && img.naturalWidth > 0) {
+                const iw = img.naturalWidth, ih = img.naturalHeight;
+                const scaleX = wrapW / iw;
+                const scaleY = wrapH / ih;
+                const scale = Math.max(scaleX, scaleY);
+                const sw = wrapW / scale;
+                const sh = wrapH / scale;
+                const sx = (iw - sw) / 2;
+                const sy = (ih - sh) / 2;
+
+                ctx.save();
+                ctx.beginPath();
+                const r = 16 * (wrapW / 380);
+                if (ctx.roundRect) {
+                    ctx.roundRect(wrapX, wrapY, wrapW, wrapH, Math.min(r, wrapW / 2));
+                } else {
+                    ctx.rect(wrapX, wrapY, wrapW, wrapH);
+                }
+                ctx.clip();
+                ctx.drawImage(img, sx, sy, sw, sh, wrapX, wrapY, wrapW, wrapH);
+                ctx.restore();
+            } else {
+                ctx.fillStyle = '#2a4a42';
+                ctx.beginPath();
+                ctx.arc(wrapX + wrapW / 2, wrapY + wrapH / 2 - 20, 70 * (wrapW / 380), 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.fillStyle = '#9aa8a2';
+                ctx.font = `${24 * (wrapW/380)}px system-ui`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('Upload Face', wrapX + wrapW / 2, wrapY + wrapH / 2 + 40 * (wrapW / 380));
+            }
+
+            // Mouth
+            const mouthXCenter = ((mouthRect.left + mouthRect.width / 2) - stageRect.left) / stageRect.width * w;
+            const mouthYCenter = ((mouthRect.top + mouthRect.height / 2) - stageRect.top) / stageRect.height * h;
+            const mouthW = (mouthRect.width / stageRect.width) * w;
+            const mouthH = (mouthRect.height / stageRect.height) * h;
+            const lipScaleVal = (lipScale / 100);
+            const rotRad = lipRotate * Math.PI / 180;
+
+            ctx.save();
+            ctx.translate(mouthXCenter, mouthYCenter);
+            ctx.rotate(rotRad);
+
+            ctx.strokeStyle = '#803328';
+            ctx.lineWidth = Math.max(3, 6 * lipScaleVal * (wrapH / 470));
+            ctx.lineCap = 'round';
+            ctx.beginPath();
+            ctx.moveTo(-mouthW * 0.4, -4 * lipScaleVal);
+            ctx.quadraticCurveTo(0, -10 * lipScaleVal, mouthW * 0.4, -4 * lipScaleVal);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(-mouthW * 0.35, -2 * lipScaleVal);
+            ctx.quadraticCurveTo(0, 4 * lipScaleVal, mouthW * 0.35, -2 * lipScaleVal);
+            ctx.stroke();
+
+            const openVal = parseFloat(mouthOpen.style.opacity) || 0;
+            if (openVal > 0.05) {
+                ctx.save();
+                ctx.globalAlpha = Math.min(openVal, 1);
+                ctx.fillStyle = '#42130e';
+                ctx.beginPath();
+                ctx.ellipse(0, 2 * lipScaleVal, mouthW * 0.45, mouthH * 0.45, 0, 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.fillStyle = '#ffffff';
+                ctx.beginPath();
+                ctx.ellipse(0, -2 * lipScaleVal, mouthW * 0.32, mouthH * 0.18, 0, 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.fillStyle = '#c95b53';
+                ctx.beginPath();
+                ctx.ellipse(0, 6 * lipScaleVal, mouthW * 0.28, mouthH * 0.2, 0, 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.restore();
+            }
+            ctx.restore();
+
+            ctx.fillStyle = 'rgba(191,77,60,0.92)';
+            ctx.fillRect(0, h - 28, w, 28);
+            ctx.fillStyle = '#e9b949';
+            ctx.font = 'bold 10px system-ui';
+            ctx.fillText('BREAKING NEWS  |  तामीर अली विस्फोटक न्यूज़', 10, h - 8);
+        }
+
+        function startCanvasDraw() {
+            if (!drawInterval) drawInterval = setInterval(drawStageToCanvas, 33);
+        }
+
+        function stopCanvasDraw() {
+            if (drawInterval) {
+                clearInterval(drawInterval);
+                drawInterval = null;
+            }
+        }
+
+        // ─── MASTER BUTTON ───
+        masterBtn.addEventListener('click', async () => {
+            // अगर पॉज़ है → RESUME
+            if (isRecording && isPaused) {
+                await resumeRecordingAndAudio();
+                return;
+            }
+
+            // अगर रिकॉर्डिंग चल रही है → PAUSE
+            if (isRecording && !isPaused) {
+                pauseRecordingAndAudio();
+                return;
+            }
+
+            // ─── पहली बार START ───
+            if (!audioBuffer) {
+                showToast('⚠️ पहले ऑडियो फाइल अपलोड करें।', 'error');
+                return;
+            }
+
+            if (audioOffset >= audioDuration) {
+                audioOffset = 0;
+                showToast('🔄 ऑडियो रीसेट', 'info');
+            }
+
+            if (isPlaying) {
+                stopAudio();
+            }
+
+            startCanvasDraw();
+
+            const audioOk = await startAudio(audioOffset);
+            if (!audioOk) {
+                stopCanvasDraw();
+                return;
+            }
+
+            try {
+                initAudioContext();
+                if (audioContext.state === 'suspended') await audioContext.resume();
+
+                canvasStream = recordCanvas.captureStream(30);
+                canvasTrack = canvasStream.getVideoTracks()[0];
+
+                if (!canvasTrack) {
+                    showToast('⚠️ कैनवास स्ट्रीम नहीं मिली।', 'error');
+                    stopCanvasDraw();
+                    return;
+                }
+
+                const tracks = [canvasTrack];
+                if (audioDestinationNode && audioDestinationNode.stream.getAudioTracks().length > 0) {
+                    tracks.push(audioDestinationNode.stream.getAudioTracks()[0]);
+                }
+
+                const combinedStream = new MediaStream(tracks);
+
+                let mimeType = 'video/webm;codecs=vp9,opus';
+                if (!MediaRecorder.isTypeSupported(mimeType)) {
+                    mimeType = 'video/webm;codecs=vp8,opus';
+                    if (!MediaRecorder.isTypeSupported(mimeType)) {
+                        mimeType = 'video/webm';
+                    }
+                }
+
+                mediaRecorder = new MediaRecorder(combinedStream, { mimeType: mimeType });
+                recordedChunks = [];
+
+                mediaRecorder.ondataavailable = e => {
+                    if (e.data.size > 0) recordedChunks.push(e.data);
+                };
+
+                mediaRecorder.onstop = () => {
+                    if (recordedChunks.length > 0) {
+                        recordedBlob = new Blob(recordedChunks, { type: mimeType });
+                        saveBtn.disabled = false;
+                        saveBtn.classList.add('has-video');
+                        saveBtn.textContent = '💾 Download Final Video';
+                        showToast('✅ पूरी वीडियो तैयार!', 'success');
+                    } else {
+                        showToast('⚠️ रिकॉर्डिंग खाली है।', 'error');
+                    }
+                };
+
+                mediaRecorder.start(1000);
+                isRecording = true;
+                isPaused = false;
+                characterCount++;
+                charCounter.textContent = 'किरदार: ' + characterCount;
+
+                updateUIState();
+                showToast('🔴 रिकॉर्डिंग शुरू — किरदार #' + characterCount, 'info');
+
+            } catch (err) {
+                showToast('⚠️ रिकॉर्डिंग एरर: ' + err.message, 'error');
+                stopCanvasDraw();
+                if (canvasTrack) {
+                    try { canvasTrack.stop(); } catch (_) {}
+                    canvasTrack = null;
+                }
+                canvasStream = null;
+                isRecording = false;
+                isPaused = false;
+                updateUIState();
+                if (isPlaying) stopAudio();
+            }
+        });
+
+        // ─── SAVE / DOWNLOAD ───
+        saveBtn.addEventListener('click', async () => {
+            if (!recordedBlob) {
+                showToast('No video to save. Record first.', 'error');
+                return;
+            }
+
+            if (isRecording) {
+                stopRecordingFinal();
+            }
+
+            try {
+                const name = 'MultiChar_' + Date.now() + '.webm';
+                const reader = new FileReader();
+                reader.readAsDataURL(recordedBlob);
+                reader.onloadend = () => {
+                    let videos = [];
+                    try {
+                        const stored = localStorage.getItem('visfot_videos');
+                        if (stored) videos = JSON.parse(stored);
+                    } catch (e) {}
+                    videos.push({
+                        id: Date.now(),
+                        name: name,
+                        data: reader.result,
+                        size: recordedBlob.size,
+                        face: 'Multi-Char (' + characterCount + ' किरदार)'
+                    });
+                    localStorage.setItem('visfot_videos', JSON.stringify(videos));
+                    renderGallery();
+                };
+
+                const url = URL.createObjectURL(recordedBlob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = name;
+                a.click();
+                setTimeout(() => URL.revokeObjectURL(url), 5000);
+
+                const count = characterCount;
+                saveBtn.disabled = true;
+                saveBtn.classList.remove('has-video');
+                recordedBlob = null;
+                recordedChunks = [];
+                // Reset character count but keep audio
+                characterCount = 0;
+                charCounter.textContent = 'किरदार: 0';
+                audioOffset = 0;
+                updateUIState();
+                showToast('✅ ' + count + ' किरदारों वाली वीडियो सेव!', 'success');
+
+            } catch (err) {
+                showToast('⚠️ Save error: ' + err.message, 'error');
+            }
+        });
+
+        // ─── GALLERY ───
+        function base64ToBlob(base64) {
+            const parts = base64.split(',');
+            const mime = parts[0].match(/:(.*?);/)[1];
+            const byteString = atob(parts[1]);
+            const ab = new ArrayBuffer(byteString.length);
+            const ia = new Uint8Array(ab);
+            for (let i = 0; i < byteString.length; i++) {
+                ia[i] = byteString.charCodeAt(i);
+            }
+            return new Blob([ab], { type: mime });
+        }
+
+        function renderGallery() {
+            let videos = [];
+            try {
+                const stored = localStorage.getItem('visfot_videos');
+                if (stored) videos = JSON.parse(stored);
+            } catch (e) {}
+
+            if (!videos || videos.length === 0) {
+                galleryList.innerHTML = `<div class="empty-gallery">No saved videos yet.</div>`;
+                return;
+            }
+
+            let html = '';
+            [...videos].reverse().forEach(item => {
+                const sizeMB = (item.size / 1024 / 1024).toFixed(1);
+                const displayName = item.name.length > 28 ? item.name.slice(0, 25) + '…' : item.name;
+                const faceLabel = item.face && item.face !== 'कोई किरदार नहीं' ? '👤' + item.face.slice(0, 15) : '';
+                html += `
+                        <div class="gallery-item">
+                            <span class="name">📹 ${displayName} ${faceLabel} (${sizeMB} MB)</span>
+                            <div class="actions">
+                                <button class="play-btn" data-id="${item.id}">▶</button>
+                                <button class="del-btn" data-id="${item.id}">✕</button>
+                            </div>
+                        </div>
+                    `;
+            });
+            galleryList.innerHTML = html;
+
+            galleryList.querySelectorAll('.play-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = Number(e.target.dataset.id);
+                    const found = videos.find(v => v.id === id);
+                    if (found) {
+                        try {
+                            const blob = base64ToBlob(found.data);
+                            const url = URL.createObjectURL(blob);
+                            window.open(url, '_blank');
+                            setTimeout(() => URL.revokeObjectURL(url), 10000);
+                        } catch (err) {
+                            showToast('⚠️ Could not play: ' + err.message, 'error');
+                        }
+                    }
+                });
+            });
+
+            galleryList.querySelectorAll('.del-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = Number(e.target.dataset.id);
+                    if (!confirm('Delete this video?')) return;
+                    let updated = videos.filter(v => v.id !== id);
+                    localStorage.setItem('visfot_videos', JSON.stringify(updated));
+                    renderGallery();
+                    showToast('🗑️ Video deleted', 'info');
+                });
+            });
+        }
+
+        // ─── TOAST ───
+        function showToast(msg, type = 'info') {
+            const existing = document.querySelector('.toast-msg');
+            if (existing) existing.remove();
+            const div = document.createElement('div');
+            div.className = 'toast-msg ' + type;
+            div.textContent = msg;
+            document.body.appendChild(div);
+            setTimeout(() => {
+                div.style.opacity = '0';
+                setTimeout(() => div.remove(), 400);
+            }, 3500);
+        }
+
+        // ─── INIT ───
+        updateLipDisplay();
+        renderGallery();
+        startCanvasDraw();
+        updateUIState();
+        charCounter.textContent = 'किरदार: 0';
+
+        if (!CanvasRenderingContext2D.prototype.roundRect) {
+            CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
+                if (r > w / 2) r = w / 2;
+                if (r > h / 2) r = h / 2;
+                this.moveTo(x + r, y);
+                this.arcTo(x + w, y, x + w, y + h, r);
+                this.arcTo(x + w, y + h, x, y + h, r);
+                this.arcTo(x, y + h, x, y, r);
+                this.arcTo(x, y, x + w, y, r);
+                this.closePath();
+                return this;
+            };
+        }
+
+        window.addEventListener('beforeunload', () => {
+            stopCanvasDraw();
+            if (canvasTrack) {
+                try { canvasTrack.stop(); } catch (_) {}
+            }
+            if (mediaRecorder && isRecording) {
+                try { mediaRecorder.stop(); } catch (_) {}
+            }
+            if (isPlaying) stopAudio();
+        });
+
+    })();
+</script>
+</body>
+</html>
