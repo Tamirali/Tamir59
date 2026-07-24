@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="theme-color" content="#142f2b" />
+    <meta name="description" content="Tamir Ali Visfot News Vocal Lip Sync Portal" />
+    <title>Tamir Ali Visfot News</title>
+    <style>
+        :root {
+            --ink: #17332f;
+            --ink-soft: #536863;
+            --paper: #fbf5e9;
+            --paper-deep: #eee2cc;
+            --red: #bf4d3c;
+            --red-deep: #8f332a;
+            --gold: #e9b949;
+            --green: #3f7568;
+            --white: #fffdf7;
+            --shadow: 0 24px 70px rgba(8, 31, 27, 0.32);
+            --record-red: #e74c3c;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { min-width: 320px; background: #0a1f1b; }
+        body {
+            min-height: 100vh; min-height: 100dvh;
+            display: grid; place-items: center;
+            overflow-x: hidden;
+            color: var(--ink);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #0a1f1b;
+        }
+        button, input { font: inherit; }
+        button { cursor: pointer; border: none; outline: none; }
+
+        .shell {
+            position: relative;
+            width: 100%; max-width: 520px;
+            min-height: 100dvh;
+            display: flex; flex-direction: column;
+            overflow: hidden;
+            background: var(--paper);
+            box-shadow: var(--shadow);
+            border-radius: 0;
+        }
+        @media (min-width: 600px) {
+            .shell {
+                border-radius: 32px 12px 32px 12px;
+                min-height: min(920px, 100dvh);
+                max-height: 98dvh;
+                margin: 8px auto;
+                box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+            }
+        }
+
+        .stage {
+            position: relative;
+            flex: 0 0 auto;
+            min-height: 460px;
+            padding: clamp(20px, 4vw, 36px) clamp(16px, 3vw, 28px);
+            overflow: hidden;
+            color: var(--white);
+            background: linear-gradient(180deg, rgba(13,38,34,0.15), rgba(13,38,34,0.70)), var(--green);
+            border-bottom: 4px solid var(--gold);
+        }
+        .stage-mark {
+            position: relative; z-index: 1;
+            display: flex; align-items: center; justify-content: space-between;
+            flex-wrap: wrap; gap: 8px;
+        }
+        .stage-mark h1 {
+            font-size: 1.1rem; font-weight: 700;
+            color: #f5cf70; text-transform: uppercase;
+            flex: 1; min-width: 120px;
+        }
+        .stage-top-actions {
+            display: flex; align-items: center; gap: 8px;
+            flex-shrink: 0;
+        }
+        .rec-btn-top {
+            display: flex; align-items: center; gap: 8px;
+            padding: 6px 16px 6px 12px;
+            border-radius: 99px;
+            font-weight: 700; font-size: 0.7rem;
+            color: #fff;
+            background: var(--red);
+            transition: all 0.25s ease;
+            box-shadow: 0 4px 16px rgba(191,77,60,0.35);
+            border: 1px solid rgba(255,255,255,0.15);
+            white-space: nowrap;
+        }
+        .rec-btn-top:active { transform: scale(0.94); }
+        .rec-btn-top .dot {
+            width: 10px; height: 10px;
+            border-radius: 50%;
+            background: #fff;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+        .rec-btn-top.recording {
+            background: var(--record-red);
+            animation: pulse-rec-btn 1s infinite;
+            box-shadow: 0 4px 24px rgba(231,76,60,0.5);
+        }
+        .rec-btn-top.recording .dot {
+            animation: pulse-dot 0.8s ease-in-out infinite;
+        }
+        @keyframes pulse-rec-btn {
+            0%,100% { box-shadow: 0 4px 24px rgba(231,76,60,0.5); }
+            50% { box-shadow: 0 4px 40px rgba(231,76,60,0.25); }
+        }
+        @keyframes pulse-dot {
+            0%,100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.3; transform: scale(0.6); }
+        }
+        .rec-btn-top .badge {
+            font-size: 0.5rem;
+            background: rgba(255,255,255,0.2);
+            padding: 1px 8px;
+            border-radius: 20px;
+            color: rgba(255,255,255,0.9);
+            letter-spacing: 0.5px;
+        }
+        .rec-indicator {
+            display: flex; align-items: center; gap: 6px;
+            padding: 3px 10px;
+            border-radius: 99px;
+            background: rgba(0,0,0,0.45);
+            font-size: 0.55rem;
+            color: rgba(255,255,255,0.7);
+            flex-shrink: 0;
+        }
+        .rec-indicator .dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: #666;
+        }
+        .rec-indicator.active .dot {
+            background: var(--record-red);
+            animation: pulse-rec 1s infinite;
+        }
+        @keyframes pulse-rec { 50% { opacity: 0.4; } }
+
+        .portrait-wrap {
+            position: relative;
+            width: clamp(220px, 60vw, 320px);
+            margin: 10px auto 0;
+            transform-origin: 50% 80%;
+            border-radius: 16px;
+        }
+        .portrait-wrap img {
+            display: block;
+            width: 100%; height: auto;
+            border-radius: 16px;
+            object-fit: cover;
+            aspect-ratio: 380 / 470;
+        }
+        .mouth-overlay {
+            --lip-x: 0px;
+            --lip-y: 24px;   
+            --lip-scale: 0.96; 
+            position: absolute;
+            left: calc(50% + var(--lip-x));
+            bottom: calc(18% + 38px + var(--lip-y));
+            width: calc(28% * var(--lip-scale));
+            height: calc(9% * var(--lip-scale));
+            transform: translateX(-50%);
+            z-index: 3;
+            pointer-events: none;
+        }
+        .mouth-overlay svg {
+            width: 100%; height: 100%;
+            display: block;
+        }
+        #mouthOpenOverlay { opacity: 0; transform-origin: center; }
+        #mouthClosedOverlay { opacity: 1; transform-origin: center; }
+
+        .news-ticker {
+            position: absolute;
+            bottom: 0; left: 0;
+            width: 100%;
+            background: var(--red);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            font-size: 0.75rem;
+            font-weight: bold;
+            overflow: hidden;
+            border-top: 2px solid var(--gold);
+        }
+        .ticker-title {
+            background: var(--gold);
+            color: #000;
+            padding: 4px 10px;
+            white-space: nowrap;
+            z-index: 2;
+        }
+        .ticker-text {
+            white-space: nowrap;
+            padding-left: 100%;
+            display: inline-block;
+            animation: marquee 12s linear infinite;
+        }
+        @keyframes marquee {
+            0% { transform: translate(0,0); }
+            100% { transform: translate(-100%,0); }
+        }
+
+        .panel {
+            flex: 1;
+            display: flex; flex-direction: column;
+            padding: 16px;
+            background: var(--paper);
+            overflow-y: auto;
+            gap: 12px;
+        }
+
+        /* 🎛️ VERTICAL SLIDERS DESIGN */
+        .controls-box {
+            padding: 12px;
+            border: 1px solid rgba(23,51,47,0.1);
+            border-radius: 12px;
+            background: rgba(255,253,247,0.7);
+        }
+        .v-sliders-container {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .v-slider-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            height: 150px;
+            background: var(--paper-deep);
+            padding: 8px 4px;
+            border-radius: 8px;
+            flex: 1;
+        }
+        .v-slider-card span {
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: var(--ink);
+        }
+        .vertical-slider {
+            -webkit-appearance: slider-vertical;
+            writing-mode: bt-lr;
+            width: 22px;
+            height: 90px;
+            accent-color: var(--green);
+            cursor: pointer;
+        }
+
+        .upload-zone {
+            border: 1.5px dashed #9a8d79;
+            padding: 12px;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-size: 0.9rem;
+        }
+        .upload-zone:hover { background: rgba(154,141,121,0.06); }
+
+        .player { display: none; margin-top: 8px; }
+        .player.is-visible { display: block; }
+
+        .save-btn {
+            background: var(--green);
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1rem;
+            box-shadow: 0 2px 16px rgba(63,117,104,0.3);
+            transition: 0.2s;
+            width: 100%;
+            text-align: center;
+            display: flex; align-items: center; justify-content: center;
+            gap: 10px;
+        }
+        .save-btn:active { transform: scale(0.97); }
+        .save-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+        .save-btn.has-video {
+            background: #2d8f7a;
+            box-shadow: 0 2px 20px rgba(63,117,104,0.5);
+        }
+
+        .gallery-list {
+            max-height: 150px;
+            overflow-y: auto;
+            border-top: 1px solid rgba(0,0,0,0.06);
+            padding-top: 8px;
+            margin-top: 4px;
+        }
+        .gallery-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 6px 4px;
+            border-bottom: 1px solid rgba(0,0,0,0.04);
+            font-size: 0.7rem;
+            gap: 6px;
+        }
+        .gallery-item .name {
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .gallery-item .actions { display: flex; gap: 4px; flex-shrink: 0; }
+        .gallery-item button {
+            background: var(--red);
+            color: #fff;
+            padding: 2px 12px;
+            border-radius: 20px;
+            font-size: 0.6rem;
+            transition: 0.15s;
+        }
+        .gallery-item button:active { transform: scale(0.92); }
+        .gallery-item .play-btn { background: var(--green); }
+        .gallery-item .del-btn { background: #b91c1c; }
+
+        .empty-gallery {
+            color: var(--ink-soft);
+            font-size: 0.7rem;
+            padding: 8px 0;
+            text-align: center;
+        }
+
+        .hidden-canvas {
+            position: absolute;
+            top: -9999px; left: -9999px;
+            width: 380px; height: 470px;
+            pointer-events: none;
+            opacity: 0;
+        }
+
+        .toast-msg {
+            position: fixed;
+            bottom: 20px; left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.85);
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            z-index: 999;
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.1);
+            max-width: 90%;
+            text-align: center;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        .toast-msg.success { border-color: #6ee7b7; }
+        .toast-msg.error { border-color: #fca5a5; }
+        .toast-msg.info { border-color: #93c5fd; }
+
+        @media (max-width: 420px) {
+            .stage-mark h1 { font-size: 0.85rem; min-width: 80px; }
+            .rec-btn-top { padding: 4px 12px 4px 10px; font-size: 0.6rem; }
+            .rec-btn-top .badge { display: none; }
+            .rec-indicator { font-size: 0.5rem; padding: 2px 8px; }
+            .rec-indicator .dot { width: 6px; height: 6px; }
+            .save-btn { font-size: 0.85rem; padding: 10px 16px; }
+        }
+        @media (max-width: 360px) {
+            .stage-mark h1 { font-size: 0.7rem; }
+            .rec-btn-top { font-size: 0.5rem; padding: 3px 8px 3px 6px; gap: 4px; }
+            .rec-btn-top .dot { width: 6px; height: 6px; }
+            .rec-indicator { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <main class="shell">
+
+        <section class="stage" id="stageArea">
+            <header class="stage-mark">
+                <h1>📰 तामीर अली विस्फोटक न्यूज़</h1>
+                <div class="stage-top-actions">
+                    <button class="rec-btn-top" id="recBtnTop">
+                        <span class="dot"></span>
+                        <span>Record</span>
+                        <span class="badge">● Live</span>
+                    </button>
+                    <div class="rec-indicator" id="recIndicator">
+                        <span class="dot"></span>
+                        <span id="recIndicatorLabel">IDLE</span>
+                    </div>
+                </div>
+            </header>
+
+            <div class="portrait-wrap" id="portraitWrap">
+                <img id="faceImage" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 380 470'%3E%3Crect width='380' height='470' fill='%231b2a26'/%3E%3Ccircle cx='190' cy='180' r='70' fill='%233a5a52'/%3E%3Ctext x='190' y='310' font-family='system-ui' font-size='24' fill='%239aa8a2' text-anchor='middle'%3EUpload Face%3C/text%3E%3C/svg%3E" alt="Face" />
+                <div class="mouth-overlay" id="mouthOverlay">
+                    <svg viewBox="0 0 120 60" preserveAspectRatio="xMidYMid meet">
+                        <path id="mouthClosedOverlay" d="M10 32 Q60 28 110 32 M12 32 Q60 35 108 32" fill="none" stroke="#803328" stroke-width="6" stroke-linecap="round" />
+                        <g id="mouthOpenOverlay">
+                            <ellipse cx="60" cy="36" rx="46" ry="20" fill="#42130e" />
+                            <path d="M22 28 Q60 30 98 28 Q60 24 22 28Z" fill="#ffffff" />
+                            <path d="M28 44 Q60 38 92 44 Q60 50 28 44Z" fill="#c95b53" />
+                        </g>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="news-ticker">
+                <div class="ticker-title">BREAKING NEWS</div>
+                <div class="ticker-text">तामीर अली विस्फोटक न्यूज़ पोर्टल में आपका स्वागत है... ताज़ा अपडेट्स के लिए बने रहें...</div>
+            </div>
+        </section>
+
+        <section class="panel">
+            <button class="save-btn" id="saveBtn" disabled>💾 Save Video to Gallery</button>
+
+            <label class="upload-zone">
+                📸 चेहरा बदलें (JPEG, PNG)
+                <input type="file" id="faceInput" accept="image/*" hidden />
+            </label>
+
+            <!-- 🎛️ VERTICAL SLIDERS -->
+            <div class="controls-box">
+                <b>🎯 होठों की स्थिति एडजस्ट करें (Vertical Sliders)</b>
+                <div class="v-sliders-container">
+                    <div class="v-slider-card">
+                        <span>↔️ L / R</span>
+                        <input type="range" class="vertical-slider" id="lipX" min="-50" max="50" value="0" orient="vertical" />
+                        <span id="valX">0</span>
+                    </div>
+                    <div class="v-slider-card">
+                        <span>↕️ U / D</span>
+                        <input type="range" class="vertical-slider" id="lipY" min="-50" max="50" value="24" orient="vertical" />
+                        <span id="valY">24</span>
+                    </div>
+                    <div class="v-slider-card">
+                        <span>🔍 Size</span>
+                        <input type="range" class="vertical-slider" id="lipScale" min="50" max="150" value="96" orient="vertical" />
+                        <span id="valScale">96%</span>
+                    </div>
+                </div>
+            </div>
+
+            <label class="upload-zone">
+                🎵 ऑडियो फाइल चुनें (MP3, WAV)
+                <input type="file" id="audioInput" accept="audio/*" hidden />
+            </label>
+
+            <div class="player" id="player">
+                <button id="playPauseButton" class="rec-btn" style="background:var(--green); width:100%; padding:10px; border-radius:8px; font-weight:bold; color:#fff;">▶ Play Audio</button>
+            </div>
+
+            <div class="controls-box" style="max-height:200px; overflow-y:auto;">
+                <b>📁 Saved Videos</b>
+                <div id="galleryList" class="gallery-list">
+                    <div class="empty-gallery">No saved videos yet.</div>
+                </div>
+            </div>
+        </section>
+
+        <canvas id="recordCanvas" class="hidden-canvas" width="380" height="470"></canvas>
+    </main>
+
+    <script>
+        (function() {
+            'use strict';
+
+            // ─── DOM REFS ───
+            const faceInput = document.getElementById('faceInput');
+            const faceImage = document.getElementById('faceImage');
+            const audioInput = document.getElementById('audioInput');
+            const mouthOverlay = document.getElementById('mouthOverlay');
+            const mouthOpen = document.getElementById('mouthOpenOverlay');
+            const mouthClosed = document.getElementById('mouthClosedOverlay');
+            const portraitWrap = document.getElementById('portraitWrap');
+            const stageArea = document.getElementById('stageArea');
+            const recBtnTop = document.getElementById('recBtnTop');
+            const recIndicator = document.getElementById('recIndicator');
+            const recIndicatorLabel = document.getElementById('recIndicatorLabel');
+            const playPauseButton = document.getElementById('playPauseButton');
+            const player = document.getElementById('player');
+            const saveBtn = document.getElementById('saveBtn');
+            const galleryList = document.getElementById('galleryList');
+            const recordCanvas = document.getElementById('recordCanvas');
+
+            // ─── STATE ───
+            let audioContext, audioBuffer, sourceNode, analyserNode, audioDestinationNode;
+            let isPlaying = false, isRecording = false;
+            let mediaRecorder, recordedChunks = [], animFrame;
+            let canvasStream = null, canvasTrack = null;
+            let recordedBlob = null;
+
+            const lipX = document.getElementById('lipX');
+            const lipY = document.getElementById('lipY');
+            const lipScale = document.getElementById('lipScale');
+            const valX = document.getElementById('valX');
+            const valY = document.getElementById('valY');
+            const valScale = document.getElementById('valScale');
+
+            // ─── LIP POSITION (CSS) ───
+            function updateLips() {
+                mouthOverlay.style.setProperty('--lip-x', lipX.value + 'px');
+                mouthOverlay.style.setProperty('--lip-y', lipY.value + 'px');
+                mouthOverlay.style.setProperty('--lip-scale', lipScale.value / 100);
+                
+                if (valX) valX.textContent = lipX.value;
+                if (valY) valY.textContent = lipY.value;
+                if (valScale) valScale.textContent = lipScale.value + '%';
+            }
+            [lipX, lipY, lipScale].forEach(el => el.addEventListener('input', updateLips));
+
+            // ─── FACE UPLOAD ───
+            faceInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (ev) => faceImage.src = ev.target.result;
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // ─── AUDIO UPLOAD ───
+            audioInput.addEventListener('change', async (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    try {
+                        if (!audioContext) audioContext = new(window.AudioContext || window.webkitAudioContext)();
+                        const arrayBuffer = await file.arrayBuffer();
+                        audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+                        player.classList.add('is-visible');
+                        showToast('🎵 Audio loaded: ' + file.name, 'success');
+                    } catch (err) {
+                        showToast('⚠️ Could not decode audio: ' + err.message, 'error');
+                    }
+                }
+            });
+
+            // ─── LIP SYNC ANIMATION ───
+            function animateFace() {
+                if (!isPlaying || !analyserNode) return;
+                const samples = new Uint8Array(analyserNode.fftSize);
+                analyserNode.getByteTimeDomainData(samples);
+                let energy = 0;
+                for (const s of samples) {
+                    const norm = (s - 128) / 128;
+                    energy += norm * norm;
+                }
+                const rms = Math.sqrt(energy / samples.length);
+                const open = Math.min(1, Math.max(0, (rms - 0.01) * 8));
+                mouthOpen.style.opacity = open;
+                mouthClosed.style.opacity = 1 - open;
+                portraitWrap.style.transform = `scale(${1 + open * 0.02})`;
+                animFrame = requestAnimationFrame(animateFace);
+            }
+
+            // ─── PLAY / PAUSE ───
+            playPauseButton.addEventListener('click', () => {
+                if (isPlaying) {
+                    sourceNode?.stop();
+                    isPlaying = false;
+                    playPauseButton.textContent = "▶ Play Audio";
+                    mouthOpen.style.opacity = 0;
+                    mouthClosed.style.opacity = 1;
+                    portraitWrap.style.transform = 'scale(1)';
+                    cancelAnimationFrame(animFrame);
+                    return;
+                }
+                if (!audioBuffer) {
+                    showToast('⚠️ Please upload an audio file first.', 'error');
+                    return;
+                }
+                try {
+                    if (audioContext.state === 'suspended') audioContext.resume();
+                    sourceNode = audioContext.createBufferSource();
+                    analyserNode = audioContext.createAnalyser();
+                    audioDestinationNode = audioContext.createMediaStreamDestination();
+                    sourceNode.buffer = audioBuffer;
+                    analyserNode.fftSize = 256;
+                    sourceNode.connect(analyserNode);
+                    sourceNode.connect(audioContext.destination);
+                    sourceNode.connect(audioDestinationNode);
+                    sourceNode.start(0);
+                    isPlaying = true;
+                    playPauseButton.textContent = "⏸ Pause Audio";
+                    animateFace();
+                    sourceNode.onended = () => {
+                        isPlaying = false;
+                        playPauseButton.textContent = "▶ Play Audio";
+                        mouthOpen.style.opacity = 0;
+                        mouthClosed.style.opacity = 1;
+                        portraitWrap.style.transform = 'scale(1)';
+                    };
+                } catch (err) {
+                    showToast('⚠️ Playback error: ' + err.message, 'error');
+                }
+            });
+
+            // ─── CANVAS DRAWING (DYNAMICALLY MATCHED TO DOM) ───
+            const ctx = recordCanvas.getContext('2d');
+            const CANVAS_W = 380, CANVAS_H = 470;
+
+            function drawStageToCanvas() {
+                const w = CANVAS_W, h = CANVAS_H;
+                ctx.clearRect(0, 0, w, h);
+
+                // 1. Background
+                const grad = ctx.createLinearGradient(0, 0, 0, h);
+                grad.addColorStop(0, '#3f7568');
+                grad.addColorStop(1, '#1f3f38');
+                ctx.fillStyle = grad;
+                ctx.fillRect(0, 0, w, h);
+
+                // 2. Get DOM positions
+                const stageRect = stageArea.getBoundingClientRect();
+                const wrapRect = portraitWrap.getBoundingClientRect();
+                const mouthRect = mouthOverlay.getBoundingClientRect();
+
+                // Map wrap to canvas coords
+                const wrapX = (wrapRect.left - stageRect.left) / stageRect.width * w;
+                const wrapY = (wrapRect.top - stageRect.top) / stageRect.height * h;
+                const wrapW = wrapRect.width / stageRect.width * w;
+                const wrapH = wrapRect.height / stageRect.height * h;
+
+                // 3. Draw face with cover scaling
+                const img = faceImage;
+                if (img.complete && img.naturalWidth > 0) {
+                    const iw = img.naturalWidth, ih = img.naturalHeight;
+                    const scaleX = wrapW / iw;
+                    const scaleY = wrapH / ih;
+                    const scale = Math.max(scaleX, scaleY);
+                    const sw = wrapW / scale;
+                    const sh = wrapH / scale;
+                    const sx = (iw - sw) / 2;
+                    const sy = (ih - sh) / 2;
+
+                    ctx.save();
+                    ctx.beginPath();
+                    const r = 16 * (wrapW / 380);
+                    if (ctx.roundRect) {
+                        ctx.roundRect(wrapX, wrapY, wrapW, wrapH, Math.min(r, wrapW/2));
+                    } else {
+                        ctx.rect(wrapX, wrapY, wrapW, wrapH);
+                    }
+                    ctx.clip();
+                    ctx.drawImage(img, sx, sy, sw, sh, wrapX, wrapY, wrapW, wrapH);
+                    ctx.restore();
+                } else {
+                    ctx.fillStyle = '#2a4a42';
+                    ctx.beginPath();
+                    ctx.arc(wrapX + wrapW/2, wrapY + wrapH/2 - 20, 70 * (wrapW/380), 0, 2 * Math.PI);
+                    ctx.fill();
+                    ctx.fillStyle = '#9aa8a2';
+                    ctx.font = `${24 * (wrapW/380)}px system-ui`;
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText('Upload Face', wrapX + wrapW/2, wrapY + wrapH/2 + 40 * (wrapW/380));
+                }
+
+                // 4. Mouth position dynamically calculated from DOM
+                const mouthXCenter = ((mouthRect.left + mouthRect.width / 2) - stageRect.left) / stageRect.width * w;
+                const mouthYCenter = ((mouthRect.top + mouthRect.height / 2) - stageRect.top) / stageRect.height * h;
+                const mouthW = (mouthRect.width / stageRect.width) * w;
+                const mouthH = (mouthRect.height / stageRect.height) * h;
+
+                const lipScaleVal = (parseFloat(lipScale.value) || 100) / 100;
+
+                // Closed mouth
+                ctx.strokeStyle = '#803328';
+                ctx.lineWidth = Math.max(3, 6 * lipScaleVal * (wrapH / 470));
+                ctx.lineCap = 'round';
+                ctx.beginPath();
+                ctx.moveTo(mouthXCenter - mouthW * 0.4, mouthYCenter - 4 * lipScaleVal);
+                ctx.quadraticCurveTo(mouthXCenter, mouthYCenter - 10 * lipScaleVal, mouthXCenter + mouthW * 0.4, mouthYCenter - 4 * lipScaleVal);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(mouthXCenter - mouthW * 0.35, mouthYCenter - 2 * lipScaleVal);
+                ctx.quadraticCurveTo(mouthXCenter, mouthYCenter + 4 * lipScaleVal, mouthXCenter + mouthW * 0.35, mouthYCenter - 2 * lipScaleVal);
+                ctx.stroke();
+
+                // Open mouth
+                const openVal = parseFloat(mouthOpen.style.opacity) || 0;
+                if (openVal > 0.05) {
+                    ctx.save();
+                    ctx.globalAlpha = Math.min(openVal, 1);
+                    ctx.fillStyle = '#42130e';
+                    ctx.beginPath();
+                    ctx.ellipse(mouthXCenter, mouthYCenter + 2 * lipScaleVal, mouthW * 0.45, mouthH * 0.45, 0, 0, 2 * Math.PI);
+                    ctx.fill();
+                    ctx.fillStyle = '#ffffff';
+                    ctx.beginPath();
+                    ctx.ellipse(mouthXCenter, mouthYCenter - 2 * lipScaleVal, mouthW * 0.32, mouthH * 0.18, 0, 0, 2 * Math.PI);
+                    ctx.fill();
+                    ctx.fillStyle = '#c95b53';
+                    ctx.beginPath();
+                    ctx.ellipse(mouthXCenter, mouthYCenter + 6 * lipScaleVal, mouthW * 0.28, mouthH * 0.2, 0, 0, 2 * Math.PI);
+                    ctx.fill();
+                    ctx.restore();
+                }
+
+                // 5. Ticker
+                ctx.fillStyle = 'rgba(191,77,60,0.92)';
+                ctx.fillRect(0, h - 28, w, 28);
+                ctx.fillStyle = '#e9b949';
+                ctx.font = 'bold 10px system-ui';
+                ctx.fillText('BREAKING NEWS  |  तामीर अली विस्फोटक न्यूज़', 10, h - 8);
+            }
+
+            let drawInterval = null;
+
+            function startCanvasDraw() {
+                if (drawInterval) return;
+                drawInterval = setInterval(drawStageToCanvas, 33);
+            }
+
+            function stopCanvasDraw() {
+                if (drawInterval) {
+                    clearInterval(drawInterval);
+                    drawInterval = null;
+                }
+            }
+
+            // ─── RECORD ───
+            recBtnTop.addEventListener('click', async () => {
+                if (isRecording) {
+                    stopRecording();
+                    return;
+                }
+                try {
+                    startCanvasDraw();
+
+                    canvasStream = recordCanvas.captureStream(30);
+                    canvasTrack = canvasStream.getVideoTracks()[0];
+
+                    let audioTrack = null;
+                    if (audioDestinationNode && audioDestinationNode.stream.getAudioTracks().length > 0) {
+                        audioTrack = audioDestinationNode.stream.getAudioTracks()[0];
+                    }
+
+                    const tracks = [canvasTrack];
+                    if (audioTrack) tracks.push(audioTrack);
+
+                    const combinedStream = new MediaStream(tracks);
+
+                    let mimeType = 'video/webm;codecs=vp9,opus';
+                    if (!MediaRecorder.isTypeSupported(mimeType)) {
+                        mimeType = 'video/webm;codecs=vp8,opus';
+                        if (!MediaRecorder.isTypeSupported(mimeType)) {
+                            mimeType = 'video/webm';
+                        }
+                    }
+
+                    mediaRecorder = new MediaRecorder(combinedStream, { mimeType: mimeType });
+                    recordedChunks = [];
+
+                    mediaRecorder.ondataavailable = e => {
+                        if (e.data.size > 0) recordedChunks.push(e.data);
+                    };
+
+                    mediaRecorder.onstop = () => {
+                        const blob = new Blob(recordedChunks, { type: mimeType });
+                        recordedBlob = blob;
+                        saveBtn.disabled = false;
+                        saveBtn.classList.add('has-video');
+                        saveBtn.textContent = '💾 Save Video to Gallery';
+                        recBtnTop.innerHTML = `<span class="dot"></span><span>Record</span><span class="badge">● Live</span>`;
+                        recBtnTop.classList.remove('recording');
+                        recIndicator.classList.remove('active');
+                        recIndicatorLabel.textContent = "IDLE";
+                        stopCanvasDraw();
+                        if (canvasTrack) canvasTrack.stop();
+                        canvasTrack = null;
+                        canvasStream = null;
+                        isRecording = false;
+                        showToast('✅ Recording finished! Tap Save to store.', 'success');
+                    };
+
+                    mediaRecorder.start(1000);
+                    isRecording = true;
+                    recBtnTop.innerHTML = `<span class="dot"></span><span>Stop</span><span class="badge">● REC</span>`;
+                    recBtnTop.classList.add('recording');
+                    recIndicator.classList.add('active');
+                    recIndicatorLabel.textContent = "REC";
+                    saveBtn.disabled = true;
+                    saveBtn.classList.remove('has-video');
+
+                } catch (err) {
+                    showToast('⚠️ Recording error: ' + err.message, 'error');
+                    stopCanvasDraw();
+                    if (canvasTrack) canvasTrack.stop();
+                    canvasTrack = null;
+                    canvasStream = null;
+                    isRecording = false;
+                    recBtnTop.innerHTML = `<span class="dot"></span><span>Record</span><span class="badge">● Live</span>`;
+                    recBtnTop.classList.remove('recording');
+                    recIndicator.classList.remove('active');
+                    recIndicatorLabel.textContent = "IDLE";
+                }
+            });
+
+            function stopRecording() {
+                if (mediaRecorder && isRecording) {
+                    mediaRecorder.stop();
+                } else {
+                    isRecording = false;
+                    recBtnTop.innerHTML = `<span class="dot"></span><span>Record</span><span class="badge">● Live</span>`;
+                    recBtnTop.classList.remove('recording');
+                    recIndicator.classList.remove('active');
+                    recIndicatorLabel.textContent = "IDLE";
+                    stopCanvasDraw();
+                    if (canvasTrack) canvasTrack.stop();
+                    canvasTrack = null;
+                    canvasStream = null;
+                }
+            }
+
+            // ─── SAVE ───
+            saveBtn.addEventListener('click', async () => {
+                if (!recordedBlob) {
+                    showToast('No video to save. Record first.', 'error');
+                    return;
+                }
+
+                try {
+                    const name = 'VisfotNews_' + Date.now() + '.webm';
+                    const base64 = await blobToBase64(recordedBlob);
+
+                    let videos = [];
+                    try {
+                        const stored = localStorage.getItem('visfot_videos');
+                        if (stored) videos = JSON.parse(stored);
+                    } catch (e) { videos = []; }
+
+                    const entry = {
+                        id: Date.now(),
+                        name: name,
+                        data: base64,
+                        size: recordedBlob.size,
+                        timestamp: new Date().toLocaleString()
+                    };
+                    videos.push(entry);
+                    localStorage.setItem('visfot_videos', JSON.stringify(videos));
+
+                    showToast('✅ Video saved to gallery!', 'success');
+                    renderGallery();
+
+                    const url = URL.createObjectURL(recordedBlob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = name;
+                    a.click();
+                    setTimeout(() => URL.revokeObjectURL(url), 5000);
+
+                    saveBtn.disabled = true;
+                    saveBtn.classList.remove('has-video');
+                    recordedBlob = null;
+
+                } catch (err) {
+                    showToast('⚠️ Save error: ' + err.message, 'error');
+                    try {
+                        const url = URL.createObjectURL(recordedBlob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = 'VisfotNews_' + Date.now() + '.webm';
+                        a.click();
+                        setTimeout(() => URL.revokeObjectURL(url), 5000);
+                        showToast('💾 Video downloaded instead (storage unavailable)', 'info');
+                    } catch (e2) {
+                        showToast('❌ Could not save or download video.', 'error');
+                    }
+                }
+            });
+
+            // ─── HELPERS ───
+            function blobToBase64(blob) {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = () => resolve(reader.result);
+                    reader.onerror = () => reject(reader.error);
+                    reader.readAsDataURL(blob);
+                });
+            }
+
+            function base64ToBlob(base64) {
+                const parts = base64.split(',');
+                const mime = parts[0].match(/:(.*?);/)[1];
+                const byteString = atob(parts[1]);
+                const ab = new ArrayBuffer(byteString.length);
+                const ia = new Uint8Array(ab);
+                for (let i = 0; i < byteString.length; i++) {
+                    ia[i] = byteString.charCodeAt(i);
+                }
+                return new Blob([ab], { type: mime });
+            }
+
+            // ─── GALLERY ───
+            function renderGallery() {
+                let videos = [];
+                try {
+                    const stored = localStorage.getItem('visfot_videos');
+                    if (stored) videos = JSON.parse(stored);
+                } catch (e) { videos = []; }
+
+                if (!videos || videos.length === 0) {
+                    galleryList.innerHTML = `<div class="empty-gallery">No saved videos yet.</div>`;
+                    return;
+                }
+
+                let html = '';
+                const sorted = [...videos].reverse();
+                for (const item of sorted) {
+                    const sizeMB = (item.size / 1024 / 1024).toFixed(1);
+                    const displayName = item.name.length > 28 ? item.name.slice(0, 25) + '…' : item.name;
+                    html += `
+                        <div class="gallery-item">
+                            <span class="name">📹 ${displayName} (${sizeMB} MB)</span>
+                            <div class="actions">
+                                <button class="play-btn" data-id="${item.id}">▶</button>
+                                <button class="del-btn" data-id="${item.id}">✕</button>
+                            </div>
+                        </div>
+                    `;
+                }
+                galleryList.innerHTML = html;
+
+                galleryList.querySelectorAll('.play-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const id = Number(e.target.dataset.id);
+                        const found = videos.find(v => v.id === id);
+                        if (found) {
+                            try {
+                                const blob = base64ToBlob(found.data);
+                                const url = URL.createObjectURL(blob);
+                                window.open(url, '_blank');
+                                setTimeout(() => URL.revokeObjectURL(url), 10000);
+                            } catch (err) {
+                                showToast('⚠️ Could not play video: ' + err.message, 'error');
+                            }
+                        }
+                    });
+                });
+
+                galleryList.querySelectorAll('.del-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const id = Number(e.target.dataset.id);
+                        if (!confirm('Delete this video?')) return;
+                        let updated = videos.filter(v => v.id !== id);
+                        localStorage.setItem('visfot_videos', JSON.stringify(updated));
+                        renderGallery();
+                        showToast('🗑️ Video deleted', 'info');
+                    });
+                });
+            }
+
+            // ─── TOAST ───
+            function showToast(msg, type = 'info') {
+                const existing = document.querySelector('.toast-msg');
+                if (existing) existing.remove();
+                const div = document.createElement('div');
+                div.className = 'toast-msg ' + type;
+                div.textContent = msg;
+                document.body.appendChild(div);
+                setTimeout(() => {
+                    div.style.opacity = '0';
+                    setTimeout(() => div.remove(), 400);
+                }, 3500);
+            }
+
+            // ─── INIT ───
+            lipY.value = "24";
+            lipScale.value = "96";
+            updateLips();
+            renderGallery();
+            startCanvasDraw();
+
+            // ─── ROUND RECT POLYFILL ───
+            if (!CanvasRenderingContext2D.prototype.roundRect) {
+                CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
+                    if (r > w/2) r = w/2;
+                    if (r > h/2) r = h/2;
+                    this.moveTo(x + r, y);
+                    this.arcTo(x + w, y, x + w, y + h, r);
+                    this.arcTo(x + w, y + h, x, y + h, r);
+                    this.arcTo(x, y + h, x, y, r);
+                    this.arcTo(x, y, x + w, y, r);
+                    this.closePath();
+                    return this;
+                };
+            }
+
+            // ─── CLEANUP ───
+            window.addEventListener('beforeunload', () => {
+                stopCanvasDraw();
+                if (canvasTrack) canvasTrack.stop();
+                if (mediaRecorder && isRecording) mediaRecorder.stop();
+            });
+
+        })();
+    </script>
+</body>
+</html>
