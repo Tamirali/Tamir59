@@ -1,0 +1,780 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+  <meta charset="UTF-8"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+  <meta name="theme-color" content="#142f2b"> 
+  <meta name="description" content="Tamir Ali Visfot News Vocal Lip Sync Portal"> 
+  <title>Tamir Ali Visfot News</title> 
+  <style> 
+    :root { 
+      --ink: #17332f; 
+      --ink-soft: #536863; 
+      --paper: #fbf5e9; 
+      --paper-deep: #eee2cc; 
+      --red: #bf4d3c; 
+      --red-deep: #8f332a; 
+      --gold: #e9b949; 
+      --green: #3f7568; 
+      --white: #fffdf7; 
+      --shadow: 0 24px 70px rgba(8, 31, 27, 0.32); 
+    } 
+ 
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+    } 
+ 
+    html { 
+      min-width: 320px; 
+      background: #102a26; 
+    } 
+ 
+    body { 
+      min-height: 100vh; 
+      min-height: 100dvh; 
+      display: grid; 
+      place-items: center; 
+      overflow-x: hidden; 
+      padding: clamp(16px, 4vw, 44px); 
+      color: var(--ink); 
+      font-family: system-ui, -apple-system, sans-serif; 
+      background: 
+        radial-gradient(circle at 15% 18%, rgba(233, 185, 73, 0.24) 0 1px, transparent 2px) 0 0 / 28px 28px, 
+        radial-gradient(circle at 88% 12%, rgba(191, 77, 60, 0.27), transparent 26%), 
+        radial-gradient(circle at 7% 85%, rgba(63, 117, 104, 0.65), transparent 34%), 
+        linear-gradient(145deg, #0e2723 0%, #173c36 48%, #0d2421 100%); 
+    } 
+ 
+    button, 
+    input { 
+      font: inherit; 
+    } 
+ 
+    button { 
+      -webkit-tap-highlight-color: transparent; 
+    } 
+ 
+    .shell { 
+      position: relative; 
+      width: min(100%, 990px); 
+      min-height: min(720px, calc(100dvh - 40px)); 
+      display: grid; 
+      grid-template-columns: minmax(0, 1.08fr) minmax(340px, 0.92fr); 
+      overflow: hidden; 
+      border: 1px solid rgba(255, 253, 247, 0.42); 
+      border-radius: 30px 10px 30px 10px; 
+      background: var(--paper); 
+      box-shadow: var(--shadow); 
+      isolation: isolate; 
+      animation: arrive 700ms cubic-bezier(.2, .8, .2, 1) both; 
+    } 
+ 
+    .shell::after { 
+      content: ""; 
+      position: absolute; 
+      inset: 0; 
+      z-index: 5; 
+      pointer-events: none; 
+      opacity: 0.18; 
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.16'/%3E%3C/svg%3E"); 
+      mix-blend-mode: multiply; 
+    } 
+ 
+    .stage { 
+      position: relative; 
+      display: grid; 
+      align-content: space-between; 
+      min-height: 620px; 
+      padding: clamp(28px, 5vw, 54px); 
+      overflow: hidden; 
+      color: var(--white); 
+      background: 
+        linear-gradient(180deg, rgba(13, 38, 34, 0.12), rgba(13, 38, 34, 0.68)), 
+        var(--green); 
+    } 
+ 
+    .stage::before { 
+      content: ""; 
+      position: absolute; 
+      width: 360px; 
+      height: 360px; 
+      right: -130px; 
+      top: -145px; 
+      border: 70px solid rgba(233, 185, 73, 0.22); 
+      border-radius: 50%; 
+    } 
+ 
+    .stage-mark { 
+      position: relative; 
+      z-index: 1; 
+    } 
+ 
+    h1 { 
+      max-width: 470px; 
+      font-size: 1.15rem; 
+      font-weight: 600; 
+      letter-spacing: 0.05em; 
+      color: #f5cf70; 
+      text-transform: lowercase; 
+    } 
+ 
+    .portrait-wrap { 
+      position: relative; 
+      width: clamp(290px, 38vw, 400px); 
+      justify-self: center; 
+      align-self: end; 
+      margin: 0 0 -35px; 
+      filter: drop-shadow(0 22px 20px rgba(7, 29, 25, 0.33)); 
+      transform-origin: 50% 80%; 
+      will-change: transform; 
+    } 
+ 
+    .portrait { 
+      position: relative; 
+      display: block; 
+      width: 100%; 
+      overflow: visible; 
+    } 
+ 
+    #mouthOpen, 
+    #browLeft, 
+    #browRight { 
+      transform-box: fill-box; 
+      transform-origin: center; 
+      will-change: transform, opacity; 
+    } 
+ 
+    #mouthOpen { 
+      opacity: 0; 
+    } 
+ 
+    .stage-note { 
+      position: relative; 
+      z-index: 1; 
+      max-width: 350px; 
+      padding-left: 12px; 
+      border-left: 2px solid var(--gold); 
+      color: rgba(255, 253, 247, 0.78); 
+      font-size: 0.75rem; 
+      line-height: 1.4; 
+      text-transform: lowercase; 
+    } 
+ 
+    .panel { 
+      position: relative; 
+      z-index: 2; 
+      display: flex; 
+      flex-direction: column; 
+      justify-content: center; 
+      padding: clamp(30px, 5vw, 58px); 
+      background: 
+        linear-gradient(rgba(23, 51, 47, 0.055) 1px, transparent 1px) 0 0 / 100% 34px, 
+        var(--paper); 
+    } 
+ 
+    .upload-zone { 
+      position: relative; 
+      display: grid; 
+      place-items: center; 
+      min-height: 154px; 
+      margin-bottom: 18px; 
+      padding: 24px; 
+      border: 1.5px dashed #9a8d79; 
+      border-radius: 6px 22px 6px 22px; 
+      cursor: pointer; 
+      text-align: center; 
+      background: rgba(255, 253, 247, 0.62); 
+      transition: transform 180ms ease, border-color 180ms ease, background 180ms ease; 
+    } 
+ 
+    .upload-zone:hover, 
+    .upload-zone.is-dragging { 
+      border-color: var(--red); 
+      background: var(--white); 
+      transform: translateY(-2px); 
+    } 
+ 
+    .upload-icon { 
+      display: grid; 
+      place-items: center; 
+      width: 48px; 
+      height: 48px; 
+      margin-bottom: 12px; 
+      border-radius: 50%; 
+      color: var(--white); 
+      background: var(--red); 
+      box-shadow: 0 8px 0 rgba(143, 51, 42, 0.18); 
+    } 
+ 
+    .upload-icon svg { 
+      width: 23px; 
+      height: 23px; 
+    } 
+ 
+    .upload-title { 
+      display: block; 
+      margin-bottom: 4px; 
+      font-size: 0.82rem; 
+      font-weight: 600; 
+      text-transform: lowercase; 
+    } 
+ 
+    .upload-help { 
+      color: var(--ink-soft); 
+      font-size: 0.72rem; 
+      text-transform: lowercase; 
+    } 
+ 
+    #audioInput { 
+      position: absolute; 
+      width: 1px; 
+      height: 1px; 
+      opacity: 0; 
+      pointer-events: none; 
+    } 
+ 
+    .status { 
+      min-height: 42px; 
+      display: flex; 
+      align-items: center; 
+      gap: 10px; 
+      margin-bottom: 16px; 
+      padding: 10px 12px; 
+      border-left: 3px solid var(--gold); 
+      color: var(--ink-soft); 
+      background: rgba(233, 185, 73, 0.12); 
+      font-size: 0.75rem; 
+      line-height: 1.4; 
+      text-transform: lowercase; 
+    } 
+ 
+    .status-dot { 
+      flex: 0 0 auto; 
+      width: 8px; 
+      height: 8px; 
+      border-radius: 50%; 
+      background: var(--gold); 
+    } 
+ 
+    .status[data-state="playing"] .status-dot { 
+      background: var(--green); 
+      animation: pulse 1s ease-in-out infinite; 
+    } 
+ 
+    .player { 
+      display: none; 
+      margin-bottom: 18px; 
+      padding: 16px; 
+      border: 1px solid rgba(23, 51, 47, 0.13); 
+      border-radius: 4px 18px 4px 18px; 
+      background: var(--white); 
+      box-shadow: 0 12px 30px rgba(72, 57, 32, 0.08); 
+    } 
+ 
+    .player.is-visible { 
+      display: block; 
+      animation: reveal 360ms ease both; 
+    } 
+ 
+    .file-row { 
+      display: flex; 
+      align-items: center; 
+      gap: 11px; 
+      margin-bottom: 14px; 
+    } 
+ 
+    .file-disc { 
+      position: relative; 
+      flex: 0 0 auto; 
+      width: 36px; 
+      height: 36px; 
+      border: 8px solid var(--ink); 
+      border-radius: 50%; 
+      background: var(--gold); 
+    } 
+ 
+    .file-copy { 
+      min-width: 0; 
+    } 
+ 
+    .file-name { 
+      overflow: hidden; 
+      font-size: 0.8rem; 
+      font-weight: 700; 
+      text-overflow: ellipsis; 
+      white-space: nowrap; 
+    } 
+ 
+    .file-meta { 
+      margin-top: 2px; 
+      color: var(--ink-soft); 
+      font-size: 0.68rem; 
+    } 
+ 
+    .timeline { 
+      display: grid; 
+      grid-template-columns: 34px 1fr 34px; 
+      align-items: center; 
+      gap: 8px; 
+    } 
+ 
+    .time { 
+      color: var(--ink-soft); 
+      font-size: 0.68rem; 
+      font-variant-numeric: tabular-nums; 
+    } 
+ 
+    input[type="range"] { 
+      width: 100%; 
+      height: 4px; 
+      appearance: none; 
+      border-radius: 99px; 
+      outline: none; 
+      background: linear-gradient(to right, var(--red) var(--progress, 0%), var(--paper-deep) var(--progress, 0%)); 
+      cursor: pointer; 
+    } 
+ 
+    input[type="range"]::-webkit-slider-thumb { 
+      width: 15px; 
+      height: 15px; 
+      appearance: none; 
+      border: 3px solid var(--white); 
+      border-radius: 50%; 
+      background: var(--red); 
+    } 
+ 
+    .actions { 
+      display: grid; 
+      grid-template-columns: 1fr auto; 
+      gap: 10px; 
+    } 
+ 
+    .button { 
+      min-height: 52px; 
+      display: inline-flex; 
+      align-items: center; 
+      justify-content: center; 
+      gap: 10px; 
+      border: 0; 
+      border-radius: 4px 14px 4px 14px; 
+      cursor: pointer; 
+      font-size: 0.82rem; 
+      font-weight: 700; 
+      text-transform: lowercase; 
+      transition: transform 150ms ease, box-shadow 150ms ease, background 150ms ease; 
+    } 
+ 
+    .button-primary { 
+      color: var(--white); 
+      background: var(--red); 
+      box-shadow: 0 8px 0 rgba(143, 51, 42, 0.2); 
+    } 
+ 
+    .button-secondary { 
+      width: 52px; 
+      color: var(--ink); 
+      background: var(--paper-deep); 
+    } 
+ 
+    .button svg { 
+      width: 20px; 
+      height: 20px; 
+    } 
+ 
+    .button .pause-icon { 
+      display: none; 
+    } 
+ 
+    .button.is-playing .play-icon { 
+      display: none; 
+    } 
+ 
+    .button.is-playing .pause-icon { 
+      display: block; 
+    } 
+ 
+    @keyframes arrive { 
+      from { opacity: 0; transform: translateY(18px) scale(0.985); } 
+      to { opacity: 1; transform: translateY(0) scale(1); } 
+    } 
+ 
+    @keyframes reveal { 
+      from { opacity: 0; transform: translateY(8px); } 
+      to { opacity: 1; transform: translateY(0); } 
+    } 
+ 
+    @keyframes pulse { 
+      50% { transform: scale(1.6); opacity: 0.52; } 
+    } 
+ 
+    @media (max-width: 760px) { 
+      body { 
+        align-items: start; 
+        padding: 0; 
+      } 
+ 
+      .shell { 
+        width: 100%; 
+        min-height: 100dvh; 
+        grid-template-columns: 1fr; 
+        border: 0; 
+        border-radius: 0; 
+      } 
+ 
+      .stage { 
+        min-height: 390px; 
+        padding: 28px 26px 0; 
+      } 
+ 
+      .portrait-wrap { 
+        position: absolute; 
+        right: -2px; 
+        bottom: 0; 
+        width: min(80vw, 360px); 
+        margin: 0; 
+      } 
+    } 
+  </style> 
+</head> 
+<body> 
+  <main class="shell"> 
+    <section class="stage"> 
+      <header class="stage-mark"> 
+        <h1 id="pageTitle">tamir ali visfot news</h1> 
+      </header> 
+ 
+      <div class="portrait-wrap" id="portraitWrap" aria-hidden="true"> 
+        <svg class="portrait" viewBox="0 0 380 470" role="img"> 
+          <!-- कोट/सूट (Suit Outer Body - Broader) --> 
+          <path d="M20 470 C30 310, 100 280, 190 280 C280 280, 350 310, 360 470 Z" fill="#1b2631"/> 
+           
+          <!-- सूट के कॉलर / लैपल्स (Suit Lapels) --> 
+          <path d="M100 285 L145 380 L190 320 L160 282 Z" fill="#2c3e50"/> 
+          <path d="M280 285 L235 380 L190 320 L220 282 Z" fill="#2c3e50"/> 
+           
+          <!-- सफेद शर्ट (White Shirt) --> 
+          <path d="M160 282 L190 380 L220 282 Z" fill="#f8f9f9"/> 
+           
+          <!-- रेड टाई (Red Tie) --> 
+          <path d="M184 290 L196 290 L200 380 L190 400 L180 380 Z" fill="#b03a2e"/> 
+ 
+          <!-- गर्दन (Neck) --> 
+          <path d="M145 250 C145 250, 148 300, 190 300 C232 300, 235 250, 235 250 Z" fill="#e09873"/> 
+          <path d="M155 275 C175 295, 205 295, 225 275 C210 290, 170 290, 155 275 Z" fill="#c47854" opacity=".6"/> 
+ 
+          <!-- कान (Ears) --> 
+          <ellipse cx="108" cy="200" rx="16" ry="26" fill="#ea9f7a"/> 
+          <ellipse cx="272" cy="200" rx="16" ry="26" fill="#ea9f7a"/> 
+ 
+          <!-- चेहरा (Face) --> 
+          <path d="M110 130 C100 200, 120 265, 190 265 C260 265, 280 200, 270 130 C250 75, 130 75, 110 130 Z" fill="#f0a983"/> 
+          <path d="M125 205 C135 245, 160 258, 190 258 C220 258, 245 245, 255 205 C240 248, 150 248, 125 205 Z" fill="#e0926b" opacity=".4"/> 
+ 
+          <!-- दाढ़ी/मूंछ (Stubble) --> 
+          <path d="M135 220 C135 255, 245 255, 245 220 C245 250, 135 250, 135 220 Z" fill="#52392d" opacity=".18"/> 
+ 
+          <!-- बाल (Hair) --> 
+          <path d="M90 155 C80 90, 110 40, 190 40 C270 40, 300 90, 290 155 C275 110, 255 65, 190 75 C125 65, 105 110, 90 155 Z" fill="#1c1917"/> 
+ 
+          <!-- भौंहें (Brows) --> 
+          <path id="browLeft" d="M130 152 C145 142, 168 142, 180 150" fill="none" stroke="#1c1917" stroke-width="8" stroke-linecap="round"/> 
+          <path id="browRight" d="M200 150 C212 142, 235 142, 250 152" fill="none" stroke="#1c1917" stroke-width="8" stroke-linecap="round"/> 
+ 
+          <!-- आँखें (Eyes) --> 
+          <g id="eyes"> 
+            <path d="M132 172 C142 163, 166 163, 176 172 C166 180, 142 180, 132 172 Z" fill="#ffffff"/> 
+            <ellipse cx="154" cy="171" rx="8" ry="8" fill="#291810"/> 
+            <ellipse cx="156" cy="169" rx="2.5" ry="2.5" fill="#ffffff"/> 
+             
+            <path d="M204 172 C214 163, 238 163, 248 172 C238 180, 214 180, 204 172 Z" fill="#ffffff"/> 
+            <ellipse cx="226" cy="171" rx="8" ry="8" fill="#291810"/> 
+            <ellipse cx="228" cy="169" rx="2.5" ry="2.5" fill="#ffffff"/> 
+          </g> 
+ 
+          <!-- नाक (Nose) --> 
+          <path d="M190 160 L184 202 C176 206, 174 215, 190 216 C206 215, 204 206, 196 202 Z" fill="none" stroke="#c97750" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/> 
+ 
+          <!-- मुँह (Mouth) --> 
+          <path id="mouthClosed" d="M162 238 C175 244, 205 244, 218 238 M165 238 C180 234, 200 234, 215 238" fill="none" stroke="#803328" stroke-width="4.5" stroke-linecap="round"/> 
+           
+          <g id="mouthOpen"> 
+            <ellipse cx="190" cy="242" rx="24" ry="12" fill="#42130e"/> 
+            <path d="M172 235 Q190 239 208 235 Q190 232 172 235 Z" fill="#ffffff" opacity=".95"/> 
+            <path d="M176 248 C182 242, 198 242, 204 248 C198 252, 182 252, 176 248 Z" fill="#c95b53"/> 
+            <path d="M164 237 C178 231, 202 231, 216 237 C202 255, 178 255, 164 237 Z" fill="none" stroke="#a34438" stroke-width="3"/> 
+          </g> 
+        </svg> 
+      </div> 
+ 
+      <p class="stage-note">tamir ali visfot news portal</p> 
+    </section> 
+ 
+    <section class="panel"> 
+      <label class="upload-zone" id="uploadZone" for="audioInput" tabindex="0"> 
+        <span class="upload-icon" aria-hidden="true"> 
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"> 
+            <path d="M9 18V5l10-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="16" cy="16" r="3"/> 
+          </svg> 
+        </span> 
+        <span class="upload-title">select audio file</span> 
+        <span class="upload-help">mp3, wav, m4a</span> 
+        <input type="file" id="audioInput" accept="audio/*"> 
+      </label> 
+ 
+      <div class="status" id="status" data-state="idle"> 
+        <span class="status-dot" aria-hidden="true"></span> 
+        <span id="statusText">select audio to start</span> 
+      </div> 
+ 
+      <div class="player" id="player"> 
+        <div class="file-row"> 
+          <span class="file-disc" id="fileDisc" aria-hidden="true"></span> 
+          <div class="file-copy"> 
+            <p class="file-name" id="fileName"></p> 
+            <p class="file-meta" id="fileMeta"></p> 
+          </div> 
+        </div> 
+        <div class="timeline"> 
+          <span class="time" id="currentTime">0:00</span> 
+          <input type="range" id="seekBar" min="0" max="100" value="0"> 
+          <span class="time" id="duration">0:00</span> 
+        </div> 
+      </div> 
+ 
+      <div class="actions"> 
+        <button class="button button-primary" id="playPauseButton" type="button" disabled> 
+          <svg class="play-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg> 
+          <svg class="pause-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg> 
+          <span id="playLabel">play audio</span> 
+        </button> 
+        <button class="button button-secondary" id="resetButton" type="button" title="reset"> 
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg> 
+        </button> 
+      </div> 
+    </section> 
+  </main> 
+ 
+  <script> 
+    const audioInput = document.getElementById('audioInput'); 
+    const uploadZone = document.getElementById('uploadZone'); 
+    const status = document.getElementById('status'); 
+    const statusText = document.getElementById('statusText'); 
+    const player = document.getElementById('player'); 
+    const fileName = document.getElementById('fileName'); 
+    const fileMeta = document.getElementById('fileMeta'); 
+    const currentTimeLabel = document.getElementById('currentTime'); 
+    const durationLabel = document.getElementById('duration'); 
+    const seekBar = document.getElementById('seekBar'); 
+    const playPauseButton = document.getElementById('playPauseButton'); 
+    const playLabel = document.getElementById('playLabel'); 
+    const resetButton = document.getElementById('resetButton'); 
+    const portraitWrap = document.getElementById('portraitWrap'); 
+    const mouthOpen = document.getElementById('mouthOpen'); 
+    const mouthClosed = document.getElementById('mouthClosed'); 
+    const browLeft = document.getElementById('browLeft'); 
+    const browRight = document.getElementById('browRight'); 
+    const fileDisc = document.getElementById('fileDisc'); 
+ 
+    let audioContext; 
+    let audioBuffer; 
+    let sourceNode; 
+    let analyserNode; 
+    let filterNode; 
+    let silentGainNode; 
+    let isPlaying = false; 
+    let startedAt = 0; 
+    let pausedAt = 0; 
+    let animationFrame; 
+    let sourceGeneration = 0; 
+ 
+    const formatTime = (seconds) => { 
+      if (!Number.isFinite(seconds)) return '0:00'; 
+      const total = Math.max(0, Math.floor(seconds)); 
+      return `${Math.floor(total / 60)}:${String(total % 60).padStart(2, '0')}`; 
+    }; 
+ 
+    const formatSize = (bytes) => { 
+      if (bytes < 1024 * 1024) return `${Math.max(1, Math.round(bytes / 1024))} kb`; 
+      return `${(bytes / (1024 * 1024)).toFixed(1)} mb`; 
+    }; 
+ 
+    const setStatus = (message, state = 'idle') => { 
+      statusText.textContent = message; 
+      status.dataset.state = state; 
+    }; 
+ 
+    const setFaceResting = () => { 
+      portraitWrap.style.transform = 'scale(1) rotate(0deg)'; 
+      mouthOpen.style.opacity = '0'; 
+      mouthOpen.style.transform = 'scale(1, .25)'; 
+      mouthClosed.style.opacity = '1'; 
+      browLeft.style.transform = 'translateY(0) rotate(0deg)'; 
+      browRight.style.transform = 'translateY(0) rotate(0deg)'; 
+    }; 
+ 
+    const updateControls = () => { 
+      playPauseButton.classList.toggle('is-playing', isPlaying); 
+      playLabel.textContent = isPlaying ? 'pause' : 'play audio'; 
+      fileDisc.style.animation = isPlaying ? 'pulse 1.4s ease-in-out infinite' : 'none'; 
+    }; 
+ 
+    const stopSource = () => { 
+      sourceGeneration += 1; 
+      if (sourceNode) { 
+        sourceNode.onended = null; 
+        try { sourceNode.stop(); } catch (error) {} 
+        try { sourceNode.disconnect(); } catch (error) {} 
+      } 
+      [filterNode, analyserNode, silentGainNode].forEach((node) => { 
+        if (node) { try { node.disconnect(); } catch (error) {} } 
+      }); 
+      sourceNode = null; 
+      filterNode = null; 
+      analyserNode = null; 
+      silentGainNode = null; 
+      cancelAnimationFrame(animationFrame); 
+      setFaceResting(); 
+    }; 
+ 
+    const animateFace = () => { 
+      if (!isPlaying || !analyserNode) return; 
+      const samples = new Uint8Array(analyserNode.fftSize); 
+      analyserNode.getByteTimeDomainData(samples); 
+ 
+      let energy = 0; 
+      for (const sample of samples) { 
+        const normalized = (sample - 128) / 128; 
+        energy += normalized * normalized; 
+      } 
+ 
+      const rms = Math.sqrt(energy / samples.length); 
+      const voice = Math.max(0, Math.min(1, (rms - 0.012) * 7.5)); 
+      const openness = voice < 0.035 ? 0 : Math.max(0.24, voice); 
+      const elapsed = audioContext.currentTime - startedAt; 
+      const progress = Math.min(elapsed, audioBuffer.duration); 
+ 
+      mouthOpen.style.opacity = String(Math.min(1, openness * 1.8)); 
+      mouthOpen.style.transform = `scale(${0.85 + openness * 0.3}, ${0.25 + openness * 1.45})`; 
+      mouthClosed.style.opacity = String(1 - Math.min(1, openness * 2.1)); 
+      browLeft.style.transform = `translateY(${-openness * 6}px) rotate(${-openness * 4}deg)`; 
+      browRight.style.transform = `translateY(${-openness * 6}px) rotate(${openness * 4}deg)`; 
+      portraitWrap.style.transform = `scale(${1 + openness * 0.02}) rotate(${Math.sin(elapsed * 2.2) * openness * 0.5}deg)`; 
+ 
+      currentTimeLabel.textContent = formatTime(progress); 
+      seekBar.value = String((progress / audioBuffer.duration) * 100 || 0); 
+      seekBar.style.setProperty('--progress', `${seekBar.value}%`); 
+      animationFrame = requestAnimationFrame(animateFace); 
+    }; 
+ 
+    const playAudio = async () => { 
+      if (!audioBuffer) return; 
+      if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)(); 
+      if (audioContext.state === 'suspended') await audioContext.resume(); 
+ 
+      stopSource(); 
+      const generation = sourceGeneration; 
+      sourceNode = audioContext.createBufferSource(); 
+      filterNode = audioContext.createBiquadFilter(); 
+      analyserNode = audioContext.createAnalyser(); 
+      silentGainNode = audioContext.createGain(); 
+ 
+      sourceNode.buffer = audioBuffer; 
+      filterNode.type = 'bandpass'; 
+      filterNode.frequency.value = 1200; 
+      filterNode.Q.value = 0.7; 
+      analyserNode.fftSize = 256; 
+      analyserNode.smoothingTimeConstant = 0.56; 
+      silentGainNode.gain.value = 0; 
+ 
+      sourceNode.connect(audioContext.destination); 
+      sourceNode.connect(filterNode); 
+      filterNode.connect(analyserNode); 
+      analyserNode.connect(silentGainNode); 
+      silentGainNode.connect(audioContext.destination); 
+ 
+      if (pausedAt >= audioBuffer.duration) pausedAt = 0; 
+      sourceNode.start(0, pausedAt); 
+      startedAt = audioContext.currentTime - pausedAt; 
+      isPlaying = true; 
+      updateControls(); 
+      setStatus('playing audio', 'playing'); 
+      animateFace(); 
+ 
+      sourceNode.onended = () => { 
+        if (!isPlaying || generation !== sourceGeneration) return; 
+        isPlaying = false; 
+        pausedAt = 0; 
+        stopSource(); 
+        seekBar.value = '100'; 
+        seekBar.style.setProperty('--progress', '100%'); 
+        currentTimeLabel.textContent = formatTime(audioBuffer.duration); 
+        setStatus('audio complete'); 
+        updateControls(); 
+      }; 
+    }; 
+ 
+    const pauseAudio = () => { 
+      if (!isPlaying) return; 
+      pausedAt = Math.min(audioContext.currentTime - startedAt, audioBuffer.duration); 
+      isPlaying = false; 
+      stopSource(); 
+      setStatus('paused'); 
+      updateControls(); 
+    }; 
+ 
+    const loadFile = async (file) => { 
+      if (!file) return; 
+ 
+      stopSource(); 
+      isPlaying = false; 
+      pausedAt = 0; 
+      audioBuffer = null; 
+      playPauseButton.disabled = true; 
+      updateControls(); 
+      setStatus('loading audio...'); 
+ 
+      try { 
+        if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)(); 
+        const arrayBuffer = await file.arrayBuffer(); 
+        audioBuffer = await audioContext.decodeAudioData(arrayBuffer.slice(0)); 
+        fileName.textContent = file.name; 
+        fileMeta.textContent = `${formatSize(file.size)} · ${formatTime(audioBuffer.duration)}`; 
+        durationLabel.textContent = formatTime(audioBuffer.duration); 
+        currentTimeLabel.textContent = '0:00'; 
+        seekBar.value = '0'; 
+        seekBar.style.setProperty('--progress', '0%'); 
+        player.classList.add('is-visible'); 
+        playPauseButton.disabled = false; 
+        setStatus('ready to play'); 
+      } catch (error) { 
+        player.classList.remove('is-visible'); 
+        setStatus('invalid file format', 'error'); 
+      } 
+    }; 
+ 
+    const resetApp = () => { 
+      isPlaying = false; 
+      stopSource(); 
+      audioBuffer = null; 
+      pausedAt = 0; 
+      audioInput.value = ''; 
+      player.classList.remove('is-visible'); 
+      playPauseButton.disabled = true; 
+      seekBar.value = '0'; 
+      seekBar.style.setProperty('--progress', '0%'); 
+      currentTimeLabel.textContent = '0:00'; 
+      durationLabel.textContent = '0:00'; 
+      setStatus('select audio file'); 
+      updateControls(); 
+    }; 
+ 
+    audioInput.addEventListener('change', (event) => loadFile(event.target.files[0])); 
+    playPauseButton.addEventListener('click', () => { isPlaying ? pauseAudio() : playAudio(); }); 
+    resetButton.addEventListener('click', resetApp); 
+    setFaceResting(); 
+    updateControls(); 
+  </script> 
+</body> 
+</html> 
