@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>हिंदी वर्णमाला · क से ज्ञ तक · 3D चरखा</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+        body {
+            background: radial-gradient(circle at center, #1a0a2e, #0d0517);
+            font-family: 'Arial', 'Noto Sans Devanagari', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 10px 8px 16px;
+            min-height: 100vh;
+            overflow: hidden;
+            touch-action: none;
+        }
+        h1 {
+            color: #fff;
+            font-size: 19px;
+            margin-bottom: 1px;
+            text-align: center;
+            text-shadow: 0 0 20px #ff6b6b, 0 0 40px #ffd93d, 0 0 60px #6bcbff;
+            letter-spacing: 1px;
+        }
+        .sub-title {
+            color: #b8c7ff;
+            font-size: 12px;
+            margin-bottom: 6px;
+            text-align: center;
+            opacity: 0.9;
+            font-weight: 500;
+            text-shadow: 0 0 12px #6bcbff55;
+        }
+
+        /* ---- DISPLAY CARD ---- */
+        #display-box {
+            width: 280px;
+            height: 105px;
+            background: rgba(255, 255, 255, 0.97);
+            border: 4px solid #ff6b6b;
+            border-radius: 24px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-evenly;
+            padding: 6px 14px;
+            box-shadow: 0 0 50px #ff6b6b88, 0 0 90px rgba(255, 107, 107, 0.25);
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.3s, border-color 0.3s;
+            z-index: 100;
+            position: relative;
+        }
+        #display-box:active {
+            transform: scale(0.96);
+        }
+        #display-box .speak-badge {
+            position: absolute;
+            top: -12px;
+            right: -10px;
+            background: #ff6b6b;
+            color: #fff;
+            font-size: 11px;
+            font-weight: bold;
+            padding: 2px 14px;
+            border-radius: 20px;
+            border: 2px solid #fff;
+            box-shadow: 0 0 20px #ff6b6b;
+            animation: pulse-badge 1.2s ease-in-out infinite;
+        }
+        @keyframes pulse-badge {
+            0%,
+            100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.12);
+            }
+        }
+        #display-img {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.2));
+        }
+        #display-text {
+            font-size: 20px;
+            font-weight: 800;
+            color: #0d0517;
+            text-align: left;
+            line-height: 1.2;
+            font-family: 'Arial', 'Noto Sans Devanagari', sans-serif;
+        }
+        #display-text .letter-big {
+            font-size: 32px;
+            font-weight: 900;
+            color: #ff6b6b;
+            font-family: 'Noto Sans Devanagari', 'Arial', sans-serif;
+        }
+        #display-text .word-hindi {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2d1b4e;
+            font-family: 'Noto Sans Devanagari', 'Arial', sans-serif;
+        }
+
+        .instruction {
+            font-size: 11px;
+            color: #6bcbff;
+            font-weight: bold;
+            text-shadow: 0 0 14px #6bcbff66;
+            margin-top: 5px;
+            text-align: center;
+        }
+
+        /* ---- 3D STAGE ---- */
+        .stage-3d {
+            width: 100%;
+            max-width: 420px;
+            height: 240px;
+            perspective: 950px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            margin-top: 4px;
+        }
+        /* ---- POINTER (ARROW) CENTERED ON THE WHEEL & POINTING DOWN ---- */
+        .pointer {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-top: 32px solid #ffffff;
+            border-bottom: none;
+            z-index: 50;
+            filter: drop-shadow(0 0 30px #ffffff) drop-shadow(0 0 60px #ffd93d);
+            pointer-events: none;
+            transition: filter 0.3s;
+        }
+        /* small inner glow dot at the tip (now at the bottom) */
+        .pointer::after {
+            content: '';
+            position: absolute;
+            top: 26px;
+            /* near the tip which is at top:32px */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 10px;
+            height: 10px;
+            background: radial-gradient(circle, #fff, #ffd93d);
+            border-radius: 50%;
+            box-shadow: 0 0 25px #ffd93d, 0 0 50px #ff6b6b66;
+        }
+        #chain-ring {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            transform-style: preserve-3d;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transform: rotateX(-16deg);
+            transition: transform 0.08s ease-out;
+        }
+        .chain-box {
+            position: absolute;
+            width: 62px;
+            height: 82px;
+            border: 3px solid #ffffff;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            font-weight: 700;
+            color: #ffffff;
+            backface-visibility: visible;
+            transform-style: preserve-3d;
+            transition: box-shadow 0.2s, transform 0.15s;
+            cursor: pointer;
+            text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
+            will-change: transform;
+            font-family: 'Noto Sans Devanagari', 'Arial', sans-serif;
+            line-height: 1;
+        }
+        .chain-box:active {
+            transform: scale(0.90) rotateY(var(--rot, 0deg)) !important;
+        }
+
+        /* ---- SPIN BUTTON (moved down another 5mm ≈ 19px) ---- */
+        #spin-btn {
+            margin-top: 54px;
+            /* was 35px, now +19px = 54px */
+            padding: 14px 44px;
+            font-size: 20px;
+            font-weight: 800;
+            color: #ffffff;
+            background: linear-gradient(135deg, #ff6b6b, #ffd93d);
+            border: 3px solid #ffffff;
+            border-radius: 40px;
+            box-shadow: 0 0 35px #ff6b6b88, 0 6px 20px rgba(0, 0, 0, 0.6);
+            cursor: pointer;
+            outline: none;
+            z-index: 100;
+            transition: transform 0.1s, box-shadow 0.25s, filter 0.2s;
+            letter-spacing: 1px;
+            touch-action: manipulation;
+        }
+        #spin-btn:active {
+            transform: scale(0.92);
+            box-shadow: 0 0 20px #ff6b6b;
+        }
+        #spin-btn:disabled {
+            opacity: 0.5;
+            transform: scale(0.96);
+            pointer-events: none;
+            filter: grayscale(0.5);
+        }
+
+        /* ---- SPEAKING INDICATOR ---- */
+        .speaking-indicator {
+            display: none;
+            margin-top: 5px;
+            color: #6bcbff;
+            font-size: 12px;
+            font-weight: bold;
+            text-shadow: 0 0 24px #6bcbff;
+            animation: blink 0.7s ease-in-out infinite;
+        }
+        .speaking-indicator.active {
+            display: block;
+        }
+        @keyframes blink {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.2;
+            }
+        }
+
+        /* ---- KEYBOARD HINT ---- */
+        .keyboard-hint {
+            color: #8888aa;
+            font-size: 10px;
+            margin-top: 4px;
+            opacity: 0.7;
+            text-align: center;
+        }
+        .keyboard-hint kbd {
+            background: #2a1a3e;
+            padding: 1px 10px;
+            border-radius: 6px;
+            border: 1px solid #6666aa;
+            color: #ddd;
+            font-size: 10px;
+        }
+
+        /* ---- RESPONSIVE ---- */
+        @media (max-width: 430px) {
+            #display-box {
+                width: 240px;
+                height: 90px;
+                padding: 4px 10px;
+            }
+            #display-img {
+                width: 50px;
+                height: 50px;
+            }
+            #display-text {
+                font-size: 17px;
+            }
+            #display-text .letter-big {
+                font-size: 26px;
+            }
+            #display-text .word-hindi {
+                font-size: 14px;
+            }
+            .chain-box {
+                width: 52px;
+                height: 68px;
+                font-size: 28px;
+                border-width: 2px;
+            }
+            .stage-3d {
+                height: 200px;
+            }
+            #spin-btn {
+                padding: 12px 30px;
+                font-size: 17px;
+                margin-top: 50px;
+                /* 30px + 19px ≈ 50px */
+            }
+            h1 {
+                font-size: 16px;
+            }
+            .pointer {
+                border-left-width: 16px;
+                border-right-width: 16px;
+                border-top-width: 26px;
+            }
+            .pointer::after {
+                top: 20px;
+                width: 8px;
+                height: 8px;
+            }
+        }
+        @media (max-width: 360px) {
+            #display-box {
+                width: 200px;
+                height: 76px;
+                padding: 3px 8px;
+            }
+            #display-img {
+                width: 40px;
+                height: 40px;
+            }
+            #display-text {
+                font-size: 14px;
+            }
+            #display-text .letter-big {
+                font-size: 22px;
+            }
+            #display-text .word-hindi {
+                font-size: 12px;
+            }
+            .chain-box {
+                width: 42px;
+                height: 56px;
+                font-size: 22px;
+                border-width: 2px;
+            }
+            .stage-3d {
+                height: 170px;
+            }
+            #spin-btn {
+                padding: 10px 22px;
+                font-size: 14px;
+                margin-top: 45px;
+                /* 26px + 19px ≈ 45px */
+            }
+            h1 {
+                font-size: 14px;
+            }
+            .pointer {
+                border-left-width: 12px;
+                border-right-width: 12px;
+                border-top-width: 20px;
+            }
+            .pointer::after {
+                top: 14px;
+                width: 6px;
+                height: 6px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🔮 हिंदी वर्णमाला · क से ज्ञ तक 🔮</h1>
+    <div class="sub-title">👇 क्लिक करें · स्पिन करें · ऑडियो सुनें 👇</div>
+
+    <!-- DISPLAY CARD -->
+    <div id="display-box" onclick="speakCurrentLetter(true)">
+        <span class="speak-badge">🔊</span>
+        <img id="display-img" src="https://openmoji.org/data/color/svg/1F338.svg" alt="कमल">
+        <div id="display-text"><span class="letter-big">क</span><br><span class="word-hindi">कमल</span></div>
+    </div>
+
+    <div class="instruction">⬆️ डिस्प्ले पर क्लिक करके उच्चारण सुनें ⬆️</div>
+
+    <!-- 3D STAGE with centered arrow pointing DOWN -->
+    <div class="stage-3d" id="stage">
+        <div class="pointer" id="pointerArrow"></div>
+        <div id="chain-ring"></div>
+    </div>
+
+    <!-- SPIN BUTTON (moved further down) -->
+    <button id="spin-btn" onclick="spinWheel()">🎰 चरखा घुमाएँ 🎰</button>
+
+    <div class="speaking-indicator" id="speakIndicator">🔊 बोल रहा है…</div>
+    <div class="keyboard-hint">
+        <kbd>Space</kbd> स्पिन · <kbd>Enter</kbd> / <kbd>S</kbd> बोलें
+    </div>
+
+    <script>
+        // ============================================================
+        //  हिंदी वर्णमाला डेटा (क से ज्ञ तक)
+        // ============================================================
+        const letters = [
+            'क', 'ख', 'ग', 'घ', 'ङ',
+            'च', 'छ', 'ज', 'झ', 'ञ',
+            'ट', 'ठ', 'ड', 'ढ', 'ण',
+            'त', 'थ', 'द', 'ध', 'न',
+            'प', 'फ', 'ब', 'भ', 'म',
+            'य', 'र', 'ल', 'व',
+            'श', 'ष', 'स', 'ह',
+            'क्ष', 'त्र', 'ज्ञ'
+        ];
+
+        const letterData = {
+            'क': { word: 'कमल', wordEn: 'Kamal', img: 'https://openmoji.org/data/color/svg/1F338.svg' },
+            'ख': { word: 'खरगोश', wordEn: 'Khargosh', img: 'https://openmoji.org/data/color/svg/1F407.svg' },
+            'ग': { word: 'गाय', wordEn: 'Gaay', img: 'https://openmoji.org/data/color/svg/1F404.svg' },
+            'घ': { word: 'घर', wordEn: 'Ghar', img: 'https://openmoji.org/data/color/svg/1F3E0.svg' },
+            'ङ': { word: 'ङकार', wordEn: 'Nga', img: 'https://openmoji.org/data/color/svg/1F4DD.svg' },
+            'च': { word: 'चम्मच', wordEn: 'Chammach', img: 'https://openmoji.org/data/color/svg/1F944.svg' },
+            'छ': { word: 'छाता', wordEn: 'Chhata', img: 'https://openmoji.org/data/color/svg/2602.svg' },
+            'ज': { word: 'जल', wordEn: 'Jal', img: 'https://openmoji.org/data/color/svg/1F4A7.svg' },
+            'झ': { word: 'झंडा', wordEn: 'Jhanda', img: 'https://openmoji.org/data/color/svg/1F6A9.svg' },
+            'ञ': { word: 'ञान', wordEn: 'Gyan', img: 'https://openmoji.org/data/color/svg/1F4DA.svg' },
+            'ट': { word: 'टमाटर', wordEn: 'Tamatar', img: 'https://openmoji.org/data/color/svg/1F345.svg' },
+            'ठ': { word: 'ठेला', wordEn: 'Thela', img: 'https://openmoji.org/data/color/svg/1F6D2.svg' },
+            'ड': { word: 'डमरू', wordEn: 'Damru', img: 'https://openmoji.org/data/color/svg/1F941.svg' },
+            'ढ': { word: 'ढोल', wordEn: 'Dhol', img: 'https://openmoji.org/data/color/svg/1F941.svg' },
+            'ण': { word: 'णमन', wordEn: 'Naman', img: 'https://openmoji.org/data/color/svg/1F64F.svg' },
+            'त': { word: 'तलवार', wordEn: 'Talwar', img: 'https://openmoji.org/data/color/svg/2694.svg' },
+            'थ': { word: 'थैला', wordEn: 'Thaila', img: 'https://openmoji.org/data/color/svg/1F392.svg' },
+            'द': { word: 'दवा', wordEn: 'Dawa', img: 'https://openmoji.org/data/color/svg/1F48A.svg' },
+            'ध': { word: 'धनुष', wordEn: 'Dhanush', img: 'https://openmoji.org/data/color/svg/1F3F9.svg' },
+            'न': { word: 'नदी', wordEn: 'Nadi', img: 'https://openmoji.org/data/color/svg/1F30A.svg' },
+            'प': { word: 'पानी', wordEn: 'Pani', img: 'https://openmoji.org/data/color/svg/1F4A7.svg' },
+            'फ': { word: 'फल', wordEn: 'Phal', img: 'https://openmoji.org/data/color/svg/1F34E.svg' },
+            'ब': { word: 'बल्ला', wordEn: 'Balla', img: 'https://openmoji.org/data/color/svg/1F3CF.svg' },
+            'भ': { word: 'भालू', wordEn: 'Bhaloo', img: 'https://openmoji.org/data/color/svg/1F43B.svg' },
+            'म': { word: 'मोर', wordEn: 'Mor', img: 'https://openmoji.org/data/color/svg/1F99A.svg' },
+            'य': { word: 'योग', wordEn: 'Yog', img: 'https://openmoji.org/data/color/svg/1F9D8.svg' },
+            'र': { word: 'राम', wordEn: 'Ram', img: 'https://openmoji.org/data/color/svg/1F3F9.svg' },
+            'ल': { word: 'लट्टू', wordEn: 'Lattu', img: 'https://openmoji.org/data/color/svg/1FA80.svg' },
+            'व': { word: 'वन', wordEn: 'Van', img: 'https://openmoji.org/data/color/svg/1F333.svg' },
+            'श': { word: 'शेर', wordEn: 'Sher', img: 'https://openmoji.org/data/color/svg/1F981.svg' },
+            'ष': { word: 'षट्कोण', wordEn: 'Shatkon', img: 'https://openmoji.org/data/color/svg/1F53F.svg' },
+            'स': { word: 'साँप', wordEn: 'Saap', img: 'https://openmoji.org/data/color/svg/1F40D.svg' },
+            'ह': { word: 'हाथी', wordEn: 'Haathi', img: 'https://openmoji.org/data/color/svg/1F418.svg' },
+            'क्ष': { word: 'क्षत्रिय', wordEn: 'Kshatriya', img: 'https://openmoji.org/data/color/svg/2694.svg' },
+            'त्र': { word: 'त्रिकोण', wordEn: 'Trikon', img: 'https://openmoji.org/data/color/svg/1F53A.svg' },
+            'ज्ञ': { word: 'ज्ञान', wordEn: 'Gyaan', img: 'https://openmoji.org/data/color/svg/1F4DA.svg' }
+        };
+
+        // Color palette for each letter (vibrant)
+        const colors = [
+            '#ff6b6b', '#ff9f43', '#feca57', '#48dbfb', '#1dd1a1',
+            '#5f27cd', '#341f97', '#ee5a24', '#0abde3', '#10ac84',
+            '#ff6b6b', '#ff9f43', '#feca57', '#48dbfb', '#1dd1a1',
+            '#5f27cd', '#341f97', '#ee5a24', '#0abde3', '#10ac84',
+            '#ff6b6b', '#ff9f43', '#feca57', '#48dbfb', '#1dd1a1',
+            '#5f27cd', '#341f97', '#ee5a24', '#0abde3',
+            '#10ac84', '#ff6b6b', '#ff9f43', '#feca57',
+            '#48dbfb', '#1dd1a1', '#5f27cd'
+        ];
+
+        // ============================================================
+        //  DOM REFS
+        // ============================================================
+        const chainRing = document.getElementById('chain-ring');
+        const displayBox = document.getElementById('display-box');
+        const displayImg = document.getElementById('display-img');
+        const displayText = document.getElementById('display-text');
+        const stage = document.getElementById('stage');
+        const spinBtn = document.getElementById('spin-btn');
+        const speakIndicator = document.getElementById('speakIndicator');
+        const pointerArrow = document.getElementById('pointerArrow');
+
+        const totalLetters = letters.length;
+        const angleStep = 360 / totalLetters;
+        const radius = 240;
+
+        let currentAngle = 0;
+        let startX = 0;
+        let isDragging = false;
+        let selectedLetter = 'क';
+        let lastTickIndex = -1;
+        let isSpinning = false;
+        let isSpeaking = false;
+
+        // ============================================================
+        //  AUDIO CONTEXT for tick sounds
+        // ============================================================
+        const audioCtx = new(window.AudioContext || window.webkitAudioContext)();
+
+        function playTickSound() {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(1100, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(140, audioCtx.currentTime + 0.04);
+                gain.gain.setValueAtTime(0.22, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.04);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.04);
+            } catch (_) { /* ignore */ }
+        }
+
+        // ============================================================
+        //  BUILD 3D WHEEL
+        // ============================================================
+        letters.forEach((letter, index) => {
+            const box = document.createElement('div');
+            box.className = 'chain-box';
+            box.innerText = letter;
+            const col = colors[index % colors.length];
+            box.style.backgroundColor = col;
+            box.style.boxShadow = `0 6px 22px ${col}, 0 0 18px ${col}88`;
+            const angle = index * angleStep;
+            box.style.transform = `rotateY(${angle}deg) translateZ(${radius}px)`;
+            box.style.setProperty('--rot', angle + 'deg');
+
+            box.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (!isSpinning) {
+                    rotateToLetter(index);
+                }
+            });
+
+            box.addEventListener('mouseenter', () => {
+                box.style.boxShadow = `0 0 40px #ffffff, 0 0 70px ${col}`;
+            });
+            box.addEventListener('mouseleave', () => {
+                box.style.boxShadow = `0 6px 22px ${col}, 0 0 18px ${col}88`;
+            });
+
+            chainRing.appendChild(box);
+        });
+
+        // ============================================================
+        //  ROTATE TO LETTER (direct click)
+        // ============================================================
+        function rotateToLetter(index) {
+            if (isSpinning) return;
+            const targetAngle = -(index * angleStep);
+            chainRing.style.transition = 'transform 0.55s cubic-bezier(0.22, 1, 0.36, 1)';
+            currentAngle = targetAngle;
+            chainRing.style.transform = `rotateX(-16deg) rotateY(${currentAngle}deg)`;
+
+            setTimeout(() => {
+                chainRing.style.transition = 'transform 0.08s ease-out';
+                selectedLetter = letters[index];
+                updateDisplay(selectedLetter, index);
+                speakCurrentLetter(true);
+            }, 580);
+        }
+
+        // ============================================================
+        //  SPIN WHEEL
+        // ============================================================
+        function spinWheel() {
+            if (isSpinning) return;
+            isSpinning = true;
+            spinBtn.disabled = true;
+            speakIndicator.classList.remove('active');
+
+            const randomIndex = Math.floor(Math.random() * totalLetters);
+            const extraRounds = 360 * (3 + Math.floor(Math.random() * 2));
+            const targetAngle = -(randomIndex * angleStep) - extraRounds;
+
+            chainRing.style.transition = 'transform 2.8s cubic-bezier(0.08, 0.82, 0.17, 1)';
+            currentAngle = targetAngle;
+            chainRing.style.transform = `rotateX(-16deg) rotateY(${currentAngle}deg)`;
+
+            // Tick sounds during spin
+            let tickCount = 0;
+            const maxTicks = 30;
+            const tickInterval = setInterval(() => {
+                if (tickCount < maxTicks) {
+                    playTickSound();
+                    tickCount++;
+                } else {
+                    clearInterval(tickInterval);
+                }
+            }, 100);
+
+            setTimeout(() => {
+                clearInterval(tickInterval);
+                chainRing.style.transition = 'transform 0.08s ease-out';
+                currentAngle = -(randomIndex * angleStep);
+                chainRing.style.transform = `rotateX(-16deg) rotateY(${currentAngle}deg)`;
+
+                selectedLetter = letters[randomIndex];
+                updateDisplay(selectedLetter, randomIndex);
+                isSpinning = false;
+                spinBtn.disabled = false;
+                speakCurrentLetter(true);
+            }, 2900);
+        }
+
+        // ============================================================
+        //  DRAG / TOUCH
+        // ============================================================
+        stage.addEventListener('touchstart', (e) => {
+            if (isSpinning) return;
+            isDragging = true;
+            startX = e.touches[0].clientX;
+        });
+
+        stage.addEventListener('touchmove', (e) => {
+            if (!isDragging || isSpinning) return;
+            const deltaX = e.touches[0].clientX - startX;
+            startX = e.touches[0].clientX;
+            currentAngle += deltaX * 0.4;
+            updateChainRotation();
+        });
+
+        stage.addEventListener('touchend', () => {
+            if (isSpinning) return;
+            isDragging = false;
+            snapToNearestLetter();
+        });
+
+        let mouseDown = false;
+        stage.addEventListener('mousedown', (e) => {
+            if (isSpinning) return;
+            mouseDown = true;
+            startX = e.clientX;
+        });
+        window.addEventListener('mousemove', (e) => {
+            if (!mouseDown || isSpinning) return;
+            const deltaX = e.clientX - startX;
+            startX = e.clientX;
+            currentAngle += deltaX * 0.4;
+            updateChainRotation();
+        });
+        window.addEventListener('mouseup', () => {
+            if (mouseDown && !isSpinning) {
+                mouseDown = false;
+                snapToNearestLetter();
+            }
+            mouseDown = false;
+        });
+
+        // ============================================================
+        //  UPDATE FUNCTIONS
+        // ============================================================
+        function updateChainRotation() {
+            chainRing.style.transform = `rotateX(-16deg) rotateY(${currentAngle}deg)`;
+            highlightFrontLetter();
+        }
+
+        function highlightFrontLetter() {
+            let normalized = (-currentAngle) % 360;
+            if (normalized < 0) normalized += 360;
+            const index = Math.round(normalized / angleStep) % totalLetters;
+            if (index !== lastTickIndex) {
+                playTickSound();
+                lastTickIndex = index;
+            }
+            const activeLetter = letters[index];
+            if (activeLetter && activeLetter !== selectedLetter) {
+                selectedLetter = activeLetter;
+                updateDisplay(selectedLetter, index);
+            }
+        }
+
+        function updateDisplay(letter, index) {
+            const data = letterData[letter] || { word: letter, wordEn: letter, img: '' };
+            const col = colors[index % colors.length];
+            displayImg.style.transform = 'scale(0.5) rotate(-6deg)';
+            setTimeout(() => {
+                displayImg.src = data.img;
+                displayText.innerHTML =
+                    `<span class="letter-big">${letter}</span><br><span class="word-hindi">${data.word}</span>`;
+                displayImg.style.transform = 'scale(1) rotate(0deg)';
+            }, 80);
+            displayBox.style.boxShadow = `0 0 50px ${col}, 0 0 100px ${col}55`;
+            displayBox.style.borderColor = col;
+        }
+
+        function snapToNearestLetter() {
+            let normalized = (-currentAngle) % 360;
+            if (normalized < 0) normalized += 360;
+            const index = Math.round(normalized / angleStep) % totalLetters;
+            const targetAngle = -(index * angleStep);
+
+            chainRing.style.transition = 'transform 0.35s cubic-bezier(0.22, 1, 0.36, 1)';
+            currentAngle = targetAngle;
+            chainRing.style.transform = `rotateX(-16deg) rotateY(${currentAngle}deg)`;
+
+            setTimeout(() => {
+                chainRing.style.transition = 'transform 0.08s ease-out';
+                selectedLetter = letters[index];
+                updateDisplay(selectedLetter, index);
+                speakCurrentLetter(true);
+            }, 380);
+        }
+
+        // ============================================================
+        //  SPEECH SYNTHESIS (हिंदी उच्चारण)
+        // ============================================================
+        function speakCurrentLetter(force = false) {
+            if (isSpeaking && !force) return;
+            if (!('speechSynthesis' in window)) {
+                console.warn('Speech synthesis not supported');
+                return;
+            }
+
+            window.speechSynthesis.cancel();
+
+            const data = letterData[selectedLetter];
+            if (!data) return;
+
+            const text = `${selectedLetter} ${data.word}`;
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'hi-IN';
+            utterance.rate = 0.78;
+            utterance.pitch = 1.0;
+            utterance.volume = 1;
+
+            isSpeaking = true;
+            speakIndicator.classList.add('active');
+
+            utterance.onstart = () => {
+                isSpeaking = true;
+                speakIndicator.classList.add('active');
+                displayBox.style.transform = 'scale(1.03)';
+                setTimeout(() => { displayBox.style.transform = ''; }, 300);
+            };
+
+            utterance.onend = () => {
+                isSpeaking = false;
+                speakIndicator.classList.remove('active');
+            };
+
+            utterance.onerror = () => {
+                isSpeaking = false;
+                speakIndicator.classList.remove('active');
+            };
+
+            const voices = window.speechSynthesis.getVoices();
+            const hindiVoice = voices.find(v => v.lang.startsWith('hi'));
+            if (hindiVoice) utterance.voice = hindiVoice;
+
+            window.speechSynthesis.speak(utterance);
+
+            setTimeout(() => {
+                if (isSpeaking) {
+                    if (window.speechSynthesis.speaking) return;
+                    isSpeaking = false;
+                    speakIndicator.classList.remove('active');
+                }
+            }, 6000);
+        }
+
+        // Preload voices
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.getVoices();
+            window.speechSynthesis.onvoiceschanged = () => {
+                window.speechSynthesis.getVoices();
+            };
+        }
+
+        // ============================================================
+        //  AUTO-SPEAK ON LOAD
+        // ============================================================
+        let hasSpokenOnLoad = false;
+
+        function autoSpeakOnLoad() {
+            if (hasSpokenOnLoad) return;
+            hasSpokenOnLoad = true;
+            setTimeout(() => {
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume().catch(() => {});
+                }
+                speakCurrentLetter(true);
+            }, 500);
+        }
+
+        window.addEventListener('load', () => {
+            updateDisplay('क', 0);
+            setTimeout(autoSpeakOnLoad, 400);
+        });
+
+        const firstInteraction = () => {
+            if (!hasSpokenOnLoad) {
+                autoSpeakOnLoad();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume().catch(() => {});
+            }
+        };
+        document.addEventListener('click', firstInteraction, { once: true });
+        document.addEventListener('touchstart', firstInteraction, { once: true });
+
+        // ============================================================
+        //  KEYBOARD SHORTCUTS
+        // ============================================================
+        document.addEventListener('keydown', (e) => {
+            if (e.key === ' ' || e.key === 'Space') {
+                e.preventDefault();
+                spinWheel();
+            }
+            if (e.key === 'Enter' || e.key === 's' || e.key === 'S') {
+                e.preventDefault();
+                speakCurrentLetter(true);
+            }
+        });
+
+        // ============================================================
+        //  INIT
+        // ============================================================
+        updateDisplay('क', 0);
+        console.log('🔮 हिंदी वर्णमाला 3D चरखा · क से ज्ञ तक');
+        console.log('🔄 Space = स्पिन · Enter/S = बोलें');
+        console.log('📌 तीर नीचे की ओर · बटन और नीचे');
+    </script>
+
+</body>
+</html>
