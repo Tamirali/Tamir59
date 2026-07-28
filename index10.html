@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>3D हिंदी वर्णमाला चक्र - क से ज्ञ तक</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        body {
+            background: radial-gradient(ellipse at center, #0d1b2a, #1b3a4b);
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+            padding: 10px 6px 16px;
+            overflow: hidden;
+            touch-action: none;
+        }
+
+        /* ---- HEADER ---- */
+        h1 {
+            color: #fff;
+            font-size: 19px;
+            font-weight: 800;
+            text-align: center;
+            text-shadow: 0 0 30px #00d2ff, 0 0 60px #ff0055;
+            letter-spacing: 1px;
+            margin-bottom: 1px;
+        }
+        .sub-title {
+            color: #aac4ff;
+            font-size: 11px;
+            margin-bottom: 5px;
+            text-align: center;
+            opacity: 0.9;
+            font-weight: 600;
+        }
+
+        /* ---- DISPLAY CARD ---- */
+        #display-box {
+            width: 270px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.97);
+            border: 4px solid #FFD700;
+            border-radius: 22px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-evenly;
+            padding: 6px 12px;
+            box-shadow: 0 0 50px #FFD70044, 0 0 100px #00d2ff33, 0 8px 30px rgba(0, 0, 0, 0.5);
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.3s, border-color 0.3s;
+            z-index: 100;
+            position: relative;
+        }
+        #display-box:active {
+            transform: scale(0.96);
+        }
+        #display-box .speak-badge {
+            position: absolute;
+            top: -12px;
+            right: -12px;
+            background: #ff0055;
+            color: #fff;
+            font-size: 10px;
+            font-weight: bold;
+            padding: 2px 12px;
+            border-radius: 30px;
+            border: 2px solid #fff;
+            box-shadow: 0 0 25px #ff0055;
+            animation: pulse-badge 1.4s ease-in-out infinite;
+        }
+        @keyframes pulse-badge {
+            0%,
+            100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.15);
+            }
+        }
+
+        #display-emoji {
+            font-size: 48px;
+            line-height: 1;
+            filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.2));
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            min-width: 56px;
+            text-align: center;
+        }
+        #display-emoji.bounce {
+            transform: scale(1.3) rotate(-6deg);
+        }
+
+        #display-text {
+            font-size: 20px;
+            font-weight: 700;
+            color: #0d1b2a;
+            text-align: left;
+            line-height: 1.2;
+        }
+        #display-text .letter-big {
+            font-size: 34px;
+            font-weight: 900;
+            color: #ff0055;
+            text-shadow: 0 0 20px #ff005544;
+        }
+        #display-text .word-part {
+            font-size: 16px;
+            color: #1b3a4b;
+            font-weight: 600;
+        }
+
+        .instruction {
+            font-size: 11px;
+            color: #00f2fe;
+            font-weight: bold;
+            text-shadow: 0 0 20px #00f2fe88;
+            margin-top: 4px;
+            text-align: center;
+        }
+
+        /* ---- 3D STAGE ---- */
+        .stage-3d {
+            width: 100%;
+            max-width: 420px;
+            height: 220px;
+            perspective: 900px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            margin-top: 2px;
+        }
+
+        /* पॉइंटर (बीच में) */
+        .pointer-wrap {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 55;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .pointer {
+            width: 0;
+            height: 0;
+            border-left: 12px solid transparent;
+            border-right: 12px solid transparent;
+            border-top: 20px solid #FFD700;
+            filter: drop-shadow(0 0 30px #FFD700) drop-shadow(0 0 60px #ff0055);
+            animation: pointer-glow 1.8s ease-in-out infinite;
+        }
+        @keyframes pointer-glow {
+            0%,
+            100% {
+                filter: drop-shadow(0 0 30px #FFD700) drop-shadow(0 0 60px #ff0055);
+            }
+            50% {
+                filter: drop-shadow(0 0 50px #FFD700) drop-shadow(0 0 90px #ff0055);
+            }
+        }
+        .pointer-ring {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.2), inset 0 0 40px rgba(255, 255, 255, 0.05);
+            animation: pulse-ring 2.2s ease-in-out infinite;
+            margin-top: -4px;
+        }
+        @keyframes pulse-ring {
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 0.5;
+            }
+            50% {
+                transform: scale(1.35);
+                opacity: 0.15;
+            }
+        }
+
+        #chain-ring {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            transform-style: preserve-3d;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transform: rotateX(-12deg);
+            transition: transform 0.08s ease-out;
+        }
+
+        .chain-box {
+            position: absolute;
+            width: 48px;
+            height: 62px;
+            border: 2.5px solid #ffffff;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            backface-visibility: visible;
+            transform-style: preserve-3d;
+            transition: box-shadow 0.25s, transform 0.15s;
+            cursor: pointer;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+            will-change: transform;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+            padding: 2px 0;
+        }
+        .chain-box .box-emoji {
+            font-size: 16px;
+            line-height: 1;
+            margin-bottom: 1px;
+        }
+        .chain-box .box-letter {
+            font-size: 20px;
+            font-weight: 900;
+            line-height: 1;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+        }
+        .chain-box:active {
+            transform: scale(0.88) rotateY(var(--rot, 0deg)) !important;
+        }
+        .chain-box.active-glow {
+            box-shadow: 0 0 40px #ffffff, 0 0 80px #FFD700 !important;
+            border-color: #FFD700;
+            transform: scale(1.10) rotateY(var(--rot, 0deg)) !important;
+            transition: box-shadow 0.3s, transform 0.3s;
+        }
+
+        /* ---- कंट्रोल बटन ---- */
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: calc(14px + 10mm);
+            width: 100%;
+            max-width: 380px;
+        }
+
+        #spin-btn {
+            padding: 12px 30px;
+            font-size: 17px;
+            font-weight: 800;
+            color: #ffffff;
+            background: linear-gradient(135deg, #ff0055, #ff8800);
+            border: 3px solid #ffffff;
+            border-radius: 50px;
+            box-shadow: 0 0 40px #ff0055, 0 6px 24px rgba(0, 0, 0, 0.5);
+            cursor: pointer;
+            outline: none;
+            transition: transform 0.12s, box-shadow 0.25s, filter 0.2s;
+            letter-spacing: 1px;
+            touch-action: manipulation;
+            flex: 1;
+            min-width: 100px;
+        }
+        #spin-btn:active {
+            transform: scale(0.92);
+            box-shadow: 0 0 20px #ff0055;
+        }
+        #spin-btn:disabled {
+            opacity: 0.4;
+            transform: scale(0.96);
+            pointer-events: none;
+            filter: grayscale(0.6);
+        }
+        #spin-btn .btn-icon {
+            margin-right: 5px;
+        }
+
+        .btn-secondary {
+            padding: 10px 16px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #fff;
+            background: rgba(255, 255, 255, 0.12);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 40px;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            backdrop-filter: blur(6px);
+            touch-action: manipulation;
+            flex: 0 1 auto;
+            white-space: nowrap;
+        }
+        .btn-secondary:active {
+            transform: scale(0.92);
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        /* ---- स्पीकिंग इंडिकेटर ---- */
+        .speaking-indicator {
+            display: none;
+            margin-top: 4px;
+            color: #00f2fe;
+            font-size: 12px;
+            font-weight: bold;
+            text-shadow: 0 0 30px #00f2fe;
+            animation: blink 0.7s ease-in-out infinite;
+        }
+        .speaking-indicator.active {
+            display: block;
+        }
+        @keyframes blink {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.15;
+            }
+        }
+
+        /* ---- कॉन्फ़ेटी ---- */
+        #confetti-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            overflow: hidden;
+        }
+        .confetti-piece {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            top: -20px;
+            animation: confetti-fall linear forwards;
+        }
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(0) rotate(0deg) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(110vh) rotate(720deg) scale(0.3);
+                opacity: 0;
+            }
+        }
+
+        /* ---- प्रोग्रेस ---- */
+        .progress-bar {
+            width: 100%;
+            max-width: 380px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            margin-top: 6px;
+            overflow: hidden;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #ff0055, #FFD700, #00f2fe);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            box-shadow: 0 0 20px #ff005566;
+        }
+        .progress-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 10px;
+            font-weight: 600;
+            margin-top: 2px;
+            text-align: center;
+            letter-spacing: 0.5px;
+        }
+
+        /* ---- शॉर्टकट ---- */
+        .shortcut-hint {
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 9px;
+            text-align: center;
+            margin-top: 3px;
+            letter-spacing: 0.3px;
+        }
+        .shortcut-hint kbd {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1px 6px;
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 9px;
+            color: #bbb;
+        }
+
+        /* ---- रिस्पॉन्सिव ---- */
+        @media (max-width: 450px) {
+            h1 {
+                font-size: 16px;
+            }
+            #display-box {
+                width: 210px;
+                height: 82px;
+                padding: 4px 8px;
+                border-radius: 18px;
+            }
+            #display-emoji {
+                font-size: 36px;
+                min-width: 42px;
+            }
+            #display-text {
+                font-size: 16px;
+            }
+            #display-text .letter-big {
+                font-size: 26px;
+            }
+            #display-text .word-part {
+                font-size: 13px;
+            }
+            .chain-box {
+                width: 38px;
+                height: 50px;
+                border-radius: 10px;
+                border-width: 2px;
+            }
+            .chain-box .box-letter {
+                font-size: 16px;
+            }
+            .chain-box .box-emoji {
+                font-size: 13px;
+            }
+            .stage-3d {
+                height: 180px;
+            }
+            #spin-btn {
+                padding: 10px 20px;
+                font-size: 14px;
+                min-width: 80px;
+            }
+            .btn-secondary {
+                padding: 8px 12px;
+                font-size: 11px;
+            }
+            .pointer {
+                border-left-width: 9px;
+                border-right-width: 9px;
+                border-top-width: 15px;
+            }
+            .pointer-ring {
+                width: 26px;
+                height: 26px;
+            }
+            .controls {
+                gap: 6px;
+                margin-top: calc(10px + 10mm);
+            }
+            .sub-title {
+                font-size: 10px;
+            }
+        }
+        @media (max-width: 360px) {
+            #display-box {
+                width: 175px;
+                height: 70px;
+                padding: 3px 6px;
+                border-radius: 14px;
+            }
+            #display-emoji {
+                font-size: 28px;
+                min-width: 34px;
+            }
+            #display-text {
+                font-size: 13px;
+            }
+            #display-text .letter-big {
+                font-size: 20px;
+            }
+            #display-text .word-part {
+                font-size: 11px;
+            }
+            .chain-box {
+                width: 32px;
+                height: 42px;
+                border-radius: 8px;
+                border-width: 1.5px;
+            }
+            .chain-box .box-letter {
+                font-size: 13px;
+            }
+            .chain-box .box-emoji {
+                font-size: 11px;
+            }
+            .stage-3d {
+                height: 150px;
+            }
+            #spin-btn {
+                padding: 8px 14px;
+                font-size: 12px;
+                min-width: 60px;
+            }
+            .btn-secondary {
+                padding: 6px 10px;
+                font-size: 10px;
+            }
+            .controls {
+                gap: 5px;
+                margin-top: calc(8px + 10mm);
+            }
+            h1 {
+                font-size: 14px;
+            }
+            .pointer {
+                border-left-width: 7px;
+                border-right-width: 7px;
+                border-top-width: 12px;
+            }
+            .pointer-ring {
+                width: 20px;
+                height: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ====== HEADER ====== -->
+    <h1>🎡 3D हिंदी वर्णमाला · क से ज्ञ तक 🎡</h1>
+    <div class="sub-title">✨ स्पिन करें · सीखें · ऑडियो सुनें ✨</div>
+
+    <!-- ====== डिस्प्ले कार्ड ====== -->
+    <div id="display-box" onclick="speakCurrentLetter(true)">
+        <span class="speak-badge">🔊</span>
+        <span id="display-emoji">🕊️</span>
+        <div id="display-text">
+            <span class="letter-big">क</span>
+            <span class="word-part">· कबूतर</span>
+        </div>
+    </div>
+
+    <div class="instruction">👆 डिस्प्ले पर क्लिक करें · ऑडियो सुनें</div>
+
+    <!-- ====== 3D स्टेज ====== -->
+    <div class="stage-3d" id="stage">
+        <!-- पॉइंटर (बीच में) -->
+        <div class="pointer-wrap">
+            <div class="pointer"></div>
+            <div class="pointer-ring"></div>
+        </div>
+        <div id="chain-ring"></div>
+    </div>
+
+    <!-- ====== कंट्रोल्स ====== -->
+    <div class="controls">
+        <button id="spin-btn" onclick="spinWheel()">
+            <span class="btn-icon">🎰</span> SPIN
+        </button>
+        <button class="btn-secondary" onclick="speakCurrentLetter(true)" title="बोलें (Enter)">
+            🔊 बोलें
+        </button>
+        <button class="btn-secondary" onclick="resetWheel()" title="रीसेट (R)">
+            ↺ रीसेट
+        </button>
+    </div>
+
+    <!-- ====== प्रोग्रेस ====== -->
+    <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+    </div>
+    <div class="progress-label" id="progressLabel">0 / 36 अक्षर देखे</div>
+
+    <!-- ====== स्पीकिंग इंडिकेटर ====== -->
+    <div class="speaking-indicator" id="speakIndicator">🔊 बोल रहा है…</div>
+
+    <!-- ====== शॉर्टकट ====== -->
+    <div class="shortcut-hint">
+        <kbd>Space</kbd> स्पिन · <kbd>Enter</kbd> बोलें · <kbd>R</kbd> रीसेट
+    </div>
+
+    <!-- ====== कॉन्फ़ेटी ====== -->
+    <div id="confetti-container"></div>
+
+    <script>
+        // ================================================================
+        //  हिंदी अक्षर डेटा - क से ज्ञ तक (36 व्यंजन)
+        // ================================================================
+        const hindiLetters = [
+            'क', 'ख', 'ग', 'घ', 'ङ',
+            'च', 'छ', 'ज', 'झ', 'ञ',
+            'ट', 'ठ', 'ड', 'ढ', 'ण',
+            'त', 'थ', 'द', 'ध', 'न',
+            'प', 'फ', 'ब', 'भ', 'म',
+            'य', 'र', 'ल', 'व', 'श',
+            'ष', 'स', 'ह', 'क्ष', 'त्र', 'ज्ञ'
+        ];
+
+        const letterMap = {
+            'क': { word: 'कबूतर', emoji: '🕊️' },
+            'ख': { word: 'खरगोश', emoji: '🐇' },
+            'ग': { word: 'गाय', emoji: '🐄' },
+            'घ': { word: 'घोड़ा', emoji: '🐴' },
+            'ङ': { word: 'घंटी', emoji: '🔔' },
+            'च': { word: 'चिड़िया', emoji: '🐦' },
+            'छ': { word: 'छाता', emoji: '☂️' },
+            'ज': { word: 'जहाज', emoji: '🚢' },
+            'झ': { word: 'झंडा', emoji: '🚩' },
+            'ञ': { word: 'ज्ञान', emoji: '📚' },
+            'ट': { word: 'टमाटर', emoji: '🍅' },
+            'ठ': { word: 'ठेला', emoji: '🛒' },
+            'ड': { word: 'डमरू', emoji: '🥁' },
+            'ढ': { word: 'ढोल', emoji: '🥁' },
+            'ण': { word: 'रणभूमि', emoji: '⚔️' },
+            'त': { word: 'तरबूज', emoji: '🍉' },
+            'थ': { word: 'थैला', emoji: '👜' },
+            'द': { word: 'दरवाजा', emoji: '🚪' },
+            'ध': { word: 'धनुष', emoji: '🏹' },
+            'न': { word: 'नारियल', emoji: '🥥' },
+            'प': { word: 'पानी', emoji: '💧' },
+            'फ': { word: 'फूल', emoji: '🌸' },
+            'ब': { word: 'बकरी', emoji: '🐐' },
+            'भ': { word: 'भालू', emoji: '🐻' },
+            'म': { word: 'मोर', emoji: '🦚' },
+            'य': { word: 'योग', emoji: '🧘' },
+            'र': { word: 'रोटी', emoji: '🍞' },
+            'ल': { word: 'लड्डू', emoji: '🍡' },
+            'व': { word: 'वृक्ष', emoji: '🌳' },
+            'श': { word: 'शेर', emoji: '🦁' },
+            'ष': { word: 'शास्त्र', emoji: '📜' },
+            'स': { word: 'साँप', emoji: '🐍' },
+            'ह': { word: 'हाथी', emoji: '🐘' },
+            'क्ष': { word: 'क्षत्रिय', emoji: '⚔️' },
+            'त्र': { word: 'त्रिशूल', emoji: '🔱' },
+            'ज्ञ': { word: 'ज्ञान', emoji: '📚' }
+        };
+
+        // रंग - 36 अलग-अलग रंग
+        const colors = [
+            "#e74c3c", "#e67e22", "#f1c40f", "#2ecc71", "#1abc9c",
+            "#3498db", "#9b59b6", "#e91e63", "#ff6b6b", "#ffa502",
+            "#2ed573", "#1e90ff", "#a29bfe", "#fd79a8", "#fdcb6e",
+            "#00b894", "#0984e3", "#6c5ce7", "#00cec9", "#fd79a8",
+            "#ff7675", "#fdcb6e", "#00b894", "#0984e3", "#6c5ce7",
+            "#e17055", "#00cec9", "#fd79a8", "#ff9ff3", "#54a0ff",
+            "#5f27cd", "#1dd1a1", "#f368e0", "#ff9f43", "#00d2d3",
+            "#ff6b6b"
+        ];
+
+        // ================================================================
+        //  DOM REFS
+        // ================================================================
+        const chainRing = document.getElementById("chain-ring");
+        const displayBox = document.getElementById("display-box");
+        const displayEmoji = document.getElementById("display-emoji");
+        const displayText = document.getElementById("display-text");
+        const stage = document.getElementById("stage");
+        const spinBtn = document.getElementById("spin-btn");
+        const speakIndicator = document.getElementById("speakIndicator");
+        const progressFill = document.getElementById("progressFill");
+        const progressLabel = document.getElementById("progressLabel");
+
+        const totalLetters = hindiLetters.length;
+        const angleStep = 360 / totalLetters;
+        const radius = 200;
+
+        let currentAngle = 0;
+        let startX = 0;
+        let isDragging = false;
+        let selectedLetter = "क";
+        let lastTickIndex = -1;
+        let isSpinning = false;
+        let isSpeaking = false;
+        let viewedLetters = new Set();
+
+        // ================================================================
+        //  ऑडियो कॉन्टेक्स्ट
+        // ================================================================
+        const audioCtx = new(window.AudioContext || window.webkitAudioContext)();
+
+        function playTickSound() {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(1000, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(150, audioCtx.currentTime + 0.04);
+                gain.gain.setValueAtTime(0.18, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.04);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.04);
+            } catch (_) { /* ignore */ }
+        }
+
+        function playWinSound() {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            try {
+                const notes = [523, 659, 784, 1047];
+                notes.forEach((freq, i) => {
+                    setTimeout(() => {
+                        const osc = audioCtx.createOscillator();
+                        const gain = audioCtx.createGain();
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                        gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+                        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+                        osc.connect(gain);
+                        gain.connect(audioCtx.destination);
+                        osc.start();
+                        osc.stop(audioCtx.currentTime + 0.2);
+                    }, i * 120);
+                });
+            } catch (_) { /* ignore */ }
+        }
+
+        // ================================================================
+        //  3D चेन बनाना
+        // ================================================================
+        hindiLetters.forEach((letter, index) => {
+            const box = document.createElement("div");
+            box.className = "chain-box";
+            box.dataset.index = index;
+            box.dataset.letter = letter;
+
+            const data = letterMap[letter] || { word: letter, emoji: '🔤' };
+            const col = colors[index % colors.length];
+
+            box.innerHTML = `
+                <span class="box-emoji">${data.emoji}</span>
+                <span class="box-letter">${letter}</span>
+            `;
+            box.style.backgroundColor = col;
+            box.style.boxShadow = `0 6px 16px ${col}88, 0 0 16px ${col}44`;
+
+            const angle = index * angleStep;
+            box.style.transform = `rotateY(${angle}deg) translateZ(${radius}px)`;
+            box.style.setProperty('--rot', angle + 'deg');
+
+            box.addEventListener("click", (e) => {
+                e.stopPropagation();
+                if (!isSpinning) {
+                    rotateToLetter(index);
+                }
+            });
+
+            box.addEventListener("mouseenter", () => {
+                box.style.boxShadow = `0 0 40px #ffffff, 0 0 70px ${col}`;
+            });
+            box.addEventListener("mouseleave", () => {
+                box.style.boxShadow = `0 6px 16px ${col}88, 0 0 16px ${col}44`;
+            });
+
+            chainRing.appendChild(box);
+        });
+
+        // ================================================================
+        //  रोटेट फंक्शन
+        // ================================================================
+        function rotateToLetter(index) {
+            if (isSpinning) return;
+            const targetAngle = -(index * angleStep);
+            chainRing.style.transition = "transform 0.55s cubic-bezier(0.22, 1, 0.36, 1)";
+            currentAngle = targetAngle;
+            chainRing.style.transform = `rotateX(-12deg) rotateY(${currentAngle}deg)`;
+
+            setTimeout(() => {
+                chainRing.style.transition = "transform 0.08s ease-out";
+                selectedLetter = hindiLetters[index];
+                updateDisplay(selectedLetter, index);
+                speakCurrentLetter(true);
+                highlightBox(index);
+            }, 580);
+        }
+
+        // ================================================================
+        //  स्पिन व्हील
+        // ================================================================
+        function spinWheel() {
+            if (isSpinning) return;
+            isSpinning = true;
+            spinBtn.disabled = true;
+            speakIndicator.classList.remove('active');
+
+            const randomIndex = Math.floor(Math.random() * totalLetters);
+            const extraRounds = 360 * (3 + Math.floor(Math.random() * 3));
+            const targetAngle = -(randomIndex * angleStep) - extraRounds;
+
+            chainRing.style.transition = "transform 3.0s cubic-bezier(0.08, 0.82, 0.17, 1)";
+            currentAngle = targetAngle;
+            chainRing.style.transform = `rotateX(-12deg) rotateY(${currentAngle}deg)`;
+
+            let tickCount = 0;
+            const maxTicks = 32;
+            const tickInterval = setInterval(() => {
+                if (tickCount < maxTicks) {
+                    playTickSound();
+                    tickCount++;
+                } else {
+                    clearInterval(tickInterval);
+                }
+            }, 95);
+
+            setTimeout(() => {
+                clearInterval(tickInterval);
+                chainRing.style.transition = "transform 0.08s ease-out";
+                currentAngle = -(randomIndex * angleStep);
+                chainRing.style.transform = `rotateX(-12deg) rotateY(${currentAngle}deg)`;
+
+                selectedLetter = hindiLetters[randomIndex];
+                updateDisplay(selectedLetter, randomIndex);
+                highlightBox(randomIndex);
+                isSpinning = false;
+                spinBtn.disabled = false;
+
+                playWinSound();
+                launchConfetti();
+
+                setTimeout(() => speakCurrentLetter(true), 400);
+            }, 3100);
+        }
+
+        // ================================================================
+        //  रीसेट
+        // ================================================================
+        function resetWheel() {
+            if (isSpinning) return;
+            const targetAngle = 0;
+            chainRing.style.transition = "transform 0.7s cubic-bezier(0.22, 1, 0.36, 1)";
+            currentAngle = targetAngle;
+            chainRing.style.transform = `rotateX(-12deg) rotateY(${currentAngle}deg)`;
+            setTimeout(() => {
+                chainRing.style.transition = "transform 0.08s ease-out";
+                selectedLetter = "क";
+                updateDisplay("क", 0);
+                highlightBox(0);
+                speakCurrentLetter(true);
+            }, 720);
+            viewedLetters.clear();
+            updateProgress();
+        }
+
+        // ================================================================
+        //  ड्रैग / टच
+        // ================================================================
+        stage.addEventListener("touchstart", (e) => {
+            if (isSpinning) return;
+            isDragging = true;
+            startX = e.touches[0].clientX;
+        });
+
+        stage.addEventListener("touchmove", (e) => {
+            if (!isDragging || isSpinning) return;
+            const deltaX = e.touches[0].clientX - startX;
+            startX = e.touches[0].clientX;
+            currentAngle += deltaX * 0.4;
+            updateChainRotation();
+        });
+
+        stage.addEventListener("touchend", () => {
+            if (isSpinning) return;
+            isDragging = false;
+            snapToNearestLetter();
+        });
+
+        let mouseDown = false;
+        stage.addEventListener("mousedown", (e) => {
+            if (isSpinning) return;
+            mouseDown = true;
+            startX = e.clientX;
+        });
+        window.addEventListener("mousemove", (e) => {
+            if (!mouseDown || isSpinning) return;
+            const deltaX = e.clientX - startX;
+            startX = e.clientX;
+            currentAngle += deltaX * 0.4;
+            updateChainRotation();
+        });
+        window.addEventListener("mouseup", () => {
+            if (mouseDown && !isSpinning) {
+                mouseDown = false;
+                snapToNearestLetter();
+            }
+            mouseDown = false;
+        });
+
+        // ================================================================
+        //  अपडेट फंक्शन
+        // ================================================================
+        function updateChainRotation() {
+            chainRing.style.transform = `rotateX(-12deg) rotateY(${currentAngle}deg)`;
+            highlightFrontLetter();
+        }
+
+        function highlightFrontLetter() {
+            let normalized = (-currentAngle) % 360;
+            if (normalized < 0) normalized += 360;
+            const index = Math.round(normalized / angleStep) % totalLetters;
+            if (index !== lastTickIndex) {
+                playTickSound();
+                lastTickIndex = index;
+            }
+            const activeLetter = hindiLetters[index];
+            if (activeLetter && activeLetter !== selectedLetter) {
+                selectedLetter = activeLetter;
+                updateDisplay(selectedLetter, index);
+                highlightBox(index);
+            }
+        }
+
+        function updateDisplay(letter, index) {
+            const data = letterMap[letter] || { word: letter, emoji: '🔤' };
+            const col = colors[index % colors.length];
+
+            displayEmoji.style.transform = 'scale(0.4) rotate(-12deg)';
+            setTimeout(() => {
+                displayEmoji.textContent = data.emoji;
+                displayText.innerHTML = `
+                    <span class="letter-big">${letter}</span>
+                    <span class="word-part">· ${data.word}</span>
+                `;
+                displayEmoji.style.transform = 'scale(1) rotate(0deg)';
+            }, 80);
+
+            displayBox.style.boxShadow = `0 0 50px ${col}88, 0 0 100px ${col}44, 0 8px 30px rgba(0,0,0,0.5)`;
+            displayBox.style.borderColor = col;
+
+            viewedLetters.add(letter);
+            updateProgress();
+        }
+
+        function highlightBox(index) {
+            document.querySelectorAll('.chain-box').forEach(el => el.classList.remove('active-glow'));
+            const boxes = document.querySelectorAll('.chain-box');
+            if (boxes[index]) {
+                boxes[index].classList.add('active-glow');
+                setTimeout(() => {
+                    boxes[index].classList.remove('active-glow');
+                }, 1500);
+            }
+        }
+
+        function snapToNearestLetter() {
+            let normalized = (-currentAngle) % 360;
+            if (normalized < 0) normalized += 360;
+            const index = Math.round(normalized / angleStep) % totalLetters;
+            const targetAngle = -(index * angleStep);
+
+            chainRing.style.transition = "transform 0.35s cubic-bezier(0.22, 1, 0.36, 1)";
+            currentAngle = targetAngle;
+            chainRing.style.transform = `rotateX(-12deg) rotateY(${currentAngle}deg)`;
+
+            setTimeout(() => {
+                chainRing.style.transition = "transform 0.08s ease-out";
+                selectedLetter = hindiLetters[index];
+                updateDisplay(selectedLetter, index);
+                highlightBox(index);
+                speakCurrentLetter(true);
+            }, 380);
+        }
+
+        function updateProgress() {
+            const count = viewedLetters.size;
+            const pct = Math.round((count / totalLetters) * 100);
+            progressFill.style.width = pct + '%';
+            progressLabel.textContent = `${count} / ${totalLetters} अक्षर देखे`;
+            if (count === totalLetters) {
+                progressLabel.textContent = '🎉 सभी अक्षर देख लिए! 🎉';
+                progressFill.style.background = 'linear-gradient(90deg, #FFD700, #ff0055, #FFD700)';
+                launchConfetti();
+            }
+        }
+
+        // ================================================================
+        //  स्पीच सिंथेसिस - हिंदी में बोलना
+        // ================================================================
+        function speakCurrentLetter(force = false) {
+            if (isSpeaking && !force) return;
+            if (!('speechSynthesis' in window)) return;
+
+            window.speechSynthesis.cancel();
+
+            const data = letterMap[selectedLetter];
+            if (!data) return;
+
+            // हिंदी में टेक्स्ट
+            const text = `${selectedLetter} · ${data.word}`;
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'hi-IN';
+            utterance.rate = 0.80;
+            utterance.pitch = 1.0;
+            utterance.volume = 1;
+
+            isSpeaking = true;
+            speakIndicator.classList.add('active');
+
+            utterance.onstart = () => {
+                isSpeaking = true;
+                speakIndicator.classList.add('active');
+                displayBox.style.transform = 'scale(1.03)';
+                setTimeout(() => { displayBox.style.transform = ''; }, 300);
+            };
+
+            utterance.onend = () => {
+                isSpeaking = false;
+                speakIndicator.classList.remove('active');
+            };
+
+            utterance.onerror = () => {
+                isSpeaking = false;
+                speakIndicator.classList.remove('active');
+            };
+
+            // हिंदी वॉइस खोजें
+            const voices = window.speechSynthesis.getVoices();
+            const preferred = voices.find(v => v.lang.startsWith('hi'));
+            if (preferred) utterance.voice = preferred;
+
+            window.speechSynthesis.speak(utterance);
+
+            setTimeout(() => {
+                if (isSpeaking) {
+                    if (window.speechSynthesis.speaking) return;
+                    isSpeaking = false;
+                    speakIndicator.classList.remove('active');
+                }
+            }, 5000);
+        }
+
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.getVoices();
+            window.speechSynthesis.onvoiceschanged = () => {
+                window.speechSynthesis.getVoices();
+            };
+        }
+
+        // ================================================================
+        //  कॉन्फ़ेटी
+        // ================================================================
+        function launchConfetti() {
+            const container = document.getElementById('confetti-container');
+            const colors_conf = ['#ff0055', '#FFD700', '#00f2fe', '#ff6b6b', '#feca57', '#48dbfb', '#ff9ff3', '#54a0ff', '#5f27cd',
+                '#1dd1a1'
+            ];
+            for (let i = 0; i < 60; i++) {
+                const piece = document.createElement('div');
+                piece.className = 'confetti-piece';
+                const size = 5 + Math.random() * 9;
+                const color = colors_conf[Math.floor(Math.random() * colors_conf.length)];
+                const left = Math.random() * 100;
+                const delay = Math.random() * 0.8;
+                const duration = 1.8 + Math.random() * 1.5;
+                const shape = Math.random() > 0.5 ? '50%' : '2px';
+                piece.style.cssText = `
+                            left: ${left}%;
+                            width: ${size}px;
+                            height: ${size * 1.6}px;
+                            background: ${color};
+                            border-radius: ${shape};
+                            animation-delay: ${delay}s;
+                            animation-duration: ${duration}s;
+                            box-shadow: 0 0 6px ${color}88;
+                        `;
+                container.appendChild(piece);
+                setTimeout(() => piece.remove(), (delay + duration) * 1000 + 100);
+            }
+        }
+
+        // ================================================================
+        //  कीबोर्ड शॉर्टकट
+        // ================================================================
+        document.addEventListener('keydown', (e) => {
+            if (e.key === ' ' || e.key === 'Space') {
+                e.preventDefault();
+                spinWheel();
+            }
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                speakCurrentLetter(true);
+            }
+            if (e.key === 'r' || e.key === 'R') {
+                e.preventDefault();
+                resetWheel();
+            }
+        });
+
+        // ================================================================
+        //  ऑटो स्पीक ऑन लोड
+        // ================================================================
+        let hasSpokenOnLoad = false;
+
+        function autoSpeakOnLoad() {
+            if (hasSpokenOnLoad) return;
+            hasSpokenOnLoad = true;
+            setTimeout(() => {
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume().catch(() => {});
+                }
+                speakCurrentLetter(true);
+            }, 700);
+        }
+
+        window.addEventListener('load', () => {
+            updateDisplay('क', 0);
+            highlightBox(0);
+            setTimeout(autoSpeakOnLoad, 500);
+        });
+
+        const firstInteraction = () => {
+            if (!hasSpokenOnLoad) autoSpeakOnLoad();
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume().catch(() => {});
+            }
+        };
+        document.addEventListener('click', firstInteraction, { once: true });
+        document.addEventListener('touchstart', firstInteraction, { once: true });
+
+        // ================================================================
+        //  इनिट
+        // ================================================================
+        updateDisplay('क', 0);
+        highlightBox(0);
+        console.log('🎡 3D हिंदी वर्णमाला चक्र - क से ज्ञ तक (36 अक्षर)');
+        console.log('🔄 Space = स्पिन · Enter = बोलें · R = रीसेट');
+        console.log('📚 सीखें हिंदी वर्णमाला मजेदार तरीके से!');
+    </script>
+
+</body>
+</html>
