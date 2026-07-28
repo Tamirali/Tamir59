@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>अपना मार्केट - डिजिटल शोकेस नोट</title>
+    <style>
+        .note-card {
+            background: #ffffff;
+            border: 2px solid #FF6B35;
+            border-radius: 12px;
+            padding: 20px;
+            max-width: 600px;
+            margin: 20px auto;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            color: #333;
+        }
+        .note-header {
+            text-align: center;
+            border-bottom: 2px dashed #FF6B35;
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+        }
+        .note-header h2 {
+            color: #FF6B35;
+            margin: 0;
+            font-size: 22px;
+        }
+        .note-header p {
+            margin: 5px 0 0;
+            font-weight: bold;
+            color: #555;
+        }
+        .section-title {
+            background: #f8f9fa;
+            border-left: 4px solid #FF6B35;
+            padding: 6px 10px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #222;
+            margin-top: 15px;
+            margin-bottom: 10px;
+        }
+        .note-list {
+            list-style-type: none;
+            padding-left: 5px;
+            margin: 0;
+        }
+        .note-list li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+        .footer-tag {
+            text-align: center;
+            background: #FF6B35;
+            color: #fff;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 18px;
+            font-weight: bold;
+            font-size: 15px;
+        }
+        .contact-info {
+            text-align: center;
+            background: #e8f5e9;
+            border: 1px solid #25D366;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 12px;
+            font-weight: bold;
+            color: #1b5e20;
+            font-size: 15px;
+        }
+        .copy-btn {
+            display: block;
+            width: 100%;
+            background: #25D366;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+            text-align: center;
+        }
+        .copy-btn:hover {
+            background: #1ebd59;
+        }
+    </style>
+</head>
+<body>
+
+<div class="note-card" id="showcaseNote">
+    <div class="note-header">
+        <h2>🏪 अपना मार्केट / लोकल शॉप</h2>
+        <p>लोकल दुकान × डिजिटल ताकत = 100% असली भरोसा!</p>
+    </div>
+
+    <div class="section-title">📢 दुकानदारों के लिए (आपकी अपनी डिजिटल दुकान):</div>
+    <ul class="note-list">
+        <li>• <b>कोई पेचीदा या महंगा ऐप नहीं:</b> यह कोई दूर-दराज का ई-कॉमर्स नहीं, बल्कि आपकी दुकान का <b>डिजिटल शोकेस</b> है।</li>
+        <li>• <b>आस-पास के ग्राहक जुड़ेंगे:</b> मोहल्ले के लोग मोबाइल पर ही आपकी दुकान का नया सामान और वैरायटी देख सकेंगे।</li>
+        <li>• <b>दुकान पर बिक्री बढ़ेगी:</b> ग्राहक मोबाइल पर सामान देखकर खुद आपकी दुकान पर खरीदारी करने आएंगे या व्हाट्सएप पर सीधा ऑर्डर देंगे।</li>
+        <li>• <b>शून्य कमीशन, शून्य झंझट:</b> कोई बीच का कमीशन नहीं, कोई रजिस्ट्रेशन की पेचीदा शर्त नहीं। ग्राहक आपका, व्यापार आपका!</li>
+    </ul>
+
+    <div class="section-title">📢 ग्राहकों के लिए (धोखे से मुक्ति, लोकल भरोसा):</div>
+    <ul class="note-list">
+        <li>• <b>'दिखाया कुछ, भेजा कुछ' से छुटकारा:</b> दूर की कंपनियों के घटिया सामान और फर्जी फोटो के धोखे से बचें।</li>
+        <li>• <b>सामान बदलने की कोई टेंशन नहीं:</b> सामान पसंद न आने या खराबी होने पर सीधे अपनी जानी-पहचानी दुकान से बदलें।</li>
+        <li>• <b>घर बैठे दुकान देखें:</b> बिना धूप-गर्मी में भटके अपने पास की दुकान का सारा सामान अपने मोबाइल पर ही देखें और ऑर्डर करें।</li>
+    </ul>
+
+    <div class="footer-tag">
+        👉 "डिजिटल शोकेस से सामान देखें, और पूरे विश्वास के साथ अपनी लोकल दुकान से खरीदें!"
+    </div>
+
+    <div class="contact-info">
+        💬 संपर्क / व्हाट्सएप करें: <b>+91 8797221991</b>
+    </div>
+
+    <button class="copy-btn" onclick="copyNoteText()">📋 इस नोट को कॉपी करें (Copy Note)</button>
+</div>
+
+<script>
+function copyNoteText() {
+    const textToCopy = `🏪 अपना मार्केट / लोकल शॉप
+(लोकल दुकान × डिजिटल ताकत = 100% असली भरोसा!)
+
+📢 दुकानदारों के लिए:
+• कोई पेचीदा या महंगा ऐप नहीं - यह आपकी दुकान का 'डिजिटल शोकेस' है।
+• आस-पास के ग्राहक मोबाइल पर आपकी दुकान का नया सामान देख सकेंगे।
+• ग्राहक सामान देखकर खुद आपकी दुकान पर खरीदारी करने आएंगे या सीधा व्हाट्सएप पर ऑर्डर देंगे।
+• शून्य कमीशन, शून्य झंझट - पूरा फ़ायदा आपका!
+
+📢 ग्राहकों के लिए:
+• ऑनलाइन कंपनियों के 'दिखाया कुछ, भेजा कुछ' वाले धोखे से मुक्ति पाएं।
+• रिटर्न या सामान बदलने की कोई झंझट नहीं - 100% लोकल भरोसा!
+• घर बैठे अपने आस-पास की दुकान का सारा सामान मोबाइल पर ही देखें।
+
+👉 "डिजिटल शोकेस से सामान देखें, और पूरे विश्वास के साथ अपनी लोकल दुकान से खरीदें!"
+
+💬 संपर्क / व्हाट्सएप करें: +91 8797221991`;
+
+    navigator.clipboard.writeText(textToCopy).then(() => {
+        alert("✅ नोट सफलतापूर्वक कॉपी हो गया है! अब आप इसे कहीं भी शेयर या सेव कर सकते हैं।");
+    }).catch(err => {
+        alert("❌ कॉपी करने में समस्या आई: " + err);
+    });
+}
+</script>
+
+</body>
+</html>
