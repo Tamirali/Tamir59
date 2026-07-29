@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>व्हाट्सएप डायरेक्ट & लिंक जनरेटर</title>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; background: #e5ddd5; padding: 15px; margin: 0; }
+    .card { background: white; max-width: 450px; margin: auto; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    h2 { color: #075e54; text-align: center; margin-top: 0; }
+    .desc { font-size: 13px; color: #555; background: #e1f5fe; padding: 10px; border-radius: 6px; margin-bottom: 15px; }
+    label { font-weight: bold; font-size: 14px; display: block; margin-top: 10px; }
+    input, textarea { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
+    button { width: 100%; background: #25d366; color: white; border: none; padding: 12px; border-radius: 6px; font-weight: bold; margin-top: 12px; cursor: pointer; font-size: 15px; }
+    .result { margin-top: 15px; padding: 10px; background: #f0f0f0; border-radius: 6px; word-break: break-all; display: none; }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <h2>💬 व्हाट्सएप डायरेक्ट टूल</h2>
+  <div class="desc">
+    <b>विषय:</b> बिना नंबर सेव किए डायरेक्ट चैट खोलें या बिजनेस के लिए ऑर्डर लिंक बनाएं।
+  </div>
+
+  <label>मोबाइल नंबर (देश के कोड के साथ):</label>
+  <input type="number" id="phone" placeholder="उदा: 919876543210" value="91">
+
+  <label>संदेश (Message):</label>
+  <textarea id="msg" rows="3" placeholder="नमस्ते, मुझे इस सामान का ऑर्डर देना है..."></textarea>
+
+  <button onclick="openChat()">📲 सीधे व्हाट्सएप पर भेजें</button>
+  <button onclick="makeLink()" style="background: #128c7e;">🔗 शेयर करने योग्य लिंक बनाएं</button>
+
+  <div id="link-res" class="result">
+    <b>आपकी लिंक:</b> <br><span id="link-text"></span>
+  </div>
+</div>
+
+<script>
+  function openChat() {
+    let num = document.getElementById('phone').value.trim();
+    let msg = encodeURIComponent(document.getElementById('msg').value.trim());
+    if(!num) { alert('कृपया नंबर डालें'); return; }
+    window.open(`https://wa.me/${num}?text=${msg}`, '_blank');
+  }
+
+  function makeLink() {
+    let num = document.getElementById('phone').value.trim();
+    let msg = encodeURIComponent(document.getElementById('msg').value.trim());
+    if(!num) { alert('कृपया नंबर डालें'); return; }
+    let link = `https://wa.me/${num}?text=${msg}`;
+    document.getElementById('link-text').innerText = link;
+    document.getElementById('link-res').style.display = 'block';
+  }
+</script>
+
+</body>
+</html>
