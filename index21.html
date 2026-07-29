@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎭 प्रो कैरेक्टर एनिमेटर + वीडियो एक्सपोर्ट</title>
+    <style>
+        * { box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+        body { background: #0e0f17; color: #e0e0e0; margin: 0; padding: 20px; min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
+        h2 { color: #00d2ff; margin: 0 0 4px 0; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+        .subtitle { color: #777; font-size: 13px; margin: 0 0 18px 0; }
+        .main-container { display: flex; flex-wrap: wrap; gap: 18px; justify-content: center; max-width: 1150px; width: 100%; }
+        .panel { background: #1a1b2a; border-radius: 14px; padding: 16px; flex: 1 1 280px; min-width: 250px; max-width: 380px; border: 1px solid #2a2c40; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6); }
+        .panel h3 { margin: 0 0 12px 0; color: #00d2ff; font-size: 15px; border-bottom: 1px solid #2a2c40; padding-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+        .panel h3 span { font-size: 12px; color: #888; font-weight: normal; }
+        .crop-wrapper { position: relative; background: #0a0b12; border-radius: 8px; overflow: hidden; border: 1px solid #2a2c40; touch-action: none; height: 240px; }
+        #cropCanvas { display: block; width: 100%; height: 100%; background: #0a0b12; cursor: crosshair; }
+        .zoom-controls { display: flex; gap: 6px; margin-bottom: 8px; justify-content: center; flex-wrap: wrap; }
+        .btn { background: #00d2ff; color: #0a0b12; border: none; padding: 8px 14px; font-weight: 600; border-radius: 8px; cursor: pointer; transition: 0.15s; font-size: 13px; }
+        .btn:hover { background: #00b8e6; transform: scale(0.97); }
+        .btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+        .btn-secondary { background: #2a2c40; color: #ccc; }
+        .btn-secondary:hover { background: #3d3f58; }
+        .btn-success { background: #2ecc71; color: #0a0b12; }
+        .btn-success:hover { background: #27ae60; }
+        .btn-danger { background: #e74c3c; color: #fff; }
+        .btn-danger:hover { background: #c0392b; }
+        .btn-warning { background: #f39c12; color: #0a0b12; }
+        .btn-warning:hover { background: #d68910; }
+        .btn-sm { padding: 4px 10px; font-size: 11px; }
+
+        .workspace { position: relative; width: 100%; aspect-ratio: 320 / 380; background: #0a0b12; border-radius: 10px; overflow: hidden; border: 1px solid #2a2c40; touch-action: none; background-image: radial-gradient(circle, #1a1b2a 1px, transparent 1px); background-size: 20px 20px; min-height: 200px; }
+        .workspace .part { position: absolute; cursor: grab; user-select: none; touch-action: none; border-radius: 3px; transition: filter 0.15s; }
+        .workspace .part:hover { filter: brightness(1.1); }
+        .workspace .part.selected { outline: 2px solid #00d2ff; outline-offset: 3px; filter: drop-shadow(0 0 20px #00d2ff55); z-index: 999 !important; }
+        .workspace .part.dragging { cursor: grabbing; z-index: 1000 !important; }
+        .workspace .empty-msg { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: #3a3c4a; font-size: 14px; pointer-events: none; flex-direction: column; gap: 6px; }
+        .workspace .empty-msg strong { color: #555; font-size: 16px; }
+
+        .control-group { margin-bottom: 10px; }
+        .control-group label { display: flex; justify-content: space-between; font-size: 12px; color: #aaa; margin-bottom: 2px; }
+        .control-group label .val { color: #00d2ff; font-weight: 600; min-width: 36px; text-align: right; }
+        .control-group input[type="range"] { width: 100%; height: 4px; -webkit-appearance: none; appearance: none; background: #2a2c40; border-radius: 2px; outline: none; }
+        .control-group input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%; background: #00d2ff; cursor: pointer; border: 2px solid #0a0b12; box-shadow: 0 0 8px #00d2ff55; }
+        .control-group input[type="range"]::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: #00d2ff; cursor: pointer; border: 2px solid #0a0b12; }
+        .control-group input[type="range"]:disabled { opacity: 0.3; }
+
+        .flex-row { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+        .flex-row .btn { flex: 1; min-width: 40px; }
+        .flex-row .btn-sm { flex: 0 1 auto; }
+
+        select { background: #0a0b12; color: #ddd; border: 1px solid #2a2c40; padding: 6px 8px; border-radius: 6px; font-size: 12px; width: 100%; outline: none; }
+        select:disabled { opacity: 0.4; }
+
+        .part-list { display: flex; flex-wrap: wrap; gap: 5px; margin: 8px 0 4px 0; min-height: 26px; }
+        .part-list .tag { background: #1a1b2a; padding: 2px 10px 2px 14px; border-radius: 20px; font-size: 11px; color: #aaa; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; transition: 0.15s; border: 1px solid #2a2c40; }
+        .part-list .tag:hover { background: #2a2c40; color: #fff; }
+        .part-list .tag.active { border-color: #00d2ff; color: #00d2ff; background: #00d2ff22; }
+        .part-list .tag .del { color: #e74c3c; font-weight: 700; cursor: pointer; font-size: 14px; line-height: 1; opacity: 0.6; }
+        .part-list .tag .del:hover { opacity: 1; }
+        .part-list .empty-tag { color: #3a3c4a; font-size: 11px; padding: 2px 0; }
+
+        hr { border: 0; border-top: 1px solid #2a2c40; margin: 14px 0; }
+        #recordStatus { font-size: 11px; color: #aaa; margin-top: 4px; text-align: center; min-height: 18px; }
+
+        @media (max-width: 700px) { .panel { flex: 1 1 100%; max-width: 420px; } }
+        @media (max-width: 420px) { body { padding: 8px; } .panel { padding: 12px; } }
+    </style>
+</head>
+<body>
+
+    <h2>🎭 प्रो कैरेक्टर एनिमेटर + वीडियो स्टूडियो</h2>
+    <p class="subtitle">📸 फोटो अपलोड करें → 🔍 ज़ूम करके काटें → 🎬 एनिमेट करें → 🎥 वीडियो डाउनलोड करें</p>
+
+    <div class="main-container">
+
+        <!-- Panel 1: Upload & Crop -->
+        <div class="panel">
+            <h3>📸 1. ज़ूम एवं क्रॉप <span>बारीक सेटिंग</span></h3>
+            <input type="file" id="imageLoader" accept="image/*" style="width:100%;margin-bottom:8px;color:#aaa;font-size:12px;background:#0a0b12;border:1px solid #2a2c40;border-radius:6px;padding:6px;">
+
+            <div class="zoom-controls">
+                <button class="btn btn-secondary btn-sm" id="zoomInBtn">🔍 +</button>
+                <button class="btn btn-secondary btn-sm" id="zoomOutBtn">🔍 −</button>
+                <button class="btn btn-secondary btn-sm" id="resetZoomBtn">↺ रीसेट</button>
+            </div>
+
+            <div class="crop-wrapper">
+                <canvas id="cropCanvas" width="620" height="400"></canvas>
+            </div>
+            <p style="font-size:10px;color:#555;text-align:center;margin:4px 0;">⬅️ खींचकर हिस्सा चुनें (ज़ूम करके बारीक काटें)</p>
+            <div class="flex-row">
+                <button class="btn" id="cropBtn" style="flex:1;">➕ अंग जोड़ें</button>
+                <button class="btn btn-secondary btn-sm" id="clearCropBtn">↺ क्रॉप रीसेट</button>
+            </div>
+        </div>
+
+        <!-- Panel 2: Workspace -->
+        <div class="panel">
+            <h3>🎬 2. वर्कस्पेस <span id="partCount">0</span></h3>
+            <div class="workspace" id="workspace">
+                <div class="empty-msg" id="emptyMsg">
+                    <strong>⏳ कोई अंग नहीं</strong>
+                    <span style="font-size:12px;color:#3a3c4a;">बाएँ पैनल से जोड़ें</span>
+                </div>
+            </div>
+            <div class="part-list" id="partList"></div>
+            <div class="flex-row">
+                <button class="btn btn-secondary btn-sm" id="layerUpBtn" disabled>⬆ ऊपर</button>
+                <button class="btn btn-secondary btn-sm" id="layerDownBtn" disabled>⬇ नीचे</button>
+                <button class="btn btn-secondary btn-sm" id="dupBtn" disabled>📋 डुप्लिकेट</button>
+                <button class="btn btn-secondary btn-sm" id="delBtn" disabled>🗑 हटाएँ</button>
+            </div>
+        </div>
+
+        <!-- Panel 3: Controls & Video -->
+        <div class="panel">
+            <h3>🎛️ 3. कमान & वीडियो <span id="selectedName">कोई नहीं</span></h3>
+
+            <div class="control-group">
+                <label>रोटेशन (घुमाव) <span class="val" id="rotVal">0°</span></label>
+                <input type="range" id="rotateSlider" min="-180" max="180" value="0" disabled>
+            </div>
+
+            <div class="control-group">
+                <label>आकार (Scale) <span class="val" id="scaleVal">100%</span></label>
+                <input type="range" id="scaleSlider" min="20" max="200" value="100" disabled>
+            </div>
+
+            <div class="control-group">
+                <label>घुमाव जोड़ (Pivot)</label>
+                <select id="pivotSelect" disabled>
+                    <option value="top center">⬆ ऊपर (कंधा/घुटना)</option>
+                    <option value="center" selected>🎯 मध्य (Center)</option>
+                    <option value="bottom center">⬇ नीचे (पंजा/पैर)</option>
+                </select>
+            </div>
+
+            <div class="control-group" style="margin-top:10px;">
+                <label>एनिमेट एक्शन</label>
+                <div class="flex-row">
+                    <select id="actionTypeSelect" style="flex:1;" disabled>
+                        <option value="wave">🌊 वेव (हिलना)</option>
+                        <option value="shake">🌀 शेक (कंपना)</option>
+                        <option value="spin">🔄 स्पिन (घूमना)</option>
+                    </select>
+                    <button class="btn btn-success" id="autoBtn" disabled>▶ चलाएँ</button>
+                </div>
+            </div>
+
+            <hr>
+
+            <div style="text-align:center;">
+                <h4 style="margin:0 0 8px 0;color:#00d2ff;font-size:13px;">🎥 एनिमेशन वीडियो सेव करें</h4>
+                <div class="flex-row">
+                    <button class="btn btn-danger" id="recordBtn" style="flex:1;">🔴 रिकॉर्ड शुरू करें</button>
+                </div>
+                <p id="recordStatus"></p>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const S = {
+            image: null,
+            crop: { x: 0, y: 0, w: 0, h: 0 },
+            isSelecting: false,
+            startX: 0, startY: 0,
+            zoom: 1,
+            parts: [],
+            nextId: 0,
+            selectedId: null,
+            autoTimer: null,
+            autoRunning: false,
+            recorder: null,
+            chunks: [],
+            recording: false,
+        };
+
+        const canvas = document.getElementById('cropCanvas');
+        const ctx = canvas.getContext('2d');
+        const workspace = document.getElementById('workspace');
+        const emptyMsg = document.getElementById('emptyMsg');
+        const partList = document.getElementById('partList');
+        const partCount = document.getElementById('partCount');
+        const selectedName = document.getElementById('selectedName');
+
+        const fileInput = document.getElementById('imageLoader');
+        const cropBtn = document.getElementById('cropBtn');
+        const clearCropBtn = document.getElementById('clearCropBtn');
+        const zoomInBtn = document.getElementById('zoomInBtn');
+        const zoomOutBtn = document.getElementById('zoomOutBtn');
+        const resetZoomBtn = document.getElementById('resetZoomBtn');
+
+        const rotSlider = document.getElementById('rotateSlider');
+        const scaleSlider = document.getElementById('scaleSlider');
+        const pivotSelect = document.getElementById('pivotSelect');
+        const rotVal = document.getElementById('rotVal');
+        const scaleVal = document.getElementById('scaleVal');
+
+        const actionSelect = document.getElementById('actionTypeSelect');
+        const autoBtn = document.getElementById('autoBtn');
+        const recordBtn = document.getElementById('recordBtn');
+        const recordStatus = document.getElementById('recordStatus');
+
+        const layerUpBtn = document.getElementById('layerUpBtn');
+        const layerDownBtn = document.getElementById('layerDownBtn');
+        const dupBtn = document.getElementById('dupBtn');
+        const delBtn = document.getElementById('delBtn');
+
+        function drawCropCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            if (!S.image) {
+                ctx.fillStyle = '#0a0b12';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = '#3a3c4a';
+                ctx.font = '16px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('📷 फोटो अपलोड करें', canvas.width / 2, canvas.height / 2);
+                return;
+            }
+
+            ctx.save();
+            const iw = S.image.width, ih = S.image.height;
+            const cw = canvas.width, ch = canvas.height;
+            const baseScale = Math.min(cw / iw, ch / ih);
+            const drawW = iw * baseScale * S.zoom;
+            const drawH = ih * baseScale * S.zoom;
+            const dx = (cw - drawW) / 2;
+            const dy = (ch - drawH) / 2;
+
+            ctx.drawImage(S.image, dx, dy, drawW, drawH);
+
+            const cr = S.crop;
+            if (cr.w > 2 && cr.h > 2) {
+                ctx.strokeStyle = '#00d2ff';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([5, 5]);
+                ctx.strokeRect(cr.x, cr.y, cr.w, cr.h);
+                ctx.setLineDash([]);
+                ctx.fillStyle = 'rgba(0,0,0,0.45)';
+                ctx.fillRect(0, 0, cw, cr.y);
+                ctx.fillRect(0, cr.y + cr.h, cw, ch - cr.y - cr.h);
+                ctx.fillRect(0, cr.y, cr.x, cr.h);
+                ctx.fillRect(cr.x + cr.w, cr.y, cw - cr.x - cr.w, cr.h);
+            }
+            ctx.restore();
+        }
+
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                const img = new Image();
+                img.onload = () => {
+                    S.image = img;
+                    S.zoom = 1;
+                    S.crop = { x: 0, y: 0, w: 0, h: 0 };
+                    drawCropCanvas();
+                };
+                img.src = ev.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+
+        zoomInBtn.onclick = () => { S.zoom = Math.min(3, S.zoom * 1.25); drawCropCanvas(); };
+        zoomOutBtn.onclick = () => { S.zoom = Math.max(0.4, S.zoom / 1.25); drawCropCanvas(); };
+        resetZoomBtn.onclick = () => { S.zoom = 1; drawCropCanvas(); };
+
+        function getCanvasCoords(e) {
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            const cx = e.touches ? e.touches[0].clientX : e.clientX;
+            const cy = e.touches ? e.touches[0].clientY : e.clientY;
+            return { x: (cx - rect.left) * scaleX, y: (cy - rect.top) * scaleY };
+        }
+
+        function onCropStart(e) {
+            if (!S.image) return;
+            const p = getCanvasCoords(e);
+            S.isSelecting = true;
+            S.startX = p.x;
+            S.startY = p.y;
+            S.crop = { x: p.x, y: p.y, w: 0, h: 0 };
+        }
+
+        function onCropMove(e) {
+            if (!S.isSelecting || !S.image) return;
+            const p = getCanvasCoords(e);
+            const sx = S.startX, sy = S.startY;
+            let x = Math.min(sx, p.x), y = Math.min(sy, p.y);
+            let w = Math.abs(p.x - sx), h = Math.abs(p.y - sy);
+            x = Math.max(0, Math.min(x, canvas.width));
+            y = Math.max(0, Math.min(y, canvas.height));
+            w = Math.min(w, canvas.width - x);
+            h = Math.min(h, canvas.height - y);
+            S.crop = { x, y, w, h };
+            drawCropCanvas();
+        }
+
+        function onCropEnd() { S.isSelecting = false; }
+
+        canvas.addEventListener('mousedown', onCropStart);
+        canvas.addEventListener('mousemove', onCropMove);
+        canvas.addEventListener('mouseup', onCropEnd);
+        canvas.addEventListener('touchstart', (e) => { onCropStart(e); e.preventDefault(); }, { passive: false });
+        canvas.addEventListener('touchmove', (e) => { onCropMove(e); e.preventDefault(); }, { passive: false });
+        canvas.addEventListener('touchend', onCropEnd);
+
+        clearCropBtn.onclick = () => { S.crop = { x: 0, y: 0, w: 0, h: 0 }; drawCropCanvas(); };
+
+        cropBtn.onclick = () => {
+            const cr = S.crop;
+            if (!S.image || cr.w < 5 || cr.h < 5) {
+                alert('⚠️ कृपया फोटो पर कोई हिस्सा सेलेक्ट करें (खींचकर)!');
+                return;
+            }
+
+            const cw = canvas.width, ch = canvas.height;
+            const iw = S.image.width, ih = S.image.height;
+            const baseScale = Math.min(cw / iw, ch / ih);
+            const drawW = iw * baseScale * S.zoom;
+            const drawH = ih * baseScale * S.zoom;
+            const dx = (cw - drawW) / 2;
+            const dy = (ch - drawH) / 2;
+
+            const imgX = (cr.x - dx) / (drawW / iw);
+            const imgY = (cr.y - dy) / (drawH / ih);
+            const imgW = cr.w / (drawW / iw);
+            const imgH = cr.h / (drawH / ih);
+
+            const tc = document.createElement('canvas');
+            tc.width = Math.max(1, Math.round(imgW));
+            tc.height = Math.max(1, Math.round(imgH));
+            const tctx = tc.getContext('2d');
+            tctx.drawImage(S.image, imgX, imgY, imgW, imgH, 0, 0, tc.width, tc.height);
+
+            const imgEl = new Image();
+            imgEl.src = tc.toDataURL('image/png');
+
+            imgEl.onload = () => {
+                const wsW = workspace.clientWidth || 300;
+                const wsH = workspace.clientHeight || 380;
+                let w = imgEl.naturalWidth, h = imgEl.naturalHeight;
+                const sc = Math.min((wsW * 0.45) / w, (wsH * 0.45) / h, 1);
+                w = Math.round(w * sc);
+                h = Math.round(h * sc);
+
+                const part = {
+                    id: S.nextId++,
+                    img: imgEl,
+                    x: Math.round((wsW - w) / 2 + (Math.random() - 0.5) * 20),
+                    y: Math.round((wsH - h) / 2 + (Math.random() - 0.5) * 20),
+                    w: w, h: h, rot: 0, scale: 1,
+                    origin: 'center',
+                    element: null,
+                    zIndex: S.parts.length,
+                };
+
+                createPartElement(part);
+                S.parts.push(part);
+                selectPart(part.id);
+                updateUI();
+                S.crop = { x: 0, y: 0, w: 0, h: 0 };
+                drawCropCanvas();
+            };
+        };
+
+        function createPartElement(part) {
+            const el = document.createElement('img');
+            el.src = part.img.src;
+            el.className = 'part';
+            el.dataset.id = part.id;
+            el.draggable = false;
+
+            el.addEventListener('mousedown', (e) => { e.stopPropagation(); selectPart(part.id); startDrag(e, part); });
+            el.addEventListener('touchstart', (e) => { e.stopPropagation(); selectPart(part.id); startDrag(e, part); }, { passive: false });
+
+            workspace.appendChild(el);
+            part.element = el;
+            applyTransform(part);
+        }
+
+        function applyTransform(part) {
+            if (!part.element) return;
+            const el = part.element;
+            el.style.left = part.x + 'px';
+            el.style.top = part.y + 'px';
+            el.style.width = part.w + 'px';
+            el.style.height = part.h + 'px';
+            el.style.transform = `rotate(${part.rot}deg) scale(${part.scale})`;
+            el.style.transformOrigin = part.origin || 'center';
+            el.style.zIndex = part.zIndex || 0;
+        }
+
+        let dragData = null;
+        function startDrag(e, part) {
+            const rect = workspace.getBoundingClientRect();
+            const cx = e.touches ? e.touches[0].clientX : e.clientX;
+            const cy = e.touches ? e.touches[0].clientY : e.clientY;
+            dragData = { part, offX: cx - rect.left - part.x, offY: cy - rect.top - part.y };
+            part.element.classList.add('dragging');
+        }
+
+        function onDragMove(e) {
+            if (!dragData) return;
+            const rect = workspace.getBoundingClientRect();
+            const cx = e.touches ? e.touches[0].clientX : e.clientX;
+            const cy = e.touches ? e.touches[0].clientY : e.clientY;
+            const p = dragData.part;
+            p.x = Math.max(0, Math.min(cx - rect.left - dragData.offX, workspace.clientWidth - p.w));
+            p.y = Math.max(0, Math.min(cy - rect.top - dragData.offY, workspace.clientHeight - p.h));
+            applyTransform(p);
+        }
+
+        function onDragEnd() {
+            if (dragData) {
+                if (dragData.part.element) dragData.part.element.classList.remove('dragging');
+                dragData = null;
+            }
+        }
+
+        document.addEventListener('mousemove', onDragMove);
+        document.addEventListener('mouseup', onDragEnd);
+        document.addEventListener('touchmove', onDragMove, { passive: false });
+        document.addEventListener('touchend', onDragEnd);
+
+        function selectPart(id) {
+            document.querySelectorAll('.workspace .part').forEach(el => el.classList.remove('selected'));
+            S.selectedId = id;
+            const part = S.parts.find(p => p.id === id);
+            if (!part) {
+                selectedName.textContent = 'कोई नहीं';
+                updateUI();
+                return;
+            }
+            if (part.element) part.element.classList.add('selected');
+            updateSliders(part);
+            updateUI();
+            selectedName.textContent = part.name || `अंग #${part.id+1}`;
+        }
+
+        function updateSliders(part) {
+            rotSlider.value = part.rot;
+            rotVal.textContent = Math.round(part.rot) + '°';
+            scaleSlider.value = Math.round(part.scale * 100);
+            scaleVal.textContent = Math.round(part.scale * 100) + '%';
+            pivotSelect.value = part.origin || 'center';
+        }
+
+        function getSelected() { return S.parts.find(p => p.id === S.selectedId) || null; }
+
+        function updateUI() {
+            const has = S.selectedId !== null;
+            [rotSlider, scaleSlider, pivotSelect, actionSelect, autoBtn, layerUpBtn, layerDownBtn, dupBtn, delBtn].forEach(b => b.disabled = !has);
+            updatePartList();
+            emptyMsg.style.display = S.parts.length === 0 ? 'flex' : 'none';
+            partCount.textContent = S.parts.length;
+        }
+
+        function updatePartList() {
+            partList.innerHTML = '';
+            if (S.parts.length === 0) {
+                partList.innerHTML = '<span class="empty-tag">कोई अंग नहीं</span>';
+                return;
+            }
+            S.parts.forEach(p => {
+                const tag = document.createElement('span');
+                tag.className = 'tag' + (p.id === S.selectedId ? ' active' : '');
+                tag.textContent = p.name || `अंग #${p.id+1}`;
+                tag.onclick = () => selectPart(p.id);
+                const del = document.createElement('span');
+                del.className = 'del';
+                del.textContent = '✕';
+                del.onclick = (e) => { e.stopPropagation(); deletePart(p.id); };
+                tag.appendChild(del);
+                partList.appendChild(tag);
+            });
+        }
+
+        function deletePart(id) {
+            const idx = S.parts.findIndex(p => p.id === id);
+            if (idx === -1) return;
+            if (S.parts[idx].element) S.parts[idx].element.remove();
+            S.parts.splice(idx, 1);
+            S.selectedId = S.parts.length > 0 ? S.parts[0].id : null;
+            selectPart(S.selectedId);
+        }
+
+        delBtn.onclick = () => { if (S.selectedId !== null) deletePart(S.selectedId); };
+
+        dupBtn.onclick = () => {
+            const src = getSelected();
+            if (!src) return;
+            const p = { ...src, id: S.nextId++, x: src.x + 15, y: src.y + 15, zIndex: S.parts.length, name: (src.name || 'अंग') + ' (copy)' };
+            createPartElement(p);
+            S.parts.push(p);
+            selectPart(p.id);
+        };
+
+        layerUpBtn.onclick = () => {
+            const p = getSelected();
+            if (!p) return;
+            const idx = S.parts.indexOf(p);
+            if (idx < S.parts.length - 1) {
+                S.parts.splice(idx, 1);
+                S.parts.splice(idx + 1, 0, p);
+                S.parts.forEach((p2, i) => { p2.zIndex = i; applyTransform(p2); });
+                updatePartList();
+            }
+        };
+
+        layerDownBtn.onclick = () => {
+            const p = getSelected();
+            if (!p) return;
+            const idx = S.parts.indexOf(p);
+            if (idx > 0) {
+                S.parts.splice(idx, 1);
+                S.parts.splice(idx - 1, 0, p);
+                S.parts.forEach((p2, i) => { p2.zIndex = i; applyTransform(p2); });
+                updatePartList();
+            }
+        };
+
+        rotSlider.oninput = () => {
+            const p = getSelected();
+            if (p) { p.rot = parseFloat(rotSlider.value); applyTransform(p); rotVal.textContent = p.rot + '°'; }
+        };
+
+        scaleSlider.oninput = () => {
+            const p = getSelected();
+            if (p) { p.scale = parseFloat(scaleSlider.value) / 100; applyTransform(p); scaleVal.textContent = Math.round(p.scale * 100) + '%'; }
+        };
+
+        pivotSelect.onchange = () => {
+            const p = getSelected();
+            if (p) { p.origin = pivotSelect.value; applyTransform(p); }
+        };
+
+        autoBtn.onclick = () => { S.autoRunning ? stopAuto() : startAuto(); };
+
+        function startAuto() {
+            const p = getSelected();
+            if (!p) return;
+            S.autoRunning = true;
+            autoBtn.textContent = '⏹ रोकें';
+            autoBtn.style.background = '#e74c3c';
+
+            let angle = p.rot, dir = 1;
+            S.autoTimer = setInterval(() => {
+                const part = getSelected();
+                if (!part) { stopAuto(); return; }
+                const type = actionSelect.value;
+                if (type === 'wave') {
+                    angle += dir * 3.5;
+                    if (angle > 35 || angle < -35) dir *= -1;
+                    part.rot = angle;
+                } else if (type === 'shake') {
+                    part.rot = (Math.random() - 0.5) * 12;
+                } else if (type === 'spin') {
+                    part.rot = (part.rot + 4) % 360;
+                }
+                applyTransform(part);
+                rotSlider.value = part.rot;
+                rotVal.textContent = Math.round(part.rot) + '°';
+            }, 30);
+        }
+
+        function stopAuto() {
+            if (S.autoTimer) clearInterval(S.autoTimer);
+            S.autoRunning = false;
+            autoBtn.textContent = '▶ चलाएँ';
+            autoBtn.style.background = '#2ecc71';
+        }
+
+        recordBtn.onclick = () => { S.recording ? stopRecording() : startRecording(); };
+
+        function startRecording() {
+            if (S.parts.length === 0) { recordStatus.textContent = '⚠️ पहले कोई अंग जोड़ें!'; return; }
+            const wsW = workspace.clientWidth, wsH = workspace.clientHeight;
+            const recCanvas = document.createElement('canvas');
+            recCanvas.width = wsW; recCanvas.height = wsH;
+            const rctx = recCanvas.getContext('2d');
+
+            const stream = recCanvas.captureStream(30);
+            S.chunks = [];
+
+            let mimeType = 'video/webm';
+            if (!MediaRecorder.isTypeSupported(mimeType)) mimeType = 'video/mp4';
+
+            S.recorder = new MediaRecorder(stream, { mimeType });
+            S.recorder.ondataavailable = (e) => { if (e.data.size > 0) S.chunks.push(e.data); };
+            S.recorder.onstop = () => {
+                const blob = new Blob(S.chunks, { type: mimeType });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `animation_${Date.now()}.${mimeType.includes('mp4') ? 'mp4' : 'webm'}`;
+                a.click();
+                recordStatus.textContent = '✅ वीडियो सेव हो गया!';
+                S.recording = false;
+                recordBtn.textContent = '🔴 रिकॉर्ड शुरू करें';
+                recordBtn.className = 'btn btn-danger';
+            };
+
+            S.recording = true;
+            S.recorder.start();
+            recordBtn.textContent = '⏹ रिकॉर्ड रोकें & सेव करें';
+            recordBtn.className = 'btn btn-warning';
+            recordStatus.textContent = '🎥 रिकॉर्डिंग चालू है...';
+
+            function renderFrame() {
+                if (!S.recording) return;
+                rctx.fillStyle = '#0a0b12';
+                rctx.fillRect(0, 0, wsW, wsH);
+
+                const sorted = [...S.parts].sort((a, b) => (a.zIndex || 0) - (b.zIndex || 0));
+                sorted.forEach(p => {
+                    rctx.save();
+                    let px = p.x + p.w / 2, py = p.y + p.h / 2;
+                    const o = p.origin || 'center';
+                    if (o.includes('top')) py = p.y;
+                    if (o.includes('bottom')) py = p.y + p.h;
+
+                    rctx.translate(px, py);
+                    rctx.rotate((p.rot * Math.PI) / 180);
+                    rctx.scale(p.scale, p.scale);
+
+                    let drawX = -p.w / 2, drawY = -p.h / 2;
+                    if (o.includes('top')) drawY = 0;
+                    if (o.includes('bottom')) drawY = -p.h;
+
+                    rctx.drawImage(p.img, drawX, drawY, p.w, p.h);
+                    rctx.restore();
+                });
+                requestAnimationFrame(renderFrame);
+            }
+            renderFrame();
+        }
+
+        function stopRecording() {
+            if (S.recorder && S.recorder.state === 'recording') {
+                S.recorder.stop();
+            }
+        }
+    </script>
+</body>
+</html>
