@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>अपना मार्केट - QR कोड जनरेटर</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Roboto, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background: #f0f4f8;
+      color: #333;
+      padding: 20px 12px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .app-card {
+      background: #ffffff;
+      width: 100%;
+      max-width: 480px;
+      padding: 24px 20px;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+      border: 1px solid #e1e8ed;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .header h2 {
+      color: #1a365d;
+      font-size: 22px;
+      margin-bottom: 6px;
+    }
+    .header p {
+      color: #64748b;
+      font-size: 13px;
+    }
+    .form-group {
+      margin-bottom: 16px;
+    }
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      color: #2d3748;
+      margin-bottom: 6px;
+    }
+    select, input[type="text"] {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 10px;
+      font-size: 14px;
+      outline: none;
+      background: #f8fafc;
+    }
+    select:focus, input:focus {
+      border-color: #3182ce;
+      background: #fff;
+    }
+    .hint {
+      font-size: 11px;
+      color: #64748b;
+      margin-top: 4px;
+    }
+    .btn-submit {
+      width: 100%;
+      background: #2b6cb0;
+      color: #ffffff;
+      border: none;
+      padding: 14px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .qr-preview-card {
+      display: none;
+      margin-top: 24px;
+      padding: 20px;
+      background: #ffffff;
+      border: 2px dashed #cbd5e1;
+      border-radius: 16px;
+      text-align: center;
+    }
+    .qr-frame {
+      display: inline-block;
+      padding: 16px;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+    }
+    .qr-frame img {
+      width: 180px;
+      height: 180px;
+      display: block;
+      margin: 0 auto;
+    }
+    /* QR कोड के नीचे दिखने वाला लिंक */
+    .qr-link-text {
+      margin-top: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #2b6cb0;
+      word-break: break-all;
+      padding: 6px 10px;
+      background: #ebf8ff;
+      border-radius: 6px;
+    }
+    .action-btns {
+      margin-top: 16px;
+      display: flex;
+      gap: 10px;
+    }
+    .btn-action {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-download { background: #38a169; color: white; }
+    .btn-copy { background: #4a5568; color: white; }
+  </style>
+</head>
+<body>
+
+<div class="app-card">
+  <div class="header">
+    <h2>📱 प्रो क्यूआर कोड जनरेटर</h2>
+    <p>लिंक, फोटो और टेक्स्ट का QR कोड नीचे प्रिंटेड लिंक के साथ बनाएं</p>
+  </div>
+
+  <!-- QR Category Selection -->
+  <div class="form-group">
+    <label for="qr-type">आप किस चीज़ का QR बनाना चाहते हैं?</label>
+    <select id="qr-type" onchange="toggleInputs()">
+      <option value="link">1. वेबसाइट / प्रोफाइल / सोशल लिंक (URL)</option>
+      <option value="photo">2. फोटो / इमेज (Photo/Image Link)</option>
+      <option value="upi">3. यूपीआई पेमेंट (UPI Payment)</option>
+      <option value="call">4. फोन नंबर / कॉल (Direct Call)</option>
+      <option value="text">5. सामान्य मैसेज / पता (Text/Address)</option>
+    </select>
+  </div>
+
+  <!-- Dynamic Input -->
+  <div class="form-group">
+    <label id="input-label" for="main-input">लिंक या यूआरएल दर्ज करें:</label>
+    <input type="text" id="main-input" placeholder="https://apnamarket.com">
+    <div class="hint" id="input-hint">उदा: https://your-website.com या इंस्टाग्राम लिंक</div>
+  </div>
+
+  <!-- QR के नीचे दिखने वाला कस्टम लिंक/टेक्स्ट -->
+  <div class="form-group">
+    <label for="display-link-input">QR के नीचे दिखने वाला लिंक/नाम:</label>
+    <input type="text" id="display-link-input" placeholder="यहाँ जो लिखेंगे वो QR के नीचे छपेगा">
+  </div>
+
+  <button class="btn-submit" onclick="generateProQR()">⚡ QR कोड बनाएं</button>
+
+  <!-- Output Preview -->
+  <div class="qr-preview-card" id="qr-result-card">
+    <h4>आपका QR कोड तैयार है!</h4>
+    
+    <div class="qr-frame">
+      <img id="qr-image" src="" alt="QR Code">
+      <!-- QR कोड के नीचे प्रिंटेड लिंक -->
+      <div class="qr-link-text" id="qr-bottom-link">https://apnamarket.com</div>
+    </div>
+
+    <div class="action-btns">
+      <button class="btn-action btn-download" onclick="downloadQR()">📥 डाउनलोड करें</button>
+      <button class="btn-action btn-copy" onclick="copyLink()">📋 लिंक कॉपी करें</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  function toggleInputs() {
+    const type = document.getElementById('qr-type').value;
+    const label = document.getElementById('input-label');
+    const input = document.getElementById('main-input');
+    const hint = document.getElementById('input-hint');
+
+    if (type === 'link') {
+      label.innerText = 'वेबसाइट / प्रोफाइल / सोशल लिंक (URL):';
+      input.placeholder = 'https://apnamarket.com';
+      hint.innerText = 'उदा: https://youtube.com या अपनी दुकान का लिंक';
+    } else if (type === 'photo') {
+      label.innerText = 'फोटो की ऑनलाइन लिंक (Image URL):';
+      input.placeholder = 'https://i.ibb.co/photo.jpg या Drive Link';
+      hint.innerText = 'टिप: फोटो Google Drive या imgbb.com पर अपलोड करके लिंक यहाँ डालें';
+    } else if (type === 'upi') {
+      label.innerText = 'यूपीआई आईडी (UPI ID):';
+      input.placeholder = '9876543210@paytm';
+      hint.innerText = 'स्कैन करने पर सीधे पेमेंट विंडो खुलेगी';
+    } else if (type === 'call') {
+      label.innerText = 'मोबाइल / फोन नंबर:';
+      input.placeholder = '9876543210';
+      hint.innerText = 'स्कैन करते ही नंबर डायल पैड पर आ जाएगा';
+    } else if (type === 'text') {
+      label.innerText = 'मैसेज / पता / जानकारी:';
+      input.placeholder = 'अपनी दुकान का पता या कोई संदेश लिखें...';
+      hint.innerText = 'स्कैन करने वाले को यह टेक्स्ट दिखाई देगा';
+    }
+  }
+
+  function generateProQR() {
+    const type = document.getElementById('qr-type').value;
+    const mainValue = document.getElementById('main-input').value.trim();
+    let customDisplayLink = document.getElementById('display-link-input').value.trim();
+
+    if (!mainValue) {
+      alert('कृपया जानकारी या लिंक दर्ज करें!');
+      return;
+    }
+
+    let qrPayload = mainValue;
+
+    if (type === 'upi' && !mainValue.startsWith('upi://')) {
+      qrPayload = `upi://pay?pa=${encodeURIComponent(mainValue)}&pn=ApnaMarket`;
+    } else if (type === 'call' && !mainValue.startsWith('tel:')) {
+      qrPayload = `tel:${mainValue}`;
+    }
+
+    if (!customDisplayLink) {
+      customDisplayLink = mainValue;
+      document.getElementById('display-link-input').value = mainValue;
+    }
+
+    const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrPayload)}`;
+
+    document.getElementById('qr-image').src = qrApiUrl;
+    document.getElementById('qr-bottom-link').innerText = customDisplayLink;
+    document.getElementById('qr-result-card').style.display = 'block';
+  }
+
+  function copyLink() {
+    const textToCopy = document.getElementById('qr-bottom-link').innerText;
+    navigator.clipboard.writeText(textToCopy);
+    alert('लिंक कॉपी हो गया है!');
+  }
+
+  function downloadQR() {
+    const qrImg = document.getElementById('qr-image').src;
+    const a = document.createElement('a');
+    a.href = qrImg;
+    a.download = 'QR_Code.png';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+</script>
+
+</body>
+</html>
