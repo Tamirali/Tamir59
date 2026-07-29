@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>वॉइस हिंदी नोटपैड</title>
+  <style>
+    body { font-family: sans-serif; background: #f0f3f4; padding: 15px; margin: 0; }
+    .card { background: white; max-width: 450px; margin: auto; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    h2 { color: #8e44ad; text-align: center; }
+    .desc { font-size: 13px; color: #555; background: #f4ecf7; padding: 10px; border-radius: 6px; margin-bottom: 15px; }
+    textarea { width: 100%; height: 150px; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 15px; }
+    button { width: 48%; padding: 12px; border-radius: 6px; border: none; font-weight: bold; cursor: pointer; margin-top: 10px; }
+    .btn-mic { background: #9b59b6; color: white; width: 100%; font-size: 16px; }
+    .btn-copy { background: #2c3e50; color: white; }
+    .btn-wa { background: #25d366; color: white; }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <h2>🎙️ हिंदी वॉइस नोटपैड</h2>
+  <div class="desc">
+    <b>विषय:</b> बोलकर हिंदी में टाइपिंग करने और टेक्स्ट शेयर करने का आसान टूल।
+  </div>
+
+  <textarea id="txt" placeholder="माइक बटन दबाकर बोलना शुरू करें..."></textarea>
+
+  <button class="btn-mic" onclick="startDictation()">🎙️ बोलना शुरू करें (Start)</button>
+  <div style="display: flex; justify-content: space-between;">
+    <button class="btn-copy" onclick="copyTxt()">📋 कॉपी करें</button>
+    <button class="btn-wa" onclick="shareWA()">📲 शेयर करें</button>
+  </div>
+</div>
+
+<script>
+  function startDictation() {
+    if (window.hasOwnProperty('webkitSpeechRecognition')) {
+      var recognition = new webkitSpeechRecognition();
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      recognition.lang = "hi-IN";
+      recognition.start();
+
+      recognition.onresult = function(e) {
+        document.getElementById('txt').value += e.results[0][0].transcript + ' ';
+        recognition.stop();
+      };
+
+      recognition.onerror = function(e) {
+        recognition.stop();
+        alert('माइक एक्सेस नहीं मिला या आवाज समझ नहीं आई!');
+      };
+    } else {
+      alert('आपका ब्राउज़र वॉइस टाइपिंग सपोर्ट नहीं करता (Chrome का उपयोग करें)।');
+    }
+  }
+
+  function copyTxt() {
+    let t = document.getElementById('txt');
+    t.select();
+    document.execCommand('copy');
+    alert('टेक्स्ट कॉपी हो गया है!');
+  }
+
+  function shareWA() {
+    let t = encodeURIComponent(document.getElementById('txt').value);
+    window.open(`https://wa.me/?text=${t}`, '_blank');
+  }
+</script>
+
+</body>
+</html>
