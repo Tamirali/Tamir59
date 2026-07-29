@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>दैनिक खर्च डायरी</title>
+  <style>
+    body { font-family: sans-serif; background: #eaeded; padding: 15px; margin: 0; }
+    .card { background: white; max-width: 450px; margin: auto; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    h2 { color: #16a085; text-align: center; }
+    .desc { font-size: 13px; color: #555; background: #e8f8f5; padding: 10px; border-radius: 6px; margin-bottom: 15px; }
+    input, select { width: 100%; padding: 10px; margin-top: 8px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
+    button { width: 100%; background: #1abc9c; color: white; border: none; padding: 12px; border-radius: 6px; font-weight: bold; margin-top: 12px; cursor: pointer; }
+    .item { background: #f9f9f9; padding: 8px; border-left: 4px solid #1abc9c; margin-top: 8px; font-size: 13px; display: flex; justify-content: space-between; }
+    .expense { border-left-color: #e74c3c; }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <h2>📖 डेली खर्च डायरी</h2>
+  <div class="desc">
+    <b>विषय:</b> रोज़मर्रा की आमदनी और खर्च का हिसाब-किताब मोबाइल में सुरक्षित रखना।
+  </div>
+
+  <input type="text" id="title" placeholder="विवरण (उदा: राशन, पेट्रोल)">
+  <input type="number" id="amt" placeholder="राशि (₹)">
+  <select id="type">
+    <option value="expense">खर्च (Expense -)</option>
+    <option value="income">आय (Income +)</option>
+  </select>
+  <button onclick="addEntry()">जोड़ें (Add Entry)</button>
+
+  <h4 style="margin-top: 20px;">हाल के लेनदेन:</h4>
+  <div id="list"></div>
+</div>
+
+<script>
+  function render() {
+    let data = JSON.parse(localStorage.getItem('my_expenses') || '[]');
+    let listHtml = '';
+    data.forEach((item, index) => {
+      let colorClass = item.type === 'expense' ? 'expense' : '';
+      let sign = item.type === 'expense' ? '-' : '+';
+      listHtml += `<div class="item ${colorClass}">
+        <span>${item.title}</span>
+        <b>${sign}₹${item.amt}</b>
+      </div>`;
+    });
+    document.getElementById('list').innerHTML = listHtml || '<p style="font-size:12px; color:#888;">कोई डेटा दर्ज नहीं है।</p>';
+  }
+
+  function addEntry() {
+    let title = document.getElementById('title').value.trim();
+    let amt = document.getElementById('amt').value.trim();
+    let type = document.getElementById('type').value;
+
+    if(!title || !amt) { alert('सभी फ़ील्ड भरें!'); return; }
+
+    let data = JSON.parse(localStorage.getItem('my_expenses') || '[]');
+    data.unshift({ title, amt, type });
+    localStorage.setItem('my_expenses', JSON.stringify(data));
+
+    document.getElementById('title').value = '';
+    document.getElementById('amt').value = '';
+    render();
+  }
+
+  render();
+</script>
+
+</body>
+</html>
