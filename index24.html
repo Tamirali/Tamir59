@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GST और डिस्काउंट कैलकुलेटर</title>
+  <style>
+    body { font-family: sans-serif; background: #f4f6f9; padding: 15px; margin: 0; }
+    .card { background: white; max-width: 450px; margin: auto; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    h2 { color: #2c3e50; text-align: center; }
+    .desc { font-size: 13px; color: #555; background: #fff3cd; padding: 10px; border-radius: 6px; margin-bottom: 15px; }
+    label { font-weight: bold; display: block; margin-top: 10px; font-size: 14px; }
+    input, select { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
+    button { width: 100%; background: #3498db; color: white; border: none; padding: 12px; border-radius: 6px; font-weight: bold; margin-top: 15px; cursor: pointer; }
+    .res-box { margin-top: 15px; background: #e8f8f5; padding: 12px; border-radius: 6px; font-size: 14px; line-height: 1.6; }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <h2>🧮 GST & डिस्काउंट कैलकुलेटर</h2>
+  <div class="desc">
+    <b>विषय:</b> दुकानदारी, बिलिंग और शॉपिंग के लिए सटीक टैक्स व डिस्काउंट की गणना करना।
+  </div>
+
+  <label>मूल कीमत (Amount ₹):</label>
+  <input type="number" id="price" placeholder="1000">
+
+  <label>GST दर (%):</label>
+  <select id="gst">
+    <option value="0">0% (कोई GST नहीं)</option>
+    <option value="5">5% GST</option>
+    <option value="12">12% GST</option>
+    <option value="18" selected>18% GST</option>
+    <option value="28">28% GST</option>
+  </select>
+
+  <label>डिस्काउंट छूट (%):</label>
+  <input type="number" id="discount" placeholder="उदा: 10" value="0">
+
+  <button onclick="calculate()">गणना करें (Calculate)</button>
+
+  <div class="res-box" id="results">
+    मूल कीमत: ₹0 <br>
+    GST राशि: ₹0 <br>
+    डिस्काउंट छूट: ₹0 <br>
+    <b>कुल देय राशि (Final Total): ₹0</b>
+  </div>
+</div>
+
+<script>
+  function calculate() {
+    let p = parseFloat(document.getElementById('price').value) || 0;
+    let g = parseFloat(document.getElementById('gst').value) || 0;
+    let d = parseFloat(document.getElementById('discount').value) || 0;
+
+    let discountAmt = (p * d) / 100;
+    let priceAfterDiscount = p - discountAmt;
+    let gstAmt = (priceAfterDiscount * g) / 100;
+    let finalTotal = priceAfterDiscount + gstAmt;
+
+    document.getElementById('results').innerHTML = `
+      मूल कीमत: ₹${p.toFixed(2)} <br>
+      छूट (Discount): -₹${discountAmt.toFixed(2)} <br>
+      GST (${g}%): +₹${gstAmt.toFixed(2)} <br>
+      <hr>
+      <b>कुल अंतिम कीमत: ₹${finalTotal.toFixed(2)}</b>
+    `;
+  }
+</script>
+
+</body>
+</html>
