@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>यूनिट प्राइस कैलकुलेटर</title>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; background: #e8f8f5; padding: 15px; margin: 0; }
+    .card { background: white; max-width: 450px; margin: auto; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    h2 { color: #16a085; text-align: center; margin-top: 0; }
+    .desc { font-size: 13px; color: #555; background: #d1f2eb; padding: 10px; border-radius: 6px; margin-bottom: 15px; }
+    label { font-weight: bold; display: block; margin-top: 10px; font-size: 14px; color: #2d3748; }
+    input { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #a3e4d7; border-radius: 6px; box-sizing: border-box; }
+    button { width: 100%; background: #1bc88a; color: white; border: none; padding: 12px; border-radius: 6px; font-weight: bold; margin-top: 15px; cursor: pointer; font-size: 15px; }
+    .res-box { margin-top: 15px; background: #e8f8f5; padding: 12px; border-radius: 6px; font-size: 14px; line-height: 1.8; color: #117a65; }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <h2>⚖️ राशन & ग्राम भाव कैलकुलेटर</h2>
+  <div class="desc">
+    <b>विषय:</b> 1 KG का रेट डालकर मनचाहे ग्राम या रुपये का हिसाब तुरंत निकालना।
+  </div>
+
+  <label>1 KG (1000g) की कीमत (₹):</label>
+  <input type="number" id="kg-rate" placeholder="उदा: 120" value="120">
+
+  <label>जितना ग्राम खरीदना है (Gram):</label>
+  <input type="number" id="req-gram" placeholder="उदा: 250" value="250">
+
+  <button onclick="calculateUnitPrice()">⚖️ कीमत की गणना करें</button>
+
+  <div class="res-box" id="unit-results">
+    कीमत: ₹0
+  </div>
+</div>
+
+<script>
+  function calculateUnitPrice() {
+    let rate = parseFloat(document.getElementById('kg-rate').value) || 0;
+    let grams = parseFloat(document.getElementById('req-gram').value) || 0;
+
+    if (rate <= 0 || grams <= 0) {
+      alert('कृपया सही मूल्य और ग्राम दर्ज करें!');
+      return;
+    }
+
+    let totalPrice = (rate / 1000) * grams;
+
+    document.getElementById('unit-results').innerHTML = `
+      <b>${grams} ग्राम</b> सामान की कीमत: <b>₹${totalPrice.toFixed(2)}</b> बनेगी।
+    `;
+  }
+</script>
+
+</body>
+</html>
