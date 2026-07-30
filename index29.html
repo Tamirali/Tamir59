@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>एज कैलकुलेटर</title>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; background: #fdf2e9; padding: 15px; margin: 0; }
+    .card { background: white; max-width: 450px; margin: auto; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    h2 { color: #d35400; text-align: center; margin-top: 0; }
+    .desc { font-size: 13px; color: #555; background: #fae5d3; padding: 10px; border-radius: 6px; margin-bottom: 15px; }
+    label { font-weight: bold; display: block; margin-top: 10px; font-size: 14px; color: #2c3e50; }
+    input { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
+    button { width: 100%; background: #e67e22; color: white; border: none; padding: 12px; border-radius: 6px; font-weight: bold; margin-top: 15px; cursor: pointer; font-size: 15px; }
+    .res-box { margin-top: 15px; background: #fef5e7; padding: 12px; border-radius: 6px; font-size: 15px; line-height: 1.8; color: #a04000; text-align: center; }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <h2>🎂 उम्र (Age) कैलकुलेटर</h2>
+  <div class="desc">
+    <b>विषय:</b> फ़ॉर्म भरने के लिए जन्मतिथि से सटीक वर्ष, महीने और दिन निकालना।
+  </div>
+
+  <label>अपनी जन्मतिथि (Date of Birth) चुनें:</label>
+  <input type="date" id="dob">
+
+  <label>किस तारीख तक उम्र देखनी है (Target Date):</label>
+  <input type="date" id="target-date">
+
+  <button onclick="calculateAge()">🎂 उम्र की गणना करें</button>
+
+  <div class="res-box" id="age-results">
+    जन्म की तारीख चुनें और गणना करें।
+  </div>
+</div>
+
+<script>
+  // आज की तारीख ऑटो-सेट करें
+  document.getElementById('target-date').valueAsDate = new Date();
+
+  function calculateAge() {
+    let dobVal = document.getElementById('dob').value;
+    let targetVal = document.getElementById('target-date').value;
+
+    if (!dobVal || !targetVal) {
+      alert('कृपया दोनों तारीखें चुनें!');
+      return;
+    }
+
+    let dob = new Date(dobVal);
+    let target = new Date(targetVal);
+
+    if (dob > target) {
+      alert('जन्मतिथि लक्ष्य तारीख से बड़ी नहीं हो सकती!');
+      return;
+    }
+
+    let years = target.getFullYear() - dob.getFullYear();
+    let months = target.getMonth() - dob.getMonth();
+    let days = target.getDate() - dob.getDate();
+
+    if (days < 0) {
+      months--;
+      let prevMonthLastDay = new Date(target.getFullYear(), target.getMonth(), 0).getDate();
+      days += prevMonthLastDay;
+    }
+
+    if (months < 0) {
+      years--;
+      months += 12;
+    }
+
+    document.getElementById('age-results').innerHTML = `
+      आपकी कुल उम्र: <br>
+      <b>${years} वर्ष, ${months} महीने, और ${days} दिन</b> है।
+    `;
+  }
+</script>
+
+</body>
+</html>
