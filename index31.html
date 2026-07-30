@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>डिजिटल विजिटिंग कार्ड</title>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; background: #e6f7ff; padding: 15px; margin: 0; }
+    .card { background: white; max-width: 450px; margin: auto; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    h2 { color: #096dd9; text-align: center; margin-top: 0; }
+    .desc { font-size: 13px; color: #555; background: #e6f7ff; padding: 10px; border-radius: 6px; margin-bottom: 15px; }
+    label { font-weight: bold; display: block; margin-top: 10px; font-size: 14px; color: #262626; }
+    input, textarea { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #91d5ff; border-radius: 6px; box-sizing: border-box; }
+    button { width: 100%; background: #1890ff; color: white; border: none; padding: 12px; border-radius: 6px; font-weight: bold; margin-top: 15px; cursor: pointer; font-size: 15px; }
+    
+    /* Printed Business Card Style */
+    .biz-card { display: none; margin-top: 20px; background: linear-gradient(135deg, #001529, #003a8c); color: white; padding: 20px; border-radius: 12px; text-align: center; box-shadow: 0 8px 16px rgba(0,0,0,0.2); }
+    .biz-card h3 { margin: 0; font-size: 20px; color: #40a9ff; }
+    .biz-card .tagline { font-size: 13px; color: #bae7ff; margin-bottom: 12px; }
+    .biz-card p { margin: 6px 0; font-size: 13px; }
+    .biz-card img { margin-top: 10px; border: 2px solid white; border-radius: 8px; }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <h2>📇 डिजिटल विजिटिंग कार्ड</h2>
+  <div class="desc">
+    <b>विषय:</b> अपने बिजनेस का सुंदर डिजिटल कार्ड और QR कोड बनाकर शेयर करना।
+  </div>
+
+  <label>दुकान / कंपनी का नाम:</label>
+  <input type="text" id="biz-name" placeholder="उदा: अपना मार्केट / गुप्ता ट्रेडर्स">
+
+  <label>आपका नाम व पद (Designation):</label>
+  <input type="text" id="owner-name" placeholder="उदा: अमित गुप्ता (प्रोप्राइटर)">
+
+  <label>मोबाइल / व्हाट्सएप नंबर:</label>
+  <input type="number" id="phone" placeholder="919876543210">
+
+  <label>सेवाएं / काम विवरण (Services):</label>
+  <textarea id="services" rows="2" placeholder="उदा: किराना सामान, होम डिलीवरी उपलब्ध"></textarea>
+
+  <button onclick="createCard()">📇 कार्ड तैयार करें</button>
+
+  <!-- Output Business Card -->
+  <div class="biz-card" id="card-preview">
+    <h3 id="out-biz">कंपनी का नाम</h3>
+    <div class="tagline" id="out-owner">मालिक का नाम</div>
+    <p><b>📞 संपर्क:</b> <span id="out-phone"></span></p>
+    <p><b>🛠️ सेवाएं:</b> <span id="out-services"></span></p>
+    
+    <!-- QR Code for WhatsApp Direct Chat -->
+    <div style="margin-top: 15px;">
+      <img id="qr-img" src="" alt="Business QR">
+      <div style="font-size:11px; color:#bae7ff; margin-top:4px;">स्कैन करके व्हाट्सएप पर जुड़ें</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function createCard() {
+    let biz = document.getElementById('biz-name').value.trim();
+    let owner = document.getElementById('owner-name').value.trim();
+    let phone = document.getElementById('phone').value.trim();
+    let services = document.getElementById('services').value.trim();
+
+    if (!biz || !phone) {
+      alert('कृपया कंपनी का नाम और नंबर ज़रूर भरें!');
+      return;
+    }
+
+    document.getElementById('out-biz').innerText = biz;
+    document.getElementById('out-owner').innerText = owner || '';
+    document.getElementById('out-phone').innerText = phone;
+    document.getElementById('out-services').innerText = services || 'सभी सेवाएं उपलब्ध';
+
+    // Generate WhatsApp QR Code for this business
+    let waPayload = `https://wa.me/${phone}?text=${encodeURIComponent('नमस्ते, मुझे आपके बिजनेस की जानकारी चाहिए।')}`;
+    let qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(waPayload)}`;
+    
+    document.getElementById('qr-img').src = qrUrl;
+    document.getElementById('card-preview').style.display = 'block';
+  }
+</script>
+
+</body>
+</html>
