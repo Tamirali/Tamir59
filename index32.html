@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visiting Shop Card QR Code Generator</title>
+    <!-- QR Code Generator Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: #f4f7f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 480px;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 12px;
+        }
+        label {
+            display: block;
+            margin-bottom: 4px;
+            font-weight: 600;
+            color: #555;
+            font-size: 14px;
+        }
+        input[type="text"], input[type="url"], input[type="tel"], textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        textarea {
+            resize: vertical;
+            height: 60px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        
+        /* Hidden Class */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Card Output Styles */
+        .card-output {
+            text-align: center;
+            border: 2px dashed #007bff;
+            padding: 20px;
+            border-radius: 10px;
+            background: #fafafa;
+        }
+        
+        /* QR Code Container Top */
+        #qrcode {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+        .qr-link {
+            word-break: break-all;
+            color: #007bff;
+            font-size: 13px;
+            margin-bottom: 20px;
+            display: block;
+            text-decoration: none;
+        }
+
+        /* Details Below QR */
+        .details-section {
+            text-align: left;
+            border-top: 1px solid #ddd;
+            padding-top: 15px;
+        }
+        .details-section h3 {
+            color: #007bff;
+            font-size: 20px;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .details-item {
+            font-size: 14px;
+            color: #444;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        .decoration-box {
+            font-style: italic;
+            background: #e9ecef;
+            padding: 8px;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-size: 13px;
+            color: #333;
+            text-align: center;
+        }
+
+        .btn-back {
+            background-color: #6c757d;
+            margin-top: 20px;
+        }
+        .btn-back:hover {
+            background-color: #5a6268;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    
+    <!-- Vivaran Form -->
+    <div id="formSection">
+        <h2>Shop QR Code Generator</h2>
+        <form id="qrForm" onsubmit="generateQR(event)">
+            <div class="form-group">
+                <label for="shopUrl">Website / URL Link:</label>
+                <input type="url" id="shopUrl" placeholder="https://example.com" required>
+            </div>
+
+            <div class="form-group">
+                <label for="shopName">Shop Ka Naam (Shop Name):</label>
+                <input type="text" id="shopName" placeholder="दुकान का नाम लिखें" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="ownerName">Shop Owner Ka Naam:</label>
+                <input type="text" id="ownerName" placeholder="मालिक का नाम लिखें" required>
+            </div>
+
+            <div class="form-group">
+                <label for="whatsappNum">WhatsApp Number:</label>
+                <input type="tel" id="whatsappNum" placeholder="+91 9876543210" required>
+            </div>
+
+            <div class="form-group">
+                <label for="localAddress">Local Address (पता):</label>
+                <textarea id="localAddress" placeholder="दुकान का पूरा पता लिखें" required></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="shopDecoration">Shop Decoration / Tagline:</label>
+                <textarea id="shopDecoration" placeholder="जैसे: बेस्ट क्वालिटी, 20% डिस्काउंट, इत्यादि..."></textarea>
+            </div>
+            
+            <button type="submit">Generate QR Code</button>
+        </form>
+    </div>
+
+    <!-- Output Section (QR Code Upar, Vivaran Niche) -->
+    <div id="cardSection" class="card-output hidden">
+        
+        <!-- 1. QR Code Subse Upar -->
+        <div id="qrcode"></div>
+        
+        <!-- 2. Link QR Code ke niche -->
+        <a id="displayUrl" class="qr-link" href="#" target="_blank"></a>
+
+        <!-- 3. Sara Vivaran Niche -->
+        <div class="details-section">
+            <h3 id="displayShopName"></h3>
+            <div class="details-item"><strong>Owner:</strong> <span id="displayOwnerName"></span></div>
+            <div class="details-item"><strong>WhatsApp:</strong> <span id="displayWhatsapp"></span></div>
+            <div class="details-item"><strong>Address:</strong> <span id="displayAddress"></span></div>
+            <div class="decoration-box" id="displayDecoration"></div>
+        </div>
+
+        <button class="btn-back" onclick="goBack()">Edit Details / Go Back</button>
+    </div>
+
+</div>
+
+<script>
+    let qrcodeObj = null;
+
+    function generateQR(event) {
+        event.preventDefault(); // Form submit hone par page refresh rokna
+
+        // Form Inputs ki Values Lena
+        const url = document.getElementById('shopUrl').value;
+        const shopName = document.getElementById('shopName').value;
+        const ownerName = document.getElementById('ownerName').value;
+        const whatsapp = document.getElementById('whatsappNum').value;
+        const address = document.getElementById('localAddress').value;
+        const decoration = document.getElementById('shopDecoration').value;
+
+        // Display Fields me Text set karna
+        document.getElementById('displayShopName').innerText = shopName;
+        document.getElementById('displayOwnerName').innerText = ownerName;
+        document.getElementById('displayWhatsapp').innerText = whatsapp;
+        document.getElementById('displayAddress').innerText = address;
+        
+        const decBox = document.getElementById('displayDecoration');
+        if (decoration.trim() !== "") {
+            decBox.innerText = `"${decoration}"`;
+            decBox.style.display = "block";
+        } else {
+            decBox.style.display = "none";
+        }
+        
+        const displayUrlLink = document.getElementById('displayUrl');
+        displayUrlLink.innerText = url;
+        displayUrlLink.href = url;
+
+        // QR Code Container Clean karna
+        const qrContainer = document.getElementById('qrcode');
+        qrContainer.innerHTML = "";
+
+        // Naya QR Code Generate karna
+        qrcodeObj = new QRCode(qrContainer, {
+            text: url,
+            width: 170,
+            height: 170,
+            colorDark : "#000000",
+            colorLight : "#ffffff",
+            correctLevel : QRCode.CorrectLevel.H
+        });
+
+        // Form ko Chhupana aur Result Card dikhana
+        document.getElementById('formSection').classList.add('hidden');
+        document.getElementById('cardSection').classList.remove('hidden');
+    }
+
+    function goBack() {
+        // Card ko Chhupana aur Form ko wapas dikhana
+        document.getElementById('cardSection').classList.add('hidden');
+        document.getElementById('formSection').classList.remove('hidden');
+    }
+</script>
+
+</body>
+</html>
