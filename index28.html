@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ईएमआई और लोन कैलकुलेटर</title>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; padding: 15px; margin: 0; }
+    .card { background: white; max-width: 450px; margin: auto; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    h2 { color: #1a365d; text-align: center; margin-top: 0; }
+    .desc { font-size: 13px; color: #555; background: #e2e8f0; padding: 10px; border-radius: 6px; margin-bottom: 15px; }
+    label { font-weight: bold; display: block; margin-top: 10px; font-size: 14px; color: #2d3748; }
+    input { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; }
+    button { width: 100%; background: #2b6cb0; color: white; border: none; padding: 12px; border-radius: 6px; font-weight: bold; margin-top: 15px; cursor: pointer; font-size: 15px; }
+    .res-box { margin-top: 15px; background: #ebf8ff; padding: 12px; border-radius: 6px; font-size: 14px; line-height: 1.8; color: #2c5282; }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <h2>🏦 लोन ईएमआई कैलकुलेटर</h2>
+  <div class="desc">
+    <b>विषय:</b> बैंक, गाड़ी या होम लोन की मासिक किश्त (EMI) और कुल ब्याज की गणना करना।
+  </div>
+
+  <label>लोन राशि (Amount ₹):</label>
+  <input type="number" id="loan-amount" placeholder="उदा: 100000" value="100000">
+
+  <label>वार्षिक ब्याज दर (Annual Interest Rate %):</label>
+  <input type="number" id="interest-rate" placeholder="उदा: 10.5" value="10.5" step="0.1">
+
+  <label>अवधि (अवधि महीनों में - Months):</label>
+  <input type="number" id="loan-tenure" placeholder="उदा: 12" value="12">
+
+  <button onclick="calculateEMI()">📊 EMI की गणना करें</button>
+
+  <div class="res-box" id="emi-results">
+    हर महीने की EMI: ₹0 <br>
+    कुल ब्याज (Total Interest): ₹0 <br>
+    <b>कुल देय राशि (Total Payment): ₹0</b>
+  </div>
+</div>
+
+<script>
+  function calculateEMI() {
+    let p = parseFloat(document.getElementById('loan-amount').value) || 0;
+    let r = parseFloat(document.getElementById('interest-rate').value) || 0;
+    let n = parseFloat(document.getElementById('loan-tenure').value) || 0;
+
+    if (p <= 0 || r <= 0 || n <= 0) {
+      alert('कृपया सभी सही मान दर्ज करें!');
+      return;
+    }
+
+    let monthlyRate = r / 12 / 100;
+    let emi = (p * monthlyRate * Math.pow(1 + monthlyRate, n)) / (Math.pow(1 + monthlyRate, n) - 1);
+    let totalPayment = emi * n;
+    let totalInterest = totalPayment - p;
+
+    document.getElementById('emi-results').innerHTML = `
+      हर महीने की EMI: <b>₹${emi.toFixed(2)}</b> <br>
+      कुल ब्याज (Total Interest): ₹${totalInterest.toFixed(2)} <br>
+      <hr style="border:0.5px solid #bee3f8;">
+      <b>कुल भुगतान राशि: ₹${totalPayment.toFixed(2)}</b>
+    `;
+  }
+</script>
+
+</body>
+</html>
