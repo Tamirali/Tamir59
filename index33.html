@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>होम बजट & सेविंग कैलकुलेटर</title>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; background: #f0f5ff; padding: 15px; margin: 0; }
+    .card { background: white; max-width: 450px; margin: auto; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    h2 { color: #1d39c4; text-align: center; margin-top: 0; }
+    .desc { font-size: 13px; color: #555; background: #adc6ff; padding: 10px; border-radius: 6px; margin-bottom: 15px; }
+    label { font-weight: bold; display: block; margin-top: 10px; font-size: 14px; color: #262626; }
+    input { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #adc6ff; border-radius: 6px; box-sizing: border-box; }
+    button { width: 100%; background: #2f54eb; color: white; border: none; padding: 12px; border-radius: 6px; font-weight: bold; margin-top: 15px; cursor: pointer; font-size: 15px; }
+    .res-box { margin-top: 15px; background: #f0f5ff; padding: 12px; border-radius: 6px; font-size: 14px; line-height: 1.8; color: #061178; }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <h2>🏠 मासिक होम बजट & सेविंग प्लानर</h2>
+  <div class="desc">
+    <b>विषय:</b> घरेलू आमदनी, कुल खर्च और महीने की शुद्ध बचत का हिसाब लगाना।
+  </div>
+
+  <label>मासिक कुल आय (Monthly Income ₹):</label>
+  <input type="number" id="income" placeholder="उदा: 25000" value="25000">
+
+  <label>राशन व घरेलू खर्च (Grocery & Home ₹):</label>
+  <input type="number" id="exp-home" placeholder="उदा: 8000" value="8000">
+
+  <label>बिजली, पानी व अन्य बिल (Bills ₹):</label>
+  <input type="number" id="exp-bills" placeholder="उदा: 2000" value="2000">
+
+  <label>स्कूल फीस व अन्य खर्च (Other Expenses ₹):</label>
+  <input type="number" id="exp-other" placeholder="उदा: 5000" value="5000">
+
+  <button onclick="calculateBudget()">📊 बजट की गणना करें</button>
+
+  <div class="res-box" id="budget-results">
+    कुल खर्च: ₹0 <br>
+    <b>महीने की शुद्ध बचत (Savings): ₹0</b>
+  </div>
+</div>
+
+<script>
+  function calculateBudget() {
+    let inc = parseFloat(document.getElementById('income').value) || 0;
+    let home = parseFloat(document.getElementById('exp-home').value) || 0;
+    let bills = parseFloat(document.getElementById('exp-bills').value) || 0;
+    let other = parseFloat(document.getElementById('exp-other').value) || 0;
+
+    let totalExpenses = home + bills + other;
+    let savings = inc - totalExpenses;
+
+    let savingStatus = savings >= 0 
+      ? `<b style="color:green;">महीने की शुद्ध बचत: ₹${savings.toFixed(2)}</b>` 
+      : `<b style="color:red;">घाटा/ओवरबजट: ₹${savings.toFixed(2)}</b>`;
+
+    document.getElementById('budget-results').innerHTML = `
+      कुल मासिक खर्च: <b>₹${totalExpenses.toFixed(2)}</b> <br>
+      <hr style="border:0.5px solid #adc6ff;">
+      ${savingStatus}
+    `;
+  }
+</script>
+
+</body>
+</html>
