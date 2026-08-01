@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📚 डिजिटल खाताबही / उधारी रजिस्टर</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --card: #ffffff;
+            --bg: #f4f6f9;
+            --text: #333333;
+            --border: #e0e0e0;
+            --green: #27ae60;
+            --red: #e74c3c;
+            --whatsapp: #25D366;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            padding: 12px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 750px;
+            background: var(--card);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            padding: 16px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 16px;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 10px;
+        }
+
+        header h1 {
+            font-size: 20px;
+            color: var(--primary);
+        }
+
+        .card {
+            background: #fff;
+            border: 1px solid var(--border);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 14px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .form-row input, .form-row select {
+            flex: 1;
+            min-width: 120px;
+        }
+
+        input, select, button {
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            outline: none;
+        }
+
+        button {
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        .btn-primary { background: var(--primary); color: white; border: none; }
+        .btn-green { background: var(--green); color: white; border: none; }
+        .btn-red { background: var(--red); color: white; border: none; }
+        .btn-whatsapp { background: var(--whatsapp); color: white; border: none; }
+
+        .summary-dashboard {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .summary-card {
+            flex: 1;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .card-red { background: #fde8e8; color: var(--red); border: 1px solid #f8b4b4; }
+        .card-green { background: #e6f4ea; color: var(--green); border: 1px solid #a3e2b8; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 13px;
+        }
+
+        th, td {
+            border: 1px solid var(--border);
+            padding: 8px;
+            text-align: left;
+        }
+
+        th { background: #f8f9fa; }
+
+        .cust-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+
+        .badge-red { color: var(--red); font-weight: bold; }
+        .badge-green { color: var(--green); font-weight: bold; }
+
+        @media (max-width: 480px) {
+            .summary-dashboard { flex-direction: column; }
+            .cust-header { flex-direction: column; align-items: flex-start; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>📚 डिजिटल उधारी / खाताबही ऐप</h1>
+    </header>
+
+    <!-- SUMMARY DASHBOARD -->
+    <div class="summary-dashboard">
+        <div class="summary-card card-red">
+            <div>कुल लेना बाकी (उधारी)</div>
+            <div id="totalToReceive" style="font-size: 18px; margin-top:4px;">₹ 0</div>
+        </div>
+        <div class="summary-card card-green">
+            <div>कुल देना बाकी (एडवांस)</div>
+            <div id="totalToPay" style="font-size: 18px; margin-top:4px;">₹ 0</div>
+        </div>
+    </div>
+
+    <!-- ADD CUSTOMER -->
+    <div class="card">
+        <h3>+ नया ग्राहक / पार्टी जोड़ें</h3>
+        <div class="form-row" style="margin-top:8px;">
+            <input type="text" id="custName" placeholder="ग्राहक का नाम">
+            <input type="tel" id="custPhone" placeholder="मोबाइल नंबर (10 अंक)">
+            <button class="btn-primary" onclick="addCustomer()">ग्राहक जोड़ें</button>
+        </div>
+    </div>
+
+    <!-- TRANSACTION ENTRY -->
+    <div class="card">
+        <h3>💸 लेन-देन (Entry) दर्ज करें</h3>
+        <div class="form-group">
+            <div class="form-row">
+                <select id="selectCustomer">
+                    <option value="">ग्राहक चुनें</option>
+                </select>
+                <input type="date" id="txnDate">
+            </div>
+            <div class="form-row">
+                <input type="number" id="txnAmount" placeholder="राशि (₹)">
+                <select id="txnType">
+                    <option value="debit">आपने दिया (उधारी / Debited)</option>
+                    <option value="credit">आपको मिला (जमा / Credited)</option>
+                </select>
+            </div>
+            <input type="text" id="txnNote" placeholder="विवरण / विवरण नोट (ऐच्छिक)">
+            <button class="btn-primary" onclick="addTransaction()">एंट्री सेव करें</button>
+        </div>
+    </div>
+
+    <!-- CUSTOMERS LEDGER LIST -->
+    <div class="card">
+        <h3>📋 ग्राहक खाता & लेजर</h3>
+        <div id="customersList" style="margin-top: 10px;"></div>
+    </div>
+</div>
+
+<script>
+    // LocalStorage Keys
+    let customers = JSON.parse(localStorage.getItem('khata_customers')) || [];
+    let transactions = JSON.parse(localStorage.getItem('khata_transactions')) || [];
+
+    // Set Default Date to Today
+    document.getElementById('txnDate').valueAsDate = new Date();
+
+    function saveData() {
+        localStorage.setItem('khata_customers', JSON.stringify(customers));
+        localStorage.setItem('khata_transactions', JSON.stringify(transactions));
+        renderAll();
+    }
+
+    // ADD NEW CUSTOMER
+    function addCustomer() {
+        const name = document.getElementById('custName').value.trim();
+        let phone = document.getElementById('custPhone').value.trim();
+
+        if (!name) return alert('कृपया ग्राहक का नाम दर्ज करें!');
+        phone = phone.replace(/[^0-9]/g, '');
+
+        customers.push({ id: Date.now(), name, phone });
+        document.getElementById('custName').value = '';
+        document.getElementById('custPhone').value = '';
+        saveData();
+    }
+
+    // DELETE CUSTOMER
+    function deleteCustomer(id) {
+        if(confirm('क्या आप इस ग्राहक और इनके सभी लेन-देन का रिकॉर्ड हटाना चाहते हैं?')) {
+            customers = customers.filter(c => c.id !== id);
+            transactions = transactions.filter(t => t.custId !== id);
+            saveData();
+        }
+    }
+
+    // ADD TRANSACTION
+    function addTransaction() {
+        const custId = parseInt(document.getElementById('selectCustomer').value);
+        const date = document.getElementById('txnDate').value;
+        const amount = parseFloat(document.getElementById('txnAmount').value);
+        const type = document.getElementById('txnType').value;
+        const note = document.getElementById('txnNote').value.trim();
+
+        if (!custId || isNaN(amount) || amount <= 0) {
+            return alert('कृपया ग्राहक और सही राशि चुनें!');
+        }
+
+        transactions.push({ id: Date.now(), custId, date, amount, type, note });
+        document.getElementById('txnAmount').value = '';
+        document.getElementById('txnNote').value = '';
+        alert('लेन-देन दर्ज हो गया!');
+        saveData();
+    }
+
+    // WHATSAPP REMINDER
+    function sendWhatsappReminder(custId, balance) {
+        const cust = customers.find(c => c.id === custId);
+        if (!cust || !cust.phone) return alert('ग्राहक का मोबाइल नंबर दर्ज नहीं है!');
+
+        let phone = cust.phone;
+        if (!phone.startsWith('91') && phone.length === 10) phone = '91' + phone;
+
+        let msg = `नमस्ते *${cust.name}* जी,\n`;
+        msg += `आपका कुल उधारी हिसाब का रिमाइंडर:\n`;
+        msg += `---------------------------------\n`;
+        msg += `*बकाया राशि: ₹${Math.abs(balance).toFixed(2)}*\n`;
+        msg += `---------------------------------\n`;
+        msg += `कृपया जल्द से जल्द भुगतान करने की कृपा करें। धन्यवाद! 🙏`;
+
+        const url = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
+        window.open(url, '_blank');
+    }
+
+    // RENDER ALL DATA
+    function renderAll() {
+        // 1. Render Dropdown
+        const select = document.getElementById('selectCustomer');
+        select.innerHTML = '<option value="">ग्राहक चुनें</option>';
+        customers.forEach(c => {
+            select.innerHTML += `<option value="${c.id}">${c.name} ${c.phone ? '('+c.phone+')' : ''}</option>`;
+        });
+
+        // 2. Render Customers Ledger
+        const listDiv = document.getElementById('customersList');
+        listDiv.innerHTML = '';
+
+        let globalToReceive = 0;
+        let globalToPay = 0;
+
+        if (customers.length === 0) {
+            listDiv.innerHTML = '<p style="text-align:center; color:#777; padding:10px;">कोई ग्राहक नहीं है। ऊपर से ग्राहक जोड़ें।</p>';
+        }
+
+        customers.forEach(c => {
+            const custTxns = transactions.filter(t => t.custId === c.id);
+            
+            // Calculate Balance
+            // Debit = Given (उधारी), Credit = Received (जमा)
+            let totalDebit = custTxns.filter(t => t.type === 'debit').reduce((s, t) => s + t.amount, 0);
+            let totalCredit = custTxns.filter(t => t.type === 'credit').reduce((s, t) => s + t.amount, 0);
+            
+            let netBalance = totalDebit - totalCredit;
+
+            if (netBalance > 0) globalToReceive += netBalance;
+            else globalToPay += Math.abs(netBalance);
+
+            let statusText = '';
+            if (netBalance > 0) statusText = `<span class="badge-red">बाकी लेना है: ₹${netBalance.toFixed(2)}</span>`;
+            else if (netBalance < 0) statusText = `<span class="badge-green">जमा (एडवांस): ₹${Math.abs(netBalance).toFixed(2)}</span>`;
+            else statusText = `<span style="color:#777; font-weight:bold;">हिसाब बराबर (₹0.00)</span>`;
+
+            let txnsRows = '';
+            custTxns.forEach(t => {
+                txnsRows += `
+                    <tr>
+                        <td>${t.date}</td>
+                        <td>${t.note || '-'}</td>
+                        <td style="color:${t.type==='debit'?'var(--red)':'var(--green)'}; font-weight:bold;">
+                            ${t.type === 'debit' ? 'दिया ₹' + t.amount : 'मिला ₹' + t.amount}
+                        </td>
+                    </tr>`;
+            });
+
+            listDiv.innerHTML += `
+                <div style="border:1px solid var(--border); border-radius:8px; padding:10px; margin-bottom:12px; background:#fff;">
+                    <div class="cust-header">
+                        <div>
+                            <strong>👤 ${c.name}</strong> 
+                            <small style="color:#666;">${c.phone ? '📞 ' + c.phone : ''}</small><br>
+                            ${statusText}
+                        </div>
+                        <div style="display:flex; gap:6px;">
+                            ${netBalance > 0 ? `<button class="btn-whatsapp" style="padding:6px 10px; font-size:12px;" onclick="sendWhatsappReminder(${c.id}, ${netBalance})">📲 WhatsApp</button>` : ''}
+                            <button class="btn-red" style="padding:6px 10px; font-size:12px;" onclick="deleteCustomer(${c.id})">🗑️ हटाएं</button>
+                        </div>
+                    </div>
+                    ${custTxns.length > 0 ? `
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>दिनांक</th>
+                                    <th>विवरण</th>
+                                    <th>प्रकार & राशि</th>
+                                </tr>
+                            </thead>
+                            <tbody>${txnsRows}</tbody>
+                        </table>
+                    ` : '<small style="color:#999;">कोई लेन-देन नहीं हुआ है।</small>'}
+                </div>`;
+        });
+
+        // Update Dashboard
+        document.getElementById('totalToReceive').innerText = '₹ ' + globalToReceive.toFixed(2);
+        document.getElementById('totalToPay').innerText = '₹ ' + globalToPay.toFixed(2);
+    }
+
+    // Initial Load
+    renderAll();
+</script>
+
+</body>
+</html>
