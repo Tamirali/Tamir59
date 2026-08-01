@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📚 कोचिंग & टेलरिंग मैनेजमेंट सिस्टम</title>
+    <style>
+        :root {
+            --primary: #4b6584;
+            --primary-dark: #2d98da;
+            --bg: #f1f2f6;
+            --card: #ffffff;
+            --text: #2f3542;
+            --border: #dcdde1;
+            --green: #20bf6b;
+            --red: #eb3b5a;
+            --whatsapp: #25D366;
+            --shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            padding: 12px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 850px;
+            background: var(--card);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 16px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 16px;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 10px;
+        }
+
+        header h1 {
+            font-size: 20px;
+            color: var(--primary);
+        }
+
+        /* MAIN TABS */
+        .main-tabs {
+            display: flex;
+            gap: 6px;
+            background: #dcdde1;
+            padding: 4px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+
+        .main-tab-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background: transparent;
+            font-weight: bold;
+            font-size: 13px;
+            color: #57606f;
+            cursor: pointer;
+            border-radius: 6px;
+        }
+
+        .main-tab-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .main-tab-content { display: none; }
+        .main-tab-content.active { display: block; }
+
+        .card {
+            background: #fff;
+            border: 1px solid var(--border);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 14px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 8px;
+        }
+
+        .form-row input, .form-row select {
+            flex: 1;
+            min-width: 130px;
+        }
+
+        input, select, button {
+            padding: 9px;
+            font-size: 13px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            outline: none;
+        }
+
+        button {
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-primary { background: var(--primary); color: white; border: none; }
+        .btn-green { background: var(--green); color: white; border: none; }
+        .btn-red { background: var(--red); color: white; border: none; }
+        .btn-whatsapp { background: var(--whatsapp); color: white; border: none; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 8px;
+            font-size: 12px;
+        }
+
+        th, td {
+            border: 1px solid var(--border);
+            padding: 7px;
+            text-align: left;
+        }
+
+        th { background: #f1f2f6; }
+
+        .badge-due { color: var(--red); font-weight: bold; }
+        .badge-paid { color: var(--green); font-weight: bold; }
+
+        @media (max-width: 480px) {
+            .form-row { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>🛠️ कोचिंग & बुटीक/टेलर ऐप</h1>
+    </header>
+
+    <!-- MAIN APP TABS -->
+    <div class="main-tabs">
+        <button class="main-tab-btn active" onclick="switchMainTab('coaching')">🏫 1. कोचिंग / ट्यूशन रजिस्टर</button>
+        <button class="main-tab-btn" onclick="switchMainTab('tailor')">✂️ 2. टेलर / बुटीक नाप रजिस्टर</button>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- PROJECT 2: COACHING FEES & ATTENDANCE -->
+    <!-- ========================================== -->
+    <div id="app-coaching" class="main-tab-content active">
+        <!-- ADD STUDENT -->
+        <div class="card">
+            <h3>+ नया छात्र (Student) जोड़ें</h3>
+            <div class="form-row" style="margin-top:8px;">
+                <input type="text" id="stuName" placeholder="छात्र का नाम">
+                <input type="tel" id="stuPhone" placeholder="अभिभावक का मो. नंबर">
+                <input type="text" id="stuBatch" placeholder="बैच/क्लास (उदा: Class 10)">
+                <input type="number" id="stuFee" placeholder="मासिक फीस (₹)">
+                <button class="btn-primary" onclick="addStudent()">छात्र जोड़ें</button>
+            </div>
+        </div>
+
+        <!-- ATTENDANCE & FEE PAYMENT -->
+        <div class="card">
+            <h3>📋 दैनिक हाजिरी & फीस जमा</h3>
+            <div class="form-row">
+                <select id="selectStudent"></select>
+                <input type="date" id="coachingDate">
+                <select id="stuAttStatus">
+                    <option value="Present">✅ उपस्थित (Present)</option>
+                    <option value="Absent">❌ अनुपस्थित (Absent)</option>
+                </select>
+                <button class="btn-green" onclick="markStuAttendance()">हाजिरी दर्ज करें</button>
+            </div>
+            <hr style="margin: 10px 0; border: 0; border-top: 1px solid var(--border);">
+            <div class="form-row">
+                <input type="number" id="feePayAmount" placeholder="जमा राशि (₹)">
+                <input type="text" id="feeMonth" placeholder="महीना (उदा: अगस्त 2026)">
+                <button class="btn-primary" onclick="payStudentFee()">फीस रसीद दर्ज करें</button>
+            </div>
+        </div>
+
+        <!-- STUDENTS LIST & REPORT -->
+        <div class="card">
+            <h3>📊 छात्रों की सूची & फीस रिपोर्ट</h3>
+            <div id="coachingStudentList" style="margin-top:10px;"></div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- PROJECT 5: TAILOR / BOUTIQUE MEASUREMENT -->
+    <!-- ========================================== -->
+    <div id="app-tailor" class="main-tab-content">
+        <!-- ADD TAILOR ORDER -->
+        <div class="card">
+            <h3>✂️ नया सिलाई ऑर्डर & नाप दर्ज करें</h3>
+            <div class="form-row" style="margin-top:8px;">
+                <input type="text" id="tCustName" placeholder="ग्राहक का नाम">
+                <input type="tel" id="tCustPhone" placeholder="मोबाइल नंबर">
+                <input type="text" id="tClothType" placeholder="कपड़े का प्रकार (उदा: सूट, कुर्ता, पेंट)">
+                <input type="date" id="tDeliveryDate">
+            </div>
+            
+            <h4 style="margin:8px 0 4px 0; font-size:13px;">📏 कपड़े का नाप (Measurement Details):</h4>
+            <div class="form-row">
+                <input type="text" id="mLength" placeholder="लंबाई (Length)">
+                <input type="text" id="mChest" placeholder="सीना (Chest)">
+                <input type="text" id="mWaist" placeholder="कमर (Waist)">
+                <input type="text" id="mShoulder" placeholder="कंधा (Shoulder)">
+                <input type="text" id="mOther" placeholder="अन्य निर्देश (उदा: गले की डिज़ाइन)">
+            </div>
+
+            <div class="form-row" style="margin-top:6px;">
+                <input type="number" id="tTotalCost" placeholder="कुल सिलाई रेट (₹)">
+                <input type="number" id="tAdvancePay" placeholder="जमा एडवांस (₹)">
+                <button class="btn-primary" onclick="addTailorOrder()">ऑर्डर सेव करें</button>
+            </div>
+        </div>
+
+        <!-- TAILOR ORDERS LIST -->
+        <div class="card">
+            <h3>📋 सिलाई ऑर्डर्स & नाप बुक</h3>
+            <div id="tailorOrdersList" style="margin-top:10px;"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ==========================================
+    // LOCALSTORAGE & INITIAL SETUP
+    // ==========================================
+    let students = JSON.parse(localStorage.getItem('app_students')) || [];
+    let stuAttendance = JSON.parse(localStorage.getItem('app_stu_attendance')) || [];
+    let stuFees = JSON.parse(localStorage.getItem('app_stu_fees')) || [];
+    
+    let tailorOrders = JSON.parse(localStorage.getItem('app_tailor_orders')) || [];
+
+    document.getElementById('coachingDate').valueAsDate = new Date();
+
+    function switchMainTab(appId) {
+        document.querySelectorAll('.main-tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.main-tab-content').forEach(c => c.classList.remove('active'));
+        
+        event.target.classList.add('active');
+        document.getElementById('app-' + appId).classList.add('active');
+    }
+
+    function saveAllData() {
+        localStorage.setItem('app_students', JSON.stringify(students));
+        localStorage.setItem('app_stu_attendance', JSON.stringify(stuAttendance));
+        localStorage.setItem('app_stu_fees', JSON.stringify(stuFees));
+        localStorage.setItem('app_tailor_orders', JSON.stringify(tailorOrders));
+        renderCoachingApp();
+        renderTailorApp();
+    }
+
+    // ==========================================
+    // 1. COACHING APP LOGIC
+    // ==========================================
+    function addStudent() {
+        const name = document.getElementById('stuName').value.trim();
+        let phone = document.getElementById('stuPhone').value.trim();
+        const batch = document.getElementById('stuBatch').value.trim();
+        const fee = parseFloat(document.getElementById('stuFee').value);
+
+        if (!name || isNaN(fee)) return alert('कृपया छात्र का नाम और सही फीस दर्ज करें!');
+        phone = phone.replace(/[^0-9]/g, '');
+
+        students.push({ id: Date.now(), name, phone, batch, fee });
+        document.getElementById('stuName').value = '';
+        document.getElementById('stuPhone').value = '';
+        document.getElementById('stuBatch').value = '';
+        document.getElementById('stuFee').value = '';
+        saveAllData();
+    }
+
+    function markStuAttendance() {
+        const studentId = parseInt(document.getElementById('selectStudent').value);
+        const date = document.getElementById('coachingDate').value;
+        const status = document.getElementById('stuAttStatus').value;
+
+        if (!studentId || !date) return alert('छात्र और तारीख चुनें!');
+
+        stuAttendance.push({ id: Date.now(), studentId, date, status });
+        alert('हाजिरी दर्ज हो गई!');
+        saveAllData();
+    }
+
+    function payStudentFee() {
+        const studentId = parseInt(document.getElementById('selectStudent').value);
+        const amount = parseFloat(document.getElementById('feePayAmount').value);
+        const month = document.getElementById('feeMonth').value.trim();
+
+        if (!studentId || isNaN(amount) || !month) return alert('छात्र, सही राशि और महीना भरें!');
+
+        stuFees.push({ id: Date.now(), studentId, amount, month, date: new Date().toISOString().split('T')[0] });
+        document.getElementById('feePayAmount').value = '';
+        document.getElementById('feeMonth').value = '';
+        alert('फीस रसीद जमा हो गई!');
+        saveAllData();
+    }
+
+    function sendFeeReminder(studentId, dueAmount) {
+        const stu = students.find(s => s.id === studentId);
+        if (!stu || !stu.phone) return alert('अभिभावक का मोबाइल नंबर दर्ज नहीं है!');
+
+        let phone = stu.phone;
+        if (!phone.startsWith('91') && phone.length === 10) phone = '91' + phone;
+
+        let msg = `नमस्ते,\n`;
+        msg += `*${stu.name}* की कोचिंग फीस का रिमाइंडर:\n`;
+        msg += `---------------------------------\n`;
+        msg += `*बकाया फीस राशि: ₹${dueAmount.toFixed(2)}*\n`;
+        msg += `---------------------------------\n`;
+        msg += `कृपया जल्द से जल्द फीस जमा करने की कृपा करें। धन्यवाद! 🙏`;
+
+        window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
+    }
+
+    function deleteStudent(id) {
+        if(confirm('क्या आप इस छात्र का पूरा रिकॉर्ड हटाना चाहते हैं?')) {
+            students = students.filter(s => s.id !== id);
+            stuAttendance = stuAttendance.filter(a => a.studentId !== id);
+            stuFees = stuFees.filter(f => f.studentId !== id);
+            saveAllData();
+        }
+    }
+
+    function renderCoachingApp() {
+        const select = document.getElementById('selectStudent');
+        select.innerHTML = '<option value="">छात्र चुनें</option>';
+        students.forEach(s => {
+            select.innerHTML += `<option value="${s.id}">${s.name} (${s.batch || 'General'})</option>`;
+        });
+
+        const list = document.getElementById('coachingStudentList');
+        list.innerHTML = '';
+
+        if (students.length === 0) list.innerHTML = '<p style="text-align:center; color:#777;">कोई छात्र नहीं है।</p>';
+
+        students.forEach(s => {
+            const paidTotal = stuFees.filter(f => f.studentId === s.id).reduce((sum, f) => sum + f.amount, 0);
+            const presentDays = stuAttendance.filter(a => a.studentId === s.id && a.status === 'Present').length;
+            
+            list.innerHTML += `
+                <div style="border:1px solid var(--border); border-radius:6px; padding:10px; margin-bottom:10px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <strong>👤 ${s.name}</strong> <small>(${s.batch || 'N/A'})</small><br>
+                            <small>📞 ${s.phone || 'नंबर नहीं है'} | तय फीस: ₹${s.fee}/महीना</small>
+                        </div>
+                        <div>
+                            <button class="btn-whatsapp" style="padding:4px 8px; font-size:11px;" onclick="sendFeeReminder(${s.id}, ${s.fee})">📲 WhatsApp</button>
+                            <button class="btn-red" style="padding:4px 8px; font-size:11px;" onclick="deleteStudent(${s.id})">🗑️</button>
+                        </div>
+                    </div>
+                    <div style="margin-top:6px; font-size:12px; background:#f8f9fa; padding:6px; border-radius:4px;">
+                        <span>कुल उपस्थिति: <strong>${presentDays} दिन</strong></span> | 
+                        <span>कुल जमा फीस: <strong style="color:var(--green)">₹${paidTotal}</strong></span>
+                    </div>
+                </div>`;
+        });
+    }
+
+    // ==========================================
+    // 2. TAILOR / BOUTIQUE LOGIC
+    // ==========================================
+    function addTailorOrder() {
+        const name = document.getElementById('tCustName').value.trim();
+        let phone = document.getElementById('tCustPhone').value.trim();
+        const cloth = document.getElementById('tClothType').value.trim();
+        const delivery = document.getElementById('tDeliveryDate').value;
+
+        const length = document.getElementById('mLength').value.trim();
+        const chest = document.getElementById('mChest').value.trim();
+        const waist = document.getElementById('mWaist').value.trim();
+        const shoulder = document.getElementById('mShoulder').value.trim();
+        const other = document.getElementById('mOther').value.trim();
+
+        const cost = parseFloat(document.getElementById('tTotalCost').value) || 0;
+        const advance = parseFloat(document.getElementById('tAdvancePay').value) || 0;
+
+        if (!name || !cloth || !delivery) return alert('कृपया ग्राहक का नाम, कपड़े का प्रकार और डिलीवरी तिथि भरें!');
+        phone = phone.replace(/[^0-9]/g, '');
+
+        tailorOrders.push({
+            id: Date.now(),
+            name, phone, cloth, delivery,
+            measurements: { length, chest, waist, shoulder, other },
+            cost, advance,
+            status: 'Pending'
+        });
+
+        // Clear Inputs
+        document.getElementById('tCustName').value = '';
+        document.getElementById('tCustPhone').value = '';
+        document.getElementById('tClothType').value = '';
+        document.getElementById('mLength').value = '';
+        document.getElementById('mChest').value = '';
+        document.getElementById('mWaist').value = '';
+        document.getElementById('mShoulder').value = '';
+        document.getElementById('mOther').value = '';
+        document.getElementById('tTotalCost').value = '';
+        document.getElementById('tAdvancePay').value = '';
+
+        alert('सिलाई ऑर्डर सेव हो गया!');
+        saveAllData();
+    }
+
+    function toggleTailorStatus(id) {
+        const order = tailorOrders.find(o => o.id === id);
+        if (order) {
+            order.status = order.status === 'Pending' ? 'Ready' : 'Pending';
+            saveAllData();
+        }
+    }
+
+    function deleteTailorOrder(id) {
+        if (confirm('क्या आप इस सिलाई ऑर्डर को हटाना चाहते हैं?')) {
+            tailorOrders = tailorOrders.filter(o => o.id !== id);
+            saveAllData();
+        }
+    }
+
+    function sendTailorWhatsapp(id) {
+        const order = tailorOrders.find(o => o.id === id);
+        if (!order || !order.phone) return alert('ग्राहक का मोबाइल नंबर दर्ज नहीं है!');
+
+        let phone = order.phone;
+        if (!phone.startsWith('91') && phone.length === 10) phone = '91' + phone;
+
+        const balance = order.cost - order.advance;
+
+        let msg = `नमस्ते *${order.name}* जी,\n`;
+        msg += `आपके कपड़े (*${order.cloth}*) का स्टेटस अपडेट:\n`;
+        msg += `---------------------------------\n`;
+        msg += `📍 *ऑर्डर स्टेटस:* ${order.status === 'Ready' ? '✅ तैयार है (Ready for Delivery)' : '⏳ सिलाई जारी है'}\n`;
+        msg += `📅 *डिलीवरी तिथि:* ${order.delivery}\n`;
+        msg += `💰 *कुल सिलाई:* ₹${order.cost}\n`;
+        msg += `💵 *जमा एडवांस:* ₹${order.advance}\n`;
+        msg += `*बाकी बकाया राशि: ₹${balance}*\n`;
+        msg += `---------------------------------\n`;
+        msg += `धन्यवाद! 🙏`;
+
+        window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
+    }
+
+    function renderTailorApp() {
+        const list = document.getElementById('tailorOrdersList');
+        list.innerHTML = '';
+
+        if (tailorOrders.length === 0) list.innerHTML = '<p style="text-align:center; color:#777;">कोई सिलाई ऑर्डर नहीं है।</p>';
+
+        tailorOrders.forEach(o => {
+            const balance = o.cost - o.advance;
+            const m = o.measurements;
+
+            list.innerHTML += `
+                <div style="border:1px solid var(--border); border-radius:6px; padding:10px; margin-bottom:12px; background:#fff;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;">
+                        <div>
+                            <strong>👗 ${o.cloth} - ${o.name}</strong> 
+                            <small>(${o.phone ? '📞 '+o.phone : ''})</small><br>
+                            <small>📅 डिलीवरी तिथि: <strong>${o.delivery}</strong></small>
+                        </div>
+                        <div style="margin-top:4px;">
+                            <button class="${o.status === 'Ready' ? 'btn-green' : 'btn-primary'}" style="padding:4px 8px; font-size:11px;" onclick="toggleTailorStatus(${o.id})">
+                                ${o.status === 'Ready' ? '✅ डिलीवरी रेडी' : '⏳ पेंडिंग (Ready करें)'}
+                            </button>
+                            <button class="btn-whatsapp" style="padding:4px 8px; font-size:11px;" onclick="sendTailorWhatsapp(${o.id})">📲 WhatsApp</button>
+                            <button class="btn-red" style="padding:4px 8px; font-size:11px;" onclick="deleteTailorOrder(${o.id})">🗑️</button>
+                        </div>
+                    </div>
+
+                    <div style="background:#f1f2f6; padding:6px; border-radius:4px; margin:8px 0; font-size:11px;">
+                        <strong>📏 नाप (Measurement):</strong> 
+                        लंबाई: ${m.length || '-'}, सीना: ${m.chest || '-'}, कमर: ${m.waist || '-'}, कंधा: ${m.shoulder || '-'}<br>
+                        ${m.other ? 'नोट: ' + m.other : ''}
+                    </div>
+
+                    <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:bold;">
+                        <span>रेट: ₹${o.cost} | जमा: ₹${o.advance}</span>
+                        <span class="${balance > 0 ? 'badge-due' : 'badge-paid'}">
+                            ${balance > 0 ? 'बाकी लेना है: ₹' + balance : 'पूरा भुगतान जमा'}
+                        </span>
+                    </div>
+                </div>`;
+        });
+    }
+
+    // INITIAL RENDER
+    renderCoachingApp();
+    renderTailorApp();
+</script>
+
+</body>
+</html>
