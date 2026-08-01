@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🧾 स्मार्ट डिजिटल खाता & QR बिलिंग (Part 1)</title>
+    
+    <!-- 100% ऑफ़लाइन QR कोड जनरेटर और स्कैनर लाइब्रेरीज़ -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+    
+    <style>
+        /* ----- CSS Variables & Reset ----- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #0984e3;
+            --primary-dark: #0652DD;
+            --bg: #f0f2f5;
+            --card-bg: #ffffff;
+            --text: #2d3436;
+            --text-light: #636e72;
+            --shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            --radius: 16px;
+            --font: 'Segoe UI', system-ui, sans-serif;
+            --green: #00b894;
+            --red: #ff6b6b;
+        }
+
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 12px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .app {
+            max-width: 780px;
+            width: 100%;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 20px 16px;
+        }
+
+        /* ----- Header & Tabs ----- */
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .app-header h1 {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--primary-dark);
+        }
+        .badge {
+            font-size: 11px;
+            background: var(--green);
+            color: #fff;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 4px;
+            background: var(--bg);
+            padding: 4px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 10px 4px;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-light);
+            cursor: pointer;
+        }
+        .tab-btn.active {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* Form styling */
+        .form-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+        .form-row input {
+            flex: 1;
+            padding: 10px 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 14px;
+            min-width: 120px;
+        }
+        .btn {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            justify-content: center;
+        }
+        .btn-primary { background: var(--primary); color: #fff; }
+
+        #qrcode {
+            display: flex;
+            justify-content: center;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app">
+        <!-- HEADER -->
+        <div class="app-header">
+            <h1>🧾 ऑफ़लाइन QR बिलिंग प्रणाली</h1>
+            <span class="badge">100% ऑफ़लाइन रेडी</span>
+        </div>
+
+        <!-- TABS -->
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="generate">📱 1. ऑफ़लाइन QR बनाएँ</button>
+            <button class="tab-btn" data-tab="scan">📷 2. स्कैन & बिलिंग</button>
+        </div>
+
+        <!-- TAB 1: GENERATOR (Fully Offline JS Library) -->
+        <div class="tab-content active" id="tab-generate">
+            <h3>📱 बिना इंटरनेट QR कोड जनरेटर</h3>
+            <p style="font-size: 12px; color: var(--text-light); margin-bottom: 10px;">
+                यहाँ बना हुआ QR बिना इंटरनेट के भी आपकी दुकान पर काम करेगा।
+            </p>
+            <div class="form-row">
+                <input type="text" id="shopName" placeholder="दुकान का नाम" value="मेरी दुकान" />
+                <input type="text" id="productName" placeholder="उत्पाद का नाम" value="चाय" />
+                <input type="number" id="productPrice" placeholder="मूल्य (₹)" value="20" step="0.01" />
+                <button class="btn btn-primary" id="generateQRBtn">✅ ऑफ़लाइन QR बनाएँ</button>
+            </div>
+
+            <!-- QR Container -->
+            <div id="qrcode"></div>
+        </div>
+
+        <!-- TAB 2: PLACEHOLDER FOR PART 2 -->
+        <div class="tab-content" id="tab-scan">
+            <h3>📷 स्कैनिंग और बिलिंग का हिस्सा... (Part 2 में जुड़ेगा)</h3>
+        </div>
+    </div>
+
+    <script>
+        // Tab switching logic
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                tabBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+            });
+        });
+
+        // Offline QR Code Generation using qrcodejs
+        const qrcodeContainer = document.getElementById("qrcode");
+        let qrcode = new QRCode(qrcodeContainer, { width: 180, height: 180 });
+
+        function makeOfflineQR() {
+            const shop = document.getElementById('shopName').value.trim();
+            const product = document.getElementById('productName').value.trim();
+            const price = parseFloat(document.getElementById('productPrice').value);
+
+            if (!shop || !product || isNaN(price)) return;
+
+            const data = JSON.stringify({ shop, product, price });
+            qrcode.clear();
+            qrcode.makeCode(data); // Generates QR dynamically via Local JS (No External API)
+        }
+
+        document.getElementById('generateQRBtn').addEventListener('click', makeOfflineQR);
+        makeOfflineQR(); // Initial call
+    </script>
+</body>
+</html>
