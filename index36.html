@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🧾 QR Bill Generator + Scanner Pro</title>
+    <!-- CDN Libraries (reliable, always up-to-date) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js">
+    </script>
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js">
+    </script>
+    <style>
+        /* ── reset & root ── */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        :root {
+            --primary: #0984e3;
+            --primary-light: #74b9ff;
+            --primary-dark: #0652DD;
+            --bg: #f0f2f5;
+            --card-bg: #ffffff;
+            --text: #2d3436;
+            --text-light: #636e72;
+            --shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            --radius: 16px;
+            --font: 'Segoe UI', system-ui, sans-serif;
+            --green: #00b894;
+            --red: #ff6b6b;
+            --orange: #fdcb6e;
+        }
+
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 12px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .app {
+            max-width: 780px;
+            width: 100%;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 20px 16px;
+        }
+
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        .app-header h1 {
+            font-size: 22px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), #6c5ce7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .app-header .badge {
+            font-size: 12px;
+            background: var(--bg);
+            padding: 4px 14px;
+            border-radius: 30px;
+            color: var(--text-light);
+            font-weight: 600;
+        }
+
+        /* ── tabs ── */
+        .tabs {
+            display: flex;
+            gap: 4px;
+            background: var(--bg);
+            padding: 4px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 10px 6px;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .tab-btn.active {
+            background: var(--primary);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(9, 132, 227, 0.25);
+        }
+        .tab-btn:hover:not(.active) {
+            background: rgba(9, 132, 227, 0.08);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeUp 0.3s ease;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .tab-content h2 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--primary-dark);
+        }
+
+        /* ── forms ── */
+        .form-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+        .form-row input {
+            flex: 1;
+            padding: 10px 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 14px;
+            background: #fafbfc;
+            min-width: 120px;
+            transition: 0.2s;
+        }
+        .form-row input:focus {
+            border-color: var(--primary);
+            outline: none;
+            background: #fff;
+        }
+
+        .btn {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            justify-content: center;
+            user-select: none;
+        }
+        .btn:active {
+            transform: scale(0.97);
+        }
+        .btn-primary {
+            background: var(--primary);
+            color: #fff;
+        }
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            box-shadow: 0 4px 12px rgba(9, 132, 227, 0.3);
+        }
+        .btn-success {
+            background: var(--green);
+            color: #fff;
+        }
+        .btn-success:hover {
+            background: #00a884;
+        }
+        .btn-danger {
+            background: var(--red);
+            color: #fff;
+        }
+        .btn-danger:hover {
+            background: #e55a5a;
+        }
+        .btn-whatsapp {
+            background: #25D366;
+            color: #fff;
+        }
+        .btn-whatsapp:hover {
+            background: #1da85c;
+        }
+        .btn-outline {
+            background: transparent;
+            color: var(--primary);
+            border: 1.5px solid var(--primary);
+        }
+        .btn-outline:hover {
+            background: var(--primary);
+            color: #fff;
+        }
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        /* ── QR display ── */
+        .qr-display {
+            text-align: center;
+            padding: 10px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #qrcode {
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 12px;
+            background: #fff;
+            display: inline-block;
+            min-height: 180px;
+            min-width: 180px;
+            transition: 0.3s;
+        }
+        #qrcode canvas,
+        #qrcode img {
+            display: block !important;
+            margin: 0 auto;
+        }
+        .qr-data {
+            background: #f8f9fa;
+            padding: 8px 16px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-size: 13px;
+            color: var(--text-light);
+            max-width: 100%;
+            word-break: break-all;
+        }
+
+        /* ── scanner ── */
+        #scanner-container {
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 10px;
+            min-height: 200px;
+            position: relative;
+        }
+        #scanner-container #reader {
+            width: 100%;
+            min-height: 200px;
+        }
+        #scanner-container video {
+            width: 100% !important;
+            height: auto !important;
+            display: block;
+        }
+        .scanner-controls {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 8px;
+        }
+        .scanner-status {
+            font-size: 13px;
+            color: var(--text-light);
+            margin-bottom: 12px;
+            font-weight: 600;
+            padding: 6px 12px;
+            background: var(--bg);
+            border-radius: 8px;
+            display: inline-block;
+        }
+
+        /* ── bill ── */
+        .bill-section {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 14px;
+            border: 1px solid #e9ecef;
+            margin-top: 4px;
+        }
+        .bill-header-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--text-light);
+            border-bottom: 1px dashed #e9ecef;
+            padding-bottom: 8px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+        .bill-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f2f5;
+            font-size: 14px;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .bill-item .item-info {
+            flex: 1;
+            min-width: 100px;
+        }
+        .bill-item .item-info strong {
+            display: block;
+            font-size: 14px;
+        }
+        .bill-item .item-info small {
+            color: var(--text-light);
+            font-size: 12px;
+        }
+        .item-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .qty-controls {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--bg);
+            padding: 2px 8px;
+            border-radius: 6px;
+        }
+        .qty-btn {
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-weight: bold;
+            color: var(--primary);
+            font-size: 16px;
+            padding: 0 4px;
+            line-height: 1.4;
+        }
+        .qty-btn:hover {
+            color: var(--primary-dark);
+        }
+        .del-btn {
+            background: none;
+            border: none;
+            color: var(--red);
+            cursor: pointer;
+            font-size: 16px;
+            padding: 0 4px;
+        }
+        .del-btn:hover {
+            color: #e55a5a;
+        }
+
+        .bill-total {
+            display: flex;
+            justify-content: space-between;
+            font-size: 16px;
+            font-weight: 700;
+            padding-top: 10px;
+            margin-top: 8px;
+            border-top: 2px solid var(--primary);
+        }
+        .bill-total .total-amount {
+            color: var(--green);
+        }
+
+        .whatsapp-box {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px dashed #e9ecef;
+            flex-wrap: wrap;
+        }
+        .whatsapp-box input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1.5px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 13px;
+            min-width: 150px;
+        }
+        .whatsapp-box input:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+
+        .bill-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+        .empty-bill {
+            text-align: center;
+            color: var(--text-light);
+            padding: 20px 0;
+            font-size: 13px;
+        }
+
+        /* ── toast / flash ── */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #2d3436;
+            color: #fff;
+            padding: 10px 24px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            z-index: 999;
+            pointer-events: none;
+            max-width: 90%;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        .toast.success {
+            background: var(--green);
+        }
+        .toast.error {
+            background: var(--red);
+        }
+        .toast.info {
+            background: var(--primary);
+        }
+
+        /* ── responsive ── */
+        @media (max-width: 480px) {
+            .form-row {
+                flex-direction: column;
+            }
+            .bill-actions {
+                flex-direction: column;
+            }
+            .bill-actions .btn {
+                width: 100%;
+            }
+            .whatsapp-box {
+                flex-direction: column;
+            }
+            .whatsapp-box .btn {
+                width: 100%;
+            }
+            .app-header h1 {
+                font-size: 18px;
+            }
+            .tab-btn {
+                font-size: 12px;
+                padding: 8px 4px;
+            }
+        }
+        @media print {
+            .app-header,
+            .tabs,
+            .scanner-controls,
+            .scanner-status,
+            .whatsapp-box,
+            .bill-actions,
+            #scanner-container {
+                display: none !important;
+            }
+            .app {
+                box-shadow: none !important;
+                padding: 0 !important;
+            }
+            .bill-section {
+                border: none !important;
+                padding: 0 !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ─── TOAST ─── -->
+    <div id="toast" class="toast"></div>
+
+    <div class="app">
+        <!-- Header -->
+        <div class="app-header">
+            <h1>🧾 QR Bill System</h1>
+            <span class="badge" id="scanCount">0 आइटम</span>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="generate">📱 QR बनाएँ</button>
+            <button class="tab-btn" data-tab="scan">📷 स्कैन &amp; बिल</button>
+        </div>
+
+        <!-- ─── TAB 1: GENERATOR ─── -->
+        <div class="tab-content active" id="tab-generate">
+            <h2>📱 QR कोड जनरेटर</h2>
+            <div class="form-row">
+                <input type="text" id="shopName" placeholder="दुकान का नाम" value="मेरी दुकान" />
+                <input type="text" id="productName" placeholder="उत्पाद का नाम" value="चाय" />
+                <input type="number" id="productPrice" placeholder="मूल्य (₹)" value="20" step="0.01" min="0" />
+                <button class="btn btn-primary" id="generateQRBtn">✅ QR बनाएँ</button>
+            </div>
+            <div class="qr-display">
+                <div id="qrcode"></div>
+                <div class="qr-data" id="qrDataDisplay">कोई QR नहीं</div>
+            </div>
+            <div style="text-align:center; margin-top:6px;">
+                <button class="btn btn-outline btn-sm" id="downloadQRBtn">⬇️ डाउनलोड करें</button>
+            </div>
+        </div>
+
+        <!-- ─── TAB 2: SCANNER + BILL ─── -->
+        <div class="tab-content" id="tab-scan">
+            <h2>📷 स्कैन &amp; बिल</h2>
+
+            <div id="scanner-container">
+                <div id="reader" style="width:100%;"></div>
+            </div>
+
+            <div class="scanner-controls">
+                <button class="btn btn-success btn-sm" id="startScanBtn">📷 लाइव कैमरा</button>
+                <button class="btn btn-primary btn-sm" id="fileScanBtn">📸 फोटो से स्कैन</button>
+                <input type="file" id="qrFileInput" accept="image/*" style="display:none;" />
+                <button class="btn btn-danger btn-sm" id="stopScanBtn">⏹️ रोकें</button>
+            </div>
+            <div class="scanner-status" id="scannerStatus">⏸️ स्कैनर बंद है।</div>
+
+            <!-- Bill Area -->
+            <div class="bill-section">
+                <div class="bill-header-info">
+                    <span>📅 दिनांक: <strong id="billDate">-</strong></span>
+                    <span>🕒 समय: <strong id="billTime">-</strong></span>
+                </div>
+
+                <div id="billItems">
+                    <div class="empty-bill">कोई आइटम नहीं — उत्पाद स्कैन करें।</div>
+                </div>
+
+                <div class="bill-total">
+                    <span>कुल योग</span>
+                    <span class="total-amount" id="totalAmount">₹ 0.00</span>
+                </div>
+
+                <div class="whatsapp-box">
+                    <input type="tel" id="whatsappNum" placeholder="WhatsApp नंबर (जैसे 919876543210)" />
+                    <button class="btn btn-whatsapp btn-sm" id="shareWhatsappBtn">📲 WhatsApp</button>
+                </div>
+
+                <div class="bill-actions">
+                    <button class="btn btn-primary btn-sm" id="printBillBtn">🖨️ प्रिंट बिल</button>
+                    <button class="btn btn-outline btn-sm" id="clearBillBtn">🗑️ बिल साफ़ करें</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  1.  TOAST HELPER
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        const toastEl = document.getElementById('toast');
+        let toastTimeout = null;
+
+        function showToast(msg, type = 'info', duration = 3000) {
+            if (toastTimeout) { clearTimeout(toastTimeout);
+                toastTimeout = null; }
+            toastEl.textContent = msg;
+            toastEl.className = 'toast ' + type;
+            // force reflow
+            void toastEl.offsetWidth;
+            toastEl.classList.add('show');
+            toastTimeout = setTimeout(() => {
+                toastEl.classList.remove('show');
+                toastTimeout = null;
+            }, duration);
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  2.  TABS
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabContents = {
+            generate: document.getElementById('tab-generate'),
+            scan: document.getElementById('tab-scan')
+        };
+
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                tabBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const tab = btn.dataset.tab;
+                Object.keys(tabContents).forEach(k => {
+                    tabContents[k].classList.toggle('active', k === tab);
+                });
+                if (tab !== 'scan') {
+                    stopScanner();
+                } else {
+                    // if scanner was never initialized, prepare it
+                    if (!html5QrCode) {
+                        try {
+                            html5QrCode = new Html5Qrcode("reader");
+                        } catch (_) { /* will retry on start */ }
+                    }
+                }
+            });
+        });
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  3.  QR GENERATOR (using QRCode.js via CDN)
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        const shopInput = document.getElementById('shopName');
+        const productInput = document.getElementById('productName');
+        const priceInput = document.getElementById('productPrice');
+        const qrContainer = document.getElementById('qrcode');
+        const qrDataDisplay = document.getElementById('qrDataDisplay');
+        let qrcodeObj = null;
+
+        function buildQRData() {
+            const shop = shopInput.value.trim() || 'दुकान';
+            const product = productInput.value.trim() || 'उत्पाद';
+            const price = parseFloat(priceInput.value);
+            if (isNaN(price) || price <= 0) {
+                showToast('कृपया सही मूल्य डालें (₹)', 'error');
+                return null;
+            }
+            return JSON.stringify({ shop, product, price: Math.round(price * 100) / 100 });
+        }
+
+        function generateQR() {
+            const data = buildQRData();
+            if (!data) return;
+
+            // Clear container
+            qrContainer.innerHTML = '';
+
+            try {
+                if (typeof QRCode === 'undefined') {
+                    showToast('QR लाइब्रेरी लोड नहीं हुई — इंटरनेट चेक करें', 'error');
+                    return;
+                }
+                qrcodeObj = new QRCode(qrContainer, {
+                    text: data,
+                    width: 180,
+                    height: 180,
+                    colorDark: '#2d3436',
+                    colorLight: '#ffffff',
+                    correctLevel: QRCode.CorrectLevel.H
+                });
+                // show data
+                const parsed = JSON.parse(data);
+                qrDataDisplay.textContent = `${parsed.shop} | ${parsed.product} | ₹${parsed.price.toFixed(2)}`;
+                showToast('✅ QR कोड बन गया!', 'success', 1500);
+            } catch (e) {
+                console.error('QR Generate Error:', e);
+                showToast('⚠️ QR बनाने में त्रुटि: ' + e.message, 'error');
+            }
+        }
+
+        document.getElementById('generateQRBtn').addEventListener('click', generateQR);
+
+        // Auto-generate on load (with small delay to ensure lib is ready)
+        function initQR() {
+            if (typeof QRCode !== 'undefined') {
+                generateQR();
+            } else {
+                showToast('QR लाइब्रेरी लोड हो रही है…', 'info', 2000);
+                setTimeout(initQR, 500);
+            }
+        }
+        // Wait for DOM + libs
+        if (document.readyState === 'complete') {
+            setTimeout(initQR, 300);
+        } else {
+            window.addEventListener('load', () => setTimeout(initQR, 300));
+        }
+
+        // Download QR
+        document.getElementById('downloadQRBtn').addEventListener('click', () => {
+            const img = qrContainer.querySelector('img');
+            const canvas = qrContainer.querySelector('canvas');
+            let src = null;
+            if (img && img.src) {
+                src = img.src;
+            } else if (canvas) {
+                try {
+                    src = canvas.toDataURL('image/png');
+                } catch (_) {}
+            }
+            if (src) {
+                const a = document.createElement('a');
+                a.href = src;
+                const name = (productInput.value.trim() || 'QR') + '_QR.png';
+                a.download = name;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                showToast('⬇️ QR डाउनलोड हो रहा है', 'success', 1500);
+            } else {
+                showToast('⚠️ पहले QR कोड बनाएँ', 'error');
+            }
+        });
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  4.  SCANNER & BILL
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        let html5QrCode = null;
+        let isScanning = false;
+        let scannedItems = [];
+
+        // load from localStorage
+        try {
+            const stored = localStorage.getItem('qr_bill_items');
+            if (stored) {
+                const parsed = JSON.parse(stored);
+                if (Array.isArray(parsed)) scannedItems = parsed;
+            }
+        } catch (_) {}
+
+        const scannerStatus = document.getElementById('scannerStatus');
+
+        function saveAndRender() {
+            try {
+                localStorage.setItem('qr_bill_items', JSON.stringify(scannedItems));
+            } catch (_) {}
+            renderBill();
+        }
+
+        function processQRData(decodedText) {
+            try {
+                const data = JSON.parse(decodedText);
+                // validate
+                if (data && typeof data.shop === 'string' && typeof data.product === 'string' &&
+                    typeof data.price === 'number' && data.price > 0) {
+
+                    const price = Math.round(data.price * 100) / 100;
+                    const existing = scannedItems.find(i =>
+                        i.product === data.product && i.shop === data.shop
+                    );
+                    if (existing) {
+                        existing.qty += 1;
+                        showToast(`➕ ${data.product} (+1)`, 'info', 1200);
+                    } else {
+                        scannedItems.push({
+                            shop: data.shop,
+                            product: data.product,
+                            price: price,
+                            qty: 1
+                        });
+                        showToast(`✅ ${data.product} जोड़ा गया`, 'success', 1200);
+                    }
+                    saveAndRender();
+                    scannerStatus.textContent = `✅ जोड़ा: ${data.product} (${data.shop})`;
+                } else {
+                    throw new Error('अमान्य डेटा');
+                }
+            } catch (e) {
+                console.warn('QR parse error:', e);
+                scannerStatus.textContent = '⚠️ अमान्य QR कोड!';
+                showToast('⚠️ यह QR बिल के लिए नहीं है', 'error', 2000);
+            }
+        }
+
+        // ── start scanner ──
+        function startScanner() {
+            if (isScanning) {
+                showToast('⚠️ स्कैनर पहले से चालू है', 'info', 1500);
+                return;
+            }
+
+            // Check if Html5Qrcode is available
+            if (typeof Html5Qrcode === 'undefined') {
+                showToast('❌ स्कैनर लाइब्रेरी लोड नहीं हुई — इंटरनेट चेक करें', 'error');
+                return;
+            }
+
+            // Re-initialize if needed
+            if (!html5QrCode) {
+                try {
+                    html5QrCode = new Html5Qrcode("reader");
+                } catch (e) {
+                    showToast('❌ स्कैनर init त्रुटि: ' + e.message, 'error');
+                    return;
+                }
+            }
+
+            const config = {
+                fps: 10,
+                qrbox: { width: 240, height: 240 },
+                aspectRatio: 1.0
+            };
+
+            html5QrCode.start({ facingMode: "environment" }, config,
+                // onSuccess
+                (text) => {
+                    processQRData(text);
+                    // keep scanning
+                },
+                // onError (ignored)
+                () => {}
+            ).then(() => {
+                isScanning = true;
+                scannerStatus.textContent = '📷 कैमरा चालू है — QR स्कैन करें';
+                showToast('📷 कैमरा चालू', 'info', 1500);
+            }).catch((err) => {
+                console.error('Camera start error:', err);
+                scannerStatus.textContent = '⚠️ कैमरा नहीं खुल सका — "फोटो से स्कैन" आज़माएँ';
+                showToast('⚠️ कैमरा एक्सेस ब्लॉक है', 'error', 3000);
+                // fallback: try file scanner
+            });
+        }
+
+        function stopScanner() {
+            if (html5QrCode && isScanning) {
+                html5QrCode.stop()
+                    .then(() => {
+                        isScanning = false;
+                        scannerStatus.textContent = '⏸️ कैमरा बंद है।';
+                        showToast('⏹️ स्कैनर बंद', 'info', 1200);
+                    })
+                    .catch(() => {
+                        isScanning = false;
+                        scannerStatus.textContent = '⏸️ कैमरा बंद है।';
+                    });
+            } else {
+                isScanning = false;
+                scannerStatus.textContent = '⏸️ कैमरा बंद है।';
+            }
+        }
+
+        // ── file scan ──
+        document.getElementById('fileScanBtn').addEventListener('click', () => {
+            document.getElementById('qrFileInput').click();
+        });
+
+        document.getElementById('qrFileInput').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            if (typeof Html5Qrcode === 'undefined') {
+                showToast('❌ स्कैनर लाइब्रेरी लोड नहीं हुई', 'error');
+                return;
+            }
+            if (!html5QrCode) {
+                try {
+                    html5QrCode = new Html5Qrcode("reader");
+                } catch (err) {
+                    showToast('❌ स्कैनर init त्रुटि', 'error');
+                    return;
+                }
+            }
+            showToast('📸 फोटो स्कैन हो रहा है…', 'info', 2000);
+            html5QrCode.scanFile(file, true)
+                .then(decoded => {
+                    processQRData(decoded);
+                    e.target.value = ''; // reset
+                })
+                .catch(err => {
+                    console.warn('File scan error:', err);
+                    showToast('⚠️ फोटो में QR नहीं मिला', 'error', 2500);
+                    scannerStatus.textContent = '⚠️ QR नहीं पहचाना गया';
+                    e.target.value = '';
+                });
+        });
+
+        document.getElementById('startScanBtn').addEventListener('click', startScanner);
+        document.getElementById('stopScanBtn').addEventListener('click', stopScanner);
+
+        // ── render bill ──
+        function renderBill() {
+            const now = new Date();
+            document.getElementById('billDate').textContent = now.toLocaleDateString('hi-IN');
+            document.getElementById('billTime').textContent = now.toLocaleTimeString('hi-IN', {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+
+            const container = document.getElementById('billItems');
+            const totalEl = document.getElementById('totalAmount');
+            const countEl = document.getElementById('scanCount');
+
+            if (scannedItems.length === 0) {
+                container.innerHTML = `<div class="empty-bill">कोई आइटम नहीं — उत्पाद स्कैन करें।</div>`;
+                totalEl.textContent = '₹ 0.00';
+                countEl.textContent = '0 आइटम';
+                return;
+            }
+
+            let html = '';
+            let total = 0;
+            let totalQty = 0;
+
+            scannedItems.forEach((item, index) => {
+                const sub = item.price * item.qty;
+                total += sub;
+                totalQty += item.qty;
+                html += `
+                        <div class="bill-item">
+                            <div class="item-info">
+                                <strong>${escHtml(item.product)}</strong>
+                                <small>${escHtml(item.shop)} · ₹${item.price.toFixed(2)}</small>
+                            </div>
+                            <div class="item-actions">
+                                <div class="qty-controls">
+                                    <button class="qty-btn" data-index="${index}" data-delta="-1">−</button>
+                                    <span>${item.qty}</span>
+                                    <button class="qty-btn" data-index="${index}" data-delta="1">+</button>
+                                </div>
+                                <strong>₹${sub.toFixed(2)}</strong>
+                                <button class="del-btn" data-index="${index}">🗑️</button>
+                            </div>
+                        </div>
+                    `;
+            });
+
+            container.innerHTML = html;
+            totalEl.textContent = '₹ ' + total.toFixed(2);
+            countEl.textContent = totalQty + ' आइटम';
+
+            // Attach event listeners to dynamic buttons
+            container.querySelectorAll('.qty-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const idx = parseInt(this.dataset.index);
+                    const delta = parseInt(this.dataset.delta);
+                    updateQty(idx, delta);
+                });
+            });
+            container.querySelectorAll('.del-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const idx = parseInt(this.dataset.index);
+                    deleteItem(idx);
+                });
+            });
+        }
+
+        // simple escape
+        function escHtml(str) {
+            if (!str) return '';
+            return String(str).replace(/[&<>"]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                if (m === '"') return '&quot;';
+                return m;
+            });
+        }
+
+        function updateQty(i, change) {
+            if (i < 0 || i >= scannedItems.length) return;
+            scannedItems[i].qty += change;
+            if (scannedItems[i].qty <= 0) {
+                scannedItems.splice(i, 1);
+            }
+            saveAndRender();
+        }
+
+        function deleteItem(i) {
+            if (i < 0 || i >= scannedItems.length) return;
+            scannedItems.splice(i, 1);
+            saveAndRender();
+            showToast('🗑️ आइटम हटा दिया गया', 'info', 1200);
+        }
+
+        // Clear bill
+        document.getElementById('clearBillBtn').addEventListener('click', () => {
+            if (scannedItems.length === 0) {
+                showToast('बिल पहले से खाली है', 'info', 1200);
+                return;
+            }
+            if (confirm('सभी आइटम हटाएँ?')) {
+                scannedItems = [];
+                saveAndRender();
+                showToast('🗑️ बिल साफ़ हो गया', 'success', 1500);
+            }
+        });
+
+        // ── print bill ──
+        document.getElementById('printBillBtn').addEventListener('click', () => {
+            if (scannedItems.length === 0) {
+                showToast('⚠️ बिल खाली है — कुछ आइटम स्कैन करें', 'error');
+                return;
+            }
+            window.print();
+        });
+
+        // ── WhatsApp share ──
+        document.getElementById('shareWhatsappBtn').addEventListener('click', () => {
+            if (scannedItems.length === 0) {
+                showToast('⚠️ बिल खाली है — पहले आइटम स्कैन करें', 'error');
+                return;
+            }
+
+            let number = document.getElementById('whatsappNum').value.trim();
+            // clean number: remove +, spaces, etc.
+            number = number.replace(/[^0-9]/g, '');
+            if (!number) {
+                showToast('⚠️ कृपया WhatsApp नंबर डालें (जैसे 919876543210)', 'error');
+                return;
+            }
+            // if number starts with 0, remove it
+            if (number.startsWith('0')) number = number.slice(1);
+            // if number doesn't start with 91, add it (India)
+            if (!number.startsWith('91')) number = '91' + number;
+
+            // Build bill text
+            let msg = '🧾 *बिल विवरण*\n';
+            msg += `📅 ${document.getElementById('billDate').textContent}  ${document.getElementById('billTime').textContent}\n`;
+            msg += '─'.repeat(20) + '\n';
+            let total = 0;
+            scannedItems.forEach(item => {
+                const sub = item.price * item.qty;
+                total += sub;
+                msg += `${item.product} × ${item.qty}  ₹${sub.toFixed(2)}\n`;
+            });
+            msg += '─'.repeat(20) + '\n';
+            msg += `💰 *कुल: ₹${total.toFixed(2)}*\n`;
+            msg += '─'.repeat(20) + '\n';
+            msg += '🙏 धन्यवाद!';
+
+            const url = `https://wa.me/${number}?text=${encodeURIComponent(msg)}`;
+            window.open(url, '_blank');
+            showToast('📲 WhatsApp खुल रहा है…', 'success', 2000);
+        });
+
+        // ── initial render ──
+        renderBill();
+
+        // ── clean up scanner when leaving page ──
+        window.addEventListener('beforeunload', () => {
+            if (html5QrCode && isScanning) {
+                try { html5QrCode.stop(); } catch (_) {}
+            }
+        });
+
+        // ── keyboard shortcut: Enter to generate QR ──
+        document.querySelectorAll('#shopName, #productName, #productPrice').forEach(input => {
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    document.getElementById('generateQRBtn').click();
+                }
+            });
+        });
+
+        console.log('🧾 QR Bill System ready ✅');
+        console.log('📦 Items loaded:', scannedItems.length);
+    </script>
+</body>
+</html>
