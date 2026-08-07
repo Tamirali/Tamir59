@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📚 महासंग्रह — नई पीढ़ी</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body,
+        html {
+            width: 100%;
+            min-height: 100vh;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+            background: #0a0a14;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px;
+        }
+
+        .mobile-screen {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 500px;
+            min-height: 95vh;
+            border: 2px solid rgba(0, 255, 255, 0.25);
+            border-radius: 32px;
+            background: radial-gradient(ellipse at 30% 20%, #1b0f30, #070712 80%);
+            box-shadow: 0 0 80px rgba(0, 150, 255, 0.15), 0 0 160px rgba(255, 0, 150, 0.08);
+            backdrop-filter: blur(2px);
+            padding: 18px 16px 30px 16px;
+            overflow-y: auto;
+        }
+
+        /* 🏷️ बैनर */
+        .banner {
+            width: 100%;
+            text-align: center;
+            padding: 16px 20px;
+            background: rgba(8, 8, 30, 0.65);
+            backdrop-filter: blur(14px);
+            border-radius: 60px;
+            border: 1.5px solid rgba(0, 255, 255, 0.4);
+            box-shadow: 0 0 50px rgba(0, 255, 255, 0.15), inset 0 0 50px rgba(255, 0, 200, 0.05);
+            animation: borderPulse 3s infinite alternate;
+            margin-bottom: 24px;
+            flex-shrink: 0;
+        }
+
+        @keyframes borderPulse {
+            0% {
+                border-color: rgba(0, 255, 255, 0.3);
+                box-shadow: 0 0 30px rgba(0, 255, 255, 0.1);
+            }
+            100% {
+                border-color: rgba(255, 0, 200, 0.6);
+                box-shadow: 0 0 60px rgba(255, 0, 200, 0.25), 0 0 120px rgba(0, 200, 255, 0.1);
+            }
+        }
+
+        .banner h2 {
+            font-size: 32px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            background: linear-gradient(90deg, #ff0080, #ff8c00, #40e0d0, #ff0080);
+            background-size: 300% 100%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientShift 3s ease infinite;
+            margin-bottom: 4px;
+        }
+
+        @keyframes gradientShift {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .banner p {
+            color: #b0e0ff;
+            font-size: 15px;
+            font-weight: 600;
+            background: rgba(0, 0, 0, 0.4);
+            display: inline-block;
+            padding: 4px 22px;
+            border-radius: 40px;
+            border: 1px solid rgba(0, 200, 255, 0.3);
+            backdrop-filter: blur(4px);
+            letter-spacing: 1px;
+            box-shadow: 0 0 20px rgba(0, 150, 255, 0.2);
+        }
+
+        /* 📚 लाइब्रेरी सेक्शन */
+        .library-section {
+            background: linear-gradient(135deg, #100c22, #1f1140);
+            border-radius: 28px;
+            padding: 18px 14px;
+            box-shadow: inset 0 10px 40px rgba(255, 0, 200, 0.05);
+            border: 2px solid rgba(255, 200, 0, 0.10);
+            flex: 1;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 14px;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .controls .title {
+            color: #d4bfff;
+            font-size: 17px;
+            font-weight: 700;
+            text-shadow: 0 0 20px rgba(180, 130, 255, 0.3);
+            background: rgba(0, 0, 0, 0.3);
+            padding: 6px 18px;
+            border-radius: 40px;
+            border: 1px solid rgba(200, 150, 255, 0.2);
+            backdrop-filter: blur(4px);
+            margin-right: auto;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        /* सर्च बॉक्स */
+        .search-group {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .search-group input {
+            flex: 1;
+            padding: 12px 18px;
+            border-radius: 60px;
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            background: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            font-size: 16px;
+            outline: none;
+            transition: border 0.3s;
+            min-width: 100px;
+        }
+
+        .search-group input:focus {
+            border-color: #ff8800;
+            box-shadow: 0 0 30px rgba(255, 136, 0, 0.2);
+        }
+
+        .search-group input::placeholder {
+            color: #aaa;
+        }
+
+        .search-btn {
+            background: linear-gradient(135deg, #00c6ff, #0072ff);
+            color: #fff;
+            border: none;
+            border-radius: 60px;
+            padding: 12px 24px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.25s;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
+            font-size: 16px;
+        }
+
+        .search-btn:hover {
+            transform: scale(1.06);
+            box-shadow: 0 0 40px #0072ff, 0 0 80px #00c6ff;
+        }
+
+        /* 🔘 एडिट/सेव/ऐड बटन */
+        .edit-btn,
+        .save-btn,
+        .add-btn {
+            font-weight: 800;
+            border: none;
+            border-radius: 60px;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.2, 0.9, 0.4, 1);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
+            padding: 12px 22px;
+            font-size: 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .edit-btn {
+            background: linear-gradient(135deg, #ffaa33, #ff5500);
+            color: #fff;
+            border: 2px solid #ffcc44;
+            text-shadow: 0 0 15px rgba(255, 200, 0, 0.4);
+        }
+
+        .edit-btn:hover {
+            transform: scale(1.06) translateY(-2px);
+            box-shadow: 0 0 50px #ff8800, 0 0 100px #ff4400;
+        }
+
+        .edit-btn.active {
+            background: linear-gradient(135deg, #00cc88, #00aa66);
+            border-color: #88ffbb;
+            box-shadow: 0 0 30px #00ff88;
+        }
+
+        .save-btn {
+            background: linear-gradient(135deg, #00f5a0, #00b4f5);
+            color: #0a0a1a;
+            border: 2px solid #88ffdd;
+            display: none;
+            text-shadow: 0 0 15px rgba(0, 255, 200, 0.4);
+        }
+
+        .save-btn:hover {
+            transform: scale(1.06) translateY(-2px);
+            box-shadow: 0 0 50px #00ffaa, 0 0 100px #00ccff;
+        }
+
+        .save-btn.show {
+            display: inline-flex;
+        }
+
+        .add-btn {
+            background: linear-gradient(135deg, #a855f7, #7c3aed);
+            color: #fff;
+            border: 2px solid #c084fc;
+            text-shadow: 0 0 15px rgba(168, 85, 247, 0.4);
+        }
+
+        .add-btn:hover {
+            transform: scale(1.06) translateY(-2px);
+            box-shadow: 0 0 50px #a855f7, 0 0 100px #7c3aed;
+        }
+
+        /* 📖 चैप्टर बटन */
+        .horizontal-scroll-container {
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            padding: 8px 4px 16px 4px;
+            scroll-behavior: smooth;
+            scrollbar-width: thin;
+            scrollbar-color: #ff44aa #1a0a2e;
+            flex: 1;
+            align-items: flex-start;
+            min-height: 70px;
+        }
+
+        .horizontal-scroll-container::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .horizontal-scroll-container::-webkit-scrollbar-track {
+            background: #110a22;
+            border-radius: 20px;
+        }
+
+        .horizontal-scroll-container::-webkit-scrollbar-thumb {
+            background: linear-gradient(90deg, #ff8800, #ff44aa, #00ccff);
+            border-radius: 20px;
+        }
+
+        .library-hz-btn {
+            flex: 0 0 auto;
+            background: linear-gradient(145deg, #22113a, #110722);
+            color: #fff;
+            padding: 18px 30px;
+            border-radius: 60px;
+            font-size: 20px;
+            font-weight: 700;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            min-width: 140px;
+            text-align: center;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+            transition: all 0.2s ease;
+            letter-spacing: 0.5px;
+            user-select: none;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .library-hz-btn:nth-child(6n+1) {
+            border-color: #ff6b6b;
+            box-shadow: 0 0 30px rgba(255, 80, 80, 0.15);
+        }
+        .library-hz-btn:nth-child(6n+2) {
+            border-color: #ffb347;
+            box-shadow: 0 0 30px rgba(255, 180, 50, 0.15);
+        }
+        .library-hz-btn:nth-child(6n+3) {
+            border-color: #ffd93d;
+            box-shadow: 0 0 30px rgba(255, 220, 60, 0.15);
+        }
+        .library-hz-btn:nth-child(6n+4) {
+            border-color: #6bcb77;
+            box-shadow: 0 0 30px rgba(80, 220, 100, 0.15);
+        }
+        .library-hz-btn:nth-child(6n+5) {
+            border-color: #4d96ff;
+            box-shadow: 0 0 30px rgba(70, 150, 255, 0.15);
+        }
+        .library-hz-btn:nth-child(6n+6) {
+            border-color: #c084fc;
+            box-shadow: 0 0 30px rgba(155, 80, 200, 0.15);
+        }
+
+        .library-hz-btn:hover {
+            transform: scale(1.03) translateY(-2px);
+            box-shadow: 0 12px 40px rgba(255, 200, 0, 0.2);
+        }
+
+        .library-hz-btn.editing {
+            background: linear-gradient(145deg, #2a1a4a, #1a0a3a);
+            border: 2px dashed #ffcc44 !important;
+            box-shadow: 0 0 40px rgba(255, 200, 0, 0.3), inset 0 0 20px rgba(255, 200, 0, 0.1);
+            cursor: text;
+            user-select: text;
+            animation: glowEdit 1.2s infinite alternate;
+        }
+
+        @keyframes glowEdit {
+            0% {
+                box-shadow: 0 0 20px rgba(255, 200, 0, 0.2);
+            }
+            100% {
+                box-shadow: 0 0 60px rgba(255, 200, 0, 0.5), 0 0 120px rgba(255, 100, 0, 0.2);
+            }
+        }
+
+        /* सर्च रिजल्ट हाइलाइट */
+        .library-hz-btn.highlight {
+            border: 4px solid #ffcc00 !important;
+            box-shadow: 0 0 60px #ffcc00, 0 0 120px #ff8800 !important;
+            transform: scale(1.08);
+            transition: all 0.3s ease;
+        }
+
+        @media (max-width: 420px) {
+            .mobile-screen {
+                padding: 12px 10px 20px 10px;
+                border-radius: 24px;
+            }
+            .banner h2 {
+                font-size: 24px;
+            }
+            .banner p {
+                font-size: 13px;
+                padding: 3px 16px;
+            }
+            .edit-btn,
+            .save-btn,
+            .add-btn,
+            .search-btn {
+                padding: 10px 16px;
+                font-size: 14px;
+            }
+            .library-hz-btn {
+                padding: 14px 20px;
+                font-size: 16px;
+                min-width: 110px;
+            }
+            .controls .title {
+                font-size: 13px;
+                padding: 4px 12px;
+            }
+            .search-group input {
+                padding: 10px 14px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="mobile-screen">
+
+        <!-- 🏷️ बैनर -->
+        <div class="banner">
+            <h2>✦ LOCAL MARKET ✦</h2>
+            <p>⚡ PRESENT BY TAMIR ALI | +91 8797221991 ⚡</p>
+        </div>
+
+        <!-- 📚 लाइब्रेरी -->
+        <div class="library-section">
+            <div class="controls">
+                <span class="title">📚 महासंग्रह — चैप्टर</span>
+                <div class="btn-group">
+                    <button class="edit-btn" id="editBtn">✏️ Edit</button>
+                    <button class="save-btn" id="saveBtn">💾 Save</button>
+                    <button class="add-btn" id="addBtn">➕ Add</button>
+                </div>
+            </div>
+
+            <!-- सर्च बॉक्स -->
+            <div class="search-group">
+                <input type="text" id="searchInput" placeholder="🔍 नंबर या नाम खोजें...">
+                <button class="search-btn" id="searchBtn">खोज</button>
+            </div>
+
+            <div class="horizontal-scroll-container" id="hzScrollContainer"></div>
+        </div>
+
+    </div>
+
+    <script>
+        (function() {
+            'use strict';
+
+            const TOTAL_FILES = 59;
+            const container = document.getElementById('hzScrollContainer');
+            const editBtn = document.getElementById('editBtn');
+            const saveBtn = document.getElementById('saveBtn');
+            const addBtn = document.getElementById('addBtn');
+            const searchInput = document.getElementById('searchInput');
+            const searchBtn = document.getElementById('searchBtn');
+
+            let isEditMode = false;
+            let chapterNames = JSON.parse(localStorage.getItem('myChapters')) ||
+                Array.from({ length: TOTAL_FILES }, (_, i) => `📖 चैप्टर ${i + 1}`);
+
+            // ========== रेंडर ==========
+            function renderButtons() {
+                container.innerHTML = '';
+                chapterNames.forEach((name, i) => {
+                    const btn = document.createElement('a');
+                    btn.className = 'library-hz-btn';
+                    btn.href = `index${i + 1}.html`;
+                    btn.innerText = name;
+                    btn.dataset.index = i + 1; // नंबर स्टोर करें
+
+                    if (isEditMode) {
+                        btn.classList.add('editing');
+                        btn.contentEditable = "true";
+                    }
+
+                    btn.addEventListener('click', function(e) {
+                        if (isEditMode) {
+                            e.preventDefault();
+                        }
+                    });
+
+                    container.appendChild(btn);
+                });
+            }
+            renderButtons();
+
+            // ========== Edit Mode ==========
+            function toggleEdit() {
+                isEditMode = !isEditMode;
+                if (isEditMode) {
+                    editBtn.classList.add('active');
+                    editBtn.textContent = '🔒 Lock';
+                    saveBtn.classList.add('show');
+                    alert('✏️ अब आप किसी भी चैप्टर नाम पर क्लिक करके उसे टाइप करके बदल सकते हैं। बदलने के बाद "Save" बटन दबाएँ।');
+                } else {
+                    editBtn.classList.remove('active');
+                    editBtn.textContent = '✏️ Edit';
+                    saveBtn.classList.remove('show');
+                }
+                renderButtons();
+            }
+
+            // ========== Save ==========
+            function saveChapters() {
+                const btns = document.querySelectorAll('.library-hz-btn');
+                const newNames = Array.from(btns).map(b => b.innerText);
+                localStorage.setItem('myChapters', JSON.stringify(newNames));
+                chapterNames = newNames;
+
+                if (isEditMode) {
+                    isEditMode = false;
+                    editBtn.classList.remove('active');
+                    editBtn.textContent = '✏️ Edit';
+                    saveBtn.classList.remove('show');
+                }
+
+                alert('✅ सभी चैप्टर के नाम सेव हो गए!');
+                renderButtons();
+            }
+
+            // ========== Add Chapter ==========
+            function addChapter() {
+                const newIndex = chapterNames.length + 1;
+                const newName = prompt(`नए चैप्टर का नाम लिखें (यह index${newIndex}.html से जुड़ेगा):`, `📖 चैप्टर ${newIndex}`);
+                if (newName && newName.trim() !== '') {
+                    chapterNames.push(newName.trim());
+                    localStorage.setItem('myChapters', JSON.stringify(chapterNames));
+                    renderButtons();
+                }
+            }
+
+            // ========== सर्च फंक्शन ==========
+            function performSearch() {
+                const query = searchInput.value.trim();
+                if (query === '') {
+                    alert('कृपया कुछ खोजें (नंबर या नाम)।');
+                    return;
+                }
+
+                const btns = document.querySelectorAll('.library-hz-btn');
+                // पहले सभी हाइलाइट हटाएँ
+                btns.forEach(b => b.classList.remove('highlight'));
+
+                let found = false;
+                // पहले नंबर के लिए खोजें (अगर query पूरी तरह से नंबर है)
+                const num = parseInt(query, 10);
+                if (!isNaN(num) && num >= 1 && num <= chapterNames.length) {
+                    // सीधे उस इंडेक्स वाला बटन ढूँढें
+                    btns.forEach(b => {
+                        if (parseInt(b.dataset.index, 10) === num) {
+                            b.classList.add('highlight');
+                            b.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+                            found = true;
+                        }
+                    });
+                    if (found) {
+                        searchInput.value = '';
+                        return;
+                    }
+                }
+
+                // अगर नंबर नहीं मिला, तो नाम में सबस्ट्रिंग खोजें (case-insensitive)
+                const lowerQuery = query.toLowerCase();
+                btns.forEach(b => {
+                    const text = b.innerText.toLowerCase();
+                    if (text.includes(lowerQuery)) {
+                        b.classList.add('highlight');
+                        b.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+                        found = true;
+                    }
+                });
+
+                if (!found) {
+                    alert(`"${query}" से मेल खाने वाला कोई चैप्टर नहीं मिला।`);
+                } else {
+                    searchInput.value = '';
+                }
+            }
+
+            // ========== इवेंट ==========
+            editBtn.addEventListener('click', toggleEdit);
+            saveBtn.addEventListener('click', saveChapters);
+            addBtn.addEventListener('click', addChapter);
+            searchBtn.addEventListener('click', performSearch);
+
+            // एंटर दबाने पर भी सर्च हो
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    performSearch();
+                }
+            });
+
+        })();
+    </script>
+</body>
+</html>
