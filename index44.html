@@ -1,0 +1,427 @@
+
+<!DOCTYPE html> 
+<html lang="hi"> 
+<head> 
+    <meta charset="UTF-8" /> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes" /> 
+    <title>स्मार्ट ज़मीन मापन - सटीक एवं आसान</title> 
+    <style> 
+        :root { 
+            --primary: #0f3b2b; 
+            --secondary: #1e6b4a; 
+            --accent: #f5b342; 
+            --bg: #f1f7f3; 
+            --card: #ffffff; 
+            --text: #1a2a1f; 
+            --border: #c8d9cf; 
+            --shadow: 0 8px 30px rgba(0, 20, 10, 0.10); 
+            --radius: 16px; 
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+        } 
+ 
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+        } 
+ 
+        body { 
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
+            background: var(--bg); 
+            color: var(--text); 
+            padding: 12px; 
+            min-height: 100vh; 
+        } 
+ 
+        .container { 
+            max-width: 960px; 
+            margin: 0 auto; 
+        } 
+ 
+        .header { 
+            background: linear-gradient(145deg, var(--primary), var(--secondary)); 
+            color: #fff; 
+            padding: 20px; 
+            border-radius: var(--radius); 
+            text-align: center; 
+            box-shadow: var(--shadow); 
+            margin-bottom: 18px; 
+        } 
+        .header h1 { 
+            font-size: 24px; 
+            font-weight: 700; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 10px; 
+            flex-wrap: wrap; 
+        } 
+        .header h1 span { 
+            background: var(--accent); 
+            color: var(--primary); 
+            font-size: 14px; 
+            padding: 2px 14px; 
+            border-radius: 40px; 
+        } 
+ 
+        .shape-selector { 
+            display: flex; 
+            gap: 10px; 
+            flex-wrap: wrap; 
+            margin-bottom: 18px; 
+            justify-content: center; 
+        } 
+        .shape-btn { 
+            flex: 1; 
+            min-width: 85px; 
+            max-width: 130px; 
+            background: #fff; 
+            border: 2px solid var(--border); 
+            border-radius: var(--radius); 
+            padding: 12px 8px; 
+            text-align: center; 
+            cursor: pointer; 
+            transition: var(--transition); 
+            font-weight: 600; 
+            font-size: 14px; 
+        } 
+        .shape-btn .shape-icon { 
+            font-size: 28px; 
+            display: block; 
+            margin-bottom: 4px; 
+        } 
+        .shape-btn.active { 
+            border-color: var(--secondary); 
+            background: #eafaf1; 
+            box-shadow: 0 0 0 3px rgba(30, 107, 74, 0.2); 
+        } 
+ 
+        .card { 
+            background: var(--card); 
+            border-radius: var(--radius); 
+            padding: 20px; 
+            box-shadow: var(--shadow); 
+            border: 1px solid #e8f0ec; 
+            margin-bottom: 18px; 
+        } 
+        .card-title { 
+            font-size: 18px; 
+            font-weight: 700; 
+            color: var(--primary); 
+            margin-bottom: 14px; 
+        } 
+ 
+        .form-row { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 14px; 
+        } 
+        @media (max-width: 480px) { 
+            .form-row { grid-template-columns: 1fr; } 
+        } 
+        .form-group { 
+            margin-bottom: 12px; 
+        } 
+        .form-group label { 
+            display: block; 
+            font-weight: 600; 
+            font-size: 14px; 
+            color: var(--primary); 
+            margin-bottom: 4px; 
+        } 
+        .form-group input, .form-group select { 
+            width: 100%; 
+            padding: 12px 14px; 
+            border: 1.5px solid var(--border); 
+            border-radius: 10px; 
+            font-size: 16px; 
+            background: #fafdfb; 
+        } 
+ 
+        .visual-area { 
+            background: #f4fbf7; 
+            border-radius: 12px; 
+            padding: 18px; 
+            text-align: center; 
+            border: 2px dashed #b7dfc9; 
+            margin-bottom: 14px; 
+        } 
+        #canvasMap { 
+            max-width: 100%; 
+            height: auto; 
+            background: #ffffff; 
+            border-radius: 8px; 
+            border: 1px solid var(--border); 
+        } 
+ 
+        .result-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); 
+            gap: 10px; 
+        } 
+        .result-item { 
+            background: #f6fcf9; 
+            border-radius: 10px; 
+            padding: 12px 10px; 
+            text-align: center; 
+            border: 1px solid #d8ece2; 
+        } 
+        .result-item .r-label { 
+            font-size: 12px; 
+            color: #4f6f5e; 
+            display: block; 
+        } 
+        .result-item .r-value { 
+            font-size: 18px; 
+            font-weight: 800; 
+            color: var(--primary); 
+            margin-top: 2px; 
+            display: block; 
+        } 
+ 
+        .quick-actions { 
+            display: flex; 
+            gap: 10px; 
+            flex-wrap: wrap; 
+            margin-top: 14px; 
+        } 
+        .quick-actions button { 
+            flex: 1; 
+            padding: 10px 12px; 
+            border: 1.5px solid var(--border); 
+            border-radius: 10px; 
+            background: #fff; 
+            font-weight: 600; 
+            cursor: pointer; 
+        } 
+ 
+        @media print { 
+            .shape-selector, .quick-actions, button { display: none !important; } 
+            .card { box-shadow: none; border: 1px solid #ccc; } 
+        } 
+    </style> 
+</head> 
+<body> 
+ 
+    <div class="container"> 
+ 
+        <header class="header"> 
+            <h1>🌾 स्मार्ट ज़मीन मापन <span>सटीक · वैज्ञानिक</span></h1> 
+            <p>हर प्रकार की भूमि का सही और त्वरित हिसाब</p> 
+        </header> 
+ 
+        <!-- आकृति चयन --> 
+        <div class="shape-selector"> 
+            <button class="shape-btn active" data-shape="rectangle" onclick="selectShape('rectangle')"> 
+                <span class="shape-icon">▭</span> आयत 
+            </button> 
+            <button class="shape-btn" data-shape="triangle" onclick="selectShape('triangle')"> 
+                <span class="shape-icon">△</span> त्रिभुज 
+            </button> 
+            <button class="shape-btn" data-shape="circle" onclick="selectShape('circle')"> 
+                <span class="shape-icon">◯</span> वृत्त 
+            </button> 
+            <button class="shape-btn" data-shape="irregular" onclick="selectShape('irregular')"> 
+                <span class="shape-icon">⬡</span> विषम (4 भुजा) 
+            </button> 
+        </div> 
+ 
+        <!-- इनपुट कार्ड --> 
+        <div class="card"> 
+            <div class="card-title">📐 नाप दर्ज करें</div> 
+ 
+            <div id="shapeInputs"> 
+                <!-- आयत --> 
+                <div class="form-row" id="rectInputs"> 
+                    <div class="form-group"> 
+                        <label>लंबाई</label> 
+                        <input type="number" id="length" value="120" step="any" /> 
+                    </div> 
+                    <div class="form-group"> 
+                        <label>चौड़ाई</label> 
+                        <input type="number" id="width" value="60" step="any" /> 
+                    </div> 
+                </div> 
+ 
+                <!-- त्रिभुज --> 
+                <div class="form-row" id="triInputs" style="display:none;"> 
+                    <div class="form-group"><label>भुजा A</label><input type="number" id="sideA" value="100" step="any" /></div> 
+                    <div class="form-group"><label>भुजा B</label><input type="number" id="sideB" value="80" step="any" /></div> 
+                    <div class="form-group"><label>भुजा C</label><input type="number" id="sideC" value="60" step="any" /></div> 
+                </div> 
+ 
+                <!-- वृत्त --> 
+                <div class="form-row" id="circInputs" style="display:none;"> 
+                    <div class="form-group"><label>त्रिज्या (Radius)</label><input type="number" id="radius" value="50" step="any" /></div> 
+                </div> 
+ 
+                <!-- विषम (Heron's Formula) --> 
+                <div id="irregInputs" style="display:none;"> 
+                    <div class="form-row"> 
+                        <div class="form-group"><label>भुजा A</label><input type="number" id="irrA" value="100" step="any" /></div> 
+                        <div class="form-group"><label>भुजा B</label><input type="number" id="irrB" value="80" step="any" /></div> 
+                    </div> 
+                    <div class="form-row"> 
+                        <div class="form-group"><label>भुजा C</label><input type="number" id="irrC" value="110" step="any" /></div> 
+                        <div class="form-group"><label>भुजा D</label><input type="number" id="irrD" value="70" step="any" /></div> 
+                    </div> 
+                    <div class="form-group"> 
+                        <label>विकर्ण / कोना (Diagonal - Tirse Naap)</label> 
+                        <input type="number" id="irrDiag" value="120" step="any" /> 
+                    </div> 
+                </div> 
+            </div> 
+ 
+            <div class="form-group" style="margin-top: 10px;"> 
+                <label for="unit">इनपुट मापक इकाई (Input Unit)</label> 
+                <select id="unit"> 
+                    <option value="feet" selected>फीट (Feet)</option> 
+                    <option value="meter">मीटर (Meter)</option> 
+                    <option value="gaj">गज (Yard)</option> 
+                    <option value="kadi">कड़ी (Link)</option> 
+                </select> 
+            </div> 
+ 
+            <div class="quick-actions"> 
+                <button onclick="window.print()">🖨️ रिपोर्ट प्रिंट / PDF डाउनलोड</button> 
+            </div> 
+        </div> 
+ 
+        <!-- दृश्य कार्ड (Dynamic Map Canvas) --> 
+        <div class="card"> 
+            <div class="card-title">🖼️ ज़मीन का लाइव नक्शा</div> 
+            <div class="visual-area"> 
+                <canvas id="canvasMap" width="300" height="200"></canvas> 
+            </div> 
+        </div> 
+ 
+        <!-- परिणाम कार्ड --> 
+        <div class="card"> 
+            <div class="card-title">📊 संपूर्ण हिसाब</div> 
+            <div class="result-grid"> 
+                <div class="result-item"><span class="r-label">वर्ग फीट</span><span class="r-value" id="resSqFt">0</span></div> 
+                <div class="result-item"><span class="r-label">वर्ग मीटर</span><span class="r-value" id="resSqM">0</span></div> 
+                <div class="result-item"><span class="r-label">वर्ग गज</span><span class="r-value" id="resSqGaj">0</span></div> 
+                <div class="result-item"><span class="r-label">डिस्मिल</span><span class="r-value" id="resDismil">0</span></div> 
+                <div class="result-item"><span class="r-label">एकड़</span><span class="r-value" id="resAcre">0</span></div> 
+                <div class="result-item"><span class="r-label">बीघा (मानक)</span><span class="r-value" id="resBigha">0</span></div> 
+                <div class="result-item"><span class="r-label">कट्ठा</span><span class="r-value" id="resKattha">0</span></div> 
+            </div> 
+        </div> 
+ 
+    </div> 
+ 
+    <script> 
+        let currentShape = 'rectangle'; 
+ 
+        function selectShape(shape) { 
+            currentShape = shape; 
+            document.querySelectorAll('.shape-btn').forEach(b => b.classList.toggle('active', b.dataset.shape === shape)); 
+ 
+            document.getElementById('rectInputs').style.display = 'none'; 
+            document.getElementById('triInputs').style.display = 'none'; 
+            document.getElementById('circInputs').style.display = 'none'; 
+            document.getElementById('irregInputs').style.display = 'none'; 
+ 
+            const map = { rectangle: 'rectInputs', triangle: 'triInputs', circle: 'circInputs', irregular: 'irregInputs' }; 
+            document.getElementById(map[shape]).style.display = shape === 'irregular' ? 'block' : 'grid'; 
+ 
+            calculate(); 
+        } 
+ 
+        function calculate() { 
+            let areaInSqFt = 0; 
+            const unit = document.getElementById('unit').value; 
+ 
+            // 1. Calculate Area in Native Unit 
+            if (currentShape === 'rectangle') { 
+                const l = parseFloat(document.getElementById('length').value) || 0; 
+                const w = parseFloat(document.getElementById('width').value) || 0; 
+                areaInSqFt = convertToSqFt(l * w, unit); 
+            }  
+            else if (currentShape === 'triangle') { 
+                const a = parseFloat(document.getElementById('sideA').value) || 0; 
+                const b = parseFloat(document.getElementById('sideB').value) || 0; 
+                const c = parseFloat(document.getElementById('sideC').value) || 0; 
+                if(a + b > c && a + c > b && b + c > a) { 
+                    const s = (a + b + c) / 2; 
+                    const triArea = Math.sqrt(s * (s - a) * (s - b) * (s - c)); 
+                    areaInSqFt = convertToSqFt(triArea, unit); 
+                } 
+            }  
+            else if (currentShape === 'circle') { 
+                const r = parseFloat(document.getElementById('radius').value) || 0; 
+                areaInSqFt = convertToSqFt(Math.PI * r * r, unit); 
+            }  
+            else if (currentShape === 'irregular') { 
+                // Heron's formula for 2 triangles via diagonal 
+                const a = parseFloat(document.getElementById('irrA').value) || 0; 
+                const b = parseFloat(document.getElementById('irrB').value) || 0; 
+                const c = parseFloat(document.getElementById('irrC').value) || 0; 
+                const d = parseFloat(document.getElementById('irrD').value) || 0; 
+                const diag = parseFloat(document.getElementById('irrDiag').value) || 0; 
+ 
+                let area1 = 0, area2 = 0; 
+                if(a + b > diag && a + diag > b && b + diag > a) { 
+                    let s1 = (a + b + diag) / 2; 
+                    area1 = Math.sqrt(s1 * (s1 - a) * (s1 - b) * (s1 - diag)); 
+                } 
+                if(c + d > diag && c + diag > d && d + diag > c) { 
+                    let s2 = (c + d + diag) / 2; 
+                    area2 = Math.sqrt(s2 * (s2 - c) * (s2 - d) * (s2 - diag)); 
+                } 
+                areaInSqFt = convertToSqFt(area1 + area2, unit); 
+            } 
+ 
+            // 2. Output Conversions 
+            document.getElementById('resSqFt').textContent = areaInSqFt.toFixed(2); 
+            document.getElementById('resSqM').textContent = (areaInSqFt / 10.7639).toFixed(2); 
+            document.getElementById('resSqGaj').textContent = (areaInSqFt / 9).toFixed(2); 
+            document.getElementById('resDismil').textContent = (areaInSqFt / 435.6).toFixed(3); 
+            document.getElementById('resAcre').textContent = (areaInSqFt / 43560).toFixed(4); 
+            document.getElementById('resBigha').textContent = (areaInSqFt / 27225).toFixed(3); // Standard Bigha 
+            document.getElementById('resKattha').textContent = (areaInSqFt / 1361.25).toFixed(2); 
+ 
+            drawMap(); 
+        } 
+ 
+        function convertToSqFt(area, unit) { 
+            if (unit === 'meter') return area * 10.7639; 
+            if (unit === 'gaj') return area * 9; 
+            if (unit === 'kadi') return area * 0.4356; 
+            return area; // feet 
+        } 
+ 
+        // Live Drawing on Canvas 
+        function drawMap() { 
+            const canvas = document.getElementById('canvasMap'); 
+            const ctx = canvas.getContext('2d'); 
+            ctx.clearRect(0, 0, canvas.width, canvas.height); 
+            ctx.strokeStyle = '#1e6b4a'; 
+            ctx.fillStyle = '#eafaf1'; 
+            ctx.lineWidth = 3; 
+ 
+            ctx.beginPath(); 
+            if (currentShape === 'rectangle') { 
+                ctx.rect(50, 40, 200, 120); 
+            } else if (currentShape === 'triangle') { 
+                ctx.moveTo(150, 30); ctx.lineTo(50, 170); ctx.lineTo(250, 170); ctx.closePath(); 
+            } else if (currentShape === 'circle') { 
+                ctx.arc(150, 100, 70, 0, 2 * Math.PI); 
+            } else if (currentShape === 'irregular') { 
+                ctx.moveTo(60, 50); ctx.lineTo(230, 40); ctx.lineTo(250, 160); ctx.lineTo(40, 150); ctx.closePath(); 
+            } 
+            ctx.fill(); 
+                ctx.stroke(); 
+        } 
+ 
+        document.querySelectorAll('input, select').forEach(el => { 
+            el.addEventListener('input', calculate); 
+        }); 
+ 
+        window.onload = function() { 
+            selectShape('rectangle'); 
+        }; 
+    </script> 
+</body> 
+</html> 
