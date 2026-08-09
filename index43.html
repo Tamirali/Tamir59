@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes" />
+    <title>स्मार्ट ज़मीन मापन - 100% सटीक संस्करण</title>
+    <style>
+        :root {
+            --primary: #0f3b2b;
+            --secondary: #1e6b4a;
+            --accent: #f5b342;
+            --bg: #f1f7f3;
+            --card: #ffffff;
+            --text: #1a2a1f;
+            --border: #c8d9cf;
+            --shadow: 0 8px 30px rgba(0, 20, 10, 0.10);
+            --radius: 16px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --danger: #c0392b;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); padding: 12px; min-height: 100vh; }
+        .container { max-width: 1000px; margin: 0 auto; }
+
+        .header { background: linear-gradient(145deg, var(--primary), var(--secondary)); color: #fff; padding: 18px 22px; border-radius: var(--radius); text-align: center; box-shadow: var(--shadow); margin-bottom: 18px; }
+        .header h1 { font-size: 24px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; }
+        .header h1 span { background: var(--accent); color: var(--primary); font-size: 13px; padding: 2px 14px; border-radius: 40px; font-weight: 600; }
+
+        .shape-selector { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 18px; justify-content: center; }
+        .shape-btn { flex: 1; min-width: 80px; max-width: 130px; background: #fff; border: 2px solid var(--border); border-radius: var(--radius); padding: 10px 8px; text-align: center; cursor: pointer; transition: var(--transition); font-weight: 600; font-size: 14px; color: var(--text); }
+        .shape-btn .shape-icon { font-size: 26px; display: block; margin-bottom: 2px; }
+        .shape-btn.active { border-color: var(--secondary); background: #eafaf1; box-shadow: 0 0 0 3px rgba(30, 107, 74, 0.2); }
+
+        .card { background: var(--card); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); border: 1px solid #e8f0ec; margin-bottom: 18px; }
+        .card-title { font-size: 18px; font-weight: 700; color: var(--primary); margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; }
+
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        @media (max-width: 500px) { .form-row { grid-template-columns: 1fr; } }
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; font-weight: 600; font-size: 14px; color: var(--primary); margin-bottom: 4px; }
+        .form-group input, .form-group select { width: 100%; padding: 11px 13px; border: 1.5px solid var(--border); border-radius: 10px; font-size: 15px; background: #fafdfb; }
+        .form-group input:focus, .form-group select:focus { border-color: var(--secondary); outline: none; }
+        .error-msg { font-size: 12px; color: var(--danger); margin-top: 4px; display: none; font-weight: 600; }
+        .error-msg.show { display: block; }
+
+        .btn-group { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+        .btn-group button { flex: 1; padding: 11px; border: none; border-radius: 10px; font-weight: 700; font-size: 14px; cursor: pointer; background: var(--secondary); color: #fff; transition: var(--transition); }
+        .btn-group button:hover { background: var(--primary); }
+        .btn-group button.secondary { background: #e2e8f0; color: var(--text); }
+
+        .visual-area { background: #f4fbf7; border-radius: 12px; padding: 15px; text-align: center; border: 2px dashed #b7dfc9; }
+        #canvasMap { max-width: 100%; height: auto; background: #ffffff; border-radius: 8px; border: 1px solid var(--border); }
+
+        .result-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; }
+        .result-item { background: #f6fcf9; border-radius: 10px; padding: 10px 8px; text-align: center; border: 1px solid #d8ece2; }
+        .result-item .r-label { font-size: 11px; color: #4f6f5e; display: block; font-weight: 600; }
+        .result-item .r-value { font-size: 18px; font-weight: 800; color: var(--primary); margin-top: 2px; display: block; }
+        
+        .compare-box { background: #f4fbf7; border-radius: 10px; padding: 12px 16px; margin-top: 14px; border-left: 4px solid var(--accent); font-size: 14px; }
+
+        @media print {
+            .shape-selector, .btn-group, .form-group select { display: none !important; }
+            .card { box-shadow: none; border: 1px solid #ccc; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header class="header">
+            <h1>🌾 स्मार्ट ज़मीन मापन <span>100% गणितीय सटीकता</span></h1>
+            <p>सटीक त्रिकोणमिति (Trigonometry) व स्थानीय लग्गी पैमाने के साथ</p>
+        </header>
+
+        <!-- आकृति चयन -->
+        <div class="shape-selector">
+            <button class="shape-btn active" data-shape="rectangle" onclick="selectShape('rectangle')">
+                <span class="shape-icon">▭</span> आयत
+            </button>
+            <button class="shape-btn" data-shape="triangle" onclick="selectShape('triangle')">
+                <span class="shape-icon">△</span> त्रिभुज
+            </button>
+            <button class="shape-btn" data-shape="circle" onclick="selectShape('circle')">
+                <span class="shape-icon">◯</span> वृत्त
+            </button>
+            <button class="shape-btn" data-shape="irregular" onclick="selectShape('irregular')">
+                <span class="shape-icon">⬡</span> विषम (4 भुजा)
+            </button>
+        </div>
+
+        <!-- इनपुट कार्ड -->
+        <div class="card">
+            <div class="card-title">📐 नाप दर्ज करें</div>
+
+            <div id="shapeInputs">
+                <!-- आयत -->
+                <div class="form-row" id="rectInputs">
+                    <div class="form-group"><label>लंबाई</label><input type="number" id="length" value="120" step="any" min="0"></div>
+                    <div class="form-group"><label>चौड़ाई</label><input type="number" id="width" value="60" step="any" min="0"></div>
+                </div>
+
+                <!-- त्रिभुज -->
+                <div class="form-row" id="triInputs" style="display:none;">
+                    <div class="form-group"><label>भुजा A</label><input type="number" id="sideA" value="100" step="any" min="0"></div>
+                    <div class="form-group"><label>भुजा B</label><input type="number" id="sideB" value="80" step="any" min="0"></div>
+                    <div class="form-group"><label>भुजा C</label><input type="number" id="sideC" value="60" step="any" min="0"></div>
+                </div>
+
+                <!-- वृत्त -->
+                <div class="form-row" id="circInputs" style="display:none;">
+                    <div class="form-group"><label>त्रिज्या (Radius)</label><input type="number" id="radius" value="50" step="any" min="0"></div>
+                </div>
+
+                <!-- विषम (4 sides + diagonal) -->
+                <div id="irregInputs" style="display:none;">
+                    <div class="form-row">
+                        <div class="form-group"><label>भुजा A (ऊपर)</label><input type="number" id="irrA" value="100" step="any" min="0"></div>
+                        <div class="form-group"><label>भुजा B (दाएं)</label><input type="number" id="irrB" value="80" step="any" min="0"></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label>भुजा C (नीचे)</label><input type="number" id="irrC" value="110" step="any" min="0"></div>
+                        <div class="form-group"><label>भुजा D (बाएं)</label><input type="number" id="irrD" value="70" step="any" min="0"></div>
+                    </div>
+                    <div class="form-group">
+                        <label>विकर्ण (Diagonal - A और C के बीच का कोना)</label>
+                        <input type="number" id="irrDiag" value="120" step="any" min="0">
+                    </div>
+                </div>
+                <div class="error-msg" id="mathError">❌ दर्ज की गई नाप से आकृति बनना संभव नहीं है (Triangle Inequality Error)</div>
+            </div>
+
+            <div class="form-row" style="margin-top:8px;">
+                <div class="form-group">
+                    <label for="unit">इनपुट मापक इकाई (Input Unit)</label>
+                    <select id="unit">
+                        <option value="feet" selected>फीट (Feet)</option>
+                        <option value="meter">मीटर (Meter)</option>
+                        <option value="gaj">गज (Yard)</option>
+                        <option value="kadi">कड़ी (Link)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="lagga">स्थानीय लग्गी / लट्ठा (बीघा-कट्ठा हेतु)</label>
+                    <select id="lagga">
+                        <option value="4.5">4.5 हाथ</option>
+                        <option value="5">5.0 हाथ</option>
+                        <option value="5.5">5.5 हाथ (स्टैंडर्ड UP/MP)</option>
+                        <option value="6">6.0 हाथ</option>
+                        <option value="6.5" selected>6.5 हाथ (स्टैंडर्ड बिहार/बंगाल)</option>
+                        <option value="7">7.0 हाथ</option>
+                        <option value="8">8.0 हाथ</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button onclick="calculate()">⚡ गणना करें</button>
+                <button class="secondary" onclick="window.print()">🖨️ प्रिंट / PDF</button>
+            </div>
+        </div>
+
+        <!-- लाइव नक्शा -->
+        <div class="card">
+            <div class="card-title">🖼️ ज़मीन का सटीक लाइव नक्शा</div>
+            <div class="visual-area">
+                <canvas id="canvasMap" width="400" height="230"></canvas>
+            </div>
+        </div>
+
+        <!-- परिणाम -->
+        <div class="card">
+            <div class="card-title">📊 संपूर्ण हिसाब</div>
+            <div class="result-grid">
+                <div class="result-item"><span class="r-label">वर्ग फीट</span><span class="r-value" id="resSqFt">0</span></div>
+                <div class="result-item"><span class="r-label">वर्ग मीटर</span><span class="r-value" id="resSqM">0</span></div>
+                <div class="result-item"><span class="r-label">वर्ग गज</span><span class="r-value" id="resSqGaj">0</span></div>
+                <div class="result-item"><span class="r-label">डिस्मिल</span><span class="r-value" id="resDismil">0</span></div>
+                <div class="result-item"><span class="r-label">एकड़</span><span class="r-value" id="resAcre">0</span></div>
+                <div class="result-item"><span class="r-label">बीघा</span><span class="r-value" id="resBigha">0</span></div>
+                <div class="result-item"><span class="r-label">कट्ठा</span><span class="r-value" id="resKattha">0</span></div>
+                <div class="result-item"><span class="r-label">धुर / धुरकी</span><span class="r-value" id="resDhur">0</span></div>
+            </div>
+
+            <div class="compare-box" id="compareBox">
+                💡 <strong id="compareText">ज़मीन का विवरण देखने के लिए मान दर्ज करें।</strong>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentShape = 'rectangle';
+
+        function selectShape(shape) {
+            currentShape = shape;
+            document.querySelectorAll('.shape-btn').forEach(b => b.classList.toggle('active', b.dataset.shape === shape));
+
+            ['rectInputs', 'triInputs', 'circInputs', 'irregInputs'].forEach(id => document.getElementById(id).style.display = 'none');
+            const map = { rectangle: 'rectInputs', triangle: 'triInputs', circle: 'circInputs', irregular: 'irregInputs' };
+            document.getElementById(map[shape]).style.display = shape === 'irregular' ? 'block' : 'grid';
+
+            document.getElementById('mathError').classList.remove('show');
+            calculate();
+        }
+
+        // 1. वर्ग इकाई में सटीक परिवर्तन (Square Unit Conversions)
+        function convertAreaToSqFt(nativeArea, unit) {
+            if (unit === 'meter') return nativeArea * 10.7639104; // 1 Sq Meter = 10.7639 Sq Ft
+            if (unit === 'gaj') return nativeArea * 9.0;            // 1 Sq Yard = 9 Sq Ft
+            if (unit === 'kadi') return nativeArea * 0.4356;        // 1 Link = 0.66 Ft -> Sq Link = 0.4356 Sq Ft
+            return nativeArea; // Feet
+        }
+
+        function calculate() {
+            let areaSqFt = 0;
+            const unit = document.getElementById('unit').value;
+            const laggaHand = parseFloat(document.getElementById('lagga').value) || 6.5;
+            let isValid = true;
+
+            document.getElementById('mathError').classList.remove('show');
+
+            if (currentShape === 'rectangle') {
+                const l = parseFloat(document.getElementById('length').value) || 0;
+                const w = parseFloat(document.getElementById('width').value) || 0;
+                areaSqFt = convertAreaToSqFt(l * w, unit);
+                drawRectangle(l, w);
+            } 
+            else if (currentShape === 'triangle') {
+                const a = parseFloat(document.getElementById('sideA').value) || 0;
+                const b = parseFloat(document.getElementById('sideB').value) || 0;
+                const c = parseFloat(document.getElementById('sideC').value) || 0;
+
+                if (a + b > c && a + c > b && b + c > a) {
+                    const s = (a + b + c) / 2;
+                    const nativeArea = Math.sqrt(s * (s - a) * (s - b) * (s - c));
+                    areaSqFt = convertAreaToSqFt(nativeArea, unit);
+                    drawTriangle(a, b, c);
+                } else {
+                    isValid = false;
+                }
+            } 
+            else if (currentShape === 'circle') {
+                const r = parseFloat(document.getElementById('radius').value) || 0;
+                areaSqFt = convertAreaToSqFt(Math.PI * r * r, unit);
+                drawCircle(r);
+            } 
+            else if (currentShape === 'irregular') {
+                const a = parseFloat(document.getElementById('irrA').value) || 0;
+                const b = parseFloat(document.getElementById('irrB').value) || 0;
+                const c = parseFloat(document.getElementById('irrC').value) || 0;
+                const d = parseFloat(document.getElementById('irrD').value) || 0;
+                const diag = parseFloat(document.getElementById('irrDiag').value) || 0;
+
+                const v1 = (a + b > diag && a + diag > b && b + diag > a);
+                const v2 = (c + d > diag && c + diag > d && d + diag > c);
+
+                if (v1 && v2) {
+                    const s1 = (a + b + diag) / 2;
+                    const area1 = Math.sqrt(s1 * (s1 - a) * (s1 - b) * (s1 - diag));
+                    const s2 = (c + d + diag) / 2;
+                    const area2 = Math.sqrt(s2 * (s2 - c) * (s2 - d) * (s2 - diag));
+                    
+                    areaSqFt = convertAreaToSqFt(area1 + area2, unit);
+                    drawIrregular(a, b, c, d, diag);
+                } else {
+                    isValid = false;
+                }
+            }
+
+            if (!isValid) {
+                document.getElementById('mathError').classList.add('show');
+                clearCanvas();
+                areaSqFt = 0;
+            }
+
+            updateResults(areaSqFt, laggaHand);
+        }
+
+        // 2. स्थानीय पैमाने (Lagga/Lathi) की सटीक गणना
+        function updateResults(sqFt, laggaHand) {
+            document.getElementById('resSqFt').textContent = sqFt.toFixed(2);
+            document.getElementById('resSqM').textContent = (sqFt / 10.7639).toFixed(2);
+            document.getElementById('resSqGaj').textContent = (sqFt / 9.0).toFixed(2);
+            document.getElementById('resDismil').textContent = (sqFt / 435.6).toFixed(3);
+            document.getElementById('resAcre').textContent = (sqFt / 43560.0).toFixed(4);
+
+            // 1 हाथ = 1.5 फीट -> लग्गी की लंबाई फीट में = laggaHand * 1.5
+            const laggaInFeet = laggaHand * 1.5;
+            const oneDhurSqFt = laggaInFeet * laggaInFeet; // 1 धुर = (लग्गी)^2 वर्ग फीट
+            const oneKatthaSqFt = oneDhurSqFt * 20;        // 1 कट्ठा = 20 धुर
+            const oneBighaSqFt = oneKatthaSqFt * 20;       // 1 बीघा = 20 कट्ठा
+
+            const bigha = sqFt / oneBighaSqFt;
+            const kattha = sqFt / oneKatthaSqFt;
+            const dhur = sqFt / oneDhurSqFt;
+
+            document.getElementById('resBigha').textContent = bigha.toFixed(3);
+            document.getElementById('resKattha').textContent = kattha.toFixed(2);
+            document.getElementById('resDhur').textContent = dhur.toFixed(1);
+
+            document.getElementById('compareText').textContent = 
+                `यह ज़मीन लगभग ${(sqFt/435.6).toFixed(2)} डिस्मिल या ${kattha.toFixed(2)} कट्ठा (${laggaHand} हाथ लग्गी पैमाने पर) है।`;
+        }
+
+        // 3. Trigonometric Correct Canvas Rendering
+        function clearCanvas() {
+            const canvas = document.getElementById('canvasMap');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function setupCanvasCtx() {
+            const canvas = document.getElementById('canvasMap');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.strokeStyle = '#1e6b4a';
+            ctx.fillStyle = '#eafaf1';
+            ctx.lineWidth = 2.5;
+            return { ctx, w: canvas.width, h: canvas.height };
+        }
+
+        function drawRectangle(l, w) {
+            const { ctx, w: cw, h: ch } = setupCanvasCtx();
+            const pad = 40;
+            const scale = Math.min((cw - pad * 2) / l, (ch - pad * 2) / w);
+            const drawL = l * scale, drawW = w * scale;
+            const x = (cw - drawL) / 2, y = (ch - drawW) / 2;
+
+            ctx.beginPath();
+            ctx.rect(x, y, drawL, drawW);
+            ctx.fill(); ctx.stroke();
+        }
+
+        function drawTriangle(a, b, c) {
+            const { ctx, w: cw, h: ch } = setupCanvasCtx();
+            // Law of Cosines to get angle
+            const cosC = (a*a + b*b - c*c) / (2 * a * b);
+            const angleC = Math.acos(cosC);
+
+            const p1 = { x: 0, y: 0 };
+            const p2 = { x: a, y: 0 };
+            const p3 = { x: b * Math.cos(angleC), y: b * Math.sin(angleC) };
+
+            renderPolygon(ctx, [p1, p2, p3], cw, ch);
+        }
+
+        function drawCircle(r) {
+            const { ctx, w: cw, h: ch } = setupCanvasCtx();
+            const radius = Math.min(cw, ch) / 2 - 20;
+            ctx.beginPath();
+            ctx.arc(cw / 2, ch / 2, radius, 0, 2 * Math.PI);
+            ctx.fill(); ctx.stroke();
+        }
+
+        function drawIrregular(a, b, c, d, diag) {
+            const { ctx, w: cw, h: ch } = setupCanvasCtx();
+            
+            // Triangle 1 (a, b, diag)
+            const cos1 = (a*a + diag*diag - b*b) / (2 * a * diag);
+            const angle1 = Math.acos(Math.max(-1, Math.min(1, cos1)));
+
+            // Triangle 2 (c, d, diag)
+            const cos2 = (c*c + diag*diag - d*d) / (2 * c * diag);
+            const angle2 = Math.acos(Math.max(-1, Math.min(1, cos2)));
+
+            const p0 = { x: 0, y: 0 };
+            const p1 = { x: a, y: 0 };
+            const p2 = { x: diag * Math.cos(angle1), y: diag * Math.sin(angle1) };
+            const p3 = { x: diag * Math.cos(angle1 + angle2) - c, y: diag * Math.sin(angle1 + angle2) }; // Scaled coordinates
+
+            renderPolygon(ctx, [p0, p1, p2, p3], cw, ch);
+        }
+
+        function renderPolygon(ctx, pts, cw, ch) {
+            const pad = 35;
+            let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+            pts.forEach(p => {
+                if (p.x < minX) minX = p.x; if (p.x > maxX) maxX = p.x;
+                if (p.y < minY) minY = p.y; if (p.y > maxY) maxY = p.y;
+            });
+
+            const polyW = maxX - minX || 1, polyH = maxY - minY || 1;
+            const scale = Math.min((cw - pad * 2) / polyW, (ch - pad * 2) / polyH);
+
+            const scaledPts = pts.map(p => ({
+                x: (p.x - minX) * scale + (cw - polyW * scale) / 2,
+                y: (p.y - minY) * scale + (ch - polyH * scale) / 2
+            }));
+
+            ctx.beginPath();
+            ctx.moveTo(scaledPts[0].x, scaledPts[0].y);
+            for (let i = 1; i < scaledPts.length; i++) ctx.lineTo(scaledPts[i].x, scaledPts[i].y);
+            ctx.closePath();
+            ctx.fill(); ctx.stroke();
+        }
+
+        document.querySelectorAll('input, select').forEach(el => {
+            el.addEventListener('input', calculate);
+            el.addEventListener('change', calculate);
+        });
+
+        window.onload = function() { selectShape('rectangle'); };
+    </script>
+</body>
+</html>
