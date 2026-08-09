@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>कलाकार मंच - तामीर अली रिकॉर्डर</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #121212; color: #fff; text-align: center; padding: 20px; }
+        .card { background: #1e1e1e; max-width: 500px; margin: auto; padding: 25px; border-radius: 12px; border: 1px solid #333; }
+        h1 { color: #ff9800; }
+        button { font-size: 16px; padding: 12px 20px; margin: 8px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .record-btn { background: #e53935; color: white; }
+        .stop-btn { background: #757575; color: white; }
+        .beat-btn { background: #2196f3; color: white; }
+        audio { margin-top: 15px; width: 100%; }
+        .credits { margin-top: 20px; font-size: 12px; color: #aaa; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h1>कलाकार मंच</h1>
+    <p>अपनी धुन रिकॉर्ड करें और म्यूज़िक बीट के साथ गाएं</p>
+    
+    <div>
+        <button id="startBeat" class="beat-btn">संगीत बीट चालू करें</button>
+        <button id="stopBeat" class="stop-btn">बीट बंद करें</button>
+    </div>
+
+    <hr style="border-color: #333; margin: 20px 0;">
+
+    <div>
+        <button id="startRec" class="record-btn">🎤 रिकॉर्डिंग शुरू करें</button>
+        <button id="stopRec" class="stop-btn" disabled>⏹ रिकॉर्डिंग रोकें</button>
+    </div>
+
+    <audio id="audioPlayback" controls></audio>
+
+    <div class="credits">
+        <p>विचारक: तामीर अली | अक्ल की जीत</p>
+    </div>
+</div>
+
+<script>
+    let mediaRecorder;
+    let audioChunks = [];
+    let audioCtx;
+    let isBeatPlaying = false;
+    let beatInterval;
+
+    // वेब ऑडियो API द्वारा सिंपल डिजिटल बीट (संगीत का तड़का) उत्पन्न करना
+    function playSyntheticBeat() {
+        if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        let step = 0;
+        beatInterval = setInterval(() => {
+            let osc = audioCtx.createOscillator();
+            let gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            if (step % 2 === 0) {
+                // कीक/ढोल की भारी आवाज़
+                osc.frequency.setValueAtTime(120, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+                gain.gain.setValueAtTime(1, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+            } else {
+                // छनकाव/ताल की आवाज़
+                osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+            }
+
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.15);
+            step++;
+        }, 300); // बीट की गति
+    }
+
+    document.getElementById('startBeat').addEventListener('click', () => {
+        if(!isBeatPlaying) {
+            playSyntheticBeat();
+            isBeatPlaying = true;
+        }
+    });
+
+    document.getElementById('stopBeat').addEventListener('click', () => {
+        clearInterval(beatInterval);
+        isBeatPlaying = false;
+    });
+
+    // माइक्रोफ़ोन से आवाज़ रिकॉर्ड करना
+    navigator.mediaDevices.getUserMedia({ audio: true })
+        .then(stream => {
+            mediaRecorder = new MediaRecorder(stream);
+            
+            mediaRecorder.ondataavailable = e => {
+                audioChunks.push(e.data);
+            };
+
+            mediaRecorder.onstop = () => {
+                const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                const audioUrl = URL.createObjectURL(audioBlob);
+                document.getElementById('audioPlayback').src = audioUrl;
+                audioChunks = [];
+            };
+        });
+
+    document.getElementById('startRec').addEventListener('click', () => {
+        audioChunks = [];
+        mediaRecorder.start();
+        document.getElementById('startRec').disabled = true;
+        document.getElementById('stopRec').disabled = false;
+    });
+
+    document.getElementById('stopRecहाँ, HTML5 और आधुनिक JavaScript APIs का उपयोग करके एक ऐसा वेब टूल ज़रूर बनाया जा सकता है जो **उपयोगकर्ता की आवाज़ को सीधे ब्राउज़र में रिकॉर्ड करे** और उसके पीछे एक **बैकग्राउंड म्यूज़िक/बीट (ताली, ढोलक या लूप) का तड़का** लगाकर दोनों को एक साथ मिक्स कर दे।
+
+ब्राउज़र (HTML/JS) पूरी तरह से अपने आप AI जैसी धुनों का निर्माण नहीं कर सकता, लेकिन यह **रिकॉर्ड की गई आवाज़ के साथ बैकग्राउंड म्यूज़िक को पूरी तरह सिंक (Sync) और मिक्स करके नया ऑडियो डाउनलोड** करने की सुविधा दे सकता है।
+
+नीचे एक पूरा, सिंगल-फाइल HTML टूल का कोड दिया गया है जिसे आप किसी भी मोबाइल या कंप्यूटर ब्राउज़र में चला सकते हैं:
+
+```html
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>सुर-म्यूज़िक मिक्सर स्टूडियो</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #121212; color: #fff; text-align: center; padding: 20px; }
+        .card { background: #1e1e1e; max-width: 500px; margin: 0 auto; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+        h2 { color: #ff9800; }
+        button { background: #ff9800; color: #000; font-weight: bold; border: none; padding: 12px 20px; margin: 8px; border-radius: 6px; cursor: pointer; }
+        button:disabled { background: #555; color: #888; }
+        select { padding: 10px; border-radius: 6px; font-size: 16px; margin: 10px 0; }
+        audio { margin-top: 15px; width: 100%; }
+        .footer { margin-top: 15px; font-size: 12px; color: #aaa; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>🎵 ताज़ी आवाज़ - म्यूज़िक मिक्सर</h2>
+    <p>अपनी आवाज़ रिकॉर्ड करें और म्यूज़िक का तड़का लगाएँ!</p>
+
+    <label for="beatSelect">म्यूज़िक/बीट चुनें:</label><br>
+    <select id="beatSelect">
+        <option value="folk">भोजपुरी/लोक संगीत बीट (फास्ट 140 BPM)</option>
+        <option value="soft">सॉफ्ट रोमांटिक बीट</option>
+    </select>
+
+    <div>
+        <button id="startBtn">🎙️ रिकॉर्ड शुरू करें</button>
+        <button id="stopBtn" disabled>⏹️ रिकॉर्ड रोकें</button>
+    </div>
+
+    <p id="status" style="color:#00e676;"></p>
+
+    <div id="resultSection" style="display:none;">
+        <h3>मिक्स हुआ गाना सुनें:</h3>
+        <audio id="finalAudio" controls></audio>
+        <br>
+        <a id="downloadBtn" download="My_Bhojpuri_Song.webm"><button>📥 गाना डाउनलोड करें</button></a>
+    </div>
+
+    <div class="footer">
+        सुझावकर्ता: तामीर अली | अक्ल की जीत
+    </div>
+</div>
+
+<script>
+let mediaRecorder;
+let audioChunks = [];
+let audioCtx;
+
+const startBtn = document.getElementById('startBtn');
+const stopBtn = document.getElementById('stopBtn');
+const status = document.getElementById('status');
+const resultSection = document.getElementById('resultSection');
+const finalAudio = document.getElementById('finalAudio');
+const downloadBtn = document.getElementById('downloadBtn');
+
+// ब्राउज़र में कृत्रिम बीट/म्यूज़िक तैयार करने के लिए (Synth Loop Generator)
+function generateBeatBuffer(ctx, type) {
+    const sampleRate = ctx.sampleRate;
+    const duration = 15; // 15 सेकंड का म्यूज़िक लूप
+    const buffer = ctx.createBuffer(2, sampleRate * duration, sampleRate);
+    const left = buffer.getChannelData(0);
+    const right = buffer.getChannelData(1);
+
+    const bpm = (type === 'folk') ? 140 : 90;
+    const interval = sampleRate * (60 / bpm) / 2;
+
+    for (let i = 0; i < buffer.length; i++) {
+        // ढोलक/ताल का अहसास देने के लिए बेसिक रिदम पल्स
+        if (i % Math.floor(interval) < 100) {
+            left[i] = Math.sin(i * 0.05) * Math.exp(-(i % interval) / 500);
+            right[i] = left[i];
+        } else if (i % Math.floor(interval / 2) < 50) {
+            left[i] = (Math.random() - 0.5) * 0.2 * Math.exp(-(i % (interval/2)) / 300);
+            right[i] = left[i];
+        }
+    }
+    return buffer;
+}
+
+startBtn.onclick = async () => {
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream);
+        audioChunks = [];
+
+        mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+        
+        mediaRecorder.onstop = async () => {
+            status.innerText = "म्यूज़िक मिक्स किया जा रहा है...";
+            
+            const voiceBlob = new Blob(audioChunks, { type: 'audio/webm' });
+            const voiceArrayBuffer = await voiceBlob.arrayBuffer();
+
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const voiceAudioBuffer = await audioCtx.decodeAudioData(voiceArrayBuffer);
+
+            // बीट जनरेट करें
+            const selectedBeat = document.getElementById('beatSelect').value;
+            const beatBuffer = generateBeatBuffer(audioCtx, selectedBeat);
+
+            // दोनों ऑडियो को मिलाने के लिए ऑफलाइन संदर्भ
+            const offlineCtx = new OfflineAudioContext(
+                2, 
+                Math.max(voiceAudioBuffer.length, beatBuffer.length), 
+                audioCtx.sampleRate
+            );
+
+            // वॉइस ट्रैक
+            const voiceSource = offlineCtx.createBufferSource();
+            voiceSource.buffer = voiceAudioBuffer;
+            const voiceGain = offlineCtx.createGain();
+            voiceGain.gain.value = 1.2; // आवाज़ थोड़ी तेज़
+            voiceSource.connect(voiceGain);
+            voiceGain.connect(offlineCtx.destination);
+
+            // बीट/म्यूज़िक ट्रैक
+            const beatSource = offlineCtx.createBufferSource();
+            beatSource.buffer = beatBuffer;
+            const beatGain = offlineCtx.createGain();
+            beatGain.gain.value = 0.4; // म्यूज़िक थोड़ा धीमा
+            beatSource.connect(beatGain);
+            beatGain.connect(offlineCtx.destination);
+
+            voiceSource.start(0);
+            beatSource.start(0);
+
+            const renderedBuffer = await offlineCtx.startRendering();
+            
+            // मिक्स ऑडियो को वेबपेज में प्ले करने लायक बनाना
+            const wavBlob = bufferToWaveBlob(renderedBuffer);
+            const audioUrl = URL.createObjectURL(wavBlob);
+
+            finalAudio.src = audioUrl;
+            downloadBtn.href = audioUrl;
+            downloadBtn.download = "Tamir_Music_Mix.wav";
+            resultSection.style.display = 'block';
+            status.innerText = "गीत सफलतापूर्वक तैयार हो गया!";
+        };
+
+        mediaRecorder.start();
+        startBtn.disabled = true;
+        stopBtn.disabled = false;
+        status.innerText = "रिकॉर्डिंग चालू है... गाइए!";
+    } catch (err) {
+        alert("माइक का एक्सेस नहीं मिला। कृपया अनुमति दें।");
+    }
+};
+
+stopBtn.onclick = () => {
+    mediaRecorder.stop();
+    startBtn.disabled = false;
+    stopBtn.disabled = true;
+};
+
+// ऑडियो बफर को WAV फाइल में बदलने का फ़ंक्शन
+function bufferToWaveBlob(abuffer) {
+    let numOfChan = abuffer.numberOfChannels,
+        length = abuffer.length * numOfChan * 2 + 44,
+        buffer = new ArrayBuffer(length),
+        view = new DataView(buffer),
+        channels = [], i, sample, offset = 0, pos = 0;
+
+    function setUint16(data) { view.setUint16(pos, data, true); pos += 2; }
+    function setUint32(data) { view.setUint32(pos, data, true); pos += 4; }
+
+    setUint32(0x46464952); setUint32(length - 8); setUint32(0x45564157);
+    setUint32(0x20746d66); setUint32(16); setUint16(1); setUint16(numOfChan);
+    setUint32(abuffer.sampleRate); setUint32(abuffer.sampleRate * 2 * numOfChan);
+    setUint16(numOfChan * 2); setUint16(16); setUint32(0x61746164); setUint32(length - pos - 4);
+
+    for (i = 0; i < abuffer.numberOfChannels; i++) channels.push(abuffer.getChannelData(i));
+
+    while (pos < length) {
+        for (i = 0; i < numOfChan; i++) {
+            sample = Math.max(-1, Math.min(1, channels[i][offset]));
+            sample = (0.5 + sample < 0 ? sample * 32768 : sample * 32767) | 0;
+            view.setInt16(pos, sample, true); pos += 2;
+        }
+        offset++;
+    }
+    return new Blob([buffer], { type: "audio/wav" });
+}
+</script>
+
+</body>
+</html>
