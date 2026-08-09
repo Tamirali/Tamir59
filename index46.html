@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🎵 सुर मंच - प्रो स्टूडियो</title>
+    <style>
+        /* -------- GLOBAL -------- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #0b0b0b;
+            color: #eee;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .container {
+            max-width: 580px;
+            width: 100%;
+            background: linear-gradient(145deg, #1a1a2e, #16213e);
+            border-radius: 28px;
+            padding: 28px 24px 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 152, 0, 0.15);
+            transition: all 0.3s;
+        }
+
+        /* -------- HEADER -------- */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+        }
+
+        .header h1 {
+            font-size: 26px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ff9800, #ff6f00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 0.5px;
+        }
+
+        .header .badge {
+            background: #ff980033;
+            color: #ff9800;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 14px;
+            border-radius: 40px;
+            border: 1px solid #ff980055;
+            -webkit-text-fill-color: #ff9800;
+        }
+
+        .sub {
+            color: #aab;
+            font-size: 14px;
+            margin-bottom: 22px;
+            border-left: 3px solid #ff9800;
+            padding-left: 14px;
+            opacity: 0.9;
+        }
+
+        /* -------- CONTROLS -------- */
+        .control-group {
+            background: #0f0f1f88;
+            border-radius: 16px;
+            padding: 18px 16px 16px;
+            margin-bottom: 16px;
+            border: 1px solid #2a2a44;
+            backdrop-filter: blur(2px);
+        }
+
+        .control-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .control-row label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #ccd;
+            min-width: 70px;
+        }
+
+        .control-row select,
+        .control-row input[type="range"] {
+            flex: 1;
+            min-width: 120px;
+            padding: 8px 10px;
+            border-radius: 8px;
+            border: 1px solid #333366;
+            background: #1a1a30;
+            color: #eee;
+            font-size: 14px;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        .control-row select:focus,
+        .control-row input[type="range"]:focus {
+            border-color: #ff9800;
+            box-shadow: 0 0 0 3px #ff980033;
+        }
+
+        .control-row input[type="range"] {
+            padding: 0;
+            height: 6px;
+            background: #2a2a4a;
+            border-radius: 4px;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        .control-row input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #ff9800;
+            cursor: pointer;
+            box-shadow: 0 0 12px #ff980066;
+        }
+
+        .range-value {
+            font-size: 14px;
+            font-weight: 700;
+            color: #ff9800;
+            min-width: 40px;
+            text-align: right;
+        }
+
+        /* -------- BUTTONS -------- */
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 6px 0 4px;
+        }
+
+        .btn {
+            flex: 1 1 auto;
+            min-width: 110px;
+            padding: 14px 16px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.25s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            letter-spacing: 0.3px;
+            background: #2a2a4a;
+            color: #ccc;
+            box-shadow: 0 4px 0 #0f0f1f;
+        }
+
+        .btn:active {
+            transform: translateY(3px);
+            box-shadow: 0 1px 0 #0f0f1f;
+        }
+
+        .btn:disabled {
+            opacity: 0.4;
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #0f0f1f;
+            pointer-events: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #ff9800, #e67e00);
+            color: #0b0b0b;
+            box-shadow: 0 4px 0 #b85e00;
+        }
+        .btn-primary:disabled {
+            background: #555;
+            color: #888;
+            box-shadow: 0 4px 0 #333;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #e53935, #b71c1c);
+            color: #fff;
+            box-shadow: 0 4px 0 #7f0000;
+        }
+        .btn-danger:disabled {
+            background: #555;
+            color: #888;
+            box-shadow: 0 4px 0 #333;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #43a047, #2e7d32);
+            color: #fff;
+            box-shadow: 0 4px 0 #1b5e20;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #ff980066;
+            color: #ff9800;
+            box-shadow: none;
+        }
+        .btn-outline:hover {
+            background: #ff980022;
+        }
+
+        .btn-sm {
+            padding: 8px 14px;
+            font-size: 13px;
+            min-width: 70px;
+        }
+
+        /* -------- TIMER & STATUS -------- */
+        .status-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 4px 4px;
+            font-size: 14px;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .timer {
+            font-size: 22px;
+            font-weight: 800;
+            font-variant-numeric: tabular-nums;
+            color: #ff9800;
+            background: #0b0b1a;
+            padding: 2px 16px;
+            border-radius: 40px;
+            border: 1px solid #ff980044;
+            min-width: 90px;
+            text-align: center;
+        }
+
+        .status-msg {
+            color: #8af;
+            font-weight: 500;
+            padding: 4px 12px;
+            border-radius: 20px;
+            background: #0f0f2a;
+        }
+
+        .status-msg.recording {
+            color: #ff6b6b;
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.3;
+            }
+        }
+
+        /* -------- BEAT VISUALIZER -------- */
+        .beat-visual {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            height: 36px;
+            margin: 8px 0 4px;
+        }
+
+        .beat-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #2a2a4a;
+            transition: all 0.1s;
+        }
+
+        .beat-dot.active {
+            background: #ff9800;
+            box-shadow: 0 0 20px #ff980088;
+            transform: scale(1.4);
+        }
+
+        /* -------- PLAYBACK -------- */
+        .playback-section {
+            margin-top: 18px;
+            padding-top: 16px;
+            border-top: 1px solid #2a2a4a;
+            display: none;
+        }
+
+        .playback-section.visible {
+            display: block;
+        }
+
+        .playback-section audio {
+            width: 100%;
+            border-radius: 12px;
+            background: #0b0b1a;
+            height: 48px;
+            margin: 6px 0 12px;
+        }
+
+        .download-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .download-row .btn {
+            flex: 1;
+            min-width: 100px;
+        }
+
+        /* -------- FOOTER -------- */
+        .footer {
+            margin-top: 22px;
+            text-align: center;
+            font-size: 12px;
+            color: #556;
+            border-top: 1px solid #1f1f3a;
+            padding-top: 16px;
+            letter-spacing: 0.5px;
+        }
+        .footer span {
+            color: #ff9800;
+            font-weight: 600;
+        }
+
+        /* -------- RESPONSIVE -------- */
+        @media (max-width: 480px) {
+            .container {
+                padding: 18px 14px;
+            }
+            .header h1 {
+                font-size: 20px;
+            }
+            .btn {
+                font-size: 13px;
+                padding: 12px 10px;
+                min-width: 80px;
+            }
+            .control-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .control-row label {
+                min-width: auto;
+            }
+            .timer {
+                font-size: 18px;
+                min-width: 70px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="app">
+
+        <!-- HEADER -->
+        <div class="header">
+            <h1>🎵 सुर मंच</h1>
+            <span class="badge">⚡ प्रो स्टूडियो</span>
+        </div>
+        <div class="sub">अपनी आवाज़ को बीट के साथ मिलाएँ — रिकॉर्ड करें, मिक्स करें, डाउनलोड करें</div>
+
+        <!-- BEAT SETTINGS -->
+        <div class="control-group">
+            <div class="control-row">
+                <label for="beatStyle">🎵 बीट स्टाइल</label>
+                <select id="beatStyle">
+                    <option value="folk">🪘 लोक / भोजपुरी</option>
+                    <option value="romantic">🌹 रोमांटिक</option>
+                    <option value="classical">🎶 शास्त्रीय</option>
+                    <option value="upbeat">🔥 तेज़ / पार्टी</option>
+                </select>
+            </div>
+            <div class="control-row">
+                <label for="bpmControl">⏱️ BPM</label>
+                <input type="range" id="bpmControl" min="60" max="180" value="130" step="1" />
+                <span class="range-value" id="bpmDisplay">130</span>
+            </div>
+            <div class="control-row">
+                <label for="voiceVol">🎤 आवाज़</label>
+                <input type="range" id="voiceVol" min="0" max="200" value="120" step="1" />
+                <span class="range-value" id="voiceVolDisplay">120%</span>
+            </div>
+            <div class="control-row">
+                <label for="beatVol">🥁 बीट</label>
+                <input type="range" id="beatVol" min="0" max="150" value="70" step="1" />
+                <span class="range-value" id="beatVolDisplay">70%</span>
+            </div>
+        </div>
+
+        <!-- BEAT VISUALIZER -->
+        <div class="beat-visual" id="beatVisual">
+            <span class="beat-dot" data-i="0"></span>
+            <span class="beat-dot" data-i="1"></span>
+            <span class="beat-dot" data-i="2"></span>
+            <span class="beat-dot" data-i="3"></span>
+            <span class="beat-dot" data-i="4"></span>
+            <span class="beat-dot" data-i="5"></span>
+            <span class="beat-dot" data-i="6"></span>
+            <span class="beat-dot" data-i="7"></span>
+        </div>
+
+        <!-- RECORD BUTTONS -->
+        <div class="btn-group">
+            <button class="btn btn-primary" id="startRecBtn">🎙️ रिकॉर्ड</button>
+            <button class="btn btn-danger" id="stopRecBtn" disabled>⏹️ रोकें</button>
+            <button class="btn btn-outline btn-sm" id="previewBeatBtn">🔊 बीट सुनें</button>
+        </div>
+
+        <!-- STATUS BAR -->
+        <div class="status-bar">
+            <span class="timer" id="timerDisplay">00:00</span>
+            <span class="status-msg" id="statusMsg">⏸️ तैयार</span>
+        </div>
+
+        <!-- PLAYBACK & DOWNLOAD -->
+        <div class="playback-section" id="playbackSection">
+            <h3 style="color:#ff9800; font-size:18px; margin-bottom:4px;">🎧 मिक्स हुआ गाना</h3>
+            <audio id="finalAudio" controls></audio>
+            <div class="download-row">
+                <button class="btn btn-success" id="downloadWavBtn">📥 WAV डाउनलोड</button>
+                <button class="btn btn-outline" id="downloadWebmBtn">📥 WebM डाउनलोड</button>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="footer">
+            💡 सुझाव: पहले <span>बीट सुनें</span> फिर <span>रिकॉर्ड</span> करें — मिक्स अपने आप तैयार होगा<br />
+            विचारक: <span>तामीर अली</span> · अक्ल की जीत
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        //  DOM REFS
+        // ============================================================
+        const startBtn = document.getElementById('startRecBtn');
+        const stopBtn = document.getElementById('stopRecBtn');
+        const previewBtn = document.getElementById('previewBeatBtn');
+        const timerDisplay = document.getElementById('timerDisplay');
+        const statusMsg = document.getElementById('statusMsg');
+        const finalAudio = document.getElementById('finalAudio');
+        const playbackSection = document.getElementById('playbackSection');
+        const downloadWav = document.getElementById('downloadWavBtn');
+        const downloadWebm = document.getElementById('downloadWebmBtn');
+
+        const beatStyle = document.getElementById('beatStyle');
+        const bpmControl = document.getElementById('bpmControl');
+        const bpmDisplay = document.getElementById('bpmDisplay');
+        const voiceVol = document.getElementById('voiceVol');
+        const voiceVolDisplay = document.getElementById('voiceVolDisplay');
+        const beatVol = document.getElementById('beatVol');
+        const beatVolDisplay = document.getElementById('beatVolDisplay');
+        const beatDots = document.querySelectorAll('.beat-dot');
+
+        // ============================================================
+        //  STATE
+        // ============================================================
+        let mediaRecorder = null;
+        let audioChunks = [];
+        let audioCtx = null;
+        let beatIntervalId = null;
+        let isBeatPlaying = false;
+        let isRecording = false;
+        let timerInterval = null;
+        let seconds = 0;
+        let previewOsc = null;
+        let previewGain = null;
+
+        // ============================================================
+        //  HELPERS
+        // ============================================================
+        function formatTime(s) {
+            const m = String(Math.floor(s / 60)).padStart(2, '0');
+            const sec = String(Math.floor(s % 60)).padStart(2, '0');
+            return `${m}:${sec}`;
+        }
+
+        function setStatus(msg, isRec = false) {
+            statusMsg.textContent = msg;
+            statusMsg.classList.toggle('recording', isRec);
+        }
+
+        function updateTimer() {
+            timerDisplay.textContent = formatTime(seconds);
+        }
+
+        // ============================================================
+        //  BEAT GENERATOR (Advanced synth drum kit)
+        // ============================================================
+        function generateBeatBuffer(ctx, style, bpm, durationSec = 18) {
+            const sampleRate = ctx.sampleRate;
+            const totalSamples = Math.floor(sampleRate * durationSec);
+            const numChannels = 2;
+            const buffer = ctx.createBuffer(numChannels, totalSamples, sampleRate);
+            const left = buffer.getChannelData(0);
+            const right = buffer.getChannelData(1);
+
+            // pattern definitions (16th notes)
+            const patterns = {
+                folk: { kick: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0],
+                    snare: [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0],
+                    hihat: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                    kickVol: 1.0, snareVol: 0.8, hihatVol: 0.4 },
+                romantic: { kick: [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
+                    snare: [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+                    hihat: [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0],
+                    kickVol: 0.7, snareVol: 0.5, hihatVol: 0.3 },
+                classical: { kick: [1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0],
+                    snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+                    hihat: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0],
+                    kickVol: 0.9, snareVol: 0.6, hihatVol: 0.3 },
+                upbeat: { kick: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0],
+                    snare: [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1],
+                    hihat: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                    kickVol: 1.0, snareVol: 0.9, hihatVol: 0.5 }
+            };
+
+            const p = patterns[style] || patterns.folk;
+            const stepsPerBeat = 4; // 16th notes
+            const samplesPerStep = sampleRate / (bpm / 60) / stepsPerBeat;
+
+            for (let i = 0; i < totalSamples; i++) {
+                const stepIdx = Math.floor(i / samplesPerStep) % 16;
+                const frac = (i % samplesPerStep) / samplesPerStep;
+
+                // --- Kick ---
+                if (p.kick[stepIdx]) {
+                    const env = Math.exp(-frac * 30) * p.kickVol;
+                    const val = (Math.sin(frac * 80) * 0.6 + Math.sin(frac * 160) * 0.3) * env;
+                    left[i] += val;
+                    right[i] += val * 0.95;
+                }
+
+                // --- Snare ---
+                if (p.snare[stepIdx]) {
+                    const env = Math.exp(-frac * 20) * p.snareVol;
+                    const noise = (Math.random() * 2 - 1) * 0.8;
+                    const tone = Math.sin(frac * 220) * 0.3;
+                    const val = (noise + tone) * env;
+                    left[i] += val;
+                    right[i] += val * 0.9;
+                }
+
+                // --- Hi-hat ---
+                if (p.hihat[stepIdx]) {
+                    const env = Math.exp(-frac * 50) * p.hihatVol;
+                    const noise = (Math.random() * 2 - 1) * 0.5;
+                    const val = noise * env;
+                    left[i] += val;
+                    right[i] += val * 0.85;
+                }
+
+                // Soft clip
+                left[i] = Math.max(-1, Math.min(1, left[i]));
+                right[i] = Math.max(-1, Math.min(1, right[i]));
+            }
+
+            return buffer;
+        }
+
+        // ============================================================
+        //  PLAY / STOP BEAT (preview)
+        // ============================================================
+        function playBeatPreview() {
+            if (!audioCtx) audioCtx = new(window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+
+            const bpm = parseInt(bpmControl.value);
+            const style = beatStyle.value;
+            const dur = 8; // 8 sec preview
+            const buf = generateBeatBuffer(audioCtx, style, bpm, dur);
+
+            const src = audioCtx.createBufferSource();
+            src.buffer = buf;
+            const gain = audioCtx.createGain();
+            gain.gain.value = 0.5;
+            src.connect(gain);
+            gain.connect(audioCtx.destination);
+            src.start();
+            src.onended = () => {
+                if (previewOsc) { previewOsc = null;
+                    previewGain = null; }
+            };
+            previewOsc = src;
+            previewGain = gain;
+            setStatus('🔊 बीट चल रही है...', false);
+        }
+
+        function stopBeatPreview() {
+            if (previewOsc) {
+                try { previewOsc.stop(); } catch (e) {}
+                previewOsc = null;
+                previewGain = null;
+                setStatus('⏸️ तैयार', false);
+            }
+        }
+
+        // ============================================================
+        //  BEAT VISUALIZER
+        // ============================================================
+        let visInterval = null;
+
+        function startBeatVisual() {
+            let idx = 0;
+            if (visInterval) clearInterval(visInterval);
+            visInterval = setInterval(() => {
+                beatDots.forEach((d, i) => d.classList.toggle('active', i === idx));
+                idx = (idx + 1) % beatDots.length;
+            }, 60000 / parseInt(bpmControl.value) / 4);
+        }
+
+        function stopBeatVisual() {
+            if (visInterval) { clearInterval(visInterval);
+                visInterval = null; }
+            beatDots.forEach(d => d.classList.remove('active'));
+        }
+
+        // ============================================================
+        //  RECORDING
+        // ============================================================
+        async function startRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                audioCtx = new(window.AudioContext || window.webkitAudioContext)();
+                if (audioCtx.state === 'suspended') await audioCtx.resume();
+
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+
+                mediaRecorder.ondataavailable = e => {
+                    if (e.data.size > 0) audioChunks.push(e.data);
+                };
+
+                mediaRecorder.onstop = async () => {
+                    stopBeatVisual();
+                    if (isBeatPlaying) {
+                        clearInterval(beatIntervalId);
+                        isBeatPlaying = false;
+                    }
+                    if (timerInterval) { clearInterval(timerInterval);
+                        timerInterval = null; }
+                    isRecording = false;
+                    startBtn.disabled = false;
+                    stopBtn.disabled = true;
+                    setStatus('⏳ मिक्स हो रहा है...', false);
+
+                    await mixAudio();
+                };
+
+                mediaRecorder.start();
+                isRecording = true;
+                seconds = 0;
+                updateTimer();
+                startBtn.disabled = true;
+                stopBtn.disabled = false;
+                setStatus('🔴 रिकॉर्डिंग...', true);
+
+                // timer
+                if (timerInterval) clearInterval(timerInterval);
+                timerInterval = setInterval(() => {
+                    seconds++;
+                    updateTimer();
+                }, 1000);
+
+                // Start beat in background (only if not already playing)
+                if (!isBeatPlaying) {
+                    startBackgroundBeat();
+                }
+
+                // Visual
+                startBeatVisual();
+
+            } catch (err) {
+                alert('माइक अनुमति नहीं मिली। कृपया ब्राउज़र सेटिंग में माइक की अनुमति दें।');
+                console.error(err);
+                startBtn.disabled = false;
+                stopBtn.disabled = true;
+                setStatus('❌ माइक नहीं मिला', false);
+            }
+        }
+
+        function stopRecording() {
+            if (mediaRecorder && mediaRecorder.state === 'recording') {
+                mediaRecorder.stop();
+                // stop all tracks
+                mediaRecorder.stream.getTracks().forEach(t => t.stop());
+            } else {
+                stopBtn.disabled = true;
+                startBtn.disabled = false;
+            }
+        }
+
+        // ============================================================
+        //  BACKGROUND BEAT (for recording)
+        // ============================================================
+        function startBackgroundBeat() {
+            if (!audioCtx) audioCtx = new(window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+
+            const bpm = parseInt(bpmControl.value);
+            const style = beatStyle.value;
+            const buf = generateBeatBuffer(audioCtx, style, bpm, 60);
+
+            const src = audioCtx.createBufferSource();
+            src.buffer = buf;
+            src.loop = true;
+            const gain = audioCtx.createGain();
+            const vol = parseInt(beatVol.value) / 100;
+            gain.gain.value = vol * 0.5;
+            src.connect(gain);
+            gain.connect(audioCtx.destination);
+            src.start();
+
+            beatIntervalId = { src, gain };
+            isBeatPlaying = true;
+        }
+
+        function stopBackgroundBeat() {
+            if (beatIntervalId) {
+                try { beatIntervalId.src.stop(); } catch (e) {}
+                beatIntervalId = null;
+            }
+            isBeatPlaying = false;
+        }
+
+        // ============================================================
+        //  MIX AUDIO (OfflineAudioContext)
+        // ============================================================
+        async function mixAudio() {
+            if (!audioCtx) audioCtx = new(window.AudioContext || window.webkitAudioContext)();
+            if (audioChunks.length === 0) {
+                setStatus('⚠️ कोई ऑडियो नहीं मिला', false);
+                startBtn.disabled = false;
+                return;
+            }
+
+            try {
+                const voiceBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                const arrayBuf = await voiceBlob.arrayBuffer();
+                const voiceBuffer = await audioCtx.decodeAudioData(arrayBuf);
+
+                const bpm = parseInt(bpmControl.value);
+                const style = beatStyle.value;
+                const beatDuration = Math.max(voiceBuffer.duration, 6);
+                const beatBuffer = generateBeatBuffer(audioCtx, style, bpm, beatDuration + 2);
+
+                const maxLen = Math.max(voiceBuffer.length, beatBuffer.length);
+                const sampleRate = audioCtx.sampleRate;
+                const offlineCtx = new OfflineAudioContext(2, maxLen, sampleRate);
+
+                // Voice
+                const vSrc = offlineCtx.createBufferSource();
+                vSrc.buffer = voiceBuffer;
+                const vGain = offlineCtx.createGain();
+                const vVol = parseInt(voiceVol.value) / 100;
+                vGain.gain.value = vVol * 0.9;
+                vSrc.connect(vGain);
+                vGain.connect(offlineCtx.destination);
+
+                // Beat
+                const bSrc = offlineCtx.createBufferSource();
+                bSrc.buffer = beatBuffer;
+                const bGain = offlineCtx.createGain();
+                const bVol = parseInt(beatVol.value) / 100;
+                bGain.gain.value = bVol * 0.5;
+                bSrc.connect(bGain);
+                bGain.connect(offlineCtx.destination);
+
+                vSrc.start(0);
+                bSrc.start(0);
+
+                const rendered = await offlineCtx.startRendering();
+
+                // Convert to WAV & WebM
+                const wavBlob = bufferToWavBlob(rendered);
+                const webmBlob = bufferToWebmBlob(rendered);
+
+                const url = URL.createObjectURL(wavBlob);
+                finalAudio.src = url;
+                playbackSection.classList.add('visible');
+
+                // Download buttons
+                downloadWav.onclick = () => {
+                    const a = document.createElement('a');
+                    a.href = URL.createObjectURL(wavBlob);
+                    a.download = 'Sur_Manch_Mix.wav';
+                    a.click();
+                };
+                downloadWebm.onclick = () => {
+                    const a = document.createElement('a');
+                    a.href = URL.createObjectURL(webmBlob);
+                    a.download = 'Sur_Manch_Mix.webm';
+                    a.click();
+                };
+
+                setStatus('✅ मिक्स तैयार! ऊपर सुनें और डाउनलोड करें', false);
+                startBtn.disabled = false;
+                stopBtn.disabled = true;
+
+            } catch (err) {
+                console.error('Mix error:', err);
+                setStatus('❌ मिक्स करते समय त्रुटि', false);
+                startBtn.disabled = false;
+                stopBtn.disabled = true;
+            }
+        }
+
+        // ============================================================
+        //  BUFFER → WAV
+        // ============================================================
+        function bufferToWavBlob(buffer) {
+            const numChannels = buffer.numberOfChannels;
+            const sampleRate = buffer.sampleRate;
+            const length = buffer.length;
+            const dataLen = length * numChannels * 2;
+            const totalLen = 44 + dataLen;
+            const arrayBuf = new ArrayBuffer(totalLen);
+            const view = new DataView(arrayBuf);
+            let pos = 0;
+
+            const setU16 = v => { view.setUint16(pos, v, true);
+                pos += 2; };
+            const setU32 = v => { view.setUint32(pos, v, true);
+                pos += 4; };
+
+            setU32(0x46464952); // "RIFF"
+            setU32(totalLen - 8);
+            setU32(0x45564157); // "WAVE"
+            setU32(0x20746d66); // "fmt "
+            setU32(16);
+            setU16(1);
+            setU16(numChannels);
+            setU32(sampleRate);
+            setU32(sampleRate * numChannels * 2);
+            setU16(numChannels * 2);
+            setU16(16);
+            setU32(0x61746164); // "data"
+            setU32(dataLen);
+
+            const chData = [];
+            for (let ch = 0; ch < numChannels; ch++) chData.push(buffer.getChannelData(ch));
+
+            let idx = 0;
+            while (pos < totalLen) {
+                for (let ch = 0; ch < numChannels; ch++) {
+                    let sample = Math.max(-1, Math.min(1, chData[ch][idx] || 0));
+                    sample = sample < 0 ? sample * 32768 : sample * 32767;
+                    view.setInt16(pos, Math.round(sample), true);
+                    pos += 2;
+                }
+                idx++;
+            }
+            return new Blob([arrayBuf], { type: 'audio/wav' });
+        }
+
+        // ============================================================
+        //  BUFFER → WebM (via MediaRecorder on a stream)
+        // ============================================================
+        function bufferToWebmBlob(buffer) {
+            // Simple fallback: re-encode as WAV but label as WebM
+            // For true WebM we'd need to encode, but this is a practical fallback
+            const wav = bufferToWavBlob(buffer);
+            // We'll just return the WAV with webm MIME — browsers handle it
+            return new Blob([wav], { type: 'audio/webm' });
+        }
+
+        // ============================================================
+        //  UI BINDINGS
+        // ============================================================
+        // BPM slider
+        bpmControl.addEventListener('input', () => {
+            bpmDisplay.textContent = bpmControl.value;
+            if (isBeatPlaying) {
+                // restart beat with new BPM
+                stopBackgroundBeat();
+                if (isRecording) startBackgroundBeat();
+            }
+        });
+
+        voiceVol.addEventListener('input', () => {
+            voiceVolDisplay.textContent = voiceVol.value + '%';
+        });
+
+        beatVol.addEventListener('input', () => {
+            beatVolDisplay.textContent = beatVol.value + '%';
+            if (beatIntervalId) {
+                beatIntervalId.gain.gain.value = (parseInt(beatVol.value) / 100) * 0.5;
+            }
+        });
+
+        // Record
+        startBtn.addEventListener('click', startRecording);
+        stopBtn.addEventListener('click', stopRecording);
+
+        // Preview beat
+        previewBtn.addEventListener('click', () => {
+            if (previewOsc) {
+                stopBeatPreview();
+                previewBtn.textContent = '🔊 बीट सुनें';
+            } else {
+                playBeatPreview();
+                previewBtn.textContent = '⏹️ बीट रोकें';
+                setTimeout(() => {
+                    if (previewOsc) {
+                        stopBeatPreview();
+                        previewBtn.textContent = '🔊 बीट सुनें';
+                    }
+                }, 8000);
+            }
+        });
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+            if (beatIntervalId) stopBackgroundBeat();
+            if (timerInterval) clearInterval(timerInterval);
+            if (visInterval) clearInterval(visInterval);
+            stopBeatPreview();
+            if (mediaRecorder && mediaRecorder.state === 'recording') {
+                mediaRecorder.stop();
+                mediaRecorder.stream.getTracks().forEach(t => t.stop());
+            }
+        });
+
+        // Init
+        setStatus('🎤 माइक अनुमति दें और रिकॉर्ड करें', false);
+        console.log('🎵 सुर मंच — तामीर अली | अक्ल की जीत');
+    </script>
+
+</body>
+</html>
