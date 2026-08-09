@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>🎧 सुर मंच – AI बीट मैचिंग v3.0</title>
+    <!-- PWA मेनिफेस्ट (inline) -->
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIlN1ciBNYW5jaCAtIEFJIEJlYXQgTWF0Y2giLAogICJzaG9ydF9uYW1lIjogIlN1ciBNYW5jaCBBSSIsCiAgImRlc2NyaXB0aW9uIjogIkF1dG8tQkVNIGFuZCBLZXkgRGV0ZWN0aW9uIHdpdGggU21hcnQgTWl4IiwKICAic3RhcnRfdXJsIjogIi4iLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiMwYjBiMWEiLAogICJ0aGVtZV9jb2xvciI6ICIjZmY5ODAwIiwKICAiaWNvbnMiOiBbCiAgICB7CiAgICAgICJzcmMiOiAiZGF0YTppbWFnZS9zdmcreG1sLDxzdmcgd2lkdGg9IjE5MiIgaGVpZ2h0PSIxOTIiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjE5MiIgaGVpZ2h0PSIxOTIiIHJ4PSIyMCIgZmlsbD0iIzBiMGIxYSIvPjx0ZXh0IHg9Ijk2IiB5PSIxMDgiIGZvbnQtc2l6ZT0iODAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJjZW50cmFsIiBmaWxsPSIjZmY5ODAwIj7wn5uA77iPPC90ZXh0Pjwvc3ZnPg=="LAogICAgICAic2l6ZXMiOiAiMTkyeDE5MiIsCiAgICAgICJ0eXBlIjogImltYWdlL3N2Zyt4bWwiLAogICAgICAicHVycG9zZSI6ICJhbnkgbWFzayBhbnlsYW5nIgogICAgfQogIF0KfQ==" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: #0b0b1a;
+            color: #e0e0f0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px;
+        }
+        .app {
+            max-width: 660px;
+            width: 100%;
+            background: linear-gradient(145deg, #16162e, #1c1c3a);
+            border-radius: 32px;
+            padding: 22px 20px 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 152, 0, 0.2);
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+        .header h1 {
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ff9800, #ff6a00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .version {
+            font-size: 12px;
+            color: #ff9800aa;
+            border: 1px solid #ff980055;
+            border-radius: 30px;
+            padding: 2px 14px;
+        }
+        .sub {
+            font-size: 14px;
+            color: #aab;
+            border-left: 3px solid #ff9800;
+            padding-left: 12px;
+            margin-bottom: 16px;
+        }
+        .card {
+            background: #0f0f2888;
+            border-radius: 16px;
+            padding: 14px 14px 12px;
+            margin-bottom: 14px;
+            border: 1px solid #2a2a4e;
+            backdrop-filter: blur(2px);
+        }
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+        .row label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #ccd;
+            min-width: 70px;
+        }
+        .row input[type="range"] {
+            flex: 1;
+            min-width: 100px;
+            height: 6px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: #2a2a50;
+            border-radius: 4px;
+            outline: none;
+        }
+        .row input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #ff9800;
+            cursor: pointer;
+            box-shadow: 0 0 14px #ff980066;
+        }
+        .val {
+            font-size: 14px;
+            font-weight: 700;
+            color: #ff9800;
+            min-width: 50px;
+            text-align: right;
+        }
+        .file-upload {
+            background: #1f1f44;
+            border: 1px dashed #ff980066;
+            border-radius: 10px;
+            padding: 8px 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 13px;
+            flex: 2;
+        }
+        .file-upload:hover {
+            background: #2a2a5a;
+            border-color: #ff9800;
+        }
+        .file-upload input {
+            display: none;
+        }
+        .file-name {
+            color: #8af;
+            font-weight: 500;
+            margin-left: 6px;
+        }
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 4px;
+        }
+        .btn {
+            flex: 1 1 auto;
+            min-width: 90px;
+            padding: 13px 12px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            background: #2a2a4a;
+            color: #ccc;
+            box-shadow: 0 4px 0 #0f0f1f;
+        }
+        .btn:active {
+            transform: translateY(3px);
+            box-shadow: 0 1px 0 #0f0f1f;
+        }
+        .btn:disabled {
+            opacity: 0.4;
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #0f0f1f;
+            pointer-events: none;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #ff9800, #e67e00);
+            color: #0b0b0b;
+            box-shadow: 0 4px 0 #b85e00;
+        }
+        .btn-danger {
+            background: linear-gradient(135deg, #e53935, #b71c1c);
+            color: #fff;
+            box-shadow: 0 4px 0 #7f0000;
+        }
+        .btn-success {
+            background: linear-gradient(135deg, #43a047, #2e7d32);
+            color: #fff;
+            box-shadow: 0 4px 0 #1b5e20;
+        }
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #ff980066;
+            color: #ff9800;
+            box-shadow: none;
+        }
+        .btn-outline:hover {
+            background: #ff980022;
+        }
+        .btn-sm {
+            padding: 8px 14px;
+            font-size: 13px;
+            min-width: 70px;
+        }
+        .status-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            padding: 6px 0 2px;
+            font-size: 14px;
+        }
+        .timer {
+            font-size: 22px;
+            font-weight: 800;
+            color: #ff9800;
+            background: #0b0b1a;
+            padding: 0 18px;
+            border-radius: 40px;
+            border: 1px solid #ff980044;
+            min-width: 90px;
+            text-align: center;
+        }
+        .status-msg {
+            padding: 4px 14px;
+            border-radius: 20px;
+            background: #0f0f2a;
+            color: #8af;
+        }
+        .status-msg.rec {
+            color: #ff6b6b;
+            animation: blink 1s infinite;
+        }
+        @keyframes blink {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.2;
+            }
+        }
+        .beat-visual {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            height: 30px;
+            margin: 6px 0 2px;
+        }
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #2a2a4a;
+            transition: all 0.1s;
+        }
+        .dot.on {
+            background: #ff9800;
+            box-shadow: 0 0 20px #ff980088;
+            transform: scale(1.5);
+        }
+        .playback {
+            margin-top: 16px;
+            padding-top: 14px;
+            border-top: 1px solid #2a2a4e;
+            display: none;
+        }
+        .playback.show {
+            display: block;
+        }
+        .playback audio {
+            width: 100%;
+            height: 48px;
+            border-radius: 12px;
+            background: #0b0b1a;
+            margin: 4px 0 10px;
+        }
+        .download-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #556;
+            border-top: 1px solid #1f1f3a;
+            padding-top: 14px;
+        }
+        .footer span {
+            color: #ff9800;
+            font-weight: 600;
+        }
+        .analysis-result {
+            background: #0f0f2a;
+            border-radius: 10px;
+            padding: 8px 12px;
+            font-size: 14px;
+            color: #aaf;
+            margin-top: 6px;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .analysis-result b {
+            color: #ff9800;
+        }
+        @media (max-width: 480px) {
+            .app {
+                padding: 16px 12px;
+            }
+            .header h1 {
+                font-size: 22px;
+            }
+            .btn {
+                font-size: 13px;
+                padding: 11px 8px;
+                min-width: 70px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app" id="app">
+        <div class="header">
+            <h1>🎧 सुर मंच AI</h1>
+            <span class="version">v3.0 · ऑटो-बीट</span>
+        </div>
+        <div class="sub">🤖 अपना गाना अपलोड करें — AI स्वतः BPM, Key ढूँढ़कर बीट तैयार करेगा</div>
+
+        <!-- अपलोड -->
+        <div class="card">
+            <div class="row">
+                <label>🎤 वोकल</label>
+                <div class="file-upload" id="fileUploadArea">
+                    <span>⬆️ MP3/WAV चुनें</span>
+                    <input type="file" id="vocalFileInput" accept="audio/*" />
+                    <span class="file-name" id="fileNameDisplay"></span>
+                </div>
+                <button class="btn btn-outline btn-sm" id="clearVocalBtn" style="min-width:50px;">✖️</button>
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-primary" id="analyzeBtn">🔍 एनालिसिस करें</button>
+                <button class="btn btn-outline" id="previewBeatBtn">🔊 बीट सुनें</button>
+            </div>
+            <div class="analysis-result" id="analysisResult" style="display:none;">
+                <span>🎵 BPM: <b id="detectedBpm">--</b></span>
+                <span>🎼 Key: <b id="detectedKey">--</b></span>
+                <span>📏 Tempo: <b id="detectedTempo">--</b></span>
+            </div>
+        </div>
+
+        <!-- इफ़ेक्ट्स -->
+        <div class="card">
+            <div class="row">
+                <label>🎛️ रिवर्ब</label>
+                <input type="range" id="reverbSlider" min="0" max="100" value="30" step="1" />
+                <span class="val" id="reverbVal">30%</span>
+            </div>
+            <div class="row">
+                <label>🎤 इको</label>
+                <input type="range" id="echoSlider" min="0" max="100" value="20" step="1" />
+                <span class="val" id="echoVal">20%</span>
+            </div>
+            <div class="row">
+                <label>🎚️ हाई-पास</label>
+                <input type="range" id="filterSlider" min="20" max="1000" value="80" step="10" />
+                <span class="val" id="filterVal">80 Hz</span>
+            </div>
+        </div>
+
+        <!-- रिकॉर्ड (optional) -->
+        <div class="btn-group">
+            <button class="btn btn-primary" id="startRecBtn">🎙️ रिकॉर्ड</button>
+            <button class="btn btn-danger" id="stopRecBtn" disabled>⏹️ रोकें</button>
+        </div>
+
+        <div class="status-bar">
+            <span class="timer" id="timerDisplay">00:00</span>
+            <span class="status-msg" id="statusMsg">⏸️ तैयार</span>
+        </div>
+
+        <div class="beat-visual" id="beatVisual">
+            <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+            <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+            <span class="dot"></span><span class="dot"></span>
+        </div>
+
+        <div class="playback" id="playbackSection">
+            <h4 style="color:#ff9800; margin-bottom:2px;">🎧 मिक्स हुआ गाना</h4>
+            <audio id="finalAudio" controls></audio>
+            <div class="download-group">
+                <button class="btn btn-success" id="downloadWavBtn">📥 WAV</button>
+                <button class="btn btn-outline" id="downloadWebmBtn">📥 WebM</button>
+            </div>
+        </div>
+
+        <div class="footer">
+            💡 <span>ऑटो BPM</span>, <span>ऑटो Key</span> और <span>ऑटो-एलाइन</span> · विचारक: <span>तामीर अली</span>
+        </div>
+    </div>
+
+    <script>
+        // ================================================================
+        //  DOM REFS
+        // ================================================================
+        const startBtn = document.getElementById('startRecBtn');
+        const stopBtn = document.getElementById('stopRecBtn');
+        const previewBtn = document.getElementById('previewBeatBtn');
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        const timerDisplay = document.getElementById('timerDisplay');
+        const statusMsg = document.getElementById('statusMsg');
+        const finalAudio = document.getElementById('finalAudio');
+        const playbackSection = document.getElementById('playbackSection');
+        const downloadWav = document.getElementById('downloadWavBtn');
+        const downloadWebm = document.getElementById('downloadWebmBtn');
+        const vocalFileInput = document.getElementById('vocalFileInput');
+        const fileNameDisplay = document.getElementById('fileNameDisplay');
+        const clearVocalBtn = document.getElementById('clearVocalBtn');
+        const reverbSlider = document.getElementById('reverbSlider');
+        const reverbVal = document.getElementById('reverbVal');
+        const echoSlider = document.getElementById('echoSlider');
+        const echoVal = document.getElementById('echoVal');
+        const filterSlider = document.getElementById('filterSlider');
+        const filterVal = document.getElementById('filterVal');
+        const beatDots = document.querySelectorAll('.dot');
+        const detectedBpm = document.getElementById('detectedBpm');
+        const detectedKey = document.getElementById('detectedKey');
+        const detectedTempo = document.getElementById('detectedTempo');
+        const analysisResult = document.getElementById('analysisResult');
+
+        // ================================================================
+        //  STATE
+        // ================================================================
+        let audioCtx = null;
+        let vocalBuffer = null; // decoded audio buffer of uploaded file
+        let detectedBPM = 120; // default
+        let detectedKeyName = 'C';
+        let mediaRecorder = null;
+        let audioChunks = [];
+        let isRecording = false;
+        let timerInterval = null;
+        let seconds = 0;
+        let beatIntervalId = null;
+        let isBeatPlaying = false;
+        let previewOsc = null;
+        let previewGain = null;
+        let visInterval = null;
+
+        // ================================================================
+        //  HELPER FUNCTIONS
+        // ================================================================
+        function setStatus(msg, isRec = false) {
+            statusMsg.textContent = msg;
+            statusMsg.className = 'status-msg' + (isRec ? ' rec' : '');
+        }
+
+        function formatTime(s) {
+            const m = String(Math.floor(s / 60)).padStart(2, '0');
+            const sec = String(Math.floor(s % 60)).padStart(2, '0');
+            return `${m}:${sec}`;
+        }
+        function updateTimer() {
+            timerDisplay.textContent = formatTime(seconds);
+        }
+
+        // ================================================================
+        //  BPM DETECTION (simple peak-based)
+        // ================================================================
+        function detectBPM(buffer, sampleRate) {
+            // We'll use a simple onset detection: find peaks in energy envelope
+            const channelData = buffer.getChannelData(0);
+            const len = channelData.length;
+            const windowSize = Math.floor(sampleRate * 0.05); // 50ms
+            const step = Math.floor(windowSize / 2);
+            const energy = [];
+            for (let i = 0; i < len - windowSize; i += step) {
+                let sum = 0;
+                for (let j = 0; j < windowSize; j++) {
+                    sum += channelData[i + j] * channelData[i + j];
+                }
+                energy.push(sum / windowSize);
+            }
+            // Find peaks (local maxima)
+            const peaks = [];
+            const threshold = 0.05;
+            for (let i = 1; i < energy.length - 1; i++) {
+                if (energy[i] > threshold && energy[i] > energy[i - 1] && energy[i] > energy[i + 1]) {
+                    peaks.push(i * step / sampleRate);
+                }
+            }
+            if (peaks.length < 2) return 120; // fallback
+
+            // Compute intervals between peaks
+            const intervals = [];
+            for (let i = 1; i < peaks.length; i++) {
+                intervals.push(peaks[i] - peaks[i - 1]);
+            }
+            // Find most common interval (simple histogram)
+            const hist = {};
+            for (const inter of intervals) {
+                const rounded = Math.round(inter * 10) / 10;
+                hist[rounded] = (hist[rounded] || 0) + 1;
+            }
+            let best = 0,
+                bestCount = 0;
+            for (const [key, count] of Object.entries(hist)) {
+                if (count > bestCount) {
+                    bestCount = count;
+                    best = parseFloat(key);
+                }
+            }
+            if (best > 0) {
+                const bpm = 60 / best;
+                return Math.round(bpm);
+            }
+            return 120;
+        }
+
+        // ================================================================
+        //  PITCH / KEY DETECTION (using autocorrelation)
+        // ================================================================
+        function detectKey(buffer, sampleRate) {
+            // Simplified: estimate fundamental frequency using autocorrelation
+            const data = buffer.getChannelData(0);
+            const len = data.length;
+            const minFreq = 80; // lower bound
+            const maxFreq = 400;
+            const minLag = Math.floor(sampleRate / maxFreq);
+            const maxLag = Math.floor(sampleRate / minFreq);
+            let bestLag = 0,
+                bestCorr = 0;
+            for (let lag = minLag; lag < maxLag && lag < len; lag++) {
+                let corr = 0;
+                for (let i = 0; i < len - lag; i += 10) {
+                    corr += data[i] * data[i + lag];
+                }
+                corr = corr / (len - lag);
+                if (corr > bestCorr) {
+                    bestCorr = corr;
+                    bestLag = lag;
+                }
+            }
+            let freq = 0;
+            if (bestLag > 0) freq = sampleRate / bestLag;
+            // Map frequency to nearest note (simplified)
+            const noteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+            if (freq > 0) {
+                const a4 = 440;
+                const semitones = 12 * Math.log2(freq / a4) + 69; // MIDI note
+                const midi = Math.round(semitones);
+                const noteIdx = midi % 12;
+                return noteNames[noteIdx] || 'C';
+            }
+            return 'C';
+        }
+
+        // ================================================================
+        //  BEAT GENERATOR (synth) with given BPM and scale
+        // ================================================================
+        function generateBeatBuffer(ctx, bpm, key, durationSec = 20) {
+            const sampleRate = ctx.sampleRate;
+            const total = Math.floor(sampleRate * durationSec);
+            const buffer = ctx.createBuffer(2, total, sampleRate);
+            const left = buffer.getChannelData(0);
+            const right = buffer.getChannelData(1);
+
+            // Map key to base frequency (simplified)
+            const noteMap = { 'C': 261.63, 'C#': 277.18, 'D': 293.66, 'D#': 311.13, 'E': 329.63,
+                'F': 349.23, 'F#': 369.99, 'G': 392.00, 'G#': 415.30, 'A': 440.00,
+                'A#': 466.16, 'B': 493.88 };
+            const baseFreq = noteMap[key] || 261.63;
+
+            // Basic kick/snare/hihat pattern (simplified)
+            const stepsPerBeat = 4;
+            const samplesPerStep = sampleRate / (bpm / 60) / stepsPerBeat;
+
+            for (let i = 0; i < total; i++) {
+                const stepIdx = Math.floor(i / samplesPerStep) % 16;
+                const frac = (i % samplesPerStep) / samplesPerStep;
+                let L = 0,
+                    R = 0;
+
+                // Kick on 1,5,9,13
+                if (stepIdx % 4 === 0) {
+                    const env = Math.exp(-frac * 25);
+                    const val = (Math.sin(frac * 70) * 0.6 + Math.sin(frac * 150) * 0.3) * env * 0.9;
+                    L += val;
+                    R += val * 0.95;
+                }
+                // Snare on 2,4,6,8 etc.
+                if (stepIdx % 4 === 2) {
+                    const env = Math.exp(-frac * 20);
+                    const noise = (Math.random() * 2 - 1) * 0.7;
+                    const tone = Math.sin(frac * 200) * 0.2;
+                    const val = (noise + tone) * env * 0.7;
+                    L += val;
+                    R += val * 0.9;
+                }
+                // Hihat every 2 steps
+                if (stepIdx % 2 === 0) {
+                    const env = Math.exp(-frac * 40);
+                    const noise = (Math.random() * 2 - 1) * 0.4;
+                    const val = noise * env * 0.3;
+                    L += val;
+                    R += val * 0.85;
+                }
+                // Add a simple bass line (based on key) on every beat
+                if (stepIdx % 4 === 0) {
+                    const bassFreq = baseFreq * 0.5;
+                    const env2 = Math.exp(-frac * 10);
+                    const val2 = Math.sin(2 * Math.PI * bassFreq * frac * 0.3) * env2 * 0.15;
+                    L += val2;
+                    R += val2;
+                }
+                left[i] = Math.max(-1, Math.min(1, L));
+                right[i] = Math.max(-1, Math.min(1, R));
+            }
+            return buffer;
+        }
+
+        // ================================================================
+        //  REVERB IMPULSE
+        // ================================================================
+        function generateReverbImpulse(ctx, duration, decay) {
+            const sampleRate = ctx.sampleRate;
+            const length = Math.floor(sampleRate * duration);
+            const buffer = ctx.createBuffer(2, length, sampleRate);
+            const left = buffer.getChannelData(0);
+            const right = buffer.getChannelData(1);
+            for (let i = 0; i < length; i++) {
+                const env = Math.exp(-i / (sampleRate * decay));
+                const noise = (Math.random() * 2 - 1) * env;
+                left[i] = noise;
+                right[i] = noise * 0.9;
+            }
+            return buffer;
+        }
+
+        // ================================================================
+        //  PREVIEW BEAT
+        // ================================================================
+        function playPreviewBeat() {
+            if (!audioCtx) audioCtx = new(window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const bpm = detectedBPM;
+            const key = detectedKeyName;
+            const buf = generateBeatBuffer(audioCtx, bpm, key, 8);
+            const src = audioCtx.createBufferSource();
+            src.buffer = buf;
+            const gain = audioCtx.createGain();
+            gain.gain.value = 0.5;
+            src.connect(gain);
+            gain.connect(audioCtx.destination);
+            src.start();
+            src.onended = () => { previewOsc = null;
+                previewGain = null;
+                previewBtn.textContent = '🔊 बीट सुनें'; };
+            previewOsc = src;
+            previewGain = gain;
+            previewBtn.textContent = '⏹️ रोकें';
+            setStatus('🔊 बीट चल रही', false);
+        }
+
+        function stopPreviewBeat() {
+            if (previewOsc) { try { previewOsc.stop(); } catch (e) {} }
+            previewOsc = null;
+            previewGain = null;
+            previewBtn.textContent = '🔊 बीट सुनें';
+            setStatus('⏸️ तैयार', false);
+        }
+
+        // ================================================================
+        //  BACKGROUND BEAT (for recording)
+        // ================================================================
+        function startBackgroundBeat() {
+            if (!audioCtx) audioCtx = new(window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const bpm = detectedBPM;
+            const key = detectedKeyName;
+            const buf = generateBeatBuffer(audioCtx, bpm, key, 60);
+            const src = audioCtx.createBufferSource();
+            src.buffer = buf;
+            src.loop = true;
+            const gain = audioCtx.createGain();
+            gain.gain.value = 0.4;
+            src.connect(gain);
+            gain.connect(audioCtx.destination);
+            src.start();
+            beatIntervalId = { src, gain };
+            isBeatPlaying = true;
+        }
+
+        function stopBackgroundBeat() {
+            if (beatIntervalId) {
+                try { beatIntervalId.src.stop(); } catch (e) {}
+                beatIntervalId = null;
+            }
+            isBeatPlaying = false;
+        }
+
+        // ================================================================
+        //  BEAT VISUALIZER
+        // ================================================================
+        function startBeatVisual() {
+            let idx = 0;
+            if (visInterval) clearInterval(visInterval);
+            visInterval = setInterval(() => {
+                beatDots.forEach((d, i) => d.classList.toggle('on', i === idx));
+                idx = (idx + 1) % beatDots.length;
+            }, 60000 / detectedBPM / 4);
+        }
+
+        function stopBeatVisual() {
+            if (visInterval) { clearInterval(visInterval);
+                visInterval = null; }
+            beatDots.forEach(d => d.classList.remove('on'));
+        }
+
+        // ================================================================
+        //  ANALYZE UPLOADED VOCAL
+        // ================================================================
+        async function analyzeVocal() {
+            const file = vocalFileInput.files[0];
+            if (!file) {
+                alert('कृपया पहले कोई ऑडियो फ़ाइल अपलोड करें।');
+                return;
+            }
+            setStatus('⏳ एनालिसिस हो रहा...', false);
+            try {
+                const arrayBuf = await file.arrayBuffer();
+                if (!audioCtx) audioCtx = new(window.AudioContext || window.webkitAudioContext)();
+                const buffer = await audioCtx.decodeAudioData(arrayBuf);
+                vocalBuffer = buffer;
+
+                // BPM detection
+                const bpm = detectBPM(buffer, buffer.sampleRate);
+                detectedBPM = Math.min(180, Math.max(60, bpm));
+                detectedBpm.textContent = detectedBPM;
+
+                // Key detection
+                const key = detectKey(buffer, buffer.sampleRate);
+                detectedKeyName = key;
+                detectedKey.textContent = key;
+
+                // Tempo (just BPM)
+                detectedTempo.textContent = detectedBPM + ' BPM';
+
+                analysisResult.style.display = 'flex';
+                setStatus('✅ एनालिसिस पूरा! अब बीट सुनें या मिक्स करें', false);
+            } catch (err) {
+                console.error(err);
+                setStatus('❌ एनालिसिस विफल', false);
+            }
+        }
+
+        // ================================================================
+        //  MIX AUDIO (uses vocalBuffer and generated beat with effects)
+        // ================================================================
+        async function mixAudio() {
+            if (!vocalBuffer) {
+                alert('पहले कोई वोकल अपलोड करें और एनालिसिस करें।');
+                return;
+            }
+            setStatus('⏳ मिक्स हो रहा...', false);
+            try {
+                const ctx = audioCtx || new(window.AudioContext || window.webkitAudioContext)();
+                const sampleRate = ctx.sampleRate;
+                const voiceBuffer = vocalBuffer;
+
+                const reverbAmt = parseInt(reverbSlider.value) / 100;
+                const echoAmt = parseInt(echoSlider.value) / 100;
+                const filterFreq = parseInt(filterSlider.value);
+
+                // Generate beat with detected BPM & Key
+                const beatDuration = Math.max(voiceBuffer.duration, 8);
+                const beatBuf = generateBeatBuffer(ctx, detectedBPM, detectedKeyName, beatDuration + 2);
+
+                const maxLen = Math.max(voiceBuffer.length, beatBuf.length);
+                const offlineCtx = new OfflineAudioContext(2, maxLen + Math.floor(sampleRate * 1.5), sampleRate);
+
+                // Voice chain
+                const vSrc = offlineCtx.createBufferSource();
+                vSrc.buffer = voiceBuffer;
+                vSrc.start(0);
+
+                const filterNode = offlineCtx.createBiquadFilter();
+                filterNode.type = 'highpass';
+                filterNode.frequency.value = filterFreq;
+
+                // Reverb
+                const reverbNode = offlineCtx.createConvolver();
+                const impulse = generateReverbImpulse(offlineCtx, 1.5, 0.6);
+                reverbNode.buffer = impulse;
+
+                // Echo
+                const delayNode = offlineCtx.createDelay(1.5);
+                delayNode.delayTime.value = 0.3;
+                const feedbackGain = offlineCtx.createGain();
+                feedbackGain.gain.value = 0.3 * echoAmt;
+                const echoGain = offlineCtx.createGain();
+                echoGain.gain.value = 0.5 * echoAmt;
+
+                const dryGain = offlineCtx.createGain();
+                dryGain.gain.value = 1 - reverbAmt * 0.5;
+                const wetGain = offlineCtx.createGain();
+                wetGain.gain.value = reverbAmt * 0.6;
+
+                vSrc.connect(filterNode);
+                filterNode.connect(dryGain);
+                dryGain.connect(offlineCtx.destination);
+
+                filterNode.connect(reverbNode);
+                reverbNode.connect(wetGain);
+                wetGain.connect(offlineCtx.destination);
+
+                filterNode.connect(delayNode);
+                delayNode.connect(feedbackGain);
+                feedbackGain.connect(delayNode);
+                delayNode.connect(echoGain);
+                echoGain.connect(offlineCtx.destination);
+
+                // Beat chain
+                const bSrc = offlineCtx.createBufferSource();
+                bSrc.buffer = beatBuf;
+                const bGain = offlineCtx.createGain();
+                bGain.gain.value = 0.4;
+                bSrc.connect(bGain);
+                bGain.connect(offlineCtx.destination);
+                bSrc.start(0);
+
+                const rendered = await offlineCtx.startRendering();
+
+                const wavBlob = bufferToWavBlob(rendered);
+                const webmBlob = bufferToWebmBlob(rendered);
+                const url = URL.createObjectURL(wavBlob);
+                finalAudio.src = url;
+                playbackSection.classList.add('show');
+
+                downloadWav.onclick = () => {
+                    const a = document.createElement('a');
+                    a.href = URL.createObjectURL(wavBlob);
+                    a.download = 'Sur_Manch_Auto_Mix.wav';
+                    a.click();
+                };
+                downloadWebm.onclick = () => {
+                    const a = document.createElement('a');
+                    a.href = URL.createObjectURL(webmBlob);
+                    a.download = 'Sur_Manch_Auto_Mix.webm';
+                    a.click();
+                };
+                setStatus('✅ मिक्स तैयार!', false);
+            } catch (err) {
+                console.error(err);
+                setStatus('❌ मिक्स त्रुटि', false);
+            }
+        }
+
+        // ================================================================
+        //  RECORDING (live mic)
+        // ================================================================
+        async function startRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                if (!audioCtx) audioCtx = new(window.AudioContext || window.webkitAudioContext)();
+                if (audioCtx.state === 'suspended') await audioCtx.resume();
+
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+                mediaRecorder.ondataavailable = e => { if (e.data.size > 0) audioChunks.push(e.data); };
+                mediaRecorder.onstop = async () => {
+                    stopBeatVisual();
+                    if (isBeatPlaying) { clearInterval(beatIntervalId);
+                        isBeatPlaying = false; }
+                    if (timerInterval) clearInterval(timerInterval);
+                    isRecording = false;
+                    startBtn.disabled = false;
+                    stopBtn.disabled = true;
+                    setStatus('⏳ मिक्स हो रहा...', false);
+                    // Convert recorded chunks to buffer and set as vocalBuffer
+                    const blob = new Blob(audioChunks, { type: 'audio/webm' });
+                    const arrayBuf = await blob.arrayBuffer();
+                    const buf = await audioCtx.decodeAudioData(arrayBuf);
+                    vocalBuffer = buf;
+                    // Auto-detect BPM and key
+                    const bpm = detectBPM(buf, buf.sampleRate);
+                    detectedBPM = Math.min(180, Math.max(60, bpm));
+                    const key = detectKey(buf, buf.sampleRate);
+                    detectedKeyName = key;
+                    detectedBpm.textContent = detectedBPM;
+                    detectedKey.textContent = key;
+                    detectedTempo.textContent = detectedBPM + ' BPM';
+                    analysisResult.style.display = 'flex';
+                    await mixAudio();
+                };
+
+                mediaRecorder.start();
+                isRecording = true;
+                seconds = 0;
+                updateTimer();
+                startBtn.disabled = true;
+                stopBtn.disabled = false;
+                setStatus('🔴 रिकॉर्डिंग...', true);
+
+                timerInterval = setInterval(() => { seconds++;
+                    updateTimer(); }, 1000);
+
+                if (!isBeatPlaying) startBackgroundBeat();
+                startBeatVisual();
+            } catch (err) {
+                alert('माइक अनुमति नहीं मिली।');
+                console.error(err);
+                startBtn.disabled = false;
+                stopBtn.disabled = true;
+                setStatus('❌ माइक नहीं', false);
+            }
+        }
+
+        function stopRecording() {
+            if (mediaRecorder && mediaRecorder.state === 'recording') {
+                mediaRecorder.stop();
+                mediaRecorder.stream.getTracks().forEach(t => t.stop());
+            } else {
+                stopBtn.disabled = true;
+                startBtn.disabled = false;
+            }
+        }
+
+        // ================================================================
+        //  UTILITY: BUFFER TO WAV / WEBM
+        // ================================================================
+        function bufferToWavBlob(buffer) {
+            const numChannels = buffer.numberOfChannels;
+            const sampleRate = buffer.sampleRate;
+            const length = buffer.length;
+            const dataLen = length * numChannels * 2;
+            const totalLen = 44 + dataLen;
+            const arrayBuf = new ArrayBuffer(totalLen);
+            const view = new DataView(arrayBuf);
+            let pos = 0;
+            const setU16 = v => { view.setUint16(pos, v, true);
+                pos += 2; };
+            const setU32 = v => { view.setUint32(pos, v, true);
+                pos += 4; };
+            setU32(0x46464952);
+            setU32(totalLen - 8);
+            setU32(0x45564157);
+            setU32(0x20746d66);
+            setU32(16);
+            setU16(1);
+            setU16(numChannels);
+            setU32(sampleRate);
+            setU32(sampleRate * numChannels * 2);
+            setU16(numChannels * 2);
+            setU16(16);
+            setU32(0x61746164);
+            setU32(dataLen);
+
+            const chData = [];
+            for (let ch = 0; ch < numChannels; ch++) chData.push(buffer.getChannelData(ch));
+            let idx = 0;
+            while (pos < totalLen) {
+                for (let ch = 0; ch < numChannels; ch++) {
+                    let sample = Math.max(-1, Math.min(1, chData[ch][idx] || 0));
+                    sample = sample < 0 ? sample * 32768 : sample * 32767;
+                    view.setInt16(pos, Math.round(sample), true);
+                    pos += 2;
+                }
+                idx++;
+            }
+            return new Blob([arrayBuf], { type: 'audio/wav' });
+        }
+
+        function bufferToWebmBlob(buffer) {
+            const wav = bufferToWavBlob(buffer);
+            return new Blob([wav], { type: 'audio/webm' });
+        }
+
+        // ================================================================
+        //  UI BINDINGS
+        // ================================================================
+        analyzeBtn.addEventListener('click', analyzeVocal);
+        previewBtn.addEventListener('click', () => {
+            if (previewOsc) stopPreviewBeat();
+            else playPreviewBeat();
+        });
+        startBtn.addEventListener('click', startRecording);
+        stopBtn.addEventListener('click', stopRecording);
+
+        reverbSlider.addEventListener('input', () => reverbVal.textContent = reverbSlider.value + '%');
+        echoSlider.addEventListener('input', () => echoVal.textContent = echoSlider.value + '%');
+        filterSlider.addEventListener('input', () => filterVal.textContent = filterSlider.value + ' Hz');
+
+        vocalFileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) fileNameDisplay.textContent = file.name;
+            else fileNameDisplay.textContent = '';
+            // Reset analysis display
+            analysisResult.style.display = 'none';
+        });
+        clearVocalBtn.addEventListener('click', () => {
+            vocalFileInput.value = '';
+            fileNameDisplay.textContent = '';
+            vocalBuffer = null;
+            analysisResult.style.display = 'none';
+            setStatus('⏸️ वोकल हटा दिया', false);
+        });
+
+        // Auto-mix after analysis? We'll let user manually click "analyze" then use the beat preview, and they can trigger mix via record or we can add a "Mix Now" button.
+        // We'll add a hidden mix trigger: if user uploads and analyzes, they can click on the beat preview, but we also need a mix button. Let's add a "Mix Now" button in the status area? Better: we can create a "मिक्स करें" button.
+        // We'll add a button dynamically or use the "रिकॉर्ड" button? Actually, we have no explicit mix button. Let's add one in the card.
+        const mixBtn = document.createElement('button');
+        mixBtn.className = 'btn btn-success';
+        mixBtn.textContent = '🎚️ मिक्स करें';
+        mixBtn.style.marginTop = '8px';
+        mixBtn.addEventListener('click', mixAudio);
+        document.querySelector('.card:first-of-type .btn-group').appendChild(mixBtn);
+
+        // Cleanup
+        window.addEventListener('beforeunload', () => {
+            if (beatIntervalId) stopBackgroundBeat();
+            if (timerInterval) clearInterval(timerInterval);
+            if (visInterval) clearInterval(visInterval);
+            stopPreviewBeat();
+            if (mediaRecorder && mediaRecorder.state === 'recording') {
+                mediaRecorder.stop();
+                mediaRecorder.stream.getTracks().forEach(t => t.stop());
+            }
+        });
+
+        setStatus('🎤 अपना गाना अपलोड करें या रिकॉर्ड करें', false);
+        console.log('🎧 सुर मंच AI v3.0 — तामीर अली');
+    </script>
+</body>
+</html>
