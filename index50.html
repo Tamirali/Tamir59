@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>🎧 सुर मंच AI – फिक्स्ड प्रो वर्शन</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: #080812;
+            color: #fff;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+        }
+        .app {
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(145deg, #0b0b1a, #161630);
+            display: flex;
+            flex-direction: column;
+            padding: 4px 5px;
+            gap: 4px;
+            overflow: hidden;
+        }
+
+        /* HEADER */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+            padding: 0 4px 2px 4px;
+            border-bottom: 1px solid #2a2a48;
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .header h1 {
+            font-size: 15px;
+            font-weight: 800;
+            color: #ff9800;
+        }
+        .badge {
+            font-size: 9px;
+            background: #ff980022;
+            border: 1px solid #ff9800;
+            padding: 1px 10px;
+            border-radius: 14px;
+            color: #ff9800;
+            font-weight: 700;
+        }
+        .power-btn {
+            background: #1a1a38;
+            border: 2px solid #4caf50;
+            color: #4caf50;
+            font-size: 13px;
+            font-weight: 800;
+            padding: 4px 12px;
+            border-radius: 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            min-height: 34px;
+        }
+        .power-btn.off {
+            border-color: #f44336;
+            color: #f44336;
+            background: #2a1a1a;
+        }
+
+        /* TOP SECTION */
+        .top-section {
+            background: #11112b;
+            border: 1px solid #ff980044;
+            border-radius: 10px;
+            padding: 6px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            flex-shrink: 0;
+        }
+        .instr-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 5px;
+        }
+        .instr-btn {
+            background: #1a1a38;
+            border: 2px solid #ff980033;
+            color: #ddd;
+            padding: 8px 2px;
+            font-size: 13px;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+        .instr-btn.active {
+            background: #ff9800;
+            color: #000;
+            border-color: #ff9800;
+            box-shadow: 0 0 16px #ff9800aa;
+        }
+        .instr-btn.disabled, .act-btn.disabled {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        .sliders-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            padding: 2px;
+        }
+        .sliders-row input[type="range"] {
+            flex: 1;
+            accent-color: #ff9800;
+            height: 6px;
+        }
+        .sliders-row .val {
+            color: #ff9800;
+            font-weight: 800;
+            min-width: 38px;
+            text-align: center;
+        }
+
+        .actions-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 4px;
+        }
+        .act-btn {
+            flex: 1;
+            padding: 8px 4px;
+            font-size: 11px;
+            font-weight: 700;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            min-height: 36px;
+        }
+        .btn-rec { background: #d32f2f; color: #fff; }
+        .btn-stop { background: #616161; color: #fff; }
+        .btn-stop:disabled { opacity: 0.4; }
+        .btn-play { background: #388e3c; color: #fff; }
+        .btn-save { background: #f57c00; color: #fff; }
+        .btn-del { background: #c2185b; color: #fff; }
+        .timer-box {
+            font-size: 13px;
+            font-weight: 800;
+            color: #ff9800;
+            background: #000;
+            padding: 4px 8px;
+            border-radius: 6px;
+            min-width: 52px;
+            text-align: center;
+        }
+
+        /* MID STATUS */
+        .mid-section {
+            background: #11112b;
+            border-radius: 8px;
+            padding: 4px 8px;
+            border: 1px solid #2a2a48;
+            text-align: center;
+            flex-shrink: 0;
+        }
+        .status-text {
+            font-size: 11px;
+            color: #4caf50;
+            font-weight: 600;
+            min-height: 20px;
+        }
+        .player-box audio { width: 100%; height: 30px; margin-top: 2px; }
+
+        /* PIANO SECTION */
+        .piano-section {
+            flex-shrink: 0;
+            background: #0e1a12;
+            border: 2px solid #2e7d32;
+            border-radius: 12px;
+            padding: 6px;
+            box-shadow: 0 0 28px rgba(46, 125, 50, 0.25);
+        }
+        .piano-label {
+            font-size: 11px;
+            color: #66bb6a;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+        .piano-container {
+            position: relative;
+            width: 100%;
+            height: 100px;
+            background: #0d1a0f;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #2e7d32;
+            touch-action: none;
+        }
+        .white-keys {
+            display: flex;
+            height: 100%;
+            position: relative;
+            z-index: 1;
+        }
+        .white-key {
+            flex: 1;
+            background: linear-gradient(180deg, #f5f5f0, #e0ddd5);
+            border-right: 1.5px solid #888;
+            border-bottom: 4px solid #b0a090;
+            border-radius: 0 0 4px 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 6px;
+            touch-action: none;
+        }
+        .white-key.pressed {
+            background: linear-gradient(180deg, #d4d0c8, #c0b8a8);
+            border-bottom-width: 2px;
+            transform: translateY(2px);
+        }
+        .white-key .note-label {
+            font-size: 10px;
+            font-weight: 700;
+            color: #333;
+            pointer-events: none;
+        }
+        .black-keys {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 56%;
+            z-index: 2;
+            pointer-events: none;
+        }
+        .black-key {
+            position: absolute;
+            top: 0;
+            width: 12.5%;
+            height: 100%;
+            background: linear-gradient(180deg, #2a2a2a, #111);
+            border-radius: 0 0 5px 5px;
+            border: 1px solid #000;
+            cursor: pointer;
+            pointer-events: auto;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 5px;
+            transform: translateX(-50%);
+            touch-action: none;
+        }
+        .black-key.pressed {
+            background: linear-gradient(180deg, #444, #222);
+            transform: translateX(-50%) translateY(2px);
+        }
+        .black-key .note-label {
+            font-size: 7px;
+            font-weight: 700;
+            color: #ccc;
+            pointer-events: none;
+        }
+        .bk-csharp { left: calc(1/7 * 100%); }
+        .bk-dsharp { left: calc(2/7 * 100%); }
+        .bk-fsharp { left: calc(4/7 * 100%); }
+        .bk-gsharp { left: calc(5/7 * 100%); }
+        .bk-asharp { left: calc(6/7 * 100%); }
+    </style>
+</head>
+<body>
+
+    <div class="app">
+        <div class="header">
+            <div class="header-left">
+                <h1>🎧 सुर मंच AI</h1>
+                <div class="badge">Pro v8.1</div>
+            </div>
+            <button class="power-btn" id="powerBtn">🔛 सिस्टम ऑन</button>
+        </div>
+
+        <div class="top-section">
+            <div class="instr-grid">
+                <button class="instr-btn active" data-inst="tabla">🥁 तबला</button>
+                <button class="instr-btn" data-inst="dholak">🪘 ढोलक</button>
+                <button class="instr-btn" data-inst="drum">🛢️ ड्रम</button>
+                <button class="instr-btn" data-inst="guitar">🎸 गिटार</button>
+                <button class="instr-btn" data-inst="bansuri">🎋 बांसुरी</button>
+                <button class="instr-btn" data-inst="jhunjhuna">🔔 घुंघरू</button>
+                <button class="instr-btn" data-inst="folk">🎶 लोक</button>
+                <button class="instr-btn" data-inst="classical">🎼 शास्त्रीय</button>
+                <button class="instr-btn" data-inst="party">🔥 पार्टी</button>
+                <button class="instr-btn" data-inst="romantic">🌹 रोमांटिक</button>
+            </div>
+
+            <div class="sliders-row">
+                <span>🔊 बेस</span>
+                <input type="range" id="volRange" min="30" max="300" value="200" />
+                <span class="val" id="volVal">200%</span>
+                <span>⏱️ BPM</span>
+                <input type="range" id="bpmRange" min="60" max="180" value="130" style="max-width:80px;" />
+                <span class="val" id="bpmVal">130</span>
+            </div>
+
+            <div class="actions-row">
+                <button class="act-btn btn-rec" id="recBtn">🎙️ रिकॉर्ड</button>
+                <button class="act-btn btn-stop" id="stopBtn" disabled>⏹️ रोकें</button>
+                <div class="timer-box" id="timer">00:00</div>
+                <button class="act-btn btn-play" id="playRecBtn">▶️ सुनें</button>
+                <button class="act-btn btn-save" id="saveRecBtn">💾 सेव</button>
+                <button class="act-btn btn-del" id="delRecBtn">🗑️ डिलीट</button>
+            </div>
+        </div>
+
+        <div class="mid-section">
+            <div class="status-text" id="statusText">✨ तैयार – पियानो दबाएँ या इंस्ट्रूमेंट चुनें</div>
+            <div class="player-box" id="playerContainer" style="display:none;">
+                <audio id="audioPlayer" controls></audio>
+            </div>
+        </div>
+
+        <div class="piano-section">
+            <div class="piano-label">🎹 रियल सस्टेन पियानो – मल्टी-टच इनेबल</div>
+            <div class="piano-container" id="pianoContainer">
+                <div class="white-keys">
+                    <div class="white-key" data-note="C4"><span class="note-label">सा</span></div>
+                    <div class="white-key" data-note="D4"><span class="note-label">रे</span></div>
+                    <div class="white-key" data-note="E4"><span class="note-label">ग</span></div>
+                    <div class="white-key" data-note="F4"><span class="note-label">म</span></div>
+                    <div class="white-key" data-note="G4"><span class="note-label">प</span></div>
+                    <div class="white-key" data-note="A4"><span class="note-label">ध</span></div>
+                    <div class="white-key" data-note="B4"><span class="note-label">नी</span></div>
+                </div>
+                <div class="black-keys">
+                    <div class="black-key bk-csharp" data-note="C#4"><span class="note-label">#</span></div>
+                    <div class="black-key bk-dsharp" data-note="D#4"><span class="note-label">#</span></div>
+                    <div class="black-key bk-fsharp" data-note="F#4"><span class="note-label">#</span></div>
+                    <div class="black-key bk-gsharp" data-note="G#4"><span class="note-label">#</span></div>
+                    <div class="black-key bk-asharp" data-note="A#4"><span class="note-label">#</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const powerBtn = document.getElementById('powerBtn');
+        const instBtns = document.querySelectorAll('.instr-btn');
+        const volRange = document.getElementById('volRange');
+        const volVal = document.getElementById('volVal');
+        const bpmRange = document.getElementById('bpmRange');
+        const bpmVal = document.getElementById('bpmVal');
+        const recBtn = document.getElementById('recBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const timerBox = document.getElementById('timer');
+        const playRecBtn = document.getElementById('playRecBtn');
+        const saveRecBtn = document.getElementById('saveRecBtn');
+        const delRecBtn = document.getElementById('delRecBtn');
+        const statusText = document.getElementById('statusText');
+        const playerContainer = document.getElementById('playerContainer');
+        const audioPlayer = document.getElementById('audioPlayer');
+
+        const allPianoKeys = document.querySelectorAll('.white-key, .black-key');
+
+        let systemOn = true;
+        let audioCtx = null;
+        let activeSource = null;
+        let currentInst = 'tabla';
+        let isPlaying = false;
+        let mediaRecorder = null;
+        let audioChunks = [];
+        let recordedBlob = null;
+        let timerInterval = null;
+        let seconds = 0;
+
+        const activeNotes = new Map();
+        const NOTE_FREQS = {
+            'C4': 261.63, 'C#4': 277.18, 'D4': 293.66, 'D#4': 311.13,
+            'E4': 329.63, 'F4': 349.23, 'F#4': 369.99, 'G4': 392.00,
+            'G#4': 415.30, 'A4': 440.00, 'A#4': 466.16, 'B4': 493.88
+        };
+
+        function getAudioContext() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            return audioCtx;
+        }
+
+        function pianoNoteOn(noteName, pointerId) {
+            if (!systemOn) return;
+            if (activeNotes.has(noteName)) return;
+
+            const freq = NOTE_FREQS[noteName];
+            if (!freq) return;
+
+            try {
+                const ctx = getAudioContext();
+                const now = ctx.currentTime;
+
+                const oscs = [];
+                const gains = [];
+                const harm = [1, 2, 3];
+                const amps = [0.50, 0.20, 0.08];
+
+                for (let i = 0; i < 3; i++) {
+                    const osc = ctx.createOscillator();
+                    osc.type = 'sawtooth';
+                    osc.frequency.value = freq * harm[i];
+                    const g = ctx.createGain();
+                    g.gain.value = 0;
+                    osc.connect(g);
+                    g.connect(ctx.destination);
+                    osc.start(now);
+                    oscs.push(osc);
+                    gains.push(g);
+                }
+
+                for (let i = 0; i < 3; i++) {
+                    gains[i].gain.setValueAtTime(0, now);
+                    gains[i].gain.linearRampToValueAtTime(amps[i], now + 0.008);
+                }
+
+                activeNotes.set(noteName, {
+                    oscs,
+                    gains,
+                    pointerId,
+                    release: function() {
+                        const releaseNow = ctx.currentTime;
+                        for (let i = 0; i < 3; i++) {
+                            gains[i].gain.cancelScheduledValues(releaseNow);
+                            gains[i].gain.setValueAtTime(gains[i].gain.value, releaseNow);
+                            gains[i].gain.exponentialRampToValueAtTime(0.001, releaseNow + 0.08);
+                        }
+                        for (const osc of oscs) osc.stop(releaseNow + 0.09);
+                        setTimeout(() => activeNotes.delete(noteName), 100);
+                    }
+                });
+                statusText.textContent = `🎹 पियानो: ${noteName}`;
+            } catch (e) {
+                console.warn(e);
+            }
+        }
+
+        function pianoNoteOff(noteName) {
+            const entry = activeNotes.get(noteName);
+            if (entry && typeof entry.release === 'function') {
+                entry.release();
+            }
+        }
+
+        // Robust Pointer Events for Multi-touch
+        allPianoKeys.forEach(key => {
+            const note = key.dataset.note;
+
+            key.addEventListener('pointerdown', (e) => {
+                e.preventDefault();
+                if (!systemOn) return;
+                key.setPointerCapture(e.pointerId);
+                key.classList.add('pressed');
+                pianoNoteOn(note, e.pointerId);
+            });
+
+            key.addEventListener('pointerup', (e) => {
+                e.preventDefault();
+                key.classList.remove('pressed');
+                pianoNoteOff(note);
+            });
+
+            key.addEventListener('pointercancel', (e) => {
+                key.classList.remove('pressed');
+                pianoNoteOff(note);
+            });
+        });
+
+        function generateBuffer(ctx, type, bpm) {
+            const rate = ctx.sampleRate;
+            const len = rate * 8;
+            const buf = ctx.createBuffer(2, len, rate);
+            const l = buf.getChannelData(0);
+            const r = buf.getChannelData(1);
+            const stepSize = rate / (bpm / 60) / 4;
+
+            for (let i = 0; i < len; i++) {
+                const step = Math.floor(i / stepSize) % 16;
+                const f = (i % stepSize) / stepSize;
+                let val = 0;
+                if (type === 'tabla' && step % 4 === 0) val = Math.sin(f * 50) * Math.exp(-f * 12) * 2.5;
+                else if (type === 'dholak' && (step % 8 === 0 || step === 4)) val = Math.sin(f * 70) * Math.exp(-f * 10) * 2.8;
+                else if (type === 'drum' && step % 4 === 0) val = (Math.random() * 2 - 1) * Math.exp(-f * 15) * 2.2;
+                else if (type === 'guitar' && step % 2 === 0) val = Math.sin(f * 200) * Math.exp(-f * 20) * 1.8;
+                else if (type === 'bansuri' && step % 4 === 0) val = Math.sin(f * 400) * Math.exp(-f * 6) * 1.5;
+                else if (type === 'jhunjhuna' && step % 2 === 0) val = (Math.random() * 2 - 1) * Math.exp(-f * 35) * 1.4;
+                else if (type === 'folk' && step % 4 === 0) val = Math.sin(f * 90) * Math.exp(-f * 14) * 2.2;
+                else if (type === 'classical' && step % 2 === 0) val = Math.cos(f * 150) * Math.exp(-f * 15) * 2.2;
+                else if (type === 'party') val = (Math.sin(f * 110) > 0 ? 1 : -1) * Math.exp(-f * 12) * 2.5;
+                else if (type === 'romantic') val = Math.sin(f * 120) * Math.exp(-f * 8) * 2.0;
+                l[i] = Math.max(-1, Math.min(1, val * 1.8));
+                r[i] = l[i];
+            }
+            return buf;
+        }
+
+        function playMusic() {
+            if (!systemOn) return;
+            try {
+                const ctx = getAudioContext();
+                if (activeSource) {
+                    try { activeSource.src.stop(); } catch (e) {}
+                }
+                const bpm = parseInt(bpmRange.value);
+                const buf = generateBuffer(ctx, currentInst, bpm);
+                const src = ctx.createBufferSource();
+                src.buffer = buf;
+                src.loop = true;
+                const gain = ctx.createGain();
+                gain.gain.value = (parseInt(volRange.value) / 100) * 2.0;
+                src.connect(gain);
+                gain.connect(ctx.destination);
+                src.start();
+                activeSource = { src, gain };
+                isPlaying = true;
+            } catch (e) {
+                console.warn(e);
+            }
+        }
+
+        function stopMusic() {
+            if (activeSource) {
+                try { activeSource.src.stop(); } catch (e) {}
+                activeSource = null;
+                isPlaying = false;
+            }
+        }
+
+        instBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (!systemOn) return;
+                instBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentInst = btn.dataset.inst;
+                statusText.textContent = `🎵 ${btn.textContent} चालू`;
+                playMusic();
+            });
+        });
+
+        volRange.addEventListener('input', () => {
+            volVal.textContent = volRange.value + '%';
+            if (activeSource && systemOn) {
+                activeSource.gain.gain.value = (parseInt(volRange.value) / 100) * 2.0;
+            }
+        });
+
+        bpmRange.addEventListener('input', () => {
+            bpmVal.textContent = bpmRange.value;
+            if (isPlaying && systemOn) playMusic();
+        });
+
+        recBtn.addEventListener('click', async () => {
+            if (!systemOn) return;
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+                mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+                mediaRecorder.onstop = () => {
+                    recordedBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                    audioPlayer.src = URL.createObjectURL(recordedBlob);
+                    playerContainer.style.display = 'block';
+                    statusText.textContent = "✅ रिकॉर्डिंग तैयार!";
+                };
+                mediaRecorder.start();
+                recBtn.disabled = true;
+                stopBtn.disabled = false;
+                seconds = 0;
+                if (timerInterval) clearInterval(timerInterval);
+                timerInterval = setInterval(() => {
+                    seconds++;
+                    const m = String(Math.floor(seconds / 60)).padStart(2, '0');
+                    const s = String(seconds % 60).padStart(2, '0');
+                    timerBox.textContent = `${m}:${s}`;
+                }, 1000);
+                statusText.textContent = "🔴 रिकॉर्डिंग शुरू…";
+                playMusic();
+            } catch (e) {
+                alert('⚠️ माइक्रोफ़ोन की अनुमति ज़रूरी है!');
+            }
+        });
+
+        stopBtn.addEventListener('click', () => {
+            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                mediaRecorder.stop();
+            }
+            if (timerInterval) clearInterval(timerInterval);
+            recBtn.disabled = false;
+            stopBtn.disabled = true;
+            statusText.textContent = "⏹️ रिकॉर्डिंग रुकी";
+        });
+
+        playRecBtn.addEventListener('click', () => {
+            if (!systemOn) return;
+            if (audioPlayer.src) {
+                audioPlayer.play();
+                statusText.textContent = "▶️ प्ले हो रहा है";
+            } else {
+                statusText.textContent = "⚠️ पहले रिकॉर्ड करें!";
+            }
+        });
+
+        saveRecBtn.addEventListener('click', () => {
+            if (!systemOn) return;
+            if (recordedBlob) {
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(recordedBlob);
+                a.download = 'SurManch_Song.webm';
+                a.click();
+                statusText.textContent = "💾 सेव हो गया!";
+            } else {
+                statusText.textContent = "⚠️ कोई ऑडियो नहीं है!";
+            }
+        });
+
+        delRecBtn.addEventListener('click', () => {
+            recordedBlob = null;
+            audioChunks = [];
+            audioPlayer.src = '';
+            playerContainer.style.display = 'none';
+            timerBox.textContent = "00:00";
+            statusText.textContent = "🗑️ डिलीट कर दिया गया";
+        });
+
+        powerBtn.addEventListener('click', () => {
+            systemOn = !systemOn;
+            if (systemOn) {
+                powerBtn.textContent = '🔛 सिस्टम ऑन';
+                powerBtn.classList.remove('off');
+                document.querySelectorAll('.disabled').forEach(el => el.classList.remove('disabled'));
+                playMusic();
+                statusText.textContent = '✅ सिस्टम ऑन';
+            } else {
+                powerBtn.textContent = '⏻ सिस्टम ऑफ';
+                powerBtn.classList.add('off');
+                document.querySelectorAll('.instr-btn, .act-btn').forEach(el => el.classList.add('disabled'));
+                stopMusic();
+                for (const [note, entry] of activeNotes) {
+                    if (typeof entry.release === 'function') entry.release();
+                }
+                activeNotes.clear();
+                if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
+                if (timerInterval) clearInterval(timerInterval);
+                recBtn.disabled = false;
+                stopBtn.disabled = true;
+                statusText.textContent = '⛔ सिस्टम ऑफ';
+            }
+        });
+
+        // Tab switch safety (Visibility change)
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                stopMusic();
+                for (const [note, entry] of activeNotes) {
+                    if (typeof entry.release === 'function') entry.release();
+                }
+                activeNotes.clear();
+            }
+        });
+
+        setTimeout(() => {
+            if (systemOn) playMusic();
+        }, 300);
+    </script>
+</body>
+</html>
