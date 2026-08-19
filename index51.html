@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+    <title>🧾 स्मार्ट पॉस प्रो – लोकल स्टोरेज</title>
+
+    <!-- QR / बारकोड स्कैनर -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <style>
+        /* ----- रेसेट & बेस ----- */
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #f0f2f5; margin: 0; padding: 15px; display: flex; justify-content: center; min-height: 100vh; }
+
+        /* ----- सुरक्षा / लॉगिन ओवरले ----- */
+        .security-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #1a202c; display: flex; align-items: center; justify-content: center; z-index: 10000; padding: 16px; }
+        .security-card { background: white; border-radius: 16px; padding: 24px; max-width: 380px; width: 100%; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+        .security-title { font-size: 20px; font-weight: bold; color: #2d3748; margin-bottom: 6px; }
+        .security-sub { font-size: 13px; color: #718096; margin-bottom: 16px; }
+        .security-card input, .security-card select { width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 8px; font-size: 14px; margin-bottom: 10px; }
+        .security-card .btn-primary { background: #007bff; color: white; border: none; padding: 10px; border-radius: 8px; font-weight: bold; width: 100%; cursor: pointer; font-size: 15px; }
+        .security-card .btn-outline { background: transparent; color: #007bff; border: 1px solid #007bff; padding: 8px; border-radius: 8px; font-weight: bold; width: 100%; cursor: pointer; margin-top: 6px; font-size: 13px; }
+        .security-status { font-size: 13px; margin-top: 8px; padding: 6px; border-radius: 6px; }
+        .security-status.success { color: #155724; background: #d4edda; }
+        .security-status.error { color: #721c24; background: #f8d7da; }
+        .security-status.info { color: #0c5460; background: #d1ecf1; }
+
+        /* ----- मुख्य पॉस कार्ड ----- */
+        .pos-card { background: white; width: 100%; max-width: 480px; border-radius: 16px; padding: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); display: none; position: relative; }
+
+        /* ----- हेडर ----- */
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 6px; }
+        .title { font-size: 20px; font-weight: bold; color: #2c3e50; }
+        .header-actions { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+        .badge { background: #e9ecef; color: #495057; font-size: 11px; padding: 4px 10px; border-radius: 12px; font-weight: 600; }
+        .btn-icon { background: transparent; border: 1px solid #dee2e6; border-radius: 6px; padding: 4px 10px; font-size: 12px; cursor: pointer; font-weight: 600; }
+        .btn-icon:hover { background: #f1f3f5; }
+        .btn-icon.danger { color: #dc3545; border-color: #dc3545; }
+        .btn-icon.danger:hover { background: #dc3545; color: white; }
+        .btn-icon.admin { color: #007bff; border-color: #007bff; }
+        .btn-icon.admin:hover { background: #007bff; color: white; }
+
+        /* ----- टैब ----- */
+        .tabs { display: flex; gap: 4px; background: #f8f9fa; padding: 4px; border-radius: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+        .tab { flex: 1; padding: 8px 4px; font-size: 11px; text-align: center; border: none; border-radius: 8px; background: transparent; cursor: pointer; font-weight: bold; color: #6c757d; min-width: 60px; }
+        .tab.active { background: #007bff; color: white; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* ----- सेक्शन ----- */
+        .section-box { border: 1px solid #e9ecef; border-radius: 12px; padding: 12px; margin-bottom: 14px; }
+        .label { font-size: 14px; font-weight: bold; color: #0056b3; margin-bottom: 6px; display: block; }
+        select, input { width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 8px; background: #fff; font-size: 14px; margin-bottom: 6px; }
+        .row { display: flex; gap: 8px; }
+        .row select, .row input { flex: 1; }
+
+        /* ----- कार्ट आइटम ----- */
+        .item-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px dashed #e9ecef; }
+        .item-row:last-child { border-bottom: none; }
+        .item-info { font-size: 14px; font-weight: bold; }
+        .item-sub { font-size: 11px; color: #6c757d; margin-top: 2px; }
+        .item-stock { font-size: 11px; color: #28a745; font-weight: 600; }
+        .item-stock.low { color: #dc3545; }
+        .qty-controls { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+        .qty-btn { background: #f1f3f5; border: 1px solid #dee2e6; width: 28px; height: 28px; border-radius: 4px; font-weight: bold; cursor: pointer; }
+        .qty-text { font-size: 12px; font-weight: bold; min-width: 60px; text-align: center; background: #f8f9fa; padding: 4px; border-radius: 4px; border: 1px solid #e9ecef; }
+        .btn-delete { background: #ff6b6b; color: white; border: none; padding: 4px 10px; border-radius: 6px; font-size: 12px; cursor: pointer; }
+
+        /* ----- टोटल्स ----- */
+        .total-box { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-top: 2px solid #20c997; border-bottom: 1px solid #e9ecef; margin-bottom: 8px; }
+        .total-title { font-size: 16px; font-weight: bold; color: #212529; }
+        .total-amount { font-size: 20px; font-weight: bold; color: #20c997; }
+
+        /* ----- GST & छूट ----- */
+        .gst-disc-row { display: flex; gap: 6px; align-items: center; margin: 4px 0; flex-wrap: wrap; }
+        .gst-disc-row select, .gst-disc-row input { flex: 1; margin-bottom: 0; padding: 8px; font-size: 13px; min-width: 60px; }
+        .gst-disc-row label { font-size: 12px; font-weight: bold; min-width: 40px; color: #495057; }
+
+        /* ----- कैलकुलेशन लाइन ----- */
+        .calc-line { display: flex; justify-content: space-between; padding: 3px 0; font-size: 13px; }
+        .calc-line .val { font-weight: bold; }
+        .grand-total-line { border-top: 2px solid #28a745; padding-top: 6px; margin-top: 4px; font-size: 16px; font-weight: bold; display: flex; justify-content: space-between; }
+
+        /* ----- नगद गणना ----- */
+        .calc-box { background: #f8f9fa; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px; margin-bottom: 14px; }
+        .calc-row { display: flex; justify-content: space-between; align-items: center; margin-top: 6px; }
+        .calc-row span { font-size: 14px; font-weight: bold; }
+        .return-text { font-size: 18px; font-weight: bold; color: #28a745; }
+        .due-text { font-size: 18px; font-weight: bold; color: #dc3545; }
+
+        /* ----- बटन ----- */
+        .actions { display: flex; gap: 6px; flex-wrap: wrap; }
+        .btn-action { flex: 1; padding: 10px 6px; border: none; border-radius: 8px; color: white; font-size: 12px; font-weight: bold; cursor: pointer; text-align: center; min-width: 70px; }
+        .btn-pdf { background: #17a2b8; }
+        .btn-wa { background: #25d366; }
+        .btn-clear { background: #ff6b6b; }
+        .btn-primary { background: #007bff; color: white; border: none; padding: 10px; border-radius: 8px; font-weight: bold; width: 100%; cursor: pointer; }
+        .btn-sm { padding: 4px 10px; font-size: 12px; width: auto; }
+        .btn-success { background: #28a745; }
+        .btn-danger { background: #dc3545; }
+
+        /* ----- स्कैनर ----- */
+        #scanner-container { background: #000; border-radius: 8px; overflow: hidden; min-height: 180px; margin-bottom: 8px; }
+        #reader { width: 100%; min-height: 180px; }
+        .scanner-status { font-size: 13px; color: #6c757d; margin: 6px 0; }
+
+        /* ----- मॉडल ----- */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; z-index: 9000; padding: 16px; }
+        .modal-card { background: white; border-radius: 16px; padding: 20px; max-width: 420px; width: 100%; text-align: center; max-height: 90vh; overflow-y: auto; }
+        .modal-card h3 { margin-top: 0; margin-bottom: 12px; }
+
+        /* ----- स्टिकर ----- */
+        .sticker-box { border: 2px dashed #007bff; padding: 12px; border-radius: 8px; margin: 10px 0; background: #fafafa; }
+        .sticker-box h4 { margin: 4px 0; font-size: 16px; }
+        .sticker-box p { margin: 4px 0; font-weight: bold; font-size: 14px; }
+        .weight-ctrl-box { background: #eef2f5; padding: 10px; border-radius: 8px; margin-bottom: 10px; }
+        .weight-row { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
+        .weight-row input { text-align: center; font-weight: bold; margin-bottom: 0; width: 80px; }
+
+        /* ----- टोस्ट ----- */
+        .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #2d3436; color: white; padding: 10px 24px; border-radius: 30px; font-size: 14px; opacity: 0; transition: 0.3s; z-index: 9999; pointer-events: none; max-width: 90%; }
+        .toast.show { opacity: 1; }
+        .toast.success { background: #28a745; }
+        .toast.error { background: #dc3545; }
+        .toast.info { background: #17a2b8; }
+        .toast.warning { background: #ffc107; color: #212529; }
+
+        /* ----- PDF प्रिव्यू (हिडन) ----- */
+        #pdf-bill-preview { display: none; background: white; padding: 20px; font-size: 13px; max-width: 400px; margin: 0 auto; font-family: 'Courier New', monospace; }
+        #pdf-bill-preview .bill-header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 12px; }
+        #pdf-bill-preview .bill-header h2 { margin: 0; font-size: 18px; }
+        #pdf-bill-preview .bill-header p { margin: 2px 0; font-size: 11px; color: #555; }
+        #pdf-bill-preview .bill-row { display: flex; justify-content: space-between; padding: 3px 0; }
+        #pdf-bill-preview .bill-divider { border-top: 1px dashed #ccc; margin: 6px 0; }
+        #pdf-bill-preview .bill-total { font-weight: bold; font-size: 15px; border-top: 2px solid #333; padding-top: 6px; margin-top: 4px; }
+        #pdf-bill-preview .bill-qr { text-align: center; margin: 10px 0; display: flex; justify-content: center; }
+        #pdf-bill-preview .bill-footer { text-align: center; font-size: 10px; color: #888; border-top: 1px solid #ddd; padding-top: 8px; margin-top: 10px; }
+
+        /* ----- एडमिन डैशबोर्ड (मॉडल) ----- */
+        .admin-user-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 4px; border-bottom: 1px solid #eee; font-size: 13px; gap: 6px; flex-wrap: wrap; }
+        .admin-product-item { display: flex; justify-content: space-between; align-items: center; padding: 6px 4px; border-bottom: 1px solid #eee; font-size: 13px; gap: 4px; flex-wrap: wrap; }
+        .stock-badge { font-weight: bold; padding: 2px 8px; border-radius: 12px; font-size: 11px; }
+        .stock-badge.green { background: #d4edda; color: #155724; }
+        .stock-badge.red { background: #f8d7da; color: #721c24; }
+
+        /* ----- लो स्टॉक अलर्ट (फ्लोटिंग) ----- */
+        .low-stock-alert { position: fixed; top: 10px; left: 50%; transform: translateX(-50%); background: #dc3545; color: white; padding: 10px 20px; border-radius: 10px; font-weight: bold; font-size: 14px; z-index: 8000; box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4); display: none; max-width: 90%; text-align: center; }
+        .low-stock-alert .close-alert { background: transparent; border: none; color: white; font-weight: bold; font-size: 18px; cursor: pointer; margin-left: 12px; }
+
+        .scroll-y { max-height: 260px; overflow-y: auto; }
+    </style>
+</head>
+<body>
+
+    <!-- ======== टोस्ट ======== -->
+    <div id="toast" class="toast"></div>
+
+    <!-- ======== लो स्टॉक अलर्ट ======== -->
+    <div id="lowStockAlert" class="low-stock-alert">
+        <span id="lowStockMsg">⚠️ कुछ प्रोडक्ट्स की मात्रा बहुत कम है!</span>
+        <button class="close-alert" onclick="document.getElementById('lowStockAlert').style.display='none'">✕</button>
+    </div>
+
+    <!-- ======== सुरक्षा / लॉगिन स्क्रीन ======== -->
+    <div id="securityModal" class="security-overlay">
+        <div class="security-card">
+            <div class="security-title">🔐 स्मार्ट पॉस प्रो</div>
+            <div class="security-sub">अपना व्हाट्सएप नंबर दर्ज करें</div>
+
+            <input type="tel" id="loginPhone" placeholder="जैसे 9876543210" maxlength="15" />
+            <div id="activationSection" style="display:none; margin-top:4px;">
+                <input type="password" id="adminPinInput" placeholder="एडमिन पिन दर्ज करें (1234)" maxlength="10" />
+                <button class="btn-primary" id="activateBtn" onclick="activateUser()">✅ सक्रिय करें</button>
+            </div>
+            <button class="btn-primary" id="loginBtn" onclick="loginUser()">🔓 लॉगिन करें</button>
+
+            <div id="loginStatus" class="security-status" style="display:none;"></div>
+
+            <button class="btn-outline" onclick="showAdminLogin()" style="margin-top:10px;">🔑 एडमिन पैनल</button>
+            <div style="font-size:11px; color:#888; margin-top:8px;">
+                ⚡ पहली बार? एडमिन पिन <b>1234</b> डालकर 'सक्रिय करें'।
+            </div>
+        </div>
+    </div>
+
+    <!-- ======== एडमिन लॉगिन मॉडल ======== -->
+    <div id="adminLoginModal" class="modal-overlay">
+        <div class="modal-card">
+            <h3>🔑 एडमिन लॉगिन</h3>
+            <input type="password" id="adminPasswordInput" placeholder="एडमिन पिन (डिफ़ॉल्ट: 1234)" />
+            <button class="btn-primary" onclick="adminLogin()">लॉगिन करें</button>
+            <button class="btn-outline" onclick="closeModal('adminLoginModal')" style="margin-top:8px;">❌ बंद करें</button>
+            <div id="adminLoginStatus" style="font-size:13px; margin-top:8px; color:#dc3545;"></div>
+        </div>
+    </div>
+
+    <!-- ======== एडमिन डैशबोर्ड मॉडल ======== -->
+    <div id="adminDashboardModal" class="modal-overlay">
+        <div class="modal-card" style="max-width:500px;">
+            <h3>📊 एडमिन डैशबोर्ड</h3>
+            <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px;">
+                <button class="btn-action btn-danger btn-sm" onclick="adminLogout()" style="flex:1;">🚪 लॉगआउट</button>
+                <button class="btn-action btn-clear btn-sm" onclick="closeModal('adminDashboardModal')" style="flex:1;">❌ बंद</button>
+            </div>
+
+            <div class="tabs" style="margin-bottom:8px;">
+                <button class="tab active" onclick="switchAdminTab('adminUsersTab',this)">👥 यूज़र</button>
+                <button class="tab" onclick="switchAdminTab('adminProductsTab',this)">📦 इन्वेंटरी</button>
+            </div>
+
+            <div id="adminUsersTab" class="tab-content active">
+                <div style="font-size:12px; color:#6c757d; margin-bottom:6px;">पंजीकृत यूज़र्स की सूची</div>
+                <div id="adminUserList" class="scroll-y" style="max-height:300px;"></div>
+            </div>
+
+            <div id="adminProductsTab" class="tab-content">
+                <div style="display:flex; gap:4px; flex-wrap:wrap; margin-bottom:6px;">
+                    <input type="text" id="adminNewProductName" placeholder="नाम" style="flex:2; min-width:80px;" />
+                    <input type="number" id="adminNewProductPrice" placeholder="₹ मूल्य" style="flex:1; min-width:60px;" />
+                    <input type="number" id="adminNewProductStock" placeholder="स्टॉक" style="flex:1; min-width:60px;" />
+                    <select id="adminNewProductUnit" style="flex:1; min-width:60px;">
+                        <option value="kg">kg</option>
+                        <option value="gm">gm</option>
+                        <option value="ltr">ltr</option>
+                        <option value="pcs">pcs</option>
+                    </select>
+                </div>
+                <button class="btn-primary btn-sm" onclick="adminAddProduct()" style="width:auto; padding:6px 16px;">➕ जोड़ें</button>
+                <div id="adminProductList" class="scroll-y" style="max-height:280px; margin-top:8px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======== स्टिकर / QR मॉडल ======== -->
+    <div id="stickerModal" class="modal-overlay">
+        <div class="modal-card">
+            <h3>🏷️ QR जनरेटर &amp; वजन</h3>
+            <div class="weight-ctrl-box">
+                <span style="font-size:12px;font-weight:bold;color:#495057;">मात्रा सेट करें:</span>
+                <div class="weight-row">
+                    <button class="qty-btn" onclick="adjustStickerQty(-0.250)">−250g</button>
+                    <button class="qty-btn" onclick="adjustStickerQty(-0.050)">−50g</button>
+                    <input type="number" id="stkQtyInput" step="0.001" value="1" oninput="updateStickerQR()" />
+                    <button class="qty-btn" onclick="adjustStickerQty(0.050)">+50g</button>
+                    <button class="qty-btn" onclick="adjustStickerQty(0.250)">+250g</button>
+                </div>
+            </div>
+            <div class="sticker-box" id="stickerContent">
+                <h4 id="stkName">सामान</h4>
+                <div id="stkQr" style="display:flex;justify-content:center;margin:8px 0;"></div>
+                <p id="stkQty">मात्रा: 1 kg</p>
+                <p id="stkPrice">कीमत: ₹0</p>
+            </div>
+            <button class="btn-primary" onclick="window.print()">🖨️ प्रिंट</button>
+            <button class="btn-action btn-clear" onclick="closeModal('stickerModal')" style="margin-top:8px;">❌ बंद</button>
+        </div>
+    </div>
+
+    <!-- ======== मुख्य POS कार्ड ======== -->
+    <div class="pos-card" id="mainPosCard">
+        <div class="header">
+            <div class="title">🧾 Smart POS Pro</div>
+            <div class="header-actions">
+                <span class="badge" id="item-count">0 आइटम</span>
+                <button class="btn-icon admin" onclick="showAdminLogin()">🔑 एडमिन</button>
+                <button class="btn-icon danger" onclick="logoutUser()">🚪 बाहर</button>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('billing-tab', this)">🧮 बिलिंग</button>
+            <button class="tab" onclick="switchTab('items-tab', this)">📦 सामान</button>
+            <button class="tab" onclick="switchTab('scan-tab', this)">📷 स्कैन</button>
+        </div>
+
+        <!-- ===== बिलिंग टैब ===== -->
+        <div id="billing-tab" class="tab-content active">
+            <div class="section-box">
+                <span class="label">सूची से सामान चुनें</span>
+                <select id="product-select" onchange="addSelectedProduct(this)">
+                    <option value="">-- सामान चुनें --</option>
+                </select>
+            </div>
+
+            <div class="section-box">
+                <span class="label">🛒 चुने गए सामान</span>
+                <div id="cart-items" class="scroll-y" style="max-height:200px;">
+                    <p style="text-align:center;color:#888;font-size:13px;">कोई सामान नहीं</p>
+                </div>
+            </div>
+
+            <div class="section-box" style="background:#fafffe;">
+                <span class="label">💲 GST &amp; छूट</span>
+                <div class="gst-disc-row">
+                    <label>GST</label>
+                    <select id="gst-select" onchange="calcTotals()">
+                        <option value="0">0%</option>
+                        <option value="5">5%</option>
+                        <option value="12" selected>12%</option>
+                        <option value="18">18%</option>
+                        <option value="28">28%</option>
+                    </select>
+                    <label>छूट %</label>
+                    <input type="number" id="discount-input" placeholder="0" min="0" max="100" value="0" oninput="calcTotals()" />
+                </div>
+            </div>
+
+            <div class="total-box">
+                <span class="total-title">कुल राशि:</span>
+                <span class="total-amount" id="total-amount">₹0.00</span>
+            </div>
+
+            <div id="breakdown-box" style="font-size:13px;background:#f8f9fa;padding:8px 12px;border-radius:8px;margin-bottom:8px;display:none;">
+                <div class="calc-line"><span>उप-कुल</span><span class="val" id="subtotal-display">₹0.00</span></div>
+                <div class="calc-line"><span>छूट</span><span class="val" id="discount-display">₹0.00</span></div>
+                <div class="calc-line"><span>GST</span><span class="val" id="gst-display">₹0.00</span></div>
+                <div class="grand-total-line"><span>🔹 कुल</span><span id="grand-total-display">₹0.00</span></div>
+            </div>
+
+            <div class="calc-box">
+                <span class="label" style="margin-bottom:4px;">💵 नगद भुगतान</span>
+                <input type="number" id="cash-received" placeholder="ग्राहक द्वारा दिए गए पैसे (₹)" oninput="calculateChange()" />
+                <div class="calc-row">
+                    <span id="change-label">वापस करने हैं:</span>
+                    <span id="change-amount" class="return-text">₹0.00</span>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button class="btn-action btn-pdf" onclick="generatePDF()">📥 PDF</button>
+                <button class="btn-action btn-wa" onclick="sendWhatsApp()">💬 व्हाट्सएप</button>
+                <button class="btn-action btn-clear" onclick="clearCart()">🗑️ खाली</button>
+            </div>
+        </div>
+
+        <!-- ===== सामान प्रबंधन टैब ===== -->
+        <div id="items-tab" class="tab-content">
+            <div class="section-box">
+                <span class="label">➕ नया सामान</span>
+                <input type="text" id="new-item-name" placeholder="नाम (जैसे बासमती चावल)" />
+                <div class="row">
+                    <input type="number" id="new-item-price" placeholder="₹ मूल्य" style="flex:2;" />
+                    <select id="new-item-unit" style="flex:1;">
+                        <option value="kg">kg</option>
+                        <option value="gm">gm</option>
+                        <option value="ltr">ltr</option>
+                        <option value="pcs">pcs</option>
+                    </select>
+                </div>
+                <input type="number" id="new-item-stock" placeholder="प्रारंभिक स्टॉक मात्रा" value="10" />
+                <button class="btn-primary" onclick="addNewMasterProductManual()">➕ सूची में जोड़ें</button>
+            </div>
+            <div class="section-box">
+                <span class="label">📋 उपलब्ध सामान</span>
+                <div id="master-products-list" class="scroll-y" style="max-height:220px;"></div>
+            </div>
+        </div>
+
+        <!-- ===== स्कैन टैब ===== -->
+        <div id="scan-tab" class="tab-content">
+            <div class="section-box">
+                <span class="label">📷 QR / बारकोड स्कैनर</span>
+                <div id="scanner-container"><div id="reader"></div></div>
+                <div class="scanner-status" id="scannerStatus">⏸️ स्कैनर बंद</div>
+                <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                    <button class="btn-action btn-success" id="startScanBtn" style="flex:1;">📷 कैमरा चालू</button>
+                    <button class="btn-action btn-pdf" id="uploadScanBtn" style="flex:1;">📸 फोटो अपलोड</button>
+                    <input type="file" id="qrFileInput" accept="image/*" style="display:none;" />
+                    <button class="btn-action btn-clear" id="stopScanBtn" style="flex:1;">⏹️ बंद</button>
+                </div>
+            </div>
+
+            <div class="section-box" style="background:#fdfdfe; border-color:#007bff;">
+                <span class="label">🧾 स्कैन किए गए आइटम का बिल</span>
+                <div id="scan-bill-items" style="max-height:120px;overflow-y:auto;font-size:13px;margin-bottom:6px;">
+                    <p style="text-align:center;color:#888;">कोई सामान नहीं</p>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-weight:bold;font-size:15px;border-top:1px dashed #ccc;padding-top:6px;margin-bottom:8px;">
+                    <span>कुल राशि:</span>
+                    <span id="scan-bill-total" style="color:#28a745;">₹0.00</span>
+                </div>
+                <div class="actions">
+                    <button class="btn-action btn-pdf" onclick="generatePDF()">📥 PDF</button>
+                    <button class="btn-action btn-wa" onclick="sendWhatsApp()">💬 व्हाट्सएप</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="pdf-bill-preview"></div>
+
+    <script>
+        // ================================================================
+        //  लोकल स्टोरेज आधारित डेटा और लॉजिक
+        // ================================================================
+        let currentUser = null;
+        let masterProducts = [];
+        let cart = [];
+        let currentGrandTotal = 0;
+        let currentStickerProduct = null;
+        let html5QrCode = null;
+
+        // डिफॉल्ट प्रोडक्ट्स यदि खाली हो
+        const defaultProducts = [
+            { id: 'p1', name: 'चावल (Basmati)', price: 60, unit: 'kg', stockQuantity: 50 },
+            { id: 'p2', name: 'चीनी (Sugar)', price: 42, unit: 'kg', stockQuantity: 30 },
+            { id: 'p3', name: 'दाल अरहर', price: 120, unit: 'kg', stockQuantity: 20 },
+            { id: 'p4', name: 'सरसों का तेल', price: 140, unit: 'ltr', stockQuantity: 15 }
+        ];
+
+        function showToast(msg, type = 'success') {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.className = 'toast ' + type + ' show';
+            clearTimeout(t._timer);
+            t._timer = setTimeout(() => t.classList.remove('show'), 2800);
+        }
+
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+
+        function playBeep() {
+            try {
+                if (!window._beepCtx) window._beepCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const ctx = window._beepCtx;
+                if (ctx.state === 'suspended') ctx.resume();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.frequency.value = 880;
+                gain.gain.value = 0.30;
+                osc.start();
+                setTimeout(() => osc.stop(), 150);
+            } catch(e) {}
+        }
+
+        // --- डेटा लोड और सेव (Local Storage) ---
+        function loadData() {
+            const savedProducts = localStorage.getItem('pos_products');
+            if (savedProducts) {
+                masterProducts = JSON.parse(savedProducts);
+            } else {
+                masterProducts = defaultProducts;
+                saveProducts();
+            }
+        }
+
+        function saveProducts() {
+            localStorage.setItem('pos_products', JSON.stringify(masterProducts));
+        }
+
+        function checkLowStock() {
+            const low = masterProducts.filter(p => p.stockQuantity <= 5);
+            const el = document.getElementById('lowStockAlert');
+            if (low.length > 0) {
+                document.getElementById('lowStockMsg').textContent = `⚠️ कम स्टॉक: ${low.map(p => p.name).join(', ')}`;
+                el.style.display = 'block';
+            } else {
+                el.style.display = 'none';
+            }
+        }
+
+        // --- लॉगिन सिस्टम ---
+        function loginUser() {
+            const phone = document.getElementById('loginPhone').value.trim();
+            if (!phone) {
+                setLoginStatus('कृपया व्हाट्सएप नंबर दर्ज करें', 'error');
+                return;
+            }
+
+            let users = JSON.parse(localStorage.getItem('pos_users') || '[]');
+            let user = users.find(u => u.phone === phone);
+
+            if (!user) {
+                document.getElementById('activationSection').style.display = 'block';
+                document.getElementById('loginBtn').style.display = 'none';
+                setLoginStatus('⚠️ नया नंबर। एडमिन पिन (1234) डालकर सक्रिय करें।', 'info');
+                return;
+            }
+
+            if (!user.isActive) {
+                setLoginStatus('❌ आपका एक्सेस निष्क्रिय है।', 'error');
+                return;
+            }
+
+            currentUser = user;
+            sessionStorage.setItem('pos_current_user', JSON.stringify(currentUser));
+            bootPOS();
+        }
+
+        function activateUser() {
+            const phone = document.getElementById('loginPhone').value.trim();
+            const pin = document.getElementById('adminPinInput').value.trim();
+            if (pin !== '1234') {
+                setLoginStatus('❌ गलत एडमिन पिन! (डिफ़ॉल्ट: 1234)', 'error');
+                return;
+            }
+
+            let users = JSON.parse(localStorage.getItem('pos_users') || '[]');
+            let user = users.find(u => u.phone === phone);
+
+            if (user) {
+                user.isActive = true;
+            } else {
+                user = { id: 'u_' + Date.now(), phone: phone, name: 'यूज़र', isActive: true };
+                users.push(user);
+            }
+            localStorage.setItem('pos_users', JSON.stringify(users));
+
+            currentUser = user;
+            sessionStorage.setItem('pos_current_user', JSON.stringify(currentUser));
+            bootPOS();
+        }
+
+        function setLoginStatus(msg, type) {
+            const el = document.getElementById('loginStatus');
+            el.textContent = msg;
+            el.className = 'security-status ' + type;
+            el.style.display = 'block';
+        }
+
+        function bootPOS() {
+            document.getElementById('securityModal').style.display = 'none';
+            document.getElementById('mainPosCard').style.display = 'block';
+            loadData();
+            renderMasterList();
+            renderCart();
+            checkLowStock();
+            showToast('🔓 स्वागत है!', 'success');
+        }
+
+        function logoutUser() {
+            if (!confirm('लॉगआउट करना चाहते हैं?')) return;
+            sessionStorage.removeItem('pos_current_user');
+            location.reload();
+        }
+
+        // --- एडमिन पैनल ---
+        function showAdminLogin() { openModal('adminLoginModal'); }
+        function adminLogin() {
+            const pin = document.getElementById('adminPasswordInput').value.trim();
+            if (pin === '1234') {
+                closeModal('adminLoginModal');
+                openAdminDashboard();
+                showToast('🔑 एडमिन लॉगिन सफल', 'success');
+            } else {
+                document.getElementById('adminLoginStatus').textContent = 'गलत पिन!';
+            }
+        }
+        function adminLogout() { closeModal('adminDashboardModal'); }
+
+        function openAdminDashboard() {
+            openModal('adminDashboardModal');
+            loadAdminUsers();
+            loadAdminProducts();
+        }
+
+        function loadAdminUsers() {
+            const container = document.getElementById('adminUserList');
+            let users = JSON.parse(localStorage.getItem('pos_users') || '[]');
+            if (users.length === 0) {
+                container.innerHTML = '<p style="text-align:center;color:#888;">कोई यूज़र नहीं</p>';
+                return;
+            }
+            let html = '';
+            users.forEach(u => {
+                html += `<div class="admin-user-item">
+                    <span>📱 ${u.phone} (${u.isActive ? '🟢 सक्रिय' : '🔴 बंद'})</span>
+                    <button class="btn-sm btn-danger" onclick="toggleUser('${u.id}')">बदलें</button>
+                </div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        function toggleUser(id) {
+            let users = JSON.parse(localStorage.getItem('pos_users') || '[]');
+            let u = users.find(x => x.id === id);
+            if(u) { u.isActive = !u.isActive; }
+            localStorage.setItem('pos_users', JSON.stringify(users));
+            loadAdminUsers();
+        }
+
+        function loadAdminProducts() {
+            const container = document.getElementById('adminProductList');
+            let html = '';
+            masterProducts.forEach(p => {
+                html += `<div class="admin-product-item">
+                    <span><b>${p.name}</b> - ₹${p.price}/${p.unit} (स्टॉक: ${p.stockQuantity})</span>
+                    <button class="btn-sm btn-danger" onclick="deleteProduct('${p.id}')">🗑️</button>
+                </div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        function adminAddProduct() {
+            const name = document.getElementById('adminNewProductName').value.trim();
+            const price = parseFloat(document.getElementById('adminNewProductPrice').value);
+            const stock = parseFloat(document.getElementById('adminNewProductStock').value) || 0;
+            const unit = document.getElementById('adminNewProductUnit').value;
+
+            if(!name || isNaN(price)) { showToast('सही जानकारी भरें', 'error'); return; }
+
+            masterProducts.push({ id: 'p_' + Date.now(), name, price, unit, stockQuantity: stock });
+            saveProducts();
+            loadAdminProducts();
+            renderMasterList();
+            showToast('✅ प्रोडक्ट जोड़ा गया');
+        }
+
+        function addNewMasterProductManual() {
+            const name = document.getElementById('new-item-name').value.trim();
+            const price = parseFloat(document.getElementById('new-item-price').value);
+            const stock = parseFloat(document.getElementById('new-item-stock').value) || 0;
+            const unit = document.getElementById('new-item-unit').value;
+
+            if(!name || isNaN(price)) { showToast('सही जानकारी भरें', 'error'); return; }
+
+            masterProducts.push({ id: 'p_' + Date.now(), name, price, unit, stockQuantity: stock });
+            saveProducts();
+            renderMasterList();
+            showToast('✅ जोड़ा गया');
+            document.getElementById('new-item-name').value = '';
+            document.getElementById('new-item-price').value = '';
+        }
+
+        function deleteProduct(id) {
+            masterProducts = masterProducts.filter(p => p.id !== id);
+            saveProducts();
+            loadAdminProducts();
+            renderMasterList();
+            showToast('🗑️ हटा दिया गया');
+        }
+
+        function switchAdminTab(tabId, btn) {
+            document.querySelectorAll('#adminDashboardModal .tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('#adminDashboardModal .tab').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            btn.classList.add('active');
+        }
+
+        // --- POS बिलिंग और कार्ट ---
+        function formatQty(val, unit) {
+            if (unit === 'kg' || unit === 'ltr') {
+                if (val < 1) return Math.round(val * 1000) + ' g';
+                return val.toFixed(3).replace(/\.?0+$/, '') + ' ' + unit;
+            }
+            return val + ' ' + unit;
+        }
+
+        function renderMasterList() {
+            const container = document.getElementById('master-products-list');
+            const select = document.getElementById('product-select');
+            container.innerHTML = '';
+            select.innerHTML = '<option value="">-- सामान चुनें --</option>';
+
+            masterProducts.forEach(p => {
+                const div = document.createElement('div');
+                div.style.cssText = 'display:flex;justify-content:space-between;margin-bottom:4px;font-size:13px;align-items:center;';
+                div.innerHTML = `<span><b>${p.name}</b> — ₹${p.price}/${p.unit} (स्टॉक: ${p.stockQuantity})</span>
+                <div>
+                  <button class="btn-action btn-pdf btn-sm" onclick="showSticker('${p.id}')">🏷️</button>
+                  <button class="btn-action btn-clear btn-sm" onclick="deleteProduct('${p.id}')">🗑️</button>
+                </div>`;
+                container.appendChild(div);
+
+                const opt = document.createElement('option');
+                opt.value = p.id;
+                opt.textContent = `${p.name} (₹${p.price}/${p.unit}) [स्टॉक: ${p.stockQuantity}]`;
+                if(p.stockQuantity <= 0) opt.disabled = true;
+                select.appendChild(opt);
+            });
+        }
+
+        function showSticker(id) {
+            const p = masterProducts.find(x => x.id === id);
+            if(!p) return;
+            currentStickerProduct = p;
+            document.getElementById('stkQtyInput').value = 1;
+            updateStickerQR();
+            openModal('stickerModal');
+        }
+
+        function adjustStickerQty(delta) {
+            let input = document.getElementById('stkQtyInput');
+            let val = Math.max(0.01, (parseFloat(input.value) || 0) + delta);
+            input.value = val.toFixed(3);
+            updateStickerQR();
+        }
+
+        function updateStickerQR() {
+            if(!currentStickerProduct) return;
+            const p = currentStickerProduct;
+            const qty = parseFloat(document.getElementById('stkQtyInput').value) || 1;
+            const totalPrice = (p.price * qty).toFixed(2);
+
+            document.getElementById('stkName').textContent = p.name;
+            document.getElementById('stkQty').textContent = `मात्रा: ${formatQty(qty, p.unit)}`;
+            document.getElementById('stkPrice').textContent = `कीमत: ₹${totalPrice}`;
+
+            const qrBox = document.getElementById('stkQr');
+            qrBox.innerHTML = '';
+            new QRCode(qrBox, { text: JSON.stringify({ product: p.name, price: p.price, unit: p.unit, qty }), width: 120, height: 120 });
+        }
+
+        function addSelectedProduct(select) {
+            const id = select.value;
+            if(!id) return;
+            const prod = masterProducts.find(p => p.id === id);
+            if(!prod || prod.stockQuantity <= 0) { showToast('स्टॉक खत्म है', 'error'); select.value=''; return; }
+
+            let existing = cart.find(i => i.id === prod.id);
+            if(existing) {
+                existing.qty += 1;
+            } else {
+                cart.push({ id: prod.id, name: prod.name, price: prod.price, unit: prod.unit, qty: 1 });
+            }
+            select.value = '';
+            renderCart();
+            showToast('✅ जोड़ा गया');
+        }
+
+        function changeQty(idx, inc) {
+            let item = cart[idx];
+            item.qty += inc ? 1 : -1;
+            if(item.qty <= 0) cart.splice(idx, 1);
+            renderCart();
+        }
+
+        function deleteCartItem(idx) {
+            cart.splice(idx, 1);
+            renderCart();
+        }
+
+        function renderCart() {
+            const container = document.getElementById('cart-items');
+            const scanContainer = document.getElementById('scan-bill-items');
+            container.innerHTML = '';
+            if(scanContainer) scanContainer.innerHTML = '';
+
+            if(cart.length === 0) {
+                container.innerHTML = '<p style="text-align:center;color:#888;font-size:13px;">कोई सामान नहीं</p>';
+                if(scanContainer) scanContainer.innerHTML = '<p style="text-align:center;color:#888;">कोई सामान नहीं</p>';
+                document.getElementById('item-count').innerText = '0 आइटम';
+                document.getElementById('total-amount').innerText = '₹0.00';
+                calcTotals();
+                return;
+            }
+
+            cart.forEach((item, idx) => {
+                const total = item.price * item.qty;
+                container.innerHTML += `<div class="item-row">
+                    <div>
+                        <div class="item-info">${item.name}</div>
+                        <div class="item-sub">₹${item.price} × ${formatQty(item.qty, item.unit)} = ₹${total.toFixed(2)}</div>
+                    </div>
+                    <div class="qty-controls">
+                        <button class="qty-btn" onclick="changeQty(${idx}, false)">−</button>
+                        <span class="qty-text">${formatQty(item.qty, item.unit)}</span>
+                        <button class="qty-btn" onclick="changeQty(${idx}, true)">+</button>
+                        <button class="btn-delete" onclick="deleteCartItem(${idx})">🗑️</button>
+                    </div>
+                </div>`;
+
+                if(scanContainer) {
+                    scanContainer.innerHTML += `<div style="display:flex;justify-content:space-between;margin-bottom:4px;font-size:13px;">
+                        <span>${item.name} (${formatQty(item.qty, item.unit)})</span><b>₹${total.toFixed(2)}</b>
+                    </div>`;
+                }
+            });
+
+            document.getElementById('item-count').innerText = `${cart.length} आइटम`;
+            calcTotals();
+        }
+
+        function calcTotals() {
+            let subtotal = 0;
+            cart.forEach(i => subtotal += i.price * i.qty);
+            const disc = parseFloat(document.getElementById('discount-input').value) || 0;
+            const gst = parseFloat(document.getElementById('gst-select').value) || 0;
+
+            const discAmt = (subtotal * disc) / 100;
+            const gstAmt = ((subtotal - discAmt) * gst) / 100;
+            const grandTotal = subtotal - discAmt + gstAmt;
+
+            currentGrandTotal = grandTotal;
+            document.getElementById('total-amount').innerText = `₹${grandTotal.toFixed(2)}`;
+            if(document.getElementById('scan-bill-total')) document.getElementById('scan-bill-total').innerText = `₹${grandTotal.toFixed(2)}`;
+
+            document.getElementById('subtotal-display').innerText = `₹${subtotal.toFixed(2)}`;
+            document.getElementById('discount-display').innerText = `- ₹${discAmt.toFixed(2)}`;
+            document.getElementById('gst-display').innerText = `+ ₹${gstAmt.toFixed(2)}`;
+            document.getElementById('grand-total-display').innerText = `₹${grandTotal.toFixed(2)}`;
+            document.getElementById('breakdown-box').style.display = (disc > 0 || gst > 0) ? 'block' : 'none';
+            calculateChange();
+        }
+
+        function calculateChange() {
+            const cash = parseFloat(document.getElementById('cash-received').value);
+            const lbl = document.getElementById('change-label');
+            const amt = document.getElementById('change-amount');
+            if(isNaN(cash)) { amt.innerText = '₹0.00'; return; }
+            const diff = cash - currentGrandTotal;
+            if(diff >= 0) {
+                lbl.innerText = 'वापस करने हैं:';
+                amt.innerText = `₹${diff.toFixed(2)}`;
+                amt.className = 'return-text';
+            } else {
+                lbl.innerText = 'कम पड़ रहे हैं:';
+                amt.innerText = `₹${Math.abs(diff).toFixed(2)}`;
+                amt.className = 'due-text';
+            }
+        }
+
+        function clearCart() { cart = []; renderCart(); showToast('कार्ट खाली'); }
+
+        // --- स्कैनर (Auto-decrement) ---
+        async function stopScanner() {
+            if(html5QrCode) {
+                try { await html5QrCode.stop(); html5QrCode.clear(); } catch(e){}
+                html5QrCode = null;
+            }
+        }
+
+        document.getElementById('startScanBtn').addEventListener('click', async () => {
+            await stopScanner();
+            html5QrCode = new Html5Qrcode("reader");
+            html5QrCode.start({ facingMode: "environment" }, { fps: 10, qrbox: 200 }, text => {
+                playBeep();
+                processQR(text);
+            }, () => {}).then(() => {
+                document.getElementById('scannerStatus').textContent = '📷 स्कैन हो रहा...';
+            });
+        });
+
+        document.getElementById('stopScanBtn').addEventListener('click', async () => {
+            await stopScanner();
+            document.getElementById('scannerStatus').textContent = '⏸️ स्कैनर बंद';
+        });
+
+        function processQR(text) {
+            try {
+                const data = JSON.parse(text);
+                let prod = masterProducts.find(p => p.name === data.product);
+                if(!prod) {
+                    prod = { id: 'p_' + Date.now(), name: data.product, price: data.price, unit: data.unit || 'kg', stockQuantity: 20 };
+                    masterProducts.push(prod);
+                }
+
+                if(prod.stockQuantity <= 0) { showToast('स्टॉक खत्म!', 'error'); return; }
+
+                prod.stockQuantity -= 1; // स्टॉक स्वतः घटा
+                saveProducts();
+
+                let existing = cart.find(i => i.id === prod.id);
+                if(existing) existing.qty += 1;
+                else cart.push({ id: prod.id, name: prod.name, price: prod.price, unit: prod.unit, qty: 1 });
+
+                renderCart();
+                renderMasterList();
+                showToast(`✅ ${prod.name} जोड़ा गया`);
+            } catch(e) {
+                showToast('अमान्य QR', 'error');
+            }
+        }
+
+        // --- PDF और व्हाट्सएप ---
+        function generatePDF() {
+            if(cart.length === 0) { showToast('कार्ट खाली है', 'error'); return; }
+            let itemsHtml = '';
+            cart.forEach(i => { itemsHtml += `<div class="bill-row"><span>${i.name} × ${i.qty}</span><span>₹${i.price * i.qty}</span></div>`; });
+            
+            const preview = document.getElementById('pdf-bill-preview');
+            preview.innerHTML = `<div class="bill-header"><h2>🧾 Smart POS Pro</h2><p>दिनांक: ${new Date().toLocaleDateString()}</p></div>
+                <div>${itemsHtml}</div>
+                <div class="bill-total bill-row"><span>कुल</span><span>₹${currentGrandTotal.toFixed(2)}</span></div>`;
+            preview.style.display = 'block';
+
+            html2pdf().from(preview).save('bill.pdf').then(() => { preview.style.display = 'none'; });
+        }
+
+        function sendWhatsApp() {
+            if(cart.length === 0) { showToast('कार्ट खाली है', 'error'); return; }
+            let msg = "🧾 *Smart POS Bill*\n\n";
+            cart.forEach(i => { msg += `• ${i.name} (${i.qty}) = ₹${i.price * i.qty}\n`; });
+            msg += `\n*कुल: ₹${currentGrandTotal.toFixed(2)}*`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+        }
+
+        function switchTab(tabId, btn) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            btn.classList.add('active');
+            if(tabId !== 'scan-tab') stopScanner();
+        }
+
+        // ऑटो-लॉगिन चेक
+        window.onload = function() {
+            const savedUser = sessionStorage.getItem('pos_current_user');
+            if(savedUser) {
+                currentUser = JSON.parse(savedUser);
+                bootPOS();
+            } else {
+                document.getElementById('securityModal').style.display = 'flex';
+            }
+        };
+    </script>
+</body>
+</html>
