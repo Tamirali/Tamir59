@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Pahada & Dubal Counting</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ----- RESET & BASE ----- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: radial-gradient(ellipse at center, #0a0e1a 0%, #03050b 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Rajdhani', sans-serif;
+            padding: 20px;
+        }
+
+        /* ----- MAIN CONTAINER ----- */
+        .container {
+            max-width: 820px;
+            width: 100%;
+            background: rgba(10, 14, 30, 0.85);
+            backdrop-filter: blur(12px);
+            border-radius: 40px;
+            padding: 35px 40px 45px;
+            border: 1px solid rgba(0, 255, 255, 0.15);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.9), 0 0 80px rgba(0, 255, 255, 0.04), inset 0 0 80px rgba(0, 255, 255, 0.02);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg at 50% 50%, transparent 0%, rgba(0, 255, 255, 0.02) 25%, transparent 50%, rgba(0, 255, 255, 0.02) 75%, transparent 100%);
+            animation: rotateGlow 30s linear infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes rotateGlow {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .container>* {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ----- HEADER ----- */
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .header .title {
+            font-family: 'Orbitron', monospace;
+            font-weight: 900;
+            font-size: 2.2rem;
+            letter-spacing: 4px;
+            background: linear-gradient(135deg, #00f5ff 0%, #00d4ff 40%, #7b61ff 80%, #a855f7 100%);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradShift 4s ease-in-out infinite alternate;
+            text-shadow: 0 0 40px rgba(0, 245, 255, 0.15);
+        }
+
+        @keyframes gradShift {
+            0% {
+                background-position: 0% 50%;
+            }
+            100% {
+                background-position: 100% 50%;
+            }
+        }
+
+        .header .subtitle {
+            color: rgba(0, 255, 255, 0.5);
+            font-size: 0.9rem;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            margin-top: 6px;
+            font-weight: 500;
+        }
+
+        /* ----- INPUT SECTION ----- */
+        .input-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 38px;
+            background: rgba(0, 255, 255, 0.03);
+            border-radius: 60px;
+            padding: 12px 18px 12px 26px;
+            border: 1px solid rgba(0, 255, 255, 0.08);
+            backdrop-filter: blur(4px);
+        }
+
+        .input-section label {
+            color: rgba(0, 255, 255, 0.7);
+            font-weight: 600;
+            font-size: 1.05rem;
+            letter-spacing: 1px;
+            white-space: nowrap;
+        }
+
+        .input-section label span {
+            color: #00f5ff;
+            font-weight: 700;
+        }
+
+        .input-wrapper {
+            flex: 1;
+            min-width: 150px;
+            position: relative;
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            padding: 12px 20px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 2px solid rgba(0, 255, 255, 0.15);
+            border-radius: 40px;
+            color: #00f5ff;
+            font-family: 'Orbitron', monospace;
+            font-size: 1.4rem;
+            font-weight: 700;
+            outline: none;
+            transition: all 0.3s ease;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+
+        .input-wrapper input:focus {
+            border-color: #00f5ff;
+            box-shadow: 0 0 30px rgba(0, 245, 255, 0.12), inset 0 0 20px rgba(0, 245, 255, 0.04);
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+        .input-wrapper input::placeholder {
+            color: rgba(0, 255, 255, 0.2);
+            font-size: 0.9rem;
+            font-weight: 400;
+            letter-spacing: 1px;
+        }
+
+        .input-wrapper input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+        }
+        .input-wrapper input[type="number"] {
+            -moz-appearance: textfield;
+        }
+
+        .btn-generate {
+            padding: 12px 34px;
+            background: linear-gradient(135deg, #00c8ff, #7b61ff);
+            border: none;
+            border-radius: 40px;
+            color: #fff;
+            font-family: 'Orbitron', monospace;
+            font-weight: 700;
+            font-size: 1rem;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            box-shadow: 0 4px 20px rgba(0, 200, 255, 0.25);
+            position: relative;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .btn-generate:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 40px rgba(0, 200, 255, 0.4);
+        }
+
+        .btn-generate:active {
+            transform: scale(0.96);
+        }
+
+        .btn-generate::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 60%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+        }
+
+        .btn-generate:hover::after {
+            opacity: 1;
+        }
+
+        /* ----- OUTPUT GRID ----- */
+        .output-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 28px;
+            margin-top: 8px;
+        }
+
+        @media (max-width: 680px) {
+            .output-grid {
+                grid-template-columns: 1fr;
+                gap: 32px;
+            }
+            .container {
+                padding: 25px 18px 30px;
+            }
+            .header .title {
+                font-size: 1.5rem;
+                letter-spacing: 2px;
+            }
+            .input-section {
+                padding: 12px 14px;
+                border-radius: 30px;
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .input-section label {
+                text-align: center;
+            }
+            .btn-generate {
+                padding: 12px 20px;
+                font-size: 0.85rem;
+            }
+        }
+
+        /* ----- CARD ----- */
+        .card {
+            background: rgba(0, 20, 40, 0.5);
+            border-radius: 24px;
+            padding: 22px 20px 26px;
+            border: 1px solid rgba(0, 255, 255, 0.06);
+            backdrop-filter: blur(4px);
+            transition: all 0.4s ease;
+        }
+
+        .card:hover {
+            border-color: rgba(0, 255, 255, 0.15);
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 18px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.06);
+        }
+
+        .card-header .icon {
+            font-size: 1.4rem;
+            line-height: 1;
+        }
+
+        .card-header h2 {
+            font-family: 'Orbitron', monospace;
+            font-weight: 700;
+            font-size: 1.05rem;
+            letter-spacing: 2px;
+            color: #00f5ff;
+            text-shadow: 0 0 20px rgba(0, 245, 255, 0.1);
+        }
+
+        .card-header .badge {
+            margin-left: auto;
+            background: rgba(0, 255, 255, 0.08);
+            padding: 2px 14px;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            color: rgba(0, 255, 255, 0.5);
+            font-weight: 600;
+            letter-spacing: 1px;
+            font-family: 'Orbitron', monospace;
+        }
+
+        /* ----- PAHADA DISPLAY ----- */
+        .pahada-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px 20px;
+        }
+
+        @media (max-width: 480px) {
+            .pahada-list {
+                grid-template-columns: 1fr;
+                gap: 4px;
+            }
+        }
+
+        .pahada-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 4px;
+            font-family: 'Orbitron', monospace;
+            font-weight: 500;
+            font-size: 0.92rem;
+            color: rgba(200, 235, 255, 0.85);
+            border-bottom: 1px solid rgba(0, 255, 255, 0.03);
+            transition: all 0.2s ease;
+        }
+
+        .pahada-item:hover {
+            color: #fff;
+            border-bottom-color: rgba(0, 255, 255, 0.1);
+            padding-left: 8px;
+        }
+
+        .pahada-item .eq {
+            color: rgba(0, 255, 255, 0.25);
+            font-weight: 400;
+            margin: 0 4px;
+        }
+
+        .pahada-item .result {
+            color: #00f5ff;
+            font-weight: 700;
+            text-shadow: 0 0 20px rgba(0, 245, 255, 0.08);
+            font-size: 1rem;
+        }
+
+        /* ----- DUBAL COUNTING ----- */
+        .dubal-container {
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .dubal-container::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .dubal-container::-webkit-scrollbar-track {
+            background: rgba(0, 255, 255, 0.03);
+            border-radius: 10px;
+        }
+
+        .dubal-container::-webkit-scrollbar-thumb {
+            background: rgba(0, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+
+        .dubal-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: flex-start;
+        }
+
+        .dubal-number {
+            font-family: 'Orbitron', monospace;
+            font-weight: 700;
+            font-size: 1rem;
+            padding: 6px 14px;
+            background: rgba(0, 255, 255, 0.04);
+            border-radius: 30px;
+            color: rgba(200, 235, 255, 0.8);
+            border: 1px solid rgba(0, 255, 255, 0.05);
+            transition: all 0.25s ease;
+            min-width: 48px;
+            text-align: center;
+        }
+
+        .dubal-number:hover {
+            background: rgba(0, 255, 255, 0.08);
+            color: #fff;
+            border-color: rgba(0, 255, 255, 0.2);
+            transform: scale(1.04);
+            box-shadow: 0 0 20px rgba(0, 245, 255, 0.04);
+        }
+
+        .dubal-number.highlight {
+            background: rgba(0, 255, 255, 0.12);
+            border-color: rgba(0, 255, 255, 0.25);
+            color: #00f5ff;
+            box-shadow: 0 0 30px rgba(0, 245, 255, 0.06);
+        }
+
+        .dubal-number .idx {
+            font-size: 0.55rem;
+            color: rgba(0, 255, 255, 0.2);
+            font-weight: 400;
+            margin-left: 4px;
+            font-family: 'Rajdhani', sans-serif;
+        }
+
+        /* ----- EMPTY STATE ----- */
+        .empty-state {
+            text-align: center;
+            padding: 28px 10px;
+            color: rgba(0, 255, 255, 0.15);
+            font-family: 'Orbitron', monospace;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+        }
+
+        .empty-state .big-icon {
+            font-size: 2.6rem;
+            display: block;
+            margin-bottom: 12px;
+            opacity: 0.3;
+        }
+
+        /* ----- FOOTER ----- */
+        .footer {
+            text-align: center;
+            margin-top: 32px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(0, 255, 255, 0.04);
+            color: rgba(0, 255, 255, 0.12);
+            font-size: 0.7rem;
+            letter-spacing: 3px;
+            font-family: 'Orbitron', monospace;
+        }
+
+        /* ----- ANIMATIONS ----- */
+        .fade-in {
+            animation: fadeUp 0.5s ease forwards;
+            opacity: 0;
+            transform: translateY(12px);
+        }
+
+        @keyframes fadeUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .pahada-item {
+            opacity: 0;
+            animation: fadeUp 0.3s ease forwards;
+        }
+
+        .pahada-item:nth-child(1) {
+            animation-delay: 0.02s;
+        }
+        .pahada-item:nth-child(2) {
+            animation-delay: 0.05s;
+        }
+        .pahada-item:nth-child(3) {
+            animation-delay: 0.08s;
+        }
+        .pahada-item:nth-child(4) {
+            animation-delay: 0.11s;
+        }
+        .pahada-item:nth-child(5) {
+            animation-delay: 0.14s;
+        }
+        .pahada-item:nth-child(6) {
+            animation-delay: 0.17s;
+        }
+        .pahada-item:nth-child(7) {
+            animation-delay: 0.20s;
+        }
+        .pahada-item:nth-child(8) {
+            animation-delay: 0.23s;
+        }
+        .pahada-item:nth-child(9) {
+            animation-delay: 0.26s;
+        }
+        .pahada-item:nth-child(10) {
+            animation-delay: 0.29s;
+        }
+
+        .dubal-number {
+            opacity: 0;
+            animation: fadeUp 0.25s ease forwards;
+        }
+
+        .dubal-number:nth-child(1) {
+            animation-delay: 0.02s;
+        }
+        .dubal-number:nth-child(2) {
+            animation-delay: 0.04s;
+        }
+        .dubal-number:nth-child(3) {
+            animation-delay: 0.06s;
+        }
+        .dubal-number:nth-child(4) {
+            animation-delay: 0.08s;
+        }
+        .dubal-number:nth-child(5) {
+            animation-delay: 0.10s;
+        }
+        .dubal-number:nth-child(6) {
+            animation-delay: 0.12s;
+        }
+        .dubal-number:nth-child(7) {
+            animation-delay: 0.14s;
+        }
+        .dubal-number:nth-child(8) {
+            animation-delay: 0.16s;
+        }
+        .dubal-number:nth-child(9) {
+            animation-delay: 0.18s;
+        }
+        .dubal-number:nth-child(10) {
+            animation-delay: 0.20s;
+        }
+        .dubal-number:nth-child(11) {
+            animation-delay: 0.22s;
+        }
+        .dubal-number:nth-child(12) {
+            animation-delay: 0.24s;
+        }
+        .dubal-number:nth-child(13) {
+            animation-delay: 0.26s;
+        }
+        .dubal-number:nth-child(14) {
+            animation-delay: 0.28s;
+        }
+        .dubal-number:nth-child(15) {
+            animation-delay: 0.30s;
+        }
+        .dubal-number:nth-child(16) {
+            animation-delay: 0.32s;
+        }
+        .dubal-number:nth-child(17) {
+            animation-delay: 0.34s;
+        }
+        .dubal-number:nth-child(18) {
+            animation-delay: 0.36s;
+        }
+        .dubal-number:nth-child(19) {
+            animation-delay: 0.38s;
+        }
+        .dubal-number:nth-child(20) {
+            animation-delay: 0.40s;
+        }
+        .dubal-number:nth-child(21) {
+            animation-delay: 0.42s;
+        }
+        .dubal-number:nth-child(22) {
+            animation-delay: 0.44s;
+        }
+        .dubal-number:nth-child(23) {
+            animation-delay: 0.46s;
+        }
+        .dubal-number:nth-child(24) {
+            animation-delay: 0.48s;
+        }
+        .dubal-number:nth-child(25) {
+            animation-delay: 0.50s;
+        }
+
+        /* responsive tweaks */
+        @media (max-width: 400px) {
+            .pahada-item {
+                font-size: 0.78rem;
+                padding: 4px 2px;
+            }
+            .dubal-number {
+                font-size: 0.78rem;
+                padding: 4px 10px;
+                min-width: 36px;
+            }
+            .card {
+                padding: 16px 12px 20px;
+            }
+            .card-header h2 {
+                font-size: 0.85rem;
+            }
+        }
+
+        /* flash for new data */
+        .card.flash {
+            animation: cardFlash 0.5s ease;
+        }
+
+        @keyframes cardFlash {
+            0%,
+            100% {
+                border-color: rgba(0, 255, 255, 0.06);
+            }
+            50% {
+                border-color: rgba(0, 255, 255, 0.3);
+                box-shadow: 0 0 50px rgba(0, 245, 255, 0.05);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- HEADER -->
+        <div class="header">
+            <div class="title">◈ PAHADA · DIGITAL</div>
+            <div class="subtitle">⎯⎯⎯  दुबल गिनती  ⎯⎯⎯</div>
+        </div>
+
+        <!-- INPUT -->
+        <div class="input-section">
+            <label>🔢 <span>संख्या</span></label>
+            <div class="input-wrapper">
+                <input type="number" id="numberInput" placeholder="0" min="1" max="999" value="7">
+            </div>
+            <button class="btn-generate" id="generateBtn">⟳ गणना</button>
+        </div>
+
+        <!-- OUTPUT -->
+        <div class="output-grid">
+            <!-- PAHADA CARD -->
+            <div class="card" id="pahadaCard">
+                <div class="card-header">
+                    <span class="icon">✕</span>
+                    <h2>पहाड़ा</h2>
+                    <span class="badge" id="pahadaBadge">1–10</span>
+                </div>
+                <div id="pahadaContainer">
+                    <div class="empty-state">
+                        <span class="big-icon">⟳</span>
+                        संख्या दर्ज करें
+                    </div>
+                </div>
+            </div>
+
+            <!-- DUBAL CARD -->
+            <div class="card" id="dubalCard">
+                <div class="card-header">
+                    <span class="icon">⟡</span>
+                    <h2>दुबल गिनती</h2>
+                    <span class="badge" id="dubalBadge">+2</span>
+                </div>
+                <div class="dubal-container" id="dubalContainer">
+                    <div class="empty-state">
+                        <span class="big-icon">⟡</span>
+                        यहाँ से शुरू होगी
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">⚡  दुबल · दुगना  ⚡</div>
+    </div>
+
+    <script>
+        (function() {
+            'use strict';
+
+            const inputEl = document.getElementById('numberInput');
+            const generateBtn = document.getElementById('generateBtn');
+            const pahadaContainer = document.getElementById('pahadaContainer');
+            const dubalContainer = document.getElementById('dubalContainer');
+            const pahadaBadge = document.getElementById('pahadaBadge');
+            const dubalBadge = document.getElementById('dubalBadge');
+            const pahadaCard = document.getElementById('pahadaCard');
+            const dubalCard = document.getElementById('dubalCard');
+
+            // ----- HELPERS -----
+            function formatNumber(n) {
+                return n.toString();
+            }
+
+            // ----- GENERATE PAHADA -----
+            function renderPahada(num) {
+                if (!num || num < 1) {
+                    pahadaContainer.innerHTML = `
+                        <div class="empty-state">
+                            <span class="big-icon">✕</span>
+                            कृपया 1 से बड़ी संख्या दर्ज करें
+                        </div>
+                    `;
+                    pahadaBadge.textContent = '—';
+                    return;
+                }
+
+                const max = 10;
+                let html = '<div class="pahada-list">';
+                for (let i = 1; i <= max; i++) {
+                    const result = num * i;
+                    html += `
+                        <div class="pahada-item">
+                            <span>${num} <span class="eq">×</span> ${i}</span>
+                            <span class="result">= ${result}</span>
+                        </div>
+                    `;
+                }
+                html += '</div>';
+                pahadaContainer.innerHTML = html;
+                pahadaBadge.textContent = `1–${max}`;
+
+                // flash card
+                pahadaCard.classList.remove('flash');
+                void pahadaCard.offsetWidth;
+                pahadaCard.classList.add('flash');
+            }
+
+            // ----- GENERATE DUBAL COUNTING -----
+            function renderDubal(startNum) {
+                if (!startNum || startNum < 1) {
+                    dubalContainer.innerHTML = `
+                        <div class="empty-state">
+                            <span class="big-icon">⟡</span>
+                            कृपया 1 से बड़ी संख्या दर्ज करें
+                        </div>
+                    `;
+                    dubalBadge.textContent = '—';
+                    return;
+                }
+
+                const count = 30;
+                let html = '<div class="dubal-grid">';
+                for (let i = 0; i < count; i++) {
+                    const val = startNum + (i * 2);
+                    const isEven = (val % 2 === 0);
+                    html += `
+                        <div class="dubal-number ${isEven ? 'highlight' : ''}">
+                            ${val}
+                            <span class="idx">#${i+1}</span>
+                        </div>
+                    `;
+                }
+                html += '</div>';
+                dubalContainer.innerHTML = html;
+                dubalBadge.textContent = `+2 · ${count} पद`;
+
+                // flash card
+                dubalCard.classList.remove('flash');
+                void dubalCard.offsetWidth;
+                dubalCard.classList.add('flash');
+            }
+
+            // ----- MAIN GENERATE -----
+            function generate() {
+                let raw = inputEl.value.trim();
+                let num = parseInt(raw, 10);
+
+                if (isNaN(num) || num < 1) {
+                    num = 1;
+                    inputEl.value = '1';
+                }
+                if (num > 999) {
+                    num = 999;
+                    inputEl.value = '999';
+                }
+
+                renderPahada(num);
+                renderDubal(num);
+            }
+
+            // ----- EVENT LISTENERS -----
+            generateBtn.addEventListener('click', generate);
+
+            inputEl.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    generate();
+                }
+            });
+
+            inputEl.addEventListener('focus', function() {
+                this.select();
+            });
+
+            // ----- INITIAL LOAD -----
+            // Set default number
+            inputEl.value = '7';
+            generate();
+
+            // Extra: allow clicking on the badge to re-generate (fun)
+            document.querySelectorAll('.badge').forEach(b => {
+                b.style.cursor = 'pointer';
+                b.addEventListener('click', generate);
+            });
+
+        })();
+    </script>
+
+</body>
+</html>
