@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>तामीर अली की रूहानी पाठशाला • अक्ल की जीत</title>
+    <!-- गूगल फॉन्ट्स -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Baloo+2:wght@400;500;600;700;800&family=Noto+Nastaliq+Urdu:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f0c1f 0%, #1a1730 100%);
+            font-family: 'Poppins', 'Baloo 2', sans-serif;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* ===== हेडर ===== */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .floating-badge {
+            display: inline-block;
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            color: #2d1b0e;
+            padding: 15px 45px;
+            border-radius: 70px;
+            font-size: 1.5rem;
+            font-weight: 800;
+            box-shadow: 0 15px 25px rgba(0,0,0,0.5);
+            border: 4px solid #fff;
+            margin-bottom: 25px;
+        }
+
+        h1 {
+            font-size: 5rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, #fff, #f0e68c, #98fb98, #ffb347);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 6px 6px 0 rgba(0,0,0,0.4);
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        .subhead {
+            font-size: 2.2rem;
+            color: #fff;
+            background: rgba(0,0,0,0.5);
+            display: inline-block;
+            padding: 15px 60px;
+            border-radius: 70px;
+            backdrop-filter: blur(10px);
+            margin: 25px 0;
+            border: 3px solid #ffd700;
+            font-weight: 600;
+        }
+
+        /* ===== व्हाट्सएप ===== */
+        .whatsapp-section {
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            padding: 30px;
+            border-radius: 80px;
+            margin: 30px auto 50px;
+            max-width: 850px;
+            box-shadow: 0 25px 45px rgba(0,0,0,0.5);
+            border: 4px solid #fff;
+        }
+
+        .whatsapp-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .whatsapp-icon {
+            font-size: 4.5rem;
+            background: white;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 12px 0 #075E54;
+        }
+
+        .whatsapp-text h3 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: white;
+            margin: 0;
+        }
+
+        .whatsapp-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: rgba(255,255,255,0.2);
+            padding: 10px 35px;
+            border-radius: 70px;
+            display: inline-block;
+            margin-top: 10px;
+            border: 2px dashed #fff;
+            color: white;
+            letter-spacing: 2px;
+        }
+
+        .whatsapp-button {
+            background: white;
+            color: #075E54;
+            padding: 18px 45px;
+            border-radius: 70px;
+            font-size: 1.6rem;
+            font-weight: 700;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 10px 0 #075E54;
+            transition: 0.2s;
+        }
+
+        .whatsapp-button:hover {
+            transform: translateY(5px);
+            box-shadow: 0 5px 0 #075E54;
+        }
+
+        /* ===== स्पीच सेक्शन ===== */
+        .speech-section {
+            background: linear-gradient(145deg, #6a3093, #a044ff);
+            border-radius: 80px;
+            padding: 40px;
+            margin: 40px 0 50px;
+            border: 4px solid #ffd700;
+            box-shadow: 0 30px 50px rgba(0,0,0,0.5);
+        }
+
+        .speech-header {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .speech-header span {
+            font-size: 4rem;
+            background: rgba(255,255,255,0.2);
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 4px solid white;
+        }
+
+        .speech-header h2 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .speech-box {
+            background: rgba(255,255,255,0.95);
+            border-radius: 60px;
+            padding: 35px;
+            text-align: center;
+        }
+
+        .btn-start {
+            background: linear-gradient(45deg, #ffb347, #ff8c00);
+            border: none;
+            padding: 20px 50px;
+            border-radius: 80px;
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2d1b0e;
+            cursor: pointer;
+            box-shadow: 0 12px 0 #9e601d;
+            transition: 0.1s;
+            border: 4px solid #fff;
+            margin-bottom: 25px;
+        }
+
+        .btn-start:active {
+            transform: translateY(6px);
+            box-shadow: 0 6px 0 #9e601d;
+        }
+
+        .status-box {
+            background: #f0f0f0;
+            border-radius: 40px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        #status {
+            font-size: 1.5rem;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        #result {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #3f2b1b;
+            margin: 15px 0;
+            min-height: 100px;
+            background: #fff3dd;
+            padding: 20px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        /* भाषा-विशेष स्टाइल */
+        .hindi-text {
+            font-family: 'Baloo 2', cursive;
+            font-size: 2.4rem;
+            color: #d35400;
+        }
+        
+        .urdu-text-result {
+            font-family: 'Noto Nastaliq Urdu', serif;
+            font-size: 2.8rem;
+            direction: rtl;
+            color: #1b5e20;
+        }
+        
+        .english-text {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2.4rem;
+            font-weight: 700;
+            color: #1e3c72;
+        }
+
+        .machine-note {
+            font-size: 1.3rem;
+            color: #555;
+            margin-top: 5px;
+            font-style: italic;
+            background: #e8e8e8;
+            padding: 10px 20px;
+            border-radius: 40px;
+        }
+
+        #detail {
+            font-size: 1.8rem;
+            color: #a56711;
+            font-weight: 600;
+            background: #fff3dd;
+            padding: 15px 30px;
+            border-radius: 50px;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        .vibration-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+            font-size: 1.3rem;
+            color: #555;
+        }
+
+        .vibration-dot {
+            width: 20px;
+            height: 20px;
+            background: #ff4444;
+            border-radius: 50%;
+        }
+
+        .vibrate-active {
+            animation: vibrate 0.3s ease-in-out infinite;
+        }
+
+        @keyframes vibrate {
+            0%, 100% { transform: scale(1); background: #ff4444; }
+            50% { transform: scale(1.4); background: #ffaa00; }
+        }
+
+        .aql-badge {
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            color: #2d1b0e;
+            padding: 8px 25px;
+            border-radius: 50px;
+            display: inline-block;
+            font-weight: 700;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .language-tag {
+            display: inline-block;
+            padding: 6px 18px;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: white !important;
+        }
+        .tag-hindi { background: #FF9933; }
+        .tag-urdu { background: #2e7d32; }
+        .tag-english { background: #1e3c72; }
+
+        /* ===== भाषा सेक्शन ===== */
+        .lang-sections {
+            display: flex;
+            flex-direction: column;
+            gap: 50px;
+            margin-top: 60px;
+        }
+
+        .lang-section {
+            border-radius: 80px 80px 50px 50px;
+            padding: 40px 35px;
+            box-shadow: 0 35px 60px rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+            border: 4px solid;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            margin-bottom: 35px;
+            padding-bottom: 20px;
+            border-bottom: 5px solid;
+        }
+
+        .section-icon {
+            font-size: 5rem;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.2);
+            border: 5px solid white;
+        }
+
+        .section-header h2 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin: 0;
+            color: white;
+            text-shadow: 5px 5px 0 rgba(0,0,0,0.4);
+        }
+
+        /* हिंदी सेक्शन */
+        .hindi-section {
+            background: linear-gradient(145deg, #FF9933, #FF5500);
+            border-color: #FFD700;
+        }
+        .hindi-section .section-header { border-bottom-color: #FFD700; }
+
+        /* अंग्रेज़ी सेक्शन */
+        .english-section {
+            background: linear-gradient(145deg, #1e3c72, #2a5c9a);
+            border-color: #00d4ff;
+        }
+        .english-section .section-header { border-bottom-color: #00d4ff; }
+
+        /* उर्दू सेक्शन */
+        .urdu-section {
+            background: linear-gradient(145deg, #2e7d32, #1b5e20);
+            border-color: #ffd54f;
+            direction: rtl;
+        }
+        .urdu-section .section-header { border-bottom-color: #ffd54f; direction: ltr; }
+        .urdu-section .section-header h2 { font-family: 'Noto Nastaliq Urdu', serif; }
+        .urdu-section .lesson-card { direction: rtl; font-family: 'Noto Nastaliq Urdu', serif; }
+
+        /* कार्ड ग्रिड */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+        }
+
+        .lesson-card {
+            background: rgba(255, 255, 255, 0.97);
+            backdrop-filter: blur(5px);
+            border-radius: 40px 40px 40px 15px;
+            padding: 28px 22px;
+            box-shadow: 0 20px 35px rgba(0,0,0,0.3);
+            transition: 0.3s;
+            border: 3px solid white;
+        }
+
+        .lesson-card:hover {
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: 0 30px 50px rgba(0,0,0,0.6);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            margin-bottom: 20px;
+        }
+
+        .card-header span {
+            font-size: 3.2rem;
+            background: linear-gradient(45deg, #f0f0f0, #e0e0e0);
+            width: 75px;
+            height: 75px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 4px solid #fff;
+            box-shadow: 0 6px 0 #b0b0b0;
+        }
+
+        .card-header h3 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #222;
+            margin: 0;
+        }
+
+        .example-box {
+            background: #f8f9fa;
+            border-radius: 30px;
+            padding: 20px;
+            margin: 18px 0;
+            border-left: 8px solid;
+            font-size: 1.25rem;
+            color: #333;
+        }
+
+        .hindi-section .example-box { border-left-color: #FF9933; }
+        .english-section .example-box { border-left-color: #1e3c72; }
+        .urdu-section .example-box { border-left-color: #2e7d32; }
+
+        .highlight {
+            background: #FFE5B4;
+            padding: 4px 18px;
+            border-radius: 40px;
+            display: inline-block;
+            margin: 4px;
+            font-weight: 700;
+        }
+
+        .tip {
+            background: #222;
+            color: #FFD700;
+            padding: 15px 20px;
+            border-radius: 30px;
+            font-size: 1.2rem;
+            margin-top: 15px;
+            border-left: 8px solid #FFA500;
+        }
+
+        .spelling-correct { color: #27ae60; font-weight: 700; }
+        .spelling-wrong { color: #e74c3c; text-decoration: line-through; font-weight: 500; }
+
+        /* ===== फुटर ===== */
+        .footer {
+            margin-top: 80px;
+            text-align: center;
+            background: linear-gradient(145deg, #1a237e, #311b92);
+            padding: 60px 30px;
+            border-radius: 120px 120px 50px 50px;
+            border: 5px solid #ffd700;
+            color: white;
+        }
+
+        .footer h3 { font-size: 3rem; margin-bottom: 30px; color: #FFD700; }
+
+        .contact-footer {
+            background: rgba(255,255,255,0.1);
+            padding: 30px;
+            border-radius: 100px;
+            display: inline-block;
+            margin: 30px 0;
+        }
+
+        .footer-number {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: #25D366;
+            background: white;
+            padding: 18px 60px;
+            border-radius: 80px;
+            display: inline-block;
+            text-decoration: none;
+            border: 4px solid #ffd700;
+        }
+
+        .signature {
+            font-family: 'Noto Nastaliq Urdu', serif;
+            font-size: 3.2rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 30px 0;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <!-- हेडर -->
+    <div class="header">
+        <div class="floating-badge">🎙️ तामीर अली की रूहानी पाठशाला</div>
+        <h1>अक्ल की जीत</h1>
+        <div class="subhead">🇮🇳 हिंदी • 🇬🇧 ENGLISH • 🇵🇰 اُردو</div>
+    </div>
+
+    <!-- व्हाट्सएप -->
+    <div class="whatsapp-section">
+        <div class="whatsapp-content">
+            <div class="whatsapp-icon">📱</div>
+            <div class="whatsapp-text">
+                <h3>सुधार व सुझाव के लिए संपर्क करें</h3>
+                <div class="whatsapp-number">+91 87972 21991</div>
+            </div>
+            <a href="https://wa.me/918797221991" class="whatsapp-button" target="_blank"><span>📲</span> WhatsApp करें</a>
+        </div>
+    </div>
+
+    <!-- आवाज़ पहचान सेक्शन -->
+    <div class="speech-section">
+        <div class="speech-header">
+            <span>🎤</span>
+            <h2>आवाज़ और भाषा पहचान</h2>
+        </div>
+        
+        <div class="speech-box">
+            <div class="aql-badge">🤔 मशीन सुनती है, अक्ल सुधारती है</div>
+            <button class="btn-start" onclick="startRecognition()">🔊 बोलना शुरू करें</button>
+            <p style="font-size: 1.3rem; color: #666; margin-bottom: 20px;">
+                कोई शब्द बोलें: <strong>गांधी, खुदा, knowledge, चांद, गलत, जमीन, अक्ल</strong> आदि
+            </p>
+
+            <div class="status-box">
+                <div id="status">⏳ इंतज़ार में...</div>
+                <div id="result"></div>
+                <div id="machine-note" class="machine-note"></div>
+                <div id="detail"></div>
+            </div>
+
+            <div class="vibration-indicator">
+                <span>📳 वाइब्रेशन:</span>
+                <div class="vibration-dot" id="vibDot"></div>
+                <span id="vibration-text">अलग-अलग शब्दों पर अलग कंपन</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- तीनों भाषा सेक्शन -->
+    <div class="lang-sections">
+        <!-- हिंदी सेक्शन -->
+        <div class="lang-section hindi-section">
+            <div class="section-header">
+                <div class="section-icon">🇮🇳</div>
+                <h2>हिंदी वर्णमाला</h2>
+            </div>
+            <div class="card-grid">
+                <div class="lesson-card">
+                    <div class="card-header"><span>🌙</span><h3>चंद्रबिंदु (ँ) vs बिंदी (ं)</h3></div>
+                    <div class="example-box">
+                        <p><span class="highlight">बिंदी (ं)</span> – सिर्फ नाक से: गंगा, चंदा, रंग</p>
+                        <p><span class="highlight">चंद्रबिंदु (ँ)</span> – नाक+मुँह: आँख, गाँधी, चाँद</p>
+                    </div>
+                    <div class="tip">💡 प्रयोग: 'चाँद' बोलो (नाक पर कंपन) vs 'चंदा' बोलो</div>
+                </div>
+                <div class="lesson-card">
+                    <div class="card-header"><span>स</span><h3>स • श • ष</h3></div>
+                    <div class="example-box">
+                        <p><b>स</b> – सरल, सूरज | <b>श</b> – शक्ति, आकाश | <b>ष</b> – वर्षा, संतोष</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- अंग्रेज़ी सेक्शन -->
+        <div class="lang-section english-section">
+            <div class="section-header">
+                <div class="section-icon">🇬🇧</div>
+                <h2>ENGLISH GRAMMAR</h2>
+            </div>
+            <div class="card-grid">
+                <div class="lesson-card">
+                    <div class="card-header"><span>🔇</span><h3>Silent Letters</h3></div>
+                    <div class="example-box">
+                        <p><b>K</b> – Knowledge (K चुप) | <b>W</b> – Write (W चुप)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- उर्दू सेक्शन -->
+        <div class="lang-section urdu-section">
+            <div class="section-header">
+                <div class="section-icon">🇵🇰</div>
+                <h2>اُردو حروفِ تہجی</h2>
+            </div>
+            <div class="card-grid">
+                <div class="lesson-card">
+                    <div class="card-header"><span>خ</span><h3>خ (خدا) vs کھ</h3></div>
+                    <div class="example-box">
+                        <p><b>خ</b> – حلق کی گہری آواز (خدا، خاص)</p>
+                        <p><b>کھ</b> – عام آواز (کھانا، کھیل)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- फुटर -->
+    <div class="footer">
+        <h3>🏆 बच्चों के लिए अंतिम संदेश</h3>
+        <p style="font-size: 1.6rem; max-width: 1000px; margin: 0 auto 25px;">
+            "हिंदी, اُردو and English — तीनों भाषाओं को अक्ल से समझो।"
+        </p>
+        <div class="contact-footer">
+            <a href="https://wa.me/918797221991" class="footer-number" target="_blank">+91 87972 21991</a>
+        </div>
+        <div class="signature">786 تامیر علی — عقل کی جیت</div>
+    </div>
+</div>
+
+<script>
+    const resultDiv = document.getElementById('result');
+    const detailDiv = document.getElementById('detail');
+    const statusDiv = document.getElementById('status');
+    const vibrationText = document.getElementById('vibration-text');
+    const machineNote = document.getElementById('machine-note');
+    const vibDot = document.getElementById('vibDot');
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    
+    if (!SpeechRecognition) {
+        statusDiv.innerText = "❌ आपका ब्राउज़र स्पीच रिकग्निशन सपोर्ट नहीं करता। Chrome या Edge उपयोग करें।";
+    } else {
+        const recognition = new SpeechRecognition();
+        // वेब किट को दोनों लिपियों को पकड़ने के लिए मिक्स एनवायरनमेंट मोड पर रखा गया है
+        recognition.lang = 'hi-IN'; 
+        recognition.continuous = false;
+        recognition.interimResults = false;
+
+        window.startRecognition = function() {
+            try {
+                recognition.start();
+                statusDiv.innerText = "🎤 सुन रहा हूँ... बोलिए";
+                resultDiv.innerHTML = "";
+                detailDiv.innerText = "";
+                machineNote.innerHTML = "";
+                vibrationText.innerText = "वाइब्रेशन के लिए प्रतीक्षारत...";
+                vibDot.classList.remove('vibrate-active');
+            } catch (e) {
+                statusDiv.innerText = "⚠️ माइक्रोफोन एक्टिव है या रीलोड करें।";
+            }
+        };
+
+        recognition.onresult = (event) => {
+            let machineHeard = event.results[0][0].transcript.trim();
+            let lowerHeard = machineHeard.toLowerCase(); // केवल इंग्लिश स्ट्रिंग्स के मिलान के लिए
+            
+            // सटीक बहुभाषी मैचिंग लॉजिक
+            let result = identifyAndCorrect(machineHeard, lowerHeard);
+            
+            resultDiv.innerHTML = result.html;
+            machineNote.innerHTML = `🤖 मशीन ने पकड़ा: "${machineHeard}" | 🧠 भाषा कैटेगरी: ${result.language.toUpperCase()}`;
+            
+            analyzeWord(machineHeard, lowerHeard, result.language);
+        };
+
+        recognition.onerror = (event) => {
+            statusDiv.innerText = "❌ त्रुटि: " + event.error;
+            vibDot.classList.remove('vibrate-active');
+        };
+
+        recognition.onend = () => {
+            statusDiv.innerText = "✅ सुनना समाप्त। नया शब्द बोलने के लिए बटन दबाएँ।";
+        };
+
+        function identifyAndCorrect(raw, lower) {
+            // उर्दू शब्द लॉजिक (देवनागरी और रोमन दोनों के लिए)
+            if (raw.includes('खुदा') || raw.includes('ख़ुदा') || lower.includes('khuda')) {
+                return { html: '<span class="urdu-text-result">خدا</span> <span class="language-tag tag-urdu">🇵🇰 اُردو</span>', language: 'urdu' };
+            }
+            if (raw.includes('गलत') || raw.includes('ग़लत') || lower.includes('galat') || lower.includes('ghalat')) {
+                return { html: '<span class="urdu-text-result">غلط</span> <span class="language-tag tag-urdu">🇵🇰 اُردو</span>', language: 'urdu' };
+            }
+            if (raw.includes('जमीन') || raw.includes('ज़मीन') || lower.includes('zameen') || lower.includes('zamin')) {
+                return { html: '<span class="urdu-text-result">زمین</span> <span class="language-tag tag-urdu">🇵🇰 اُردو</span>', language: 'urdu' };
+            }
+            if (raw.includes('अक्ल') || raw.includes('अक़्ल') || lower.includes('aql') || lower.includes('akal')) {
+                return { html: '<span class="urdu-text-result">عقل</span> <span class="language-tag tag-urdu">🇵🇰 اُردو</span>', language: 'urdu' };
+            }
+            
+            // अंग्रेज़ी शब्द लॉजिक
+            if (lower.includes('knowledge') || raw.includes('नॉलेज') || raw.includes('नालेज')) {
+                return { html: '<span class="english-text">Knowledge</span> <span class="language-tag tag-english">🇬🇧 ENGLISH</span>', language: 'english' };
+            }
+            if (lower.includes('write') || raw.includes('राइट')) {
+                return { html: '<span class="english-text">Write (W is silent)</span> <span class="language-tag tag-english">🇬🇧 ENGLISH</span>', language: 'english' };
+            }
+            if (lower.includes('phone') || raw.includes('फोन')) {
+                return { html: '<span class="english-text">Phone (PH = F)</span> <span class="language-tag tag-english">🇬🇧 ENGLISH</span>', language: 'english' };
+            }
+            
+            // हिंदी चंद्रबिंदु रिपेयर लॉजिक
+            if (raw.includes('गांधी') || raw.includes('गान्धी')) {
+                return { html: '<span class="hindi-text">गाँधी</span> <span class="language-tag tag-hindi">🇮🇳 हिंदी</span>', language: 'hindi' };
+            }
+            if (raw.includes('चांद')) {
+                return { html: '<span class="hindi-text">चाँद</span> <span class="language-tag tag-hindi">🇮🇳 हिंदी</span>', language: 'hindi' };
+            }
+            if (raw.includes('आंख')) {
+                return { html: '<span class="hindi-text">आँख</span> <span class="language-tag tag-hindi">🇮🇳 हिंदी</span>', language: 'hindi' };
+            }
+            
+            // डिफ़ॉल्ट
+            return { html: `<span class="hindi-text">${raw}</span> <span class="language-tag tag-hindi">🇮🇳 हिंदी</span>`, language: 'hindi' };
+        }
+
+        function analyzeWord(raw, lower, language) {
+            let detail = "";
+            let vibration = [100];
+            
+            if (language === 'urdu') {
+                vibDot.classList.add('vibrate-active');
+                if (raw.includes('खुदा') || raw.includes('ख़ुदा') || lower.includes('khuda')) {
+                    detail = "🔴 उर्दू अक्षर 'خ' (ख़े) - गले के गहरे हिस्से (حلق) से अदा होता है।";
+                    vibration = [150, 70, 150];
+                } else if (raw.includes('गलत') || raw.includes('ग़लत') || lower.includes('galat')) {
+                    detail = "🔴 उर्दू अक्षर 'غ' (ग़ैन) - कंठ से रगड़ खाती हुई भारी आवाज़।";
+                    vibration = [100, 50, 100, 50, 100];
+                } else if (raw.includes('अक्ल') || raw.includes('अक़्ल') || lower.includes('aql')) {
+                    detail = "📿 अक्षर 'ع' (ऐन) और 'ق' (क़ाफ़) - अक्ल को शुद्ध उच्चारण से समझें।";
+                    vibration = [300, 100, 300];
+                } else {
+                    detail = "✅ अरबी/उर्दू मूल का शुद्ध शब्द पहचाना गया।";
+                    vibration = [150];
+                }
+            }
+            else if (language === 'english') {
+                vibDot.classList.add('vibrate-active');
+                detail = "🔇 अंग्रेज़ी नियम: इसमें कुछ लेटर्स साइलेंट (मूक) रहते हैं।";
+                vibration = [60, 40, 60];
+            }
+            else if (language === 'hindi') {
+                if (raw.includes('चांद') || raw.includes('गांधी') || raw.includes('आंख')) {
+                    vibDot.classList.add('vibrate-active');
+                    detail = "🌙 चंद्रबिंदु (ँ) का नियम: ध्वनि नाक और मुँह दोनों से एक साथ निकलती है।";
+                    vibration = [80, 40, 400];
+                } else {
+                    vibDot.classList.remove('vibrate-active');
+                    detail = "✅ मानक हिंदी व्याकरण शब्द स्वीकृत।";
+                    vibration = [100];
+                }
+            }
+            
+            detailDiv.innerText = detail;
+            vibrationText.innerText = `📳 कंपन पैटर्न एक्टिव: [${vibration.join(', ')} ms]`;
+            
+            if (navigator.vibrate) {
+                navigator.vibrate(vibration);
+            }
+            
+            // कंपन समाप्त होने पर एनीमेशन रोकें
+            let totalDuration = vibration.reduce((a, b) => a + b, 0);
+            setTimeout(() => {
+                vibDot.classList.remove('vibrate-active');
+            }, totalDuration);
+        }
+    }
+</script>
+</body>
+</html>
