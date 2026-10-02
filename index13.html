@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Full‑Screen Drawing Board</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #111;
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      touch-action: none;  /* prevent scroll/pinch on canvas */
+    }
+
+    /* main container: full screen, no gaps */
+    .board-wrapper {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: #1a1a1a;
+    }
+
+    /* canvas fills all remaining space */
+    #drawCanvas {
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      display: block;
+      background: white;
+      cursor: crosshair;
+      touch-action: none;   /* important for mobile */
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05);
+    }
+
+    /* toolbar — floating, minimal, thumb-friendly */
+    .toolbar {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 12px;
+      background: rgba(30, 30, 30, 0.75);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 12px 20px;
+      border-radius: 60px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+      align-items: center;
+      flex-wrap: nowrap;
+      z-index: 20;
+      pointer-events: auto;
+    }
+
+    .toolbar button {
+      background: rgba(255, 255, 255, 0.08);
+      border: none;
+      color: #eee;
+      font-size: 1.3rem;
+      font-weight: 500;
+      padding: 8px 16px;
+      border-radius: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: 0.15s ease;
+      backdrop-filter: blur(4px);
+      background: rgba(60, 60, 60, 0.5);
+      border: 1px solid rgba(255,255,255,0.05);
+      min-width: 56px;
+      min-height: 48px;
+      letter-spacing: 0.3px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      touch-action: manipulation;
+      cursor: pointer;
+    }
+
+    .toolbar button:active {
+      transform: scale(0.92);
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .toolbar button.clear-btn {
+      background: rgba(200, 60, 60, 0.25);
+      border-color: rgba(255, 80, 80, 0.2);
+      color: #ffb3b3;
+    }
+
+    .toolbar button.clear-btn:active {
+      background: rgba(200, 60, 60, 0.5);
+    }
+
+    .toolbar .color-group {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin: 0 4px;
+    }
+
+    .color-swatch {
+      width: 36px;
+      height: 36px;
+      border-radius: 36px;
+      border: 2px solid rgba(255,255,255,0.15);
+      transition: 0.15s ease;
+      cursor: pointer;
+      touch-action: manipulation;
+      flex-shrink: 0;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    }
+
+    .color-swatch:active {
+      transform: scale(0.85);
+    }
+
+    .color-swatch.active {
+      border-color: white;
+      box-shadow: 0 0 0 2px white, 0 0 12px rgba(255,255,255,0.3);
+      transform: scale(1.02);
+    }
+
+    /* stroke size indicator */
+    .size-indicator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 4px;
+      color: #ccc;
+      font-size: 0.9rem;
+      font-weight: 400;
+    }
+
+    .size-indicator input[type="range"] {
+      width: 70px;
+      height: 4px;
+      -webkit-appearance: none;
+      appearance: none;
+      background: rgba(255,255,255,0.25);
+      border-radius: 4px;
+      outline: none;
+      transition: 0.2s;
+    }
+
+    .size-indicator input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      background: white;
+      border-radius: 20px;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+      border: 2px solid #222;
+    }
+
+    .size-indicator input[type="range"]::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      background: white;
+      border-radius: 20px;
+      cursor: pointer;
+      border: 2px solid #222;
+    }
+
+    /* responsive: smaller toolbar on narrow screens */
+    @media (max-width: 600px) {
+      .toolbar {
+        padding: 10px 14px;
+        gap: 8px;
+        bottom: 18px;
+        border-radius: 40px;
+        flex-wrap: wrap;
+        justify-content: center;
+        width: auto;
+        max-width: 96vw;
+      }
+      .toolbar button {
+        font-size: 1.0rem;
+        padding: 6px 12px;
+        min-width: 44px;
+        min-height: 40px;
+      }
+      .color-swatch {
+        width: 30px;
+        height: 30px;
+      }
+      .size-indicator input[type="range"] {
+        width: 50px;
+      }
+      .size-indicator span {
+        font-size: 0.75rem;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .toolbar {
+        padding: 8px 10px;
+        gap: 6px;
+      }
+      .toolbar button {
+        font-size: 0.85rem;
+        padding: 4px 10px;
+        min-width: 36px;
+        min-height: 34px;
+      }
+      .color-swatch {
+        width: 26px;
+        height: 26px;
+      }
+      .size-indicator input[type="range"] {
+        width: 40px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="board-wrapper">
+    <canvas id="drawCanvas"></canvas>
+  </div>
+
+  <!-- Floating toolbar -->
+  <div class="toolbar" id="toolbar">
+    <button class="clear-btn" id="clearBtn" aria-label="Clear drawing">✕ Clear</button>
+    
+    <div class="color-group" id="colorGroup">
+      <div class="color-swatch active" style="background: #1a1a1a;" data-color="#1a1a1a"></div>
+      <div class="color-swatch" style="background: #d32f2f;" data-color="#d32f2f"></div>
+      <div class="color-swatch" style="background: #1976d2;" data-color="#1976d2"></div>
+      <div class="color-swatch" style="background: #2e7d32;" data-color="#2e7d32"></div>
+      <div class="color-swatch" style="background: #fbc02d;" data-color="#fbc02d"></div>
+      <div class="color-swatch" style="background: #ffffff; border-color: rgba(0,0,0,0.2);" data-color="#ffffff"></div>
+    </div>
+
+    <div class="size-indicator">
+      <span style="font-size:1.1rem;">⚫</span>
+      <input type="range" id="sizeSlider" min="2" max="20" value="6" step="0.5">
+      <span id="sizeLabel">6</span>
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      const canvas = document.getElementById('drawCanvas');
+      const ctx = canvas.getContext('2d');
+
+      // ----- resize canvas to fill screen (device pixel ratio aware) -----
+      function resizeCanvas() {
+        const rect = canvas.parentElement.getBoundingClientRect();
+        const dpr = window.devicePixelRatio || 1;
+        // we want canvas to fill the container exactly (logical size)
+        const logicalWidth = rect.width;
+        const logicalHeight = rect.height;
+        
+        canvas.style.width = logicalWidth + 'px';
+        canvas.style.height = logicalHeight + 'px';
+        
+        // set actual canvas size (physical pixels) for sharp rendering
+        canvas.width = logicalWidth * dpr;
+        canvas.height = logicalHeight * dpr;
+        
+        // scale all drawing operations by dpr
+        ctx.scale(dpr, dpr);
+        
+        // set default stroke style
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        
+        // redraw stored image if any (preserve content after resize)
+        if (savedImageData) {
+          ctx.putImageData(savedImageData, 0, 0);
+        } else {
+          // fill with white background (matching canvas CSS background)
+          ctx.fillStyle = 'white';
+          ctx.fillRect(0, 0, logicalWidth, logicalHeight);
+        }
+        
+        // store logical dimensions for coordinate mapping
+        canvas._logicalWidth = logicalWidth;
+        canvas._logicalHeight = logicalHeight;
+      }
+
+      // ----- state -----
+      let isDrawing = false;
+      let lastX = 0;
+      let lastY = 0;
+      let currentColor = '#1a1a1a';
+      let currentSize = 6;
+      let savedImageData = null; // store for resize / clear restore
+
+      // ----- drawing functions (logical coordinates) -----
+      function startDrawing(e) {
+        e.preventDefault();
+        const pos = getPointerPos(e);
+        if (!pos) return;
+        isDrawing = true;
+        lastX = pos.x;
+        lastY = pos.y;
+        // put a dot
+        ctx.beginPath();
+        ctx.arc(lastX, lastY, currentSize / 2, 0, Math.PI * 2);
+        ctx.fillStyle = currentColor;
+        ctx.fill();
+        // save state after dot
+        saveImageData();
+      }
+
+      function draw(e) {
+        e.preventDefault();
+        if (!isDrawing) return;
+        const pos = getPointerPos(e);
+        if (!pos) return;
+        
+        const x = pos.x;
+        const y = pos.y;
+        
+        ctx.beginPath();
+        ctx.moveTo(lastX, lastY);
+        ctx.lineTo(x, y);
+        ctx.strokeStyle = currentColor;
+        ctx.lineWidth = currentSize;
+        ctx.stroke();
+        
+        lastX = x;
+        lastY = y;
+        
+        // auto-save after each stroke segment (for resize)
+        // we throttle a bit but for drawing it's fine
+        saveImageData();
+      }
+
+      function stopDrawing(e) {
+        e.preventDefault();
+        if (isDrawing) {
+          isDrawing = false;
+          saveImageData();
+        }
+      }
+
+      // ----- helper: get pointer position in logical canvas coords -----
+      function getPointerPos(e) {
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas._logicalWidth / rect.width;   // usually 1, but safe
+        const scaleY = canvas._logicalHeight / rect.height;
+        
+        let clientX, clientY;
+        if (e.touches) {
+          // touch event
+          if (e.touches.length === 0) return null;
+          clientX = e.touches[0].clientX;
+          clientY = e.touches[0].clientY;
+        } else {
+          clientX = e.clientX;
+          clientY = e.clientY;
+        }
+        
+        // relative to canvas bounding rect
+        const x = (clientX - rect.left) * scaleX;
+        const y = (clientY - rect.top) * scaleY;
+        // clamp to canvas bounds
+        return {
+          x: Math.min(Math.max(x, 0), canvas._logicalWidth),
+          y: Math.min(Math.max(y, 0), canvas._logicalHeight)
+        };
+      }
+
+      // ----- save/restore image data (for resize persistence) -----
+      function saveImageData() {
+        const w = canvas._logicalWidth || canvas.width;
+        const h = canvas._logicalHeight || canvas.height;
+        // we need to get image data with correct dimensions (physical)
+        // but we store using logical size, so we use canvas physical size
+        savedImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      }
+
+      // ----- clear canvas -----
+      function clearCanvas() {
+        const w = canvas._logicalWidth || canvas.width;
+        const h = canvas._logicalHeight || canvas.height;
+        ctx.fillStyle = 'white';
+        ctx.fillRect(0, 0, w, h);
+        saveImageData();
+      }
+
+      // ----- UI: color selection -----
+      function setActiveColor(color) {
+        currentColor = color;
+        document.querySelectorAll('.color-swatch').forEach(el => {
+          el.classList.toggle('active', el.dataset.color === color);
+        });
+      }
+
+      // ----- resize observer & init -----
+      function initCanvas() {
+        resizeCanvas();
+        // ensure white background
+        const w = canvas._logicalWidth || canvas.width;
+        const h = canvas._logicalHeight || canvas.height;
+        ctx.fillStyle = 'white';
+        ctx.fillRect(0, 0, w, h);
+        saveImageData();
+      }
+
+      // ----- event binding (mouse + touch) -----
+      function bindEvents() {
+        // Mouse events
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('mouseleave', stopDrawing);
+        
+        // Touch events (with passive: false to prevent scroll)
+        canvas.addEventListener('touchstart', startDrawing, { passive: false });
+        canvas.addEventListener('touchmove', draw, { passive: false });
+        canvas.addEventListener('touchend', stopDrawing, { passive: false });
+        canvas.addEventListener('touchcancel', stopDrawing, { passive: false });
+        
+        // Window resize: redraw from saved image
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+          clearTimeout(resizeTimeout);
+          resizeTimeout = setTimeout(() => {
+            // save current content before resize
+            if (!isDrawing) saveImageData();
+            resizeCanvas();
+            // restore saved image
+            if (savedImageData) {
+              ctx.putImageData(savedImageData, 0, 0);
+            }
+          }, 100);
+        });
+
+        // orientation change (mobile)
+        window.addEventListener('orientationchange', () => {
+          setTimeout(() => {
+            if (!isDrawing) saveImageData();
+            resizeCanvas();
+            if (savedImageData) {
+              ctx.putImageData(savedImageData, 0, 0);
+            }
+          }, 300);
+        });
+      }
+
+      // ----- UI controls -----
+      function setupUI() {
+        // Color swatches
+        document.querySelectorAll('.color-swatch').forEach(el => {
+          el.addEventListener('click', (e) => {
+            const color = el.dataset.color;
+            if (color) setActiveColor(color);
+          });
+          // touch friendly
+          el.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            const color = el.dataset.color;
+            if (color) setActiveColor(color);
+          }, { passive: false });
+        });
+
+        // Clear button
+        document.getElementById('clearBtn').addEventListener('click', clearCanvas);
+        document.getElementById('clearBtn').addEventListener('touchstart', (e) => {
+          e.preventDefault();
+          clearCanvas();
+        }, { passive: false });
+
+        // Size slider
+        const slider = document.getElementById('sizeSlider');
+        const sizeLabel = document.getElementById('sizeLabel');
+        slider.addEventListener('input', () => {
+          currentSize = parseFloat(slider.value);
+          sizeLabel.textContent = Math.round(currentSize);
+        });
+        // set initial size label
+        sizeLabel.textContent = currentSize;
+      }
+
+      // ----- initialization -----
+      function init() {
+        initCanvas();
+        bindEvents();
+        setupUI();
+        // set default active color (dark)
+        setActiveColor('#1a1a1a');
+        // ensure white background
+        clearCanvas();
+      }
+
+      // start when DOM ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+      } else {
+        init();
+      }
+    })();
+  </script>
+</body>
+</html>
