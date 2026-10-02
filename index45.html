@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🧸 AI Baby Studio – File Audio Lip Sync</title>
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            background: linear-gradient(145deg,#0b0e1a,#1a1f2f);
+            min-height:100vh;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            font-family:'Segoe UI',system-ui,sans-serif;
+            overflow:hidden;
+            user-select:none;
+        }
+        .studio-container {
+            background:rgba(255,255,255,0.04);
+            backdrop-filter:blur(24px);
+            border-radius:48px;
+            padding:32px 40px 40px 40px;
+            border:1px solid rgba(255,255,255,0.08);
+            box-shadow:0 30px 80px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.06);
+            width:fit-content;
+            max-width:98vw;
+        }
+        .studio-header {
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            margin-bottom:20px;
+            padding:0 8px;
+            flex-wrap:wrap;
+            gap:8px;
+        }
+        .studio-title h1 {
+            font-weight:600;
+            font-size:22px;
+            background:linear-gradient(135deg,#f0e6ff,#c4b5fd);
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
+        }
+        .badge {
+            background:rgba(196,181,253,0.18);
+            border:1px solid rgba(196,181,253,0.2);
+            color:#c4b5fd;
+            font-size:11px;
+            padding:2px 12px;
+            border-radius:40px;
+            -webkit-text-fill-color:#c4b5fd;
+            margin-left:8px;
+        }
+        .status-dot {
+            display:flex;
+            align-items:center;
+            gap:8px;
+            color:rgba(255,255,255,0.5);
+            font-size:13px;
+        }
+        .dot {
+            width:10px; height:10px; border-radius:50%;
+            background:#f87171;
+            box-shadow:0 0 12px rgba(248,113,113,0.3);
+            transition:all 0.3s;
+        }
+        .dot.active { background:#4ade80; box-shadow:0 0 12px rgba(74,222,128,0.4); }
+        .canvas-wrapper {
+            border-radius:28px;
+            overflow:hidden;
+            background:radial-gradient(ellipse at 50% 80%,#1e263a,#0d101c);
+            box-shadow:inset 0 0 60px rgba(0,0,0,0.6),0 8px 32px rgba(0,0,0,0.5);
+            border:1px solid rgba(255,255,255,0.05);
+        }
+        #studioCanvas { display:block; width:800px; height:560px; cursor:crosshair; touch-action:none; }
+        .controls-panel {
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            margin-top:22px;
+            padding:0 8px;
+            flex-wrap:wrap;
+            gap:16px;
+        }
+        .controls-left {
+            display:flex;
+            align-items:center;
+            gap:16px;
+            flex-wrap:wrap;
+        }
+        .file-upload-wrapper {
+            position:relative;
+            display:inline-block;
+        }
+        .file-upload-wrapper input[type="file"] {
+            position:absolute;
+            left:0; top:0; opacity:0;
+            width:100%; height:100%;
+            cursor:pointer;
+        }
+        .btn {
+            background:rgba(255,255,255,0.06);
+            border:1px solid rgba(255,255,255,0.1);
+            color:#fff;
+            padding:10px 22px;
+            border-radius:40px;
+            font-size:14px;
+            font-weight:500;
+            display:inline-flex;
+            align-items:center;
+            gap:10px;
+            transition:all 0.25s;
+            cursor:pointer;
+            backdrop-filter:blur(4px);
+            white-space:nowrap;
+        }
+        .btn:hover { background:rgba(255,255,255,0.12); border-color:rgba(255,255,255,0.2); transform:scale(1.02); }
+        .btn:active { transform:scale(0.96); }
+        .btn-play { background:rgba(74,222,128,0.15); border-color:rgba(74,222,128,0.3); }
+        .btn-play:hover { background:rgba(74,222,128,0.25); }
+        .btn-play.paused { background:rgba(255,200,50,0.15); border-color:rgba(255,200,50,0.3); }
+        .btn-play.paused:hover { background:rgba(255,200,50,0.25); }
+        .volume-control {
+            display:flex;
+            align-items:center;
+            gap:12px;
+            color:rgba(255,255,255,0.5);
+            font-size:13px;
+        }
+        .volume-control input[type="range"] {
+            -webkit-appearance:none;
+            appearance:none;
+            width:100px;
+            height:4px;
+            border-radius:4px;
+            background:rgba(255,255,255,0.12);
+            outline:none;
+        }
+        .volume-control input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance:none;
+            appearance:none;
+            width:16px; height:16px;
+            border-radius:50%;
+            background:#c4b5fd;
+            cursor:pointer;
+            box-shadow:0 0 16px rgba(196,181,253,0.25);
+            border:2px solid rgba(255,255,255,0.15);
+        }
+        .volume-control input[type="range"]::-moz-range-thumb {
+            width:16px; height:16px;
+            border-radius:50%;
+            background:#c4b5fd;
+            cursor:pointer;
+            border:2px solid rgba(255,255,255,0.15);
+        }
+        .stats {
+            display:flex;
+            align-items:center;
+            gap:20px;
+            color:rgba(255,255,255,0.35);
+            font-size:12px;
+            font-weight:400;
+            font-variant-numeric:tabular-nums;
+        }
+        .stats span { display:flex; align-items:center; gap:6px; }
+        .stats .value { color:rgba(255,255,255,0.7); font-weight:500; min-width:36px; }
+        .progress-bar {
+            flex:1;
+            min-width:120px;
+            height:4px;
+            background:rgba(255,255,255,0.1);
+            border-radius:4px;
+            position:relative;
+            cursor:pointer;
+        }
+        .progress-fill {
+            height:100%;
+            background:linear-gradient(90deg,#c4b5fd,#7c6cf0);
+            border-radius:4px;
+            width:0%;
+            transition:width 0.1s;
+        }
+        .time-label {
+            color:rgba(255,255,255,0.4);
+            font-size:12px;
+            min-width:70px;
+            text-align:center;
+            font-variant-numeric:tabular-nums;
+        }
+        @media (max-width:860px) {
+            .studio-container { padding:16px; }
+            #studioCanvas { width:100%; height:auto; aspect-ratio:800/560; }
+            .studio-title h1 { font-size:17px; }
+            .controls-panel { flex-direction:column; align-items:stretch; gap:12px; }
+            .controls-left { justify-content:center; flex-wrap:wrap; }
+            .stats { justify-content:center; flex-wrap:wrap; }
+            .progress-bar { min-width:80px; }
+        }
+        @media (max-width:480px) {
+            .studio-container { padding:10px; }
+            .btn { padding:6px 12px; font-size:12px; }
+            .stats { font-size:10px; gap:8px; }
+            .volume-control input[type="range"] { width:60px; }
+        }
+    </style>
+</head>
+<body>
+<div class="studio-container">
+    <div class="studio-header">
+        <div class="studio-title">
+            <h1>🧸 AI Baby Studio <span class="badge">FILE · LIP SYNC</span></h1>
+        </div>
+        <div class="status-dot">
+            <span class="dot" id="statusDot"></span>
+            <span id="statusLabel">No file</span>
+        </div>
+    </div>
+    <div class="canvas-wrapper">
+        <canvas id="studioCanvas" width="800" height="560"></canvas>
+    </div>
+    <div class="controls-panel">
+        <div class="controls-left">
+            <div class="file-upload-wrapper">
+                <button class="btn">📁 Choose Audio</button>
+                <input type="file" id="fileInput" accept="audio/*" />
+            </div>
+            <button class="btn btn-play paused" id="playBtn">▶️ Play</button>
+            <div class="volume-control">
+                <span>🔊</span>
+                <input type="range" id="volumeSlider" min="0" max="1.5" step="0.01" value="0.8" />
+            </div>
+        </div>
+        <div style="display:flex; align-items:center; gap:12px; flex:1; min-width:200px;">
+            <div class="progress-bar" id="progressBar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <span class="time-label" id="timeLabel">0:00 / 0:00</span>
+        </div>
+        <div class="stats">
+            <span>🎤 <span class="value" id="ampValue">0</span>%</span>
+            <span>👄 <span class="value" id="lipValue">0</span>%</span>
+            <span>👀 <span class="value" id="eyeValue">0</span>°</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ──────────────────────────────────────────────
+    //  AI BABY STUDIO — File Audio Lip Sync + Eye Tracker
+    //  Fully working version with debug fixes
+    // ──────────────────────────────────────────────
+
+    const canvas = document.getElementById('studioCanvas');
+    const ctx = canvas.getContext('2d');
+    const W = 800, H = 560;
+
+    // DOM refs
+    const fileInput = document.getElementById('fileInput');
+    const playBtn = document.getElementById('playBtn');
+    const volumeSlider = document.getElementById('volumeSlider');
+    const progressFill = document.getElementById('progressFill');
+    const timeLabel = document.getElementById('timeLabel');
+    const statusDot = document.getElementById('statusDot');
+    const statusLabel = document.getElementById('statusLabel');
+    const ampValue = document.getElementById('ampValue');
+    const lipValue = document.getElementById('lipValue');
+    const eyeValue = document.getElementById('eyeValue');
+
+    // ─── STATE ───
+    let audioContext = null;
+    let analyser = null;
+    let dataArray = null;
+    let audioBuffer = null;          // decoded AudioBuffer
+    let sourceNode = null;           // BufferSourceNode
+    let gainNode = null;
+    let isPlaying = false;
+    let startTime = 0;
+    let pausedAt = 0;               // seconds
+    let duration = 0;
+    let animationId = null;
+    let volumeGain = 0.8;
+    let smoothAmp = 0;
+    let smoothLip = 0;
+
+    // Mouse / touch
+    let mouseX = W/2, mouseY = H/2;
+    let targetMouseX = W/2, targetMouseY = H/2;
+
+    // ─── BABY PARAMS ───
+    const baby = {
+        faceX: W/2, faceY: H/2+20, faceR:190,
+        eyeSpacing:70, eyeY:-20, eyeR:32, pupilR:16,
+        mouthY:50, lipMaxOpen:32, lipMinOpen:4,
+        cheekR:34,
+        hairColor:'#5c3d2e',
+    };
+
+    // ─── DRAWING FUNCTIONS (completely working) ───
+
+    function drawBaby(lipOpen, eyeAngleX, eyeAngleY) {
+        ctx.clearRect(0, 0, W, H);
+
+        // Background glow
+        const grad = ctx.createRadialGradient(W/2, H/2+40, 40, W/2, H/2+40, 380);
+        grad.addColorStop(0, 'rgba(120,100,200,0.08)');
+        grad.addColorStop(0.6, 'rgba(60,40,120,0.04)');
+        grad.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, W, H);
+        drawParticles();
+
+        const fx = baby.faceX, fy = baby.faceY;
+
+        // Ears
+        ctx.save();
+        ctx.shadowColor = 'rgba(0,0,0,0.3)';
+        ctx.shadowBlur = 20;
+        ctx.beginPath();
+        ctx.ellipse(fx-168, fy-20, 32, 40, 0, 0, Math.PI*2);
+        ctx.fillStyle = '#f5d6c6';
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(180,130,110,0.2)';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.ellipse(fx+168, fy-20, 32, 40, 0, 0, Math.PI*2);
+        ctx.fillStyle = '#f5d6c6';
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(180,130,110,0.2)';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+        ctx.restore();
+
+        // Face shadow
+        ctx.save();
+        ctx.shadowColor = 'rgba(0,0,0,0.25)';
+        ctx.shadowBlur = 50;
+        ctx.shadowOffsetY = 12;
+        ctx.beginPath();
+        ctx.ellipse(fx, fy+16, baby.faceR, baby.faceR*1.02, 0, 0, Math.PI*2);
+        ctx.fillStyle = '#fce8dc';
+        ctx.fill();
+        ctx.restore();
+
+        // Face
+        ctx.save();
+        ctx.beginPath();
+        ctx.ellipse(fx, fy, baby.faceR, baby.faceR*1.02, 0, 0, Math.PI*2);
+        const skinGrad = ctx.createRadialGradient(fx-40, fy-60, 20, fx, fy, baby.faceR);
+        skinGrad.addColorStop(0, '#ffede3');
+        skinGrad.addColorStop(0.7, '#f5d6c6');
+        skinGrad.addColorStop(1, '#eac0ae');
+        ctx.fillStyle = skinGrad;
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(200,160,140,0.15)';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.restore();
+
+        drawHair(fx, fy);
+
+        // Eyebrows
+        ctx.save();
+        ctx.strokeStyle = '#8b6b5a';
+        ctx.lineWidth = 3.5;
+        ctx.lineCap = 'round';
+        const browY = fy + baby.eyeY - 48;
+        ctx.beginPath();
+        ctx.moveTo(fx - baby.eyeSpacing - 34, browY - 4);
+        ctx.quadraticCurveTo(fx - baby.eyeSpacing - 8, browY - 14, fx - baby.eyeSpacing + 20, browY - 2);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(fx + baby.eyeSpacing + 34, browY - 4);
+        ctx.quadraticCurveTo(fx + baby.eyeSpacing + 8, browY - 14, fx + baby.eyeSpacing - 20, browY - 2);
+        ctx.stroke();
+        ctx.restore();
+
+        // Eyes (whites)
+        const eyeLX = fx - baby.eyeSpacing;
+        const eyeRX = fx + baby.eyeSpacing;
+        const eyeYpos = fy + baby.eyeY;
+        ctx.save();
+        ctx.shadowColor = 'rgba(0,0,0,0.08)';
+        ctx.shadowBlur = 12;
+        for (const ex of [eyeLX, eyeRX]) {
+            ctx.beginPath();
+            ctx.ellipse(ex, eyeYpos, baby.eyeR, baby.eyeR*1.1, 0, 0, Math.PI*2);
+            ctx.fillStyle = '#fefcf9';
+            ctx.fill();
+            ctx.strokeStyle = 'rgba(160,130,120,0.15)';
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+        }
+        ctx.restore();
+
+        // Pupils with mouse tracking
+        const maxPupilOffset = 18;
+        const px = Math.round(eyeAngleX * maxPupilOffset);
+        const py = Math.round(eyeAngleY * maxPupilOffset * 0.7);
+        for (const ex of [eyeLX, eyeRX]) {
+            ctx.save();
+            ctx.beginPath();
+            ctx.ellipse(ex+px, eyeYpos+py, baby.pupilR+4, baby.pupilR+6, 0, 0, Math.PI*2);
+            const irisGrad = ctx.createRadialGradient(ex+px-4, eyeYpos+py-6, 2, ex+px, eyeYpos+py, baby.pupilR+6);
+            irisGrad.addColorStop(0, '#6b4c3b');
+            irisGrad.addColorStop(0.6, '#3d281e');
+            irisGrad.addColorStop(1, '#1f110b');
+            ctx.fillStyle = irisGrad;
+            ctx.fill();
+            ctx.restore();
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(ex+px-5, eyeYpos+py-7, 5, 0, Math.PI*2);
+            ctx.fillStyle = 'rgba(255,255,255,0.7)';
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(ex+px+4, eyeYpos+py+2, 2.5, 0, Math.PI*2);
+            ctx.fillStyle = 'rgba(255,255,255,0.3)';
+            ctx.fill();
+            ctx.restore();
+        }
+
+        // Cheeks
+        ctx.save();
+        ctx.globalAlpha = 0.3;
+        for (const cx of [fx-88, fx+88]) {
+            ctx.beginPath();
+            ctx.ellipse(cx, fy+44, baby.cheekR, baby.cheekR*0.8, 0, 0, Math.PI*2);
+            const cheekGrad = ctx.createRadialGradient(cx-6, fy+40, 4, cx, fy+44, baby.cheekR);
+            cheekGrad.addColorStop(0, '#f5a0a0');
+            cheekGrad.addColorStop(1, '#e88080');
+            ctx.fillStyle = cheekGrad;
+            ctx.fill();
+        }
+        ctx.restore();
+
+        // Lips (core)
+        drawLips(fx, fy + baby.mouthY, lipOpen);
+
+        // Nose
+        ctx.save();
+        ctx.beginPath();
+        ctx.ellipse(fx, fy+12, 10, 14, 0, 0, Math.PI*2);
+        const noseGrad = ctx.createRadialGradient(fx-2, fy+8, 2, fx, fy+12, 14);
+        noseGrad.addColorStop(0, '#f0c8b8');
+        noseGrad.addColorStop(1, '#dbb0a0');
+        ctx.fillStyle = noseGrad;
+        ctx.fill();
+        ctx.restore();
+        ctx.save();
+        ctx.globalAlpha = 0.3;
+        ctx.beginPath();
+        ctx.ellipse(fx-3, fy+6, 3, 4, -0.2, 0, Math.PI*2);
+        ctx.fillStyle = '#fff';
+        ctx.fill();
+        ctx.restore();
+
+        // Chin dimple
+        ctx.save();
+        ctx.globalAlpha = 0.08;
+        ctx.beginPath();
+        ctx.ellipse(fx, fy+98, 14, 6, 0, 0, Math.PI*2);
+        ctx.fillStyle = '#b09080';
+        ctx.fill();
+        ctx.restore();
+
+        // Blush overlay
+        ctx.save();
+        ctx.globalAlpha = 0.06;
+        ctx.beginPath();
+        ctx.ellipse(fx, fy+50, 120, 60, 0, 0, Math.PI*2);
+        ctx.fillStyle = '#ffb0b0';
+        ctx.fill();
+        ctx.restore();
+    }
+
+    function drawLips(cx, cy, open) {
+        const baseW = 56, baseH = 14;
+        const openH = open * 0.9 + 2;
+        ctx.save();
+
+        // Shadow under lips
+        ctx.shadowColor = 'rgba(0,0,0,0.08)';
+        ctx.shadowBlur = 16;
+        ctx.shadowOffsetY = 4;
+
+        // Upper lip
+        ctx.beginPath();
+        ctx.moveTo(cx - baseW, cy - 2);
+        ctx.quadraticCurveTo(cx - baseW*0.5, cy - baseH - openH*0.6, cx, cy - baseH*0.4 - openH*0.3);
+        ctx.quadraticCurveTo(cx + baseW*0.5, cy - baseH - openH*0.6, cx + baseW, cy - 2);
+        ctx.fillStyle = '#d4787a';
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(160,80,80,0.2)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+
+        // Lower lip
+        ctx.beginPath();
+        ctx.moveTo(cx - baseW, cy + 2);
+        ctx.quadraticCurveTo(cx - baseW*0.5, cy + baseH + openH*0.7, cx, cy + baseH*0.5 + openH*0.5);
+        ctx.quadraticCurveTo(cx + baseW*0.5, cy + baseH + openH*0.7, cx + baseW, cy + 2);
+        ctx.fillStyle = '#e0888a';
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(160,80,80,0.15)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+
+        // Inner mouth (if open)
+        if (open > 1) {
+            ctx.shadowBlur = 0;
+            const mouthOpen = Math.min(open * 1.2, 32);
+            ctx.beginPath();
+            ctx.ellipse(cx, cy + 2 + mouthOpen*0.15, baseW*0.6, mouthOpen*0.5, 0, 0, Math.PI*2);
+            ctx.fillStyle = '#6a2a2a';
+            ctx.fill();
+            if (open > 8) {
+                ctx.beginPath();
+                ctx.ellipse(cx+4, cy+6+mouthOpen*0.2, 14, 6+mouthOpen*0.15, 0, 0, Math.PI*2);
+                ctx.fillStyle = '#c07060';
+                ctx.globalAlpha = 0.4;
+                ctx.fill();
+                ctx.globalAlpha = 1;
+            }
+        }
+
+        // Lip shine
+        ctx.shadowBlur = 0;
+        ctx.globalAlpha = 0.12;
+        ctx.beginPath();
+        ctx.ellipse(cx-12, cy-6, 12, 4, -0.2, 0, Math.PI*2);
+        ctx.fillStyle = '#fff';
+        ctx.fill();
+        ctx.globalAlpha = 1;
+        ctx.restore();
+    }
+
+    function drawHair(fx, fy) {
+        ctx.save();
+        ctx.shadowColor = 'rgba(0,0,0,0.08)';
+        ctx.shadowBlur = 12;
+        const hairColor = '#5c3d2e';
+        const hairColorLight = '#7a5542';
+        const tufts = [
+            [-80,-150,30,44], [-40,-164,34,48], [0,-170,36,50],
+            [40,-164,34,48], [80,-150,30,44]
+        ];
+        for (const [hx,hy,w,h] of tufts) {
+            ctx.beginPath();
+            ctx.ellipse(fx+hx, fy+hy, w, h, 0.1, 0, Math.PI*2);
+            const g = ctx.createRadialGradient(fx+hx-6, fy+hy-8, 6, fx+hx, fy+hy, w);
+            g.addColorStop(0, hairColorLight);
+            g.addColorStop(0.7, hairColor);
+            g.addColorStop(1, '#3d281e');
+            ctx.fillStyle = g;
+            ctx.fill();
+        }
+        ctx.beginPath();
+        ctx.ellipse(fx-148, fy-60, 24, 60, -0.15, 0, Math.PI*2);
+        ctx.fillStyle = hairColor;
+        ctx.fill();
+        ctx.beginPath();
+        ctx.ellipse(fx+148, fy-60, 24, 60, 0.15, 0, Math.PI*2);
+        ctx.fillStyle = hairColor;
+        ctx.fill();
+
+        ctx.shadowBlur = 4;
+        ctx.strokeStyle = hairColorLight;
+        ctx.lineWidth = 2.5;
+        ctx.globalAlpha = 0.3;
+        for (let i=0; i<6; i++) {
+            const angle = -0.8 + i*0.32;
+            const r1 = 100+i*6, r2 = 130+i*4;
+            ctx.beginPath();
+            ctx.moveTo(fx + Math.cos(angle)*r1, fy - 120 + Math.sin(angle)*20);
+            ctx.quadraticCurveTo(fx + Math.cos(angle+0.1)*r2, fy - 150 + Math.sin(angle+0.1)*30,
+                                 fx + Math.cos(angle+0.2)*(r2+10), fy - 170 + Math.sin(angle+0.2)*20);
+            ctx.stroke();
+        }
+        ctx.globalAlpha = 1;
+        ctx.restore();
+    }
+
+    // ─── PARTICLES ───
+    const particles = [];
+    for (let i=0; i<28; i++) {
+        particles.push({
+            x: Math.random()*W, y: Math.random()*H,
+            r: 1.5+Math.random()*4,
+            vx: (Math.random()-0.5)*0.3,
+            vy: -0.1-Math.random()*0.2,
+            alpha: 0.08+Math.random()*0.12,
+        });
+    }
+    function drawParticles() {
+        for (const p of particles) {
+            p.x += p.vx;
+            p.y += p.vy;
+            if (p.y < -10) { p.y = H+10; p.x = Math.random()*W; }
+            if (p.x < -10) p.x = W+10;
+            if (p.x > W+10) p.x = -10;
+            ctx.save();
+            ctx.globalAlpha = p.alpha;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+            ctx.fillStyle = 'rgba(255,255,255,0.3)';
+            ctx.fill();
+            ctx.restore();
+        }
+    }
+
+    // ─── MOUSE / TOUCH TRACKING ───
+    function updateEyeTarget(clientX, clientY) {
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+        const canvasX = (clientX - rect.left) * scaleX;
+        const canvasY = (clientY - rect.top) * scaleY;
+        targetMouseX = Math.max(0, Math.min(W, canvasX));
+        targetMouseY = Math.max(0, Math.min(H, canvasY));
+    }
+
+    canvas.addEventListener('mousemove', (e) => updateEyeTarget(e.clientX, e.clientY));
+    canvas.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        const t = e.touches[0];
+        updateEyeTarget(t.clientX, t.clientY);
+    }, { passive: false });
+    canvas.addEventListener('touchstart', (e) => {
+        const t = e.touches[0];
+        updateEyeTarget(t.clientX, t.clientY);
+    }, { passive: true });
+
+    // ─── AUDIO FILE LOADING ───
+    fileInput.addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        statusLabel.textContent = 'Loading...';
+        statusDot.className = 'dot';
+
+        try {
+            const arrayBuffer = await file.arrayBuffer();
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioContext.state === 'suspended') {
+                await audioContext.resume();
+            }
+            const decoded = await audioContext.decodeAudioData(arrayBuffer);
+            audioBuffer = decoded;
+            duration = decoded.duration;
+            pausedAt = 0;
+            isPlaying = false;
+            playBtn.textContent = '▶️ Play';
+            playBtn.className = 'btn btn-play paused';
+            statusLabel.textContent = 'Loaded: ' + file.name;
+            statusDot.className = 'dot active';
+            updateTimeLabel(0);
+            progressFill.style.width = '0%';
+
+            // Disconnect old nodes if any
+            if (sourceNode) {
+                try { sourceNode.stop(); } catch(e) {}
+                sourceNode.disconnect();
+                sourceNode = null;
+            }
+            // Create analyser and gain
+            analyser = audioContext.createAnalyser();
+            analyser.fftSize = 512;
+            analyser.smoothingTimeConstant = 0.85;
+            dataArray = new Uint8Array(analyser.frequencyBinCount);
+            gainNode = audioContext.createGain();
+            gainNode.gain.value = volumeGain;
+
+            // We'll connect source on play
+        } catch (err) {
+            console.error('Decode error:', err);
+            statusLabel.textContent = 'Error loading file';
+            statusDot.className = 'dot';
+            alert('Could not decode audio file. Please try another format.');
+        }
+    });
+
+    // ─── PLAY / PAUSE ───
+    playBtn.addEventListener('click', () => {
+        if (!audioBuffer) {
+            alert('Please select an audio file first.');
+            return;
+        }
+        if (!audioContext) {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioContext.state === 'suspended') {
+            audioContext.resume();
+        }
+
+        if (isPlaying) {
+            // PAUSE
+            if (sourceNode) {
+                try { sourceNode.stop(); } catch(e) {}
+                sourceNode.disconnect();
+                sourceNode = null;
+            }
+            isPlaying = false;
+            const elapsed = (audioContext.currentTime - startTime) + pausedAt;
+            pausedAt = Math.min(elapsed, duration);
+            playBtn.textContent = '▶️ Play';
+            playBtn.className = 'btn btn-play paused';
+            statusLabel.textContent = 'Paused';
+            smoothAmp = 0;
+        } else {
+            // PLAY / RESUME
+            const offset = pausedAt;
+            sourceNode = audioContext.createBufferSource();
+            sourceNode.buffer = audioBuffer;
+            sourceNode.connect(gainNode);
+            gainNode.connect(analyser);
+            gainNode.connect(audioContext.destination);  // sound output
+
+            sourceNode.start(0, offset);
+            startTime = audioContext.currentTime;
+            isPlaying = true;
+            playBtn.textContent = '⏸️ Pause';
+            playBtn.className = 'btn btn-play';
+            statusLabel.textContent = 'Playing...';
+
+            sourceNode.onended = () => {
+                if (isPlaying) {
+                    isPlaying = false;
+                    pausedAt = 0;
+                    playBtn.textContent = '▶️ Play';
+                    playBtn.className = 'btn btn-play paused';
+                    statusLabel.textContent = 'Finished';
+                    progressFill.style.width = '100%';
+                    updateTimeLabel(duration);
+                    smoothAmp = 0;
+                }
+            };
+        }
+    });
+
+    // ─── VOLUME ───
+    volumeSlider.addEventListener('input', () => {
+        volumeGain = parseFloat(volumeSlider.value);
+        if (gainNode) gainNode.gain.value = volumeGain;
+    });
+
+    // ─── AMPLITUDE EXTRACTION ───
+    function getAmplitude() {
+        if (!analyser || !isPlaying) return 0;
+        analyser.getByteFrequencyData(dataArray);
+        let sum = 0;
+        for (let i=0; i<dataArray.length; i++) sum += dataArray[i];
+        const avg = sum / dataArray.length;
+        const norm = Math.min(1, avg / 128);
+        return Math.pow(norm, 0.7);
+    }
+
+    // ─── PROGRESS UPDATE ───
+    function updateTimeLabel(current) {
+        const total = duration || 0;
+        const curMin = Math.floor(current / 60);
+        const curSec = Math.floor(current % 60);
+        const totalMin = Math.floor(total / 60);
+        const totalSec = Math.floor(total % 60);
+        timeLabel.textContent = `${curMin}:${curSec.toString().padStart(2,'0')} / ${totalMin}:${totalSec.toString().padStart(2,'0')}`;
+        const pct = total > 0 ? (current / total * 100) : 0;
+        progressFill.style.width = Math.min(pct, 100) + '%';
+    }
+
+    // ─── MAIN ANIMATION LOOP ───
+    function animate() {
+        // Smooth mouse
+        mouseX += (targetMouseX - mouseX) * 0.08;
+        mouseY += (targetMouseY - mouseY) * 0.08;
+        const dx = (mouseX - baby.faceX) / 120;
+        const dy = (mouseY - baby.faceY) / 120;
+        const eyeAngleX = Math.max(-1, Math.min(1, dx));
+        const eyeAngleY = Math.max(-0.8, Math.min(0.8, dy));
+
+        // Audio amplitude
+        let rawAmp = 0;
+        if (isPlaying && analyser) {
+            rawAmp = getAmplitude();
+        }
+        smoothAmp += (rawAmp - smoothAmp) * 0.25;
+        const lipRaw = Math.min(1, smoothAmp * 2.0);
+        const lipOpen = baby.lipMinOpen + (baby.lipMaxOpen - baby.lipMinOpen) * lipRaw;
+        smoothLip += (lipRaw * 100 - smoothLip) * 0.2;
+
+        // Draw the baby
+        drawBaby(lipOpen, eyeAngleX, eyeAngleY);
+
+        // Update stats
+        ampValue.textContent = Math.round(smoothAmp * 100);
+        lipValue.textContent = Math.round(smoothLip);
+        const eyeDeg = Math.round(Math.atan2(dy, dx) * 180 / Math.PI);
+        eyeValue.textContent = eyeDeg;
+
+        // Update progress if playing
+        if (isPlaying && sourceNode && audioContext) {
+            const elapsed = (audioContext.currentTime - startTime) + pausedAt;
+            const current = Math.min(elapsed, duration);
+            updateTimeLabel(current);
+        }
+
+        animationId = requestAnimationFrame(animate);
+    }
+
+    // ─── START ANIMATION ───
+    animate();
+
+    // ─── KEYBOARD SHORTCUT: SPACE ───
+    document.addEventListener('keydown', (e) => {
+        if (e.target.tagName === 'INPUT') return;
+        if (e.code === 'Space') {
+            e.preventDefault();
+            playBtn.click();
+        }
+    });
+
+    // ─── INIT ───
+    statusDot.className = 'dot';
+    statusLabel.textContent = 'Choose audio file';
+    progressFill.style.width = '0%';
+    timeLabel.textContent = '0:00 / 0:00';
+    console.log('🧸 AI Baby Studio (File version) - ready!');
+</script>
+</body>
+</html>
