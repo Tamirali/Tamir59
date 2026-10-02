@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aam Bol-Chaal ke Daily Basic Words</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: #f4f6f9;
+            color: #333;
+            padding: 15px;
+        }
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #1e3a8a;
+            font-size: 1.5rem;
+            margin-bottom: 6px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+        .search-box {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #2563eb;
+            border-radius: 8px;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            outline: none;
+        }
+        .stats {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #1e3a8a;
+            margin-bottom: 10px;
+        }
+        .table-wrapper {
+            overflow-x: auto;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 5px;
+        }
+        th, td {
+            padding: 8px 10px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 0.9rem;
+        }
+        th {
+            background-color: #2563eb;
+            color: #fff;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        tr:nth-child(even) { background-color: #f8fafc; }
+        tr:hover { background-color: #eff6ff; }
+        .btn-audio {
+            background-color: #10b981;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: 0.2s;
+        }
+        .btn-audio:hover { background-color: #059669; }
+        .contact-note {
+            text-align: center;
+            margin-top: 18px;
+            padding: 12px;
+            background: #eef2ff;
+            border-radius: 8px;
+            color: #1e3a8a;
+            font-size: 0.95rem;
+        }
+        .contact-note strong { font-weight: 700; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🌟 Aam Bol-Chaal ke Daily Basic Words</h1>
+    <p class="subtitle">🔊 Har word ke saath audio sunne ke liye <strong>"Suno"</strong> button dabayein.</p>
+    <p class="stats">📚 Total Unique Words: <span id="wordCount">0</span></p>
+
+    <input type="text" id="searchInput" class="search-box" placeholder="🔍 Word ya meaning search karein..." onkeyup="filterTable()">
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:50px;">S.N.</th>
+                    <th style="width:35%;">English Word</th>
+                    <th style="width:40%;">Hindi Meaning</th>
+                    <th style="width:90px;">Audio</th>
+                </tr>
+            </thead>
+            <tbody id="wordsTable">
+                <!-- Data injected via JavaScript -->
+            </tbody>
+        </table>
+    </div>
+
+    <div class="contact-note">
+        📞 <strong>Tamir Ali</strong> — WhatsApp: <strong>8797221991</strong>
+    </div>
+</div>
+
+<script>
+// =====================================================================
+//  CLEANED & DEDUPLICATED WORDS LIST
+// =====================================================================
+const rawWordsList = [
+    ["I", "Main"], ["You", "Tum / Aap"], ["He", "Wah (Ladka)"], ["She", "Wah (Ladki)"],
+    ["We", "Hum"], ["They", "Ve / Veh log"], ["Me", "Mujhe"], ["Him", "Use (Ladka)"],
+    ["Her", "Use (Ladki)"], ["Us", "Humein"], ["Them", "Unhein"], ["My", "Mera"],
+    ["Your", "Tumhara / Aapka"], ["His", "Uska (Ladka)"], ["Hers", "Uska (Ladki)"],
+    ["Our", "Hamara"], ["Their", "Unka"], ["This", "Yeh"], ["That", "Wah"],
+    ["These", "Yeh sab"], ["Those", "Wah sab"], ["Self", "Khud"], ["Myself", "Main swayam"],
+    ["Yourself", "Aap khud"], ["Father", "Pita"], ["Mother", "Mata"], ["Son", "Beta"],
+    ["Daughter", "Beti"], ["Brother", "Bhai"], ["Sister", "Behen"], ["Uncle", "Chacha / Mama"],
+    ["Aunt", "Chachi / Mami"], ["Grandfather", "Dada / Nana"], ["Grandmother", "Dadi / Nani"],
+    ["Family", "Parivar"], ["Friend", "Dost"], ["Enemy", "Dushman"], ["Neighbor", "Padosi"],
+    ["Guest", "Mehmaan"], ["Child", "Baccha"], ["Children", "Bacche"], ["Boy", "Ladka"],
+    ["Girl", "Ladki"], ["Man", "Aadmi"], ["Woman", "Aurat"], ["People", "Log"],
+    ["Person", "Vyakti"], ["Human", "Insaan"], ["Relative", "Rishtedaar"], ["Owner", "Maalik"],
+
+    ["Where", "Kahan"], ["When", "Kab"], ["Why", "Kyon"], ["How", "Kaise"],
+    ["What", "Kya"], ["Who", "Kaun"], ["Which", "Kaun sa"], ["Whose", "Kiska"],
+    ["Whom", "Kisko"], ["Here", "Yahan"], ["There", "Wahan"], ["Everywhere", "Har jagah"],
+    ["Nowhere", "Kahin nahi"], ["Somewhere", "Kahin par"], ["Inside", "Andar"],
+    ["Outside", "Bahar"], ["Top", "Upar"], ["Bottom", "Neeche"], ["Center", "Beech mein"],
+    ["Side", "Bagal mein"], ["Now", "Abhi"], ["Then", "Tab"], ["Today", "Aaj"],
+    ["Tonight", "Aaj raat"], ["Yesterday", "Beeta hua kal"], ["Tomorrow", "Aane wala kal"],
+    ["Daily", "Roj"], ["Always", "Hamesha"], ["Never", "Kabhi nahi"], ["Sometimes", "Kabhi-kabhi"],
+    ["Often", "Aksar"], ["Early", "Jaldi"], ["Late", "Deri se"], ["Soon", "Jald hi"],
+    ["Already", "Pehle se"], ["Again", "Fir se"], ["Before", "Pehle"], ["After", "Baad mein"],
+    ["Home", "Ghar"], ["Office", "Daftar"], ["City", "Sehar"], ["Village", "Gaon"],
+    ["Country", "Desh"], ["World", "Duniya"], ["Road", "Rasta / Sadak"], ["Come", "Aana"],
+    ["Go", "Jaana"], ["Eat", "Khana"], ["Drink", "Peena"], ["Sleep", "Sona"],
+
+    ["Wake up", "Jagna"], ["Read", "Padhna"], ["Write", "Likhna"], ["Speak", "Bolna"],
+    ["Listen", "Sunna"], ["See", "Dekhna"], ["Watch", "Dekhna (TV/Movie)"], ["Walk", "Chalna"],
+    ["Run", "Daudna"], ["Sit", "Baithna"], ["Stand", "Khade hona"], ["Play", "Khelna"],
+    ["Work", "Kaam karna"], ["Stop", "Rukna"], ["Start", "Shuru karna"], ["Open", "Kholna / Khula"],
+    ["Close", "Band karna"], ["Give", "Dena"], ["Take", "Lena"], ["Buy", "Khareedna"],
+    ["Sell", "Bechna"], ["Help", "Madad karna"], ["Learn", "Sikhna"], ["Teach", "Sikhana"],
+    ["Think", "Sochna"], ["Know", "Janna"], ["Understand", "Samjhna"], ["Remember", "Yaad rakhna"],
+    ["Forget", "Bhoolna"], ["Ask", "Poochna"], ["Tell", "Batana"], ["Say", "Kehna"],
+    ["Call", "Bulana"], ["Meet", "Milna"], ["Wait", "Intazar karna"], ["Try", "Koshish karna"],
+    ["Use", "Istemal karna"], ["Make", "Banana"], ["Do", "Karna"], ["Find", "Dhoondna"],
+    ["Lose", "Khona / Haar jana"], ["Win", "Jeetna"], ["Smile", "Muskurana"], ["Laugh", "Hansna"],
+    ["Cry", "Rona"], ["Wash", "Dhona"], ["Clean", "Saaf karna"], ["Cook", "Khana banana"],
+    ["Cut", "Kaatna"], ["Bring", "Laana"],
+
+    ["Send", "Bhejna"], ["Show", "Dikhana"], ["Hide", "Chhipana"], ["Change", "Badalna"],
+    ["Keep", "Rakhna"], ["Put", "Rakhna (jagah par)"], ["Pull", "Kheenchna"], ["Push", "Dhakka dena"],
+    ["Throw", "Fenkna"], ["Catch", "Pakadna"], ["Fall", "Girna"], ["Fly", "Udna"],
+    ["Swim", "Tairna"], ["Dance", "Nachna"], ["Sing", "Gaana"], ["Drive", "Gadi chalana"],
+    ["Ride", "Sawari karna"], ["Break", "Todna"], ["Fix", "Thik karna"], ["Pay", "Bhugtan karna"],
+    ["Spend", "Kharch karna"], ["Save", "Bachana"], ["Earn", "Kamana"], ["Choose", "Chunna"],
+    ["Drop", "Gira dena"], ["Lift", "Uthana"], ["Carry", "Le jaana"], ["Hold", "Pakad kar rakhna"],
+    ["Fill", "Bharna"], ["Empty", "Khali karna"], ["Touch", "Chhoona"], ["Taste", "Chakhna"],
+    ["Smell", "Soonghna"], ["Feel", "Mehsoos karna"], ["Wear", "Pahan-na"], ["Remove", "Hatana"],
+    ["Add", "Jodna"], ["Mix", "Milana"], ["Shake", "Hilana"], ["Turn", "Mudna"],
+    ["Move", "Aage badhna"], ["Jump", "Koodna"], ["Climb", "Chadna"], ["Breathe", "Saans lena"],
+    ["Live", "Rehna"], ["Good", "Accha"], ["Bad", "Bura"], ["Big", "Bada"],
+    ["Small", "Chhota"], ["Long", "Lamba"],
+
+    ["Short", "Kam lamba"], ["Tall", "Uncha"], ["Heavy", "Bhari"], ["Light", "Halka / Roshni"],
+    ["Hot", "Garam"], ["Cold", "Thanda"], ["Sweet", "Meetha"], ["Sour", "Khatta"],
+    ["Bitter", "Kadwa"], ["Salty", "Namkeen"], ["New", "Naya"], ["Old", "Purana"],
+    ["Young", "Jawan"], ["Dirty", "Ganda"], ["Happy", "Khush"], ["Sad", "Udaas"],
+    ["Angry", "Gussa"], ["Brave", "Bahadur"], ["Coward", "Darpok"], ["Rich", "Ameer"],
+    ["Poor", "Gareeb"], ["Fast", "Teez"], ["Slow", "Dheema"], ["Hard", "Kathor"],
+    ["Soft", "Mulayam"], ["Easy", "Aasan"], ["Difficult", "Mushkil"], ["True", "Sach"],
+    ["False", "Jhootha"], ["Right", "Sahi / Daayein"], ["Wrong", "Galat"], ["Beautiful", "Sundar"],
+    ["Ugly", "Bada-surat"], ["Strong", "Mazboot"], ["Weak", "Kamzor"], ["Safe", "Surakshit"],
+    ["Dangerous", "Khatarnak"], ["Full", "Bhara hua"], ["Closed", "Band"], ["Ready", "Teyar"],
+    ["Busy", "Vyast"], ["Free", "Muft / Khali"], ["And", "Aur"], ["But", "Lekin"],
+    ["Or", "Ya"], ["Because", "Kyonki"], ["So", "Isliye"],
+
+    ["If", "Agar"], ["With", "Saath mein"], ["Without", "Bina"], ["About", "Ke bare mein"],
+    ["For", "Ke liye"], ["From", "Se"], ["To", "Tak / Ko"], ["In", "Andar"],
+    ["On", "Par"], ["At", "Par (Sthan)"], ["By", "Dwara / Se"], ["All", "Sabhi"],
+    ["Some", "Kuch"], ["Many", "Bahut se"], ["More", "Aur zyada"], ["Less", "Kam"],
+    ["Few", "Thoda"], ["Enough", "Kafi"], ["Total", "Kul"], ["Only", "Sirf"],
+    ["Also", "Bhi"], ["Too", "Zyada / Bhi"], ["Very", "Bahut"], ["Quite", "Kafi / Poori tarah"],
+    ["Almost", "Lagbhag"], ["Maybe", "Shayad"], ["Perhaps", "Kachha andaza"], ["Sure", "Pukka"],
+    ["Really", "Sach mein"], ["Please", "Kripya"], ["Thank you", "Dhanyawad"], ["Welcome", "Swagat hai"],
+    ["Sorry", "Maaf karna"], ["Excuse me", "Suniye"], ["Hello", "Namaste"], ["Goodbye", "Alvida"],
+    ["Yes", "Haan"], ["No", "Nahi"], ["Ok", "Thik hai"], ["Never mind", "Koi baat nahi"],
+
+    ["Door", "Darwaja"], ["Window", "Khidki"], ["Roof", "Chhat"], ["Floor", "Farsh"],
+    ["Wall", "Deevar"], ["Key", "Chaabi"], ["Lock", "Taala"], ["Table", "Mej"],
+    ["Chair", "Kursi"], ["Bed", "Bistar"], ["Mirror", "Aina / Sheesha"], ["Plate", "Thali"],
+    ["Glass", "Gilas"], ["Spoon", "Chammach"], ["Knife", "Chaku"], ["Water", "Paani"],
+    ["Food", "Khana"], ["Milk", "Doodh"], ["Tea", "Chai"], ["Coffee", "Kafi"],
+    ["Bread", "Roti"], ["Fruit", "Phal"], ["Vegetable", "Sabzi"], ["Cloth", "Kapda"],
+    ["Shoe", "Joota"], ["Bag", "Thaila / Bosta"], ["Money", "Paisa"], ["Paper", "Kaagaz"],
+    ["Pen", "Kalam"], ["Book", "Kitab"], ["Mobile", "Phone"], ["Clock", "Ghadi"],
+    ["Fan", "Pankha"], ["Fire", "Aag"], ["Air", "Hawa"], ["Sky", "Aasman"],
+    ["Sun", "Sooraj"], ["Moon", "Chaand"], ["Star", "Taara"], ["Tree", "Ped"],
+    ["Flower", "Phool"], ["Leaf", "Patti"], ["Animal", "Janwar"], ["Bird", "Pakshi"],
+    ["Dog", "Kutta"], ["Cat", "Billi"], ["Cow", "Gaay"], ["Horse", "Ghoda"],
+    ["Fish", "Machhli"],
+
+    ["Head", "Sir"], ["Hair", "Baal"], ["Eye", "Aankh"], ["Ear", "Kaan"],
+    ["Nose", "Naak"], ["Mouth", "Mooh"], ["Tooth", "Daant"], ["Tongue", "Jeeabh"],
+    ["Face", "Chehra"], ["Hand", "Haath"], ["Finger", "Ungli"], ["Leg", "Pair"],
+    ["Foot", "Paanv"], ["Heart", "Dil"], ["Blood", "Khoon"], ["Mind", "Dimag"],
+    ["Body", "Sareer"], ["Health", "Sehat"], ["Pain", "Dard"], ["Fever", "Bukhar"],
+    ["Doctor", "Chikitsak"], ["Medicine", "Dawai"], ["Hospital", "Aspatal"], ["Sleepy", "Neend aana"],
+    ["Tired", "Thaka hua"], ["Hungry", "Bhookha"], ["Thirsty", "Pyaasa"], ["Sick", "Bimar"],
+    ["Healthy", "Swasth"], ["Life", "Zindagi"], ["Death", "Maut"], ["Truth", "Sach"],
+    ["Lie", "Jhooth"], ["Dream", "Sapna"], ["Fear", "Dar"], ["Love", "Pyaar"],
+    ["Hate", "Nafrat"], ["Peace", "Shanti"], ["Noise", "Shor"], ["Voice", "Aawaz"],
+    ["Color", "Rang"], ["Red", "Laal"], ["Blue", "Neela"], ["Green", "Hara"],
+    ["Yellow", "Peela"], ["White", "Safed"], ["Black", "Kala"], ["Shape", "Aakaar"],
+    ["Size", "Maap"], ["Weight", "Vazan"],
+
+    ["Morning", "Subah"], ["Noon", "Dopahar"], ["Evening", "Shaam"], ["Night", "Raat"],
+    ["Hour", "Ghanta"], ["Minute", "Minute"], ["Second", "Second"], ["Week", "Saptah / Hafte"],
+    ["Month", "Mahina"], ["Year", "Saal"], ["Sunday", "Ravivar"], ["Monday", "Somvar"],
+    ["East", "Poorab"], ["West", "Pashchim"], ["North", "Uttar"], ["South", "Dakshin"],
+    ["Left", "Baayein"], ["Straight", "Seedha"], ["Near", "Paas"], ["Far", "Door"],
+    ["Front", "Aage"], ["Back", "Peeche"], ["Between", "Beech mein"], ["Under", "Neeche"],
+    ["Above", "Upar"], ["Market", "Bazaar"], ["Shop", "Dukaan"], ["School", "Vidyalay"],
+    ["College", "Mahavidyalay"], ["Bank", "Bank"], ["Station", "Station"], ["Bridge", "Pool"],
+    ["Park", "Bageecha"], ["Room", "Kamra"], ["Kitchen", "Rasoi"], ["Bathroom", "Gusal-khana"],
+    ["Garden", "Bageecha (Phoolon ka)"], ["Court", "Adalat"], ["Police", "Police"], ["Law", "Kanoon"],
+    ["Job", "Naukri"], ["Business", "Vyapar"], ["Salary", "Vetan / Tankhwah"],
+
+    ["Promise", "Vaada"], ["Secret", "Raaz"], ["Mistake", "Galti"], ["Problem", "Samasya"],
+    ["Solution", "Samadhan"], ["Question", "Sawaal"], ["Answer", "Jawab"], ["Idea", "Upay / Vichar"],
+    ["Reason", "Karan"], ["Result", "Parinam"], ["Success", "Safalta"], ["Failure", "Asafalta"],
+    ["Chance", "Mauka"], ["Choice", "Pasand"], ["Rule", "Niyam"], ["Order", "Aadesh"],
+    ["Permission", "Anumati"], ["Advice", "Salah"], ["Hope", "Umeed"], ["Faith", "Vishwas"],
+    ["God", "Khuda / Ishwar"], ["Nature", "Prakriti"], ["Weather", "Mausam"], ["Rain", "Baarish"],
+    ["Wind", "Hawa (Tez)"], ["Cold weather", "Thand"], ["Heat", "Garmi"], ["Shadow", "Parchhai"],
+    ["Dirt", "Mitti / Dhool"], ["Stone", "Patthar"], ["Gold", "Sona (Dhatu)"], ["Silver", "Chaandi"],
+    ["Iron", "Loha"], ["Plastic", "Plastic"], ["Glass material", "Kaanch"], ["Simple", "Sadharan"],
+    ["Special", "Khas"], ["Important", "Zaroori"], ["Possible", "Sambhav"], ["Impossible", "Asambhav"],
+    ["Famous", "Prasiddha"], ["Quiet", "Shant"], ["Loud", "Teez aawaz"], ["Careful", "Saavdhan"],
+    ["Together", "Saath mein"], ["Alone", "Akele"], ["Final", "Aakhri"], ["First", "Pehla"],
+    ["Last", "Antim"],
+
+    ["Bake", "Bhanna (Oven)"], ["Roast", "Bhunna"], ["Boil", "Ubaalna"], ["Fry", "Talna"],
+    ["Steam", "Bhap dena"], ["Chop", "Tukde kaatna"], ["Slice", "Patle tukde karna"], ["Dice", "Chhote chaukor tukde"],
+    ["Peel", "Chilka utarna"], ["Grate", "Kaddu kashna"], ["Mash", "Masalna"], ["Blend", "Mixer mein milana"],
+    ["Pour", "Taral daalna"], ["Wipe", "Ponchhna"], ["Sweep", "Jhadoo lagana"], ["Mop", "Pochha lagana"],
+    ["Dust", "Dhool jharna"], ["Polish", "Chamkana"], ["Scrub", "Ragar kar saaf karna"], ["Rinse", "Khangalna"],
+    ["Soak", "Bhigona"], ["Dry", "Sukhna / Sukhana"], ["Fold", "Modna"], ["Sew", "Silaai karna"],
+    ["Knit", "Bunnai karna"], ["Weave", "Boonna"], ["Stitch", "Tankna"], ["Patch", "Jodna (Kapda)"],
+    ["Mend", "Sudharna"], ["Repair", "Marammat karna"], ["Tune", "Sur milana"], ["Adjust", "Sahi jagah bithana"],
+    ["Balance", "Santulit karna"], ["Measure", "Naapna"], ["Weigh", "Tolna"], ["Count", "Ginna"],
+    ["Calculate", "Hisaab lagaana"], ["Estimate", "Andaza lagaana"], ["Guess", "Anuman"], ["Suppose", "Manna"],
+    ["Imagine", "Kalpana karna"], ["Wish", "Ichchha"], ["Desire", "Teevr ichchha"], ["Prefer", "Pehle chunna"],
+    ["Select", "Chunav karna"], ["Reject", "Asvikar karna"], ["Accept", "Sweekar karna"], ["Agree", "Sahmat hona"],
+    ["Disagree", "Asahmat hona"],
+
+    ["Argue", "Bahas karna"], ["Discuss", "Vichar-vimarsh"], ["Chat", "Baatein karna"], ["Gossip", "Gup-shup"],
+    ["Whisper", "Phusphusana"], ["Shout", "Chillana"], ["Scream", "Cheekhna"], ["Sigh", "Aah bharna"],
+    ["Yawn", "Jamai lena"], ["Stretch", "Shareer tanna"], ["Exercise", "Vyayam karna"], ["Jog", "Dheeme daudna"],
+    ["Cycle", "Cycle chalana"], ["Skate", "Skating karna"], ["Ski", "Baraf par fisalna"], ["Surf", "Lahar par tairna"],
+    ["Row", "Naav chalana"], ["Sail", "Jahaj chalana"], ["Dive", "Gota lagana"], ["Float", "Satah par tairna"],
+    ["Sink", "Doobna (Niche)"], ["Rise", "Upar uthna"], ["Shine", "Chamakna"], ["Glow", "Dheemi chamak"],
+    ["Sparkle", "Jhilmilana"], ["Twinkle", "Timtimaana"], ["Flash", "Kondhna"], ["Burst", "Phootna"],
+    ["Explode", "Vishfot hona"], ["Collapse", "Dhah jana"], ["Crumble", "Choor-choor hona"], ["Crack", "Darar aana"],
+    ["Split", "Phata hua"], ["Tear", "Phadna"], ["Rip", "Zor se phadna"], ["Scratch", "Kharonch lagaana"],
+    ["Scrape", "Chhilna"], ["Rub", "Ragarna"], ["Press", "Dabana"], ["Squeeze", "Nichorna"],
+    ["Hug", "Gale lagaana"], ["Kiss", "Choomna"], ["Nod", "Haan mein sir hilana"], ["Bow", "Jhukna"],
+    ["Salute", "Salaami dena"], ["Wave", "Haath hilana"], ["Point", "Ishara karna"], ["Gesture", "Sanket karna"],
+    ["Signal", "Signal dena"],
+
+    ["Convey", "Sandesh pahunchana"], ["Express", "Bhav vyakt karna"], ["Share", "Baantna"], ["Divide", "Hissos mein baantna"],
+    ["Distribute", "Vitarit karna"], ["Collect", "Ikaththa karna"], ["Gather", "Ek jagah jama hona"], ["Assemble", "Jodna / Jama hona"],
+    ["Arrange", "Sajakar rakhna"], ["Organize", "Aayojan karna"], ["Plan", "Yojana banana"], ["Prepare", "Teyari karna"],
+    ["Practice", "Abhyas karna"], ["Perform", "Prastuti dena"], ["Present", "Pesh karna"], ["Demonstrate", "Karke dikhana"],
+    ["Explain", "Samjhana"], ["Describe", "Varnan karna"], ["Define", "Paribhasha dena"], ["Classify", "Vargikaran karna"],
+    ["Categorize", "Shrenibaddh karna"], ["Compare", "Tulna karna"], ["Contrast", "Antar dikhana"], ["Differentiate", "Bhed karna"],
+    ["Distinguish", "Pahchan banana"], ["Identify", "Pahchan karna"], ["Recognize", "Pahchan lena"], ["Recall", "Punah yaad karna"],
+    ["Recollect", "Dimag par zor dekar yaad karna"], ["Remind", "Yaad dilana"], ["Suggest", "Sujhav dena"], ["Propose", "Prastav rakhna"],
+    ["Recommend", "Sifarish karna"], ["Warn", "Chetavni dena"], ["Caution", "Sachet karna"], ["Alert", "Savdhan karna"],
+    ["Notify", "Soochit karna"], ["Inform", "Snochna dena"], ["Announce", "Ghoshana karna"], ["Declare", "Elaan karna"],
+    ["Proclaim", "Sarbjanik ghoshana"], ["Swear", "Kasam khana"], ["Pledge", "Pratigya lena"], ["Vow", "Vachan dena"],
+    ["Commit", "Pratibadh hona"], ["Dedicate", "Samarpit karna"], ["Devote", "Aastha rakhna"], ["Sacrifice", "Balidaan dena"],
+    ["Endure", "Sahna"],
+
+    ["Bear", "Sahan karna"], ["Tolerate", "Bardasht karna"], ["Permit", "Anumati dena"], ["Allow", "Ijaajat dena"],
+    ["Forbid", "Mana karna"], ["Prohibit", "Pratibandhit karna"], ["Ban", "Rok lagaana"], ["Restrict", "Seemit karna"],
+    ["Limit", "Seema tay karna"], ["Control", "Niyantran karna"], ["Manage", "Prabandhan karna"], ["Handle", "Sambhalna"],
+    ["Operate", "Chalana (Machine)"], ["Function", "Kaam karna"], ["Labor", "Kaddhi mehnat"], ["Toil", "Kathin parishram"],
+    ["Strive", "Kapasat prayas karna"], ["Struggle", "Sangharsh karna"], ["Fight", "Ladna"], ["Battle", "Yudh ladna"],
+    ["Negotiate", "Mol-bhav / Baat-chit"], ["Compromise", "Samjhota karna"], ["Settle", "Suljha lena"], ["Resolve", "Hal nikalna"],
+    ["Decide", "Nirnay lena"], ["Determine", "Dridh nishchay karna"], ["Conclude", "Nishkarsh nikalna"], ["Finish", "Khatam karna"],
+    ["Complete", "Poora karna"], ["End", "Ant karna"], ["Pause", "Thodi der rukna"], ["Rest", "Aaram karna"],
+    ["Relax", "Sukun pana"], ["Calm", "Shant hona"], ["Soothe", "Rahat pahunchana"], ["Comfort", "Dilasa dena"],
+    ["Console", "Dhairya bandhana"], ["Encourage", "Utsah badhana"], ["Inspire", "Prerit karna"], ["Motivate", "Utsahit karna"],
+    ["Uplift", "Oopar uthana"], ["Elevate", "Uncha uthana"], ["Raise", "Badhana / Uthana"], ["Hoist", "Dhwajapahran karna"],
+    ["Heave", "Zor laga kar uthana"], ["Drag", "Ghaseetna"], ["Haul", "Bhari cheez kheenchna"], ["Tow", "Gadi kheenchna"],
+    ["Shove", "Zor se dhakka dena"], ["Nudge", "Kohni se ishara karna"], ["Poke", "Ungli bhokna"], ["Tap", "Thap-thapana"],
+    ["Knock", "Khatkhatana"], ["Bang", "Dhamaka karna"], ["Slam", "Zor se band karna"], ["Crash", "Takra jana"],
+    ["Smash", "Choor-choor karna"], ["Shutter", "Parda / Shutter"], ["Bustle", "Halcahal"], ["Commotion", "Shor-sharaba"],
+    ["Turmoil", "Khalbali"], ["Chaos", "Arajakata"], ["Confusion", "Bhram / Uljhan"], ["Disorder", "Avyavastha"],
+    ["Mess", "Gadbadi"], ["Clutter", "Bikhra hua saman"], ["Jumble", "Mila-jula karna"], ["Hodgepodge", "Kichdi / Mishran"]
+];
+
+// Automatically remove duplicate words (by lowercased English key)
+const uniqueWordsMap = new Map();
+rawWordsList.forEach(item => {
+    const key = item[0].toLowerCase().trim();
+    if (!uniqueWordsMap.has(key)) {
+        uniqueWordsMap.set(key, item);
+    }
+});
+
+const wordsList = Array.from(uniqueWordsMap.values());
+
+// =====================================================================
+//  BUILD TABLE
+// =====================================================================
+function populateTable() {
+    const tbody = document.getElementById('wordsTable');
+    tbody.innerHTML = '';
+    wordsList.forEach((item, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${index + 1}</td>
+            <td><strong>${item[0]}</strong></td>
+            <td>${item[1]}</td>
+            <td>
+                <button class="btn-audio" onclick="speakWord('${item[0].replace(/'/g, "\\'")}')">
+                    🔊 Suno
+                </button>
+            </td>
+        `;
+        tbody.appendChild(row);
+    });
+    document.getElementById('wordCount').textContent = wordsList.length;
+}
+
+// =====================================================================
+//  TEXT-TO-SPEECH
+// =====================================================================
+function speakWord(text) {
+    if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'en-US';
+        utterance.rate = 0.8;
+        window.speechSynthesis.speak(utterance);
+    } else {
+        alert("⚠️ Aapke browser mein Audio Speech Support nahi hai.");
+    }
+}
+
+// =====================================================================
+//  SEARCH FILTER
+// =====================================================================
+function filterTable() {
+    const input = document.getElementById('searchInput').value.toLowerCase();
+    const rows = document.querySelectorAll('#wordsTable tr');
+    rows.forEach(row => {
+        const text = row.innerText.toLowerCase();
+        row.style.display = text.includes(input) ? '' : 'none';
+    });
+}
+
+// ─── INIT ──────────────────────────────────────────────────────────────
+populateTable();
+</script>
+
+</body>
+</html>
