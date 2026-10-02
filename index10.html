@@ -1,0 +1,1566 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>महासंग्रह : शब्दकोश तीन भाषाओं में (हिंदी-उर्दू-अंग्रेजी)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 30px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 0.8s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0c2461, #1e3799, #4a69bd);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: "📚";
+            position: absolute;
+            font-size: 150px;
+            opacity: 0.1;
+            right: 20px;
+            bottom: -20px;
+            transform: rotate(-15deg);
+        }
+
+        .header h1 {
+            font-size: 48px;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+            position: relative;
+        }
+
+        .header p {
+            font-size: 24px;
+            opacity: 0.95;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .language-flags {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+            position: relative;
+            flex-wrap: wrap;
+        }
+
+        .flag {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 22px;
+            font-weight: 600;
+            background: rgba(255,255,255,0.15);
+            padding: 12px 25px;
+            border-radius: 50px;
+            backdrop-filter: blur(5px);
+        }
+
+        .flag-icon {
+            font-size: 32px;
+        }
+
+        .stats-container {
+            display: flex;
+            justify-content: space-around;
+            padding: 25px;
+            background: #f8f9fa;
+            border-bottom: 3px solid #3498db;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .stat-box {
+            text-align: center;
+            background: white;
+            padding: 20px 35px;
+            border-radius: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: bold;
+            color: #3498db;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 18px;
+            color: #2c3e50;
+        }
+
+        .book-section {
+            padding: 30px;
+        }
+
+        .search-box {
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 20px 30px;
+            border: 3px solid #e0e0e0;
+            border-radius: 60px;
+            font-size: 20px;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 5px 20px rgba(52,152,219,0.3);
+        }
+
+        .search-box::after {
+            content: "🔍";
+            position: absolute;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 28px;
+            color: #7f8c8d;
+        }
+
+        .categories {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f0f4f8;
+            border-radius: 20px;
+            justify-content: center;
+        }
+
+        .category-btn {
+            background: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            border: 2px solid transparent;
+        }
+
+        .category-btn:hover {
+            background: #dbe4ff;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .category-btn.active {
+            background: #3498db;
+            color: white;
+            border-color: #2980b9;
+        }
+
+        .words-header {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 80px;
+            padding: 15px 25px;
+            background: #34495e;
+            color: white;
+            border-radius: 15px 15px 0 0;
+            font-weight: bold;
+            font-size: 18px;
+            margin-top: 20px;
+        }
+
+        .words-list {
+            max-height: 600px;
+            overflow-y: auto;
+            border: 2px solid #e0e0e0;
+            border-top: none;
+            border-radius: 0 0 15px 15px;
+            background: white;
+        }
+
+        .word-item {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 80px;
+            padding: 18px 25px;
+            border-bottom: 1px solid #ecf0f1;
+            transition: all 0.2s;
+            align-items: center;
+        }
+
+        .word-item:hover {
+            background: #f5f9ff;
+            transform: translateX(5px);
+            box-shadow: 0 2px 10px rgba(52,152,219,0.2);
+        }
+
+        .english {
+            font-weight: 700;
+            color: #2c3e50;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .hindi {
+            color: #e74c3c;
+            font-size: 18px;
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .urdu {
+            color: #27ae60;
+            font-size: 18px;
+            font-weight: 600;
+            text-align: right;
+            direction: rtl;
+            font-family: 'Segoe UI', 'Nafees', 'Jameel Noori Nastaleeq', sans-serif;
+            cursor: pointer;
+        }
+
+        .audio-btn {
+            background: #f39c12;
+            border: none;
+            border-radius: 40px;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            box-shadow: 0 4px 10px rgba(243,156,18,0.3);
+        }
+
+        .audio-btn:hover {
+            background: #e67e22;
+            transform: scale(1.05);
+            box-shadow: 0 6px 15px rgba(230,126,34,0.4);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 30px;
+            background: #2c3e50;
+            color: white;
+            font-size: 18px;
+        }
+
+        .whatsapp-btn {
+            background: #25D366;
+            color: white;
+            padding: 18px 45px;
+            border-radius: 60px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            margin: 25px 0;
+            font-weight: bold;
+            font-size: 20px;
+            transition: all 0.3s;
+            box-shadow: 0 5px 20px rgba(37,211,102,0.4);
+        }
+
+        .whatsapp-btn:hover {
+            background: #128C7E;
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(37,211,102,0.5);
+        }
+
+        .dev-info {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            border-radius: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .dev-info h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .dev-info a {
+            color: #ffd700;
+            text-decoration: none;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .instructions {
+            background: #e8f4fd;
+            padding: 15px;
+            border-radius: 12px;
+            margin: 20px 0;
+            text-align: center;
+            border-left: 5px solid #3498db;
+            font-size: 16px;
+        }
+
+        /* Scrollbar */
+        .words-list::-webkit-scrollbar {
+            width: 12px;
+        }
+        .words-list::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .words-list::-webkit-scrollbar-thumb {
+            background: #95a5a6;
+            border-radius: 10px;
+        }
+        .words-list::-webkit-scrollbar-thumb:hover {
+            background: #7f8c8d;
+        }
+
+        @media (max-width: 1000px) {
+            .word-item, .words-header {
+                grid-template-columns: 1fr 1fr 1fr 60px;
+                font-size: 16px;
+            }
+        }
+
+        @media (max-width: 800px) {
+            .word-item, .words-header {
+                grid-template-columns: 1fr;
+                gap: 10px;
+                text-align: center;
+            }
+            
+            .urdu {
+                text-align: center;
+                direction: ltr;
+            }
+            
+            .audio-btn {
+                width: 100%;
+            }
+            
+            .stat-box {
+                min-width: 100%;
+            }
+            
+            .header h1 {
+                font-size: 32px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📖 महासंग्रह : तीन भाषा शब्दकोश</h1>
+            <p><span id="subHeaderCount"></span> दैनिक जीवन शब्द (अंग्रेजी-हिंदी-उर्दू)</p>
+            <div class="language-flags">
+                <div class="flag">
+                    <span class="flag-icon">🇬🇧</span>
+                    <span>English</span>
+                </div>
+                <div class="flag">
+                    <span class="flag-icon">🇮🇳</span>
+                    <span>हिंदी</span>
+                </div>
+                <div class="flag">
+                    <span class="flag-icon">🇵🇰</span>
+                    <span>اردو</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-container">
+            <div class="stat-box">
+                <span class="stat-number" id="totalWords">0</span>
+                <span class="stat-label">कुल शब्द</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-number" id="currentCount">0</span>
+                <span class="stat-label">माइन किए गए</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-number" id="categoryCount">0</span>
+                <span class="stat-label">श्रेणियाँ</span>
+            </div>
+        </div>
+
+        <div class="book-section">
+            <div class="dev-info">
+                <h3>👨‍💻 डेवलपर: तामीर अली (Tamir Ali)</h3>
+                <a href="https://wa.me/918797221991" target="_blank">📱 WhatsApp: +91 8797221991</a>
+            </div>
+
+            <div class="instructions">
+                🔊 <strong>ऑडियो सुविधा:</strong> किसी भी शब्द पर क्लिक करें - अंग्रेजी, हिंदी या उर्दू में उच्चारण सुनें
+            </div>
+
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="🔍 कोई भी शब्द खोजें (English, हिंदी, اردو)...">
+            </div>
+
+            <div class="categories" id="categoriesNav"></div>
+
+            <div class="words-header">
+                <span>🇬🇧 ENGLISH</span>
+                <span>🇮🇳 हिंदी</span>
+                <span>🇵🇰 اردو</span>
+                <span>🔊 ऑडियो</span>
+            </div>
+
+            <div class="words-list" id="wordsContainer"></div>
+
+            <center>
+                <a href="https://wa.me/918797221991" class="whatsapp-btn" target="_blank">
+                    📱 WhatsApp पर संपर्क करें
+                </a>
+            </center>
+        </div>
+
+        <div class="footer">
+            <p>महासंग्रह : तीन भाषा शब्दकोश &copy; 2026 | <span id="footerWordCount"></span> शब्द | डेवलपर: तामीर अली</p>
+        </div>
+    </div>
+
+    <script>
+        const wordsData = [];
+
+        // 1. BASIC WORDS
+        const basicWords = [
+            { english: "Hello", hindi: "नमस्ते", urdu: "السلام علیکم" },
+            { english: "Goodbye", hindi: "अलविदा", urdu: "خدا حافظ" },
+            { english: "Thank you", hindi: "धन्यवाद", urdu: "شکریہ" },
+            { english: "Please", hindi: "कृपया", urdu: "براہ کرم" },
+            { english: "Sorry", hindi: "माफ़ कीजिए", urdu: "معاف कीजئے" },
+            { english: "Yes", hindi: "हाँ", urdu: "جی ہاں" },
+            { english: "No", hindi: "नहीं", urdu: "نہیں" },
+            { english: "Okay", hindi: "ठीक है", urdu: "ٹھیک ہے" },
+            { english: "Maybe", hindi: "शायद", urdu: "شاید" },
+            { english: "Always", hindi: "हमेशा", urdu: "ہمیشہ" },
+            { english: "Never", hindi: "कभी नहीं", urdu: "کبھی نہیں" },
+            { english: "Sometimes", hindi: "कभी-कभी", urdu: "کبھی کبھار" },
+            { english: "Often", hindi: "अक्सर", urdu: "اکثر" },
+            { english: "Usually", hindi: "आमतौर पर", urdu: "عام طور پر" },
+            { english: "Here", hindi: "यहाँ", urdu: "یہاں" },
+            { english: "There", hindi: "वहाँ", urdu: "وہاں" },
+            { english: "This", hindi: "यह", urdu: "یہ" },
+            { english: "That", hindi: "वह", urdu: "وہ" },
+            { english: "These", hindi: "ये", urdu: "یہ" },
+            { english: "Those", hindi: "वे", urdu: "وہ" },
+            { english: "Now", hindi: "अब", urdu: "اب" },
+            { english: "Then", hindi: "तब", urdu: "تب" },
+            { english: "Today", hindi: "आज", urdu: "آج" },
+            { english: "Tomorrow", hindi: "कल", urdu: "کل" },
+            { english: "Yesterday", hindi: "बीता कल", urdu: "گزشتہ کل" },
+            { english: "Soon", hindi: "जल्दी", urdu: "جلدی" },
+            { english: "Later", hindi: "बाद में", urdu: "بعد میں" },
+            { english: "Early", hindi: "जल्दी", urdu: "جلدی" },
+            { english: "Late", hindi: "देर", urdu: "دیر" },
+            { english: "Fast", hindi: "तेज़", urdu: "تیز" },
+            { english: "Slow", hindi: "धीमा", urdu: "آہستہ" },
+            { english: "Big", hindi: "बड़ा", urdu: "بڑا" },
+            { english: "Small", hindi: "छोटा", urdu: "چھوٹا" },
+            { english: "Good", hindi: "अच्छा", urdu: "اچھا" },
+            { english: "Bad", hindi: "बुरा", urdu: "برا" },
+            { english: "Hot", hindi: "गर्म", urdu: "گرم" },
+            { english: "Cold", hindi: "ठंडा", urdu: "ٹھنڈا" },
+            { english: "Beautiful", hindi: "सुंदर", urdu: "خوبصورت" },
+            { english: "Ugly", hindi: "बदसूरत", urdu: "بدصورت" },
+            { english: "Rich", hindi: "अमीर", urdu: "امیر" },
+            { english: "Poor", hindi: "गरीब", urdu: "غریب" },
+            { english: "Easy", hindi: "आ आसान", urdu: "آسان" },
+            { english: "Difficult", hindi: "मुश्किल", urdu: "مشکل" },
+            { english: "Strong", hindi: "मजबूत", urdu: "مضبوط" },
+            { english: "Weak", hindi: "कमज़ोर", urdu: "کمزور" },
+            { english: "Clean", hindi: "साफ", urdu: "صاف" },
+            { english: "Dirty", hindi: "गंदा", urdu: "گندا" },
+            { english: "New", hindi: "नया", urdu: "نیا" },
+            { english: "Old", hindi: "पुराना", urdu: "پرانا" },
+            { english: "Young", hindi: "जवान", urdu: "جوان" },
+            { english: "Happy", hindi: "खुश", urdu: "خوش" },
+            { english: "Sad", hindi: "दुखी", urdu: "اداس" },
+            { english: "Angry", hindi: "गुस्सा", urdu: "غصہ" },
+            { english: "Excited", hindi: "उत्साहित", urdu: "پرجوش" },
+            { english: "Tired", hindi: "थका", urdu: "تھکا" },
+            { english: "Bored", hindi: "ऊब", urdu: "بیزار" },
+            { english: "Scared", hindi: "डरा हुआ", urdu: "خوفزدہ" },
+            { english: "Surprised", hindi: "हैरान", urdu: "حیران" },
+            { english: "Proud", hindi: "गर्वित", urdu: "فخر" },
+            { english: "Jealous", hindi: "ईर्ष्यालु", urdu: "حسد" },
+            { english: "Alive", hindi: "जीवित", urdu: "زندہ" },
+            { english: "Dead", hindi: "मृत", urdu: "مردہ" },
+            { english: "Open", hindi: "खुला", urdu: "کھلا" },
+            { english: "Closed", hindi: "बंद", urdu: "بند" },
+            { english: "Full", hindi: "भरा", urdu: "بھرا" },
+            { english: "Empty", hindi: "खाली", urdu: "خالی" },
+            { english: "Light", hindi: "हल्का", urdu: "ہلکا" },
+            { english: "Heavy", hindi: "भारी", urdu: "بھاری" },
+            { english: "Soft", hindi: "नरम", urdu: "نرم" },
+            { english: "Hard", hindi: "कठोर", urdu: "سخت" },
+            { english: "Smooth", hindi: "चिकना", urdu: "ہموار" },
+            { english: "Rough", hindi: "खुरदरा", urdu: "کھردرا" },
+            { english: "Wet", hindi: "गीला", urdu: "گیلا" },
+            { english: "Dry", hindi: "सूखा", urdu: "خشک" },
+            { english: "Long", hindi: "लंबा", urdu: "لمبا" },
+            { english: "Short", hindi: "छोटा", urdu: "چھوٹا" },
+            { english: "High", hindi: "ऊँचा", urdu: "اونچا" },
+            { english: "Low", hindi: "नीचा", urdu: "نیچا" },
+            { english: "Near", hindi: "पास", urdu: "قریب" },
+            { english: "Far", hindi: "दूर", urdu: "دور" },
+            { english: "Right", hindi: "सही", urdu: "صحیح" },
+            { english: "Wrong", hindi: "गलत", urdu: "غلط" },
+            { english: "True", hindi: "सच", urdu: "سچ" },
+            { english: "False", hindi: "झूठ", urdu: "جھوٹ" },
+            { english: "Free", hindi: "मुफ्त", urdu: "مفت" },
+            { english: "Expensive", hindi: "महंगा", urdu: "مہنگا" },
+            { english: "Cheap", hindi: "सस्ता", urdu: "سستا" },
+            { english: "Bright", hindi: "चमकीला", urdu: "چمکدار" },
+            { english: "Dark", hindi: "अंधेरा", urdu: "اندھیرا" },
+            { english: "Clear", hindi: "स्पष्ट", urdu: "واضح" },
+            { english: "Cloudy", hindi: "बादल", urdu: "ابر آلود" },
+            { english: "Rainy", hindi: "बरसाती", urdu: "بارش" },
+            { english: "Sunny", hindi: "धूप", urdu: "دھوپ" },
+            { english: "Windy", hindi: "हवादार", urdu: "ہوا دار" },
+            { english: "Snowy", hindi: "बर्फीला", urdu: "برفانی" },
+            { english: "Foggy", hindi: "कोहरा", urdu: "دھند" }
+        ];
+
+        // 2. FAMILY WORDS
+        const familyWords = [
+            { english: "Family", hindi: "परिवार", urdu: "خاندان" },
+            { english: "Father", hindi: "पिता", urdu: "والد" },
+            { english: "Mother", hindi: "माता", urdu: "والدہ" },
+            { english: "Parents", hindi: "माता-पिता", urdu: "والدین" },
+            { english: "Son", hindi: "बेटा", urdu: "بیٹا" },
+            { english: "Daughter", hindi: "बेटी", urdu: "بیٹی" },
+            { english: "Brother", hindi: "भाई", urdu: "بھائی" },
+            { english: "Sister", hindi: "बहन", urdu: "بہن" },
+            { english: "Grandfather", hindi: "दादा", urdu: "دادا" },
+            { english: "Grandmother", hindi: "दादी", urdu: "دادی" },
+            { english: "Grandson", hindi: "पोता", urdu: "پوتا" },
+            { english: "Granddaughter", hindi: "पोती", urdu: "پوتی" },
+            { english: "Uncle", hindi: "चाचा", urdu: "چچا" },
+            { english: "Aunt", hindi: "चाची", urdu: "چچی" },
+            { english: "Nephew", hindi: "भतीजा", urdu: "بھتیجا" },
+            { english: "Niece", hindi: "भतीजी", urdu: "بھتیجی" },
+            { english: "Cousin", hindi: "चचेरा भाई", urdu: "کزن" },
+            { english: "Husband", hindi: "पति", urdu: "شوہر" },
+            { english: "Wife", hindi: "पत्नी", urdu: "بیوی" },
+            { english: "Children", hindi: "बच्चे", urdu: "بچے" },
+            { english: "Relatives", hindi: "रिश्तेदार", urdu: "رشتہ دار" },
+            { english: "Ancestors", hindi: "पूर्वज", urdu: "آباء و اجداد" },
+            { english: "Descendants", hindi: "वंशज", urdu: "اولاد" },
+            { english: "Guardian", hindi: "अभिभावक", urdu: "سرپرست" },
+            { english: "Orphan", hindi: "अनाथ", urdu: "یتیم" },
+            { english: "Twin", hindi: "जुड़वां", urdu: "جڑواں" },
+            { english: "Stepfather", hindi: "सौतेला पिता", urdu: "سوتیلا باپ" },
+            { english: "Stepmother", hindi: "सौतेली माँ", urdu: "سوتیلی ماں" },
+            { english: "Father-in-law", hindi: "ससुर", urdu: "سسر" },
+            { english: "Mother-in-law", hindi: "सास", urdu: "ساس" },
+            { english: "Brother-in-law", hindi: "साला", urdu: "سالا" },
+            { english: "Sister-in-law", hindi: "साली", urdu: "سالی" },
+            { english: "Son-in-law", hindi: "दामाद", urdu: "داماد" },
+            { english: "Daughter-in-law", hindi: "बहू", urdu: "بہو" },
+            { english: "Grandparents", hindi: "दादा-दादी", urdu: "دادا دادی" },
+            { english: "Great-grandfather", hindi: "परदादा", urdu: "پردادا" },
+            { english: "Great-grandmother", hindi: "परदादी", urdu: "پردادی" },
+            { english: "Forefathers", hindi: "पूर्वज", urdu: "اسلاف" },
+            { english: "Offspring", hindi: "संतान", urdu: "اولاد" },
+            { english: "Heir", hindi: "वारिस", urdu: "وارث" },
+            { english: "Ancestry", hindi: "वंशावली", urdu: "نسب" },
+            { english: "Genealogy", hindi: "वंशावली", urdu: "شجرہ نسب" },
+            { english: "Matriarch", hindi: "कुलमाता", urdu: "جدہ" },
+            { english: "Patriarch", hindi: "कुलपिता", urdu: "جد" },
+            { english: "Foster father", hindi: "पालक पिता", urdu: "رضاعی باپ" },
+            { english: "Foster mother", hindi: "पालक माँ", urdu: "رضاعی ماں" },
+            { english: "Godfather", hindi: "धर्मपिता", urdu: "بپتسمہ باپ" },
+            { english: "Godmother", hindi: "धर्ममाता", urdu: "بپتسمہ ماں" },
+            { english: "Half-brother", hindi: "सौतेला भाई", urdu: "سوتیلا بھائی" },
+            { english: "Half-sister", hindi: "सौतेली बहन", urdu: "سوتیلی بہن" }
+        ];
+
+        // 3. TIME WORDS
+        const timeWords = [
+            { english: "Time", hindi: "समय", urdu: "وقت" },
+            { english: "Clock", hindi: "घड़ी", urdu: "گھڑی" },
+            { english: "Watch", hindi: "घड़ी", urdu: "گھڑی" },
+            { english: "Hour", hindi: "घंटा", urdu: "گھنٹہ" },
+            { english: "Minute", hindi: "मिनट", urdu: "منٹ" },
+            { english: "Second", hindi: "सेकंड", urdu: "سیکنڈ" },
+            { english: "Day", hindi: "दिन", urdu: "دن" },
+            { english: "Night", hindi: "रात", urdu: "رات" },
+            { english: "Morning", hindi: "सुबह", urdu: "صبح" },
+            { english: "Evening", hindi: "शाम", urdu: "شام" },
+            { english: "Noon", hindi: "दोपहर", urdu: "دوپہر" },
+            { english: "Midnight", hindi: "आधी रात", urdu: "آدھی رات" },
+            { english: "Week", hindi: "सप्ताह", urdu: "ہفتہ" },
+            { english: "Month", hindi: "महीना", urdu: "مہینہ" },
+            { english: "Year", hindi: "साल", urdu: "سال" },
+            { english: "Decade", hindi: "दशक", urdu: "دہائی" },
+            { english: "Century", hindi: "शताब्दी", urdu: "صدی" },
+            { english: "Millennium", hindi: "सहस्राब्दी", urdu: "ہزارہ" },
+            { english: "Past", hindi: "अतीत", urdu: "ماضی" },
+            { english: "Present", hindi: "वर्तमान", urdu: "حال" },
+            { english: "Future", hindi: "भविष्य", urdu: "مستقبل" },
+            { english: "Season", hindi: "मौसम", urdu: "موسم" },
+            { english: "Spring", hindi: "वसंत", urdu: "بہار" },
+            { english: "Summer", hindi: "गर्मी", urdu: "گرمی" },
+            { english: "Autumn", hindi: "पतझड़", urdu: "خزاں" },
+            { english: "Winter", hindi: "सर्दी", urdu: "سردی" },
+            { english: "Monsoon", hindi: "वर्षा ऋतु", urdu: "برسات" },
+            { english: "Dawn", hindi: "सुबह", urdu: "طلوع" },
+            { english: "Dusk", hindi: "गोधूलि", urdu: "غروب" },
+            { english: "Sunrise", hindi: "सूर्योदय", urdu: "طلوع آفتاب" },
+            { english: "Sunset", hindi: "सूर्यास्त", urdu: "غروب آفتاب" },
+            { english: "Today", hindi: "आज", urdu: "آج" },
+            { english: "Tomorrow", hindi: "कल", urdu: "کل" },
+            { english: "Yesterday", hindi: "बीता कल", urdu: "گزشتہ کل" },
+            { english: "Day before yesterday", hindi: "परसों", urdu: "پرسوں" },
+            { english: "Day after tomorrow", hindi: "परसों", urdu: "پرسوں" },
+            { english: "Weekday", hindi: "कार्यदिवस", urdu: "ہفتے کا دن" },
+            { english: "Weekend", hindi: "सप्ताहांत", urdu: "ہفتہ وار تعطیل" },
+            { english: "Holiday", hindi: "छुट्टी", urdu: "چھٹی" },
+            { english: "Birthday", hindi: "जन्मदिन", urdu: "سالگرہ" },
+            { english: "Anniversary", hindi: "सालगिरह", urdu: "سالگرہ" },
+            { english: "Deadline", hindi: "समय सीमा", urdu: "آخری تاریخ" },
+            { english: "Schedule", hindi: "अनुसूची", urdu: "نظام الاوقات" },
+            { english: "Calendar", hindi: "कैलेंडर", urdu: "کیلنڈر" },
+            { english: "Timer", hindi: "टाइमर", urdu: "ٹائمر" },
+            { english: "Stopwatch", hindi: "स्टॉपवॉच", urdu: "سٹاپ واچ" },
+            { english: "Epoch", hindi: "युग", urdu: "دور" },
+            { english: "Era", hindi: "युग", urdu: "عہد" },
+            { english: "Age", hindi: "उम्र", urdu: "عمر" },
+            { english: "Generation", hindi: "पीढ़ी", urdu: "نسل" }
+        ];
+
+        // 4. NUMBERS
+        const numberWords = [
+            { english: "Zero", hindi: "शून्य", urdu: "صفر" },
+            { english: "One", hindi: "एक", urdu: "ایک" },
+            { english: "Two", hindi: "दो", urdu: "دو" },
+            { english: "Three", hindi: "तीन", urdu: "تین" },
+            { english: "Four", hindi: "चार", urdu: "چار" },
+            { english: "Five", hindi: "पाँच", urdu: "پانچ" },
+            { english: "Six", hindi: "छह", urdu: "چھ" },
+            { english: "Seven", hindi: "सात", urdu: "سات" },
+            { english: "Eight", hindi: "आठ", urdu: "آٹھ" },
+            { english: "Nine", hindi: "नौ", urdu: "نو" },
+            { english: "Ten", hindi: "दस", urdu: "دس" },
+            { english: "Eleven", hindi: "ग्यारह", urdu: "گیارہ" },
+            { english: "Twelve", hindi: "बारह", urdu: "بارہ" },
+            { english: "Thirteen", hindi: "तेरह", urdu: "تیرہ" },
+            { english: "Fourteen", hindi: "चौदह", urdu: "چودہ" },
+            { english: "Fifteen", hindi: "पंद्रह", urdu: "پندرہ" },
+            { english: "Sixteen", hindi: "सोलह", urdu: "سولہ" },
+            { english: "Seventeen", hindi: "सत्रह", urdu: "سترہ" },
+            { english: "Eighteen", hindi: "अठारह", urdu: "اٹھارہ" },
+            { english: "Nineteen", hindi: "उन्नीस", urdu: "انیس" },
+            { english: "Twenty", hindi: "बीस", urdu: "بیس" },
+            { english: "Twenty one", hindi: "इक्कीस", urdu: "اکیس" },
+            { english: "Twenty two", hindi: "बाईस", urdu: "بائیس" },
+            { english: "Twenty three", hindi: "तेईस", urdu: "تئیس" },
+            { english: "Twenty four", hindi: "चौबीस", urdu: "چوبیس" },
+            { english: "Twenty five", hindi: "पच्चीस", urdu: "پچیس" },
+            { english: "Twenty six", hindi: "छब्बीस", urdu: "چھبیس" },
+            { english: "Twenty seven", hindi: "सत्ताईस", urdu: "ستائیس" },
+            { english: "Twenty eight", hindi: "अट्ठाईस", urdu: "اٹھائیس" },
+            { english: "Twenty nine", hindi: "उनतीस", urdu: "انتیس" },
+            { english: "Thirty", hindi: "तीस", urdu: "تیس" },
+            { english: "Thirty one", hindi: "इकतीस", urdu: "اکتیس" },
+            { english: "Thirty two", hindi: "बत्तीस", urdu: "बتیس" },
+            { english: "Thirty three", hindi: "तैंतीस", urdu: "تینتیس" },
+            { english: "Thirty four", hindi: "चौंतीस", urdu: "چونتیس" },
+            { english: "Thirty five", hindi: "पैंतीस", urdu: "پینتالیس" },
+            { english: "Thirty six", hindi: "छत्तीस", urdu: "چھتیس" },
+            { english: "Thirty seven", hindi: "सैंतीस", urdu: "سینتیس" },
+            { english: "Thirty eight", hindi: "अड़तीस", urdu: "اڑتیس" },
+            { english: "Thirty nine", hindi: "उनतालीस", urdu: "انتالیس" },
+            { english: "Forty", hindi: "चालीस", urdu: "چالیس" },
+            { english: "Forty one", hindi: "िकतालीस", urdu: "اکتالیس" },
+            { english: "Forty two", hindi: "बयालीस", urdu: "بیالیس" },
+            { english: "Forty three", hindi: "तैंतालीस", urdu: "تینتالیس" },
+            { english: "Forty four", hindi: "चौवालीस", urdu: "چوالیس" },
+            { english: "Forty five", hindi: "पैंतालीस", urdu: "پینتالیس" },
+            { english: "Forty six", hindi: "छियालीस", urdu: "چھیالیس" },
+            { english: "Forty seven", hindi: "सैंतालीस", urdu: "سینتالیس" },
+            { english: "Forty eight", hindi: "अड़तालीस", urdu: "اڑتالیس" },
+            { english: "Forty nine", hindi: "उनчаस", urdu: "انچاس" },
+            { english: "Fifty", hindi: "पचास", urdu: "پچاس" },
+            { english: "Sixty", hindi: "साठ", urdu: "ساٹھ" },
+            { english: "Seventy", hindi: "सत्तर", urdu: "ستر" },
+            { english: "Eighty", hindi: "अस्सी", urdu: "اسی" },
+            { english: "Ninety", hindi: "नब्बे", urdu: "نوے" },
+            { english: "Hundred", hindi: "सौ", urdu: "سو" },
+            { english: "Two hundred", hindi: "दो सौ", urdu: "دو سو" },
+            { english: "Three hundred", hindi: "तीन सौ", urdu: "تین سو" },
+            { english: "Four hundred", hindi: "चार सौ", urdu: "چار سو" },
+            { english: "Five hundred", hindi: "पाँच सौ", urdu: "پانچ سو" },
+            { english: "Six hundred", hindi: "छह सौ", urdu: "چھ سو" },
+            { english: "Seven hundred", hindi: "सात सौ", urdu: "سات سو" },
+            { english: "Eight hundred", hindi: "आठ सौ", urdu: "آٹھ سو" },
+            { english: "Nine hundred", hindi: "नौ सौ", urdu: "نو سو" },
+            { english: "Thousand", hindi: "हज़ार", urdu: "ہزار" },
+            { english: "Ten thousand", hindi: "दस हज़ार", urdu: "دس ہزار" },
+            { english: "Hundred thousand", hindi: "एक लाख", urdu: "ایک لاکھ" },
+            { english: "Million", hindi: "दस लाख", urdu: "دس لاکھ" },
+            { english: "Billion", hindi: "अरब", urdu: "ارب" },
+            { english: "Trillion", hindi: "खरब", urdu: "کھرب" }
+        ];
+
+        // 5. COLORS
+        const colorWords = [
+            { english: "Red", hindi: "लाल", urdu: "لال" },
+            { english: "Blue", hindi: "नीला", urdu: "نیلا" },
+            { english: "Green", hindi: "हरा", urdu: "سبز" },
+            { english: "Yellow", hindi: "पीला", urdu: "پیلا" },
+            { english: "White", hindi: "सफेद", urdu: "سفید" },
+            { english: "Black", hindi: "काला", urdu: "کالا" },
+            { english: "Orange", hindi: "नारंगी", urdu: "نارنجی" },
+            { english: "Purple", hindi: "बैंगनी", urdu: "جامنی" },
+            { english: "Pink", hindi: "गुलाबी", urdu: "گلابی" },
+            { english: "Brown", hindi: "भूरा", urdu: "بھورا" },
+            { english: "Gray", hindi: "धूसर", urdu: "سرمئی" },
+            { english: "Golden", hindi: "सुनहरा", urdu: "سنہری" },
+            { english: "Silver", hindi: "चांदी", urdu: "چاندی" },
+            { english: "Beige", hindi: "बेज", urdu: "بیج" },
+            { english: "Cream", hindi: "क्रीम", urdu: "کریم" },
+            { english: "Maroon", hindi: "गहरा लाल", urdu: "میرون" },
+            { english: "Turquoise", hindi: "फ़िरोज़ी", urdu: "فیروزی" },
+            { english: "Indigo", hindi: "नील", urdu: "نیل" },
+            { english: "Violet", hindi: "बैंगनी", urdu: "بنفشی" },
+            { english: "Magenta", hindi: "मैजेंटा", urdu: "میجنٹا" },
+            { english: "Cyan", hindi: "सियान", urdu: "سیان" },
+            { english: "Lavender", hindi: "लैवेंडर", urdu: "لیونڈر" },
+            { english: "Mauve", hindi: "मौव", urdu: "ماؤو" },
+            { english: "Peach", hindi: "आड़ू", urdu: "آڑو" },
+            { english: "Coral", hindi: "मूंगा", urdu: "مرجان" },
+            { english: "Teal", hindi: "तील", urdu: "تیل" },
+            { english: "Navy", hindi: "गहरा नीला", urdu: "بحری" },
+            { english: "Olive", hindi: "जैतून", urdu: "زیتونی" },
+            { english: "Lime", hindi: "नींबू", urdu: "لیموں" },
+            { english: "Mint", hindi: "पुदीना", urdu: "پودینہ" },
+            { english: "Rose", hindi: "गुलाबी", urdu: "گلابی" },
+            { english: "Ruby", hindi: "माणिक्य", urdu: "یاقوت" },
+            { english: "Emerald", hindi: "पन्ना", urdu: "زمرد" },
+            { english: "Sapphire", hindi: "नीलम", urdu: "نیلم" },
+            { english: "Amber", hindi: "अम्बर", urdu: "عنبر" },
+            { english: "Bronze", hindi: "कांस्य", urdu: "کانسی" },
+            { english: "Copper", hindi: "तांबा", urdu: "تانبا" },
+            { english: "Brass", hindi: "पीतल", urdu: "پیتل" },
+            { english: "Ivory", hindi: "हाथी दांत", urdu: "ہاتھی دانت" },
+            { english: "Ebony", hindi: "आबनूस", urdu: "آبنوس" },
+            { english: "Scarlet", hindi: "चमकीला लाल", urdu: "چمکیلا لال" },
+            { english: "Crimson", hindi: "गहरा लाल", urdu: "گہرا لال" },
+            { english: "Fuchsia", hindi: "फ्यूशिया", urdu: "فوکشیا" }
+        ];
+
+        // 6. FOOD WORDS
+        const foodWords = [
+            { english: "Food", hindi: "भोजन", urdu: "کھانا" },
+            { english: "Water", hindi: "पानी", urdu: "پانی" },
+            { english: "Milk", hindi: "दूध", urdu: "دودھ" },
+            { english: "Tea", hindi: "चाय", urdu: "چائے" },
+            { english: "Coffee", hindi: "कॉफी", urdu: "کافی" },
+            { english: "Juice", hindi: "रस", urdu: "جوس" },
+            { english: "Bread", hindi: "रोटी", urdu: "روٹی" },
+            { english: "Rice", hindi: "चावल", urdu: "چاول" },
+            { english: "Wheat", hindi: "गेहूं", urdu: "گندم" },
+            { english: "Flour", hindi: "आटा", urdu: "آٹا" },
+            { english: "Sugar", hindi: "चीनी", urdu: "چینی" },
+            { english: "Salt", hindi: "नमक", urdu: "نمک" },
+            { english: "Oil", hindi: "तेल", urdu: "تیل" },
+            { english: "Butter", hindi: "मक्खन", urdu: "مکھن" },
+            { english: "Ghee", hindi: "घी", urdu: "گھی" },
+            { english: "Cheese", hindi: "पनीर", urdu: "پنیر" },
+            { english: "Yogurt", hindi: "दही", urdu: "دہی" },
+            { english: "Egg", hindi: "अंडा", urdu: "انڈا" },
+            { english: "Meat", hindi: "मांस", urdu: "گوشت" },
+            { english: "Chicken", hindi: "मुर्गा", urdu: "مرغی" },
+            { english: "Fish", hindi: "मछली", urdu: "مछلی" },
+            { english: "Mutton", hindi: "बकरा", urdu: "بکرا" },
+            { english: "Beef", hindi: "गाय का मांस", urdu: "گائے کا گوشت" },
+            { english: "Vegetable", hindi: "सब्जी", urdu: "سبزی" },
+            { english: "Fruit", hindi: "फल", urdu: "پھل" },
+            { english: "Apple", hindi: "सेब", urdu: "سیب" },
+            { english: "Banana", hindi: "केला", urdu: "کیلا" },
+            { english: "Mango", hindi: "आम", urdu: "آم" },
+            { english: "Orange", hindi: "संतरा", urdu: "مالٹا" },
+            { english: "Grapes", hindi: "अंगूर", urdu: "انگور" },
+            { english: "Pomegranate", hindi: "अनार", urdu: "انار" },
+            { english: "Papaya", hindi: "पपीता", urdu: "پپیتا" },
+            { english: "Guava", hindi: "अमरूद", urdu: "امرود" },
+            { english: "Pineapple", hindi: "अनानास", urdu: "انناس" },
+            { english: "Watermelon", hindi: "तरबूज", urdu: "تربوز" },
+            { english: "Melon", hindi: "खरबूजा", urdu: "خربوزہ" },
+            { english: "Strawberry", hindi: "स्ट्रॉबेरी", urdu: "اسٹرابیری" },
+            { english: "Peach", hindi: "आड़ू", urdu: "آڑو" },
+            { english: "Plum", hindi: "आलूबुखारा", urdu: "آلو بخارا" },
+            { english: "Cherry", hindi: "चेरी", urdu: "چیری" },
+            { english: "Lemon", hindi: "नींबू", urdu: "لیموں" },
+            { english: "Lime", hindi: "नींबू", urdu: "لیموں" },
+            { english: "Coconut", hindi: "नारियल", urdu: "ناریل" },
+            { english: "Almond", hindi: "बादाम", urdu: "بادام" },
+            { english: "Cashew", hindi: "काजू", urdu: "کاجو" },
+            { english: "Walnut", hindi: "अखरोट", urdu: "اخروٹ" },
+            { english: "Peanut", hindi: "मूंगफली", urdu: "مونگ پھلی" },
+            { english: "Pistachio", hindi: "पिस्ता", urdu: "پستہ" },
+            { english: "Raisin", hindi: "किशमिश", urdu: "کشمش" },
+            { english: "Dates", hindi: "खजूर", urdu: "کھجور" },
+            { english: "Fig", hindi: "अंजीर", urdu: "انجیر" },
+            { english: "Honey", hindi: "शहद", urdu: "شہد" },
+            { english: "Potato", hindi: "आलू", urdu: "آلو" },
+            { english: "Tomato", hindi: "टमाटर", urdu: "ٹماٹر" },
+            { english: "Onion", hindi: "प्याज", urdu: "پیاز" },
+            { english: "Garlic", hindi: "लहसुन", urdu: "لہسن" },
+            { english: "Ginger", hindi: "अदरक", urdu: "ادرک" },
+            { english: "Turmeric", hindi: "हल्दी", urdu: "ہلدی" },
+            { english: "Chili", hindi: "मिर्च", urdu: "مرچ" },
+            { english: "Coriander", hindi: "धनिया", urdu: "دھنیا" },
+            { english: "Mint", hindi: "पुदीना", urdu: "پودینہ" },
+            { english: "Cumin", hindi: "जीरा", urdu: "زیرہ" },
+            { english: "Fennel", hindi: "सौंफ", urdu: "سونف" },
+            { english: "Fenugreek", hindi: "मेथी", urdu: "میتھی" },
+            { english: "Mustard", hindi: "सरसों", urdu: "سرسوں" },
+            { english: "Cardamom", hindi: "इलायची", urdu: "الائچی" },
+            { english: "Clove", hindi: "लौंग", urdu: "لونگ" },
+            { english: "Cinnamon", hindi: "दालचीनी", urdu: "دار چینی" },
+            { english: "Black pepper", hindi: "काली मिर्च", urdu: "کالی مرچ" },
+            { english: "Saffron", hindi: "केसर", urdu: "کیسر" },
+            { english: "Nutmeg", hindi: "जायफल", urdu: "جائفل" },
+            { english: "Mace", hindi: "जावित्री", urdu: "جاوتری" },
+            { english: "Curry", hindi: "करी", urdu: "سالن" },
+            { english: "Soup", hindi: "सूप", urdu: "سوپ" },
+            { english: "Salad", hindi: "सलाद", urdu: "سلاد" },
+            { english: "Dessert", hindi: "मिठाई", urdu: "مٹھائی" },
+            { english: "Cake", hindi: "केक", urdu: "کیک" },
+            { english: "Pastry", hindi: "पेस्ट्री", urdu: "پیسٹری" },
+            { english: "Biscuit", hindi: "बिस्कुट", urdu: "بسکٹ" },
+            { english: "Naan", hindi: "नान", urdu: "نان" },
+            { english: "Paratha", hindi: "पराठा", urdu: "پراٹھا" },
+            { english: "Puri", hindi: "पूरी", urdu: "پوری" },
+            { english: "Samosa", hindi: "समोसा", urdu: "سموسہ" },
+            { english: "Pakora", hindi: "पकोड़ा", urdu: "پکوڑا" }
+        ];
+
+        // 7. ANIMALS
+        const animalWords = [
+            { english: "Animal", hindi: "जानवर", urdu: "جانور" },
+            { english: "Dog", hindi: "कुत्ता", urdu: "کتا" },
+            { english: "Cat", hindi: "बिल्ली", urdu: "بلی" },
+            { english: "Cow", hindi: "गाय", urdu: "گائے" },
+            { english: "Buffalo", hindi: "भैंस", urdu: "بھینس" },
+            { english: "Ox", hindi: "बैल", urdu: "بیل" },
+            { english: "Bull", hindi: "सांड", urdu: "سانڈ" },
+            { english: "Horse", hindi: "घोड़ा", urdu: "گھوڑا" },
+            { english: "Donkey", hindi: "गधा", urdu: "گدھا" },
+            { english: "Mule", hindi: "खच्चर", urdu: "خچر" },
+            { english: "Camel", hindi: "ऊंत", urdu: "اونٹ" },
+            { english: "Elephant", hindi: "हाथी", urdu: "ہاتھی" },
+            { english: "Lion", hindi: "शेर", urdu: "شیر" },
+            { english: "Tiger", hindi: "बाघ", urdu: "باغ" },
+            { english: "Leopard", hindi: "तेंदुआ", urdu: "چیتا" },
+            { english: "Cheetah", hindi: "चीता", urdu: "چیتا" },
+            { english: "Bear", hindi: "भालू", urdu: "ریچھ" },
+            { english: "Wolf", hindi: "भेड़िया", urdu: "بھیڑیا" },
+            { english: "Fox", hindi: "लोमड़ी", urdu: "لومڑی" },
+            { english: "Jackal", hindi: "गीदड़", urdu: "گیدڑ" },
+            { english: "Hyena", hindi: "लकड़बग्घा", urdu: "لگڑبھگا" },
+            { english: "Deer", hindi: "हिरण", urdu: "ہرن" },
+            { english: "Zebra", hindi: "ज़ेबरा", urdu: "زیبرا" },
+            { english: "Giraffe", hindi: "जिराफ़", urdu: "زرافہ" },
+            { english: "Monkey", hindi: "बंदर", urdu: "بندر" },
+            { english: "Gorilla", hindi: "गोरिल्ला", urdu: "گوریلا" },
+            { english: "Chimpanzee", hindi: "चिंपांजी", urdu: "چمپینزی" },
+            { english: "Kangaroo", hindi: "कंगारू", urdu: "کنگارو" },
+            { english: "Koala", hindi: "कोआला", urdu: "کوالا" },
+            { english: "Panda", hindi: "पांडा", urdu: "پانڈا" },
+            { english: "Squirrel", hindi: "गिलहरी", urdu: "گلہری" },
+            { english: "Rabbit", hindi: "खरगोश", urdu: "خرگوش" },
+            { english: "Rat", hindi: "चूहा", urdu: "چوہا" },
+            { english: "Mouse", hindi: "चूहा", urdu: "چوہا" },
+            { english: "Bat", hindi: "चमगादड़", urdu: "چمگادڑ" },
+            { english: "Hedgehog", hindi: "साही", urdu: "ساہی" },
+            { english: "Porcupine", hindi: "साही", urdu: "خارپشت" },
+            { english: "Beaver", hindi: "ऊदबिलाव", urdu: "اونٹنی" },
+            { english: "Otter", hindi: "ऊदबिलाव", urdu: "اودبلاؤ" },
+            { english: "Dolphin", hindi: "डॉल्फिन", urdu: "ڈولفن" },
+            { english: "Whale", hindi: "व्हेल", urdu: "ویل" },
+            { english: "Shark", hindi: "शार्क", urdu: "شارک" },
+            { english: "Seal", hindi: "सील", urdu: "سیل" },
+            { english: "Penguin", hindi: "पेंगुइन", urdu: "پینگوئن" },
+            { english: "Frog", hindi: "मेंढक", urdu: "مینڈک" },
+            { english: "Toad", hindi: "टोड", urdu: "ٹوڈ" },
+            { english: "Snake", hindi: "साँप", urdu: "سانپ" },
+            { english: "Lizard", hindi: "छिपकली", urdu: "چھپکلی" },
+            { english: "Crocodile", hindi: "मगरमच्छ", urdu: "مگرمچھ" },
+            { english: "Alligator", hindi: "घड़ियाल", urdu: "گھڑیال" },
+            { english: "Turtle", hindi: "कछुआ", urdu: "کچھوا" },
+            { english: "Tortoise", hindi: "कछुआ", urdu: "کچھوا" }
+        ];
+
+        // 8. BODY PARTS
+        const bodyWords = [
+            { english: "Body", hindi: "शरीर", urdu: "جسم" },
+            { english: "Head", hindi: "सिर", urdu: "سر" },
+            { english: "Hair", hindi: "बाल", urdu: "بال" },
+            { english: "Face", hindi: "चेहरा", urdu: "چہرہ" },
+            { english: "Forehead", hindi: "माथा", urdu: "پیشانی" },
+            { english: "Eye", hindi: "आँख", urdu: "آنکھ" },
+            { english: "Eyebrow", hindi: "भौं", urdu: "ابرو" },
+            { english: "Eyelash", hindi: "बरौनी", urdu: "پلک" },
+            { english: "Ear", hindi: "कान", urdu: "کان" },
+            { english: "Nose", hindi: "नाक", urdu: "ناک" },
+            { english: "Mouth", hindi: "मुँह", urdu: "منہ" },
+            { english: "Lip", hindi: "होंठ", urdu: "ہونٹ" },
+            { english: "Tooth", hindi: "दांत", urdu: "دانت" },
+            { english: "Tongue", hindi: "जीभ", urdu: "زبان" },
+            { english: "Chin", hindi: "ठोड़ी", urdu: "ٹھوڑی" },
+            { english: "Cheek", hindi: "गाल", urdu: "گال" },
+            { english: "Neck", hindi: "गर्दन", urdu: "گردن" },
+            { english: "Shoulder", hindi: "कंधा", urdu: "کندھا" },
+            { english: "Arm", hindi: "बांह", urdu: "بازو" },
+            { english: "Elbow", hindi: "कोहनी", urdu: "کہنی" },
+            { english: "Wrist", hindi: "कलाई", urdu: "کلائی" },
+            { english: "Hand", hindi: "हाथ", urdu: "ہاتھ" },
+            { english: "Palm", hindi: "हथेली", urdu: "ہتھیلی" },
+            { english: "Finger", hindi: "उंगली", urdu: "انگلی" },
+            { english: "Thumb", hindi: "अंगूठा", urdu: "انگوٹھا" },
+            { english: "Nail", hindi: "नाखून", urdu: "ناخن" },
+            { english: "Chest", hindi: "छाती", urdu: "چھاتی" },
+            { english: "Breast", hindi: "स्तन", urdu: "سینہ" },
+            { english: "Stomach", hindi: "पेट", urdu: "پیٹ" },
+            { english: "Navel", hindi: "नाभि", urdu: "ناف" },
+            { english: "Waist", hindi: "कमर", urdu: "کمر" },
+            { english: "Back", hindi: "पीठ", urdu: "پیٹھ" },
+            { english: "Spine", hindi: "रीढ़", urdu: "ریڑھ کی ہڈی" },
+            { english: "Hip", hindi: "कूल्हा", urdu: "کولہا" },
+            { english: "Buttock", hindi: "नितंब", urdu: "سرین" },
+            { english: "Leg", hindi: "पैर", urdu: "ٹانگ" },
+            { english: "Thigh", hindi: "जांघ", urdu: "ران" },
+            { english: "Knee", hindi: "घुटना", urdu: "گھٹنا" },
+            { english: "Calf", hindi: "पिंडली", urdu: "پنڈلی" },
+            { english: "Ankle", hindi: "टखना", urdu: "ٹخنہ" },
+            { english: "Foot", hindi: "पैर", urdu: "پاؤں" },
+            { english: "Heel", hindi: "एड़ी", urdu: "ایڑی" },
+            { english: "Toe", hindi: "पैर की अंगुली", urdu: "پاؤں की अंगुली" },
+            { english: "Skin", hindi: "त्वचा", urdu: "جلد" },
+            { english: "Bone", hindi: "हड्डी", urdu: "ہڈی" },
+            { english: "Muscle", hindi: "मांसपेशी", urdu: "پٹھا" },
+            { english: "Blood", hindi: "खून", urdu: "خون" },
+            { english: "Heart", hindi: "दिल", urdu: "دل" },
+            { english: "Brain", hindi: "दिमाग", urdu: "دماغ" },
+            { english: "Liver", hindi: "जिगर", urdu: "جگر" }
+        ];
+
+        // 9. NATURE
+        const natureWords = [
+            { english: "Nature", hindi: "प्रकृति", urdu: "فطرت" },
+            { english: "Earth", hindi: "पृथ्वी", urdu: "زمین" },
+            { english: "World", hindi: "दुनिया", urdu: "دنیا" },
+            { english: "Land", hindi: "भूमि", urdu: "زمین" },
+            { english: "Soil", hindi: "मिट्टी", urdu: "مٹی" },
+            { english: "Mud", hindi: "कीचड़", urdu: "کیچڑ" },
+            { english: "Sand", hindi: "रेत", urdu: "ریت" },
+            { english: "Rock", hindi: "चट्टान", urdu: "چٹان" },
+            { english: "Stone", hindi: "पत्थर", urdu: "پتھر" },
+            { english: "Mountain", hindi: "पहाड़", urdu: "پہاڑ" },
+            { english: "Hill", hindi: "पहाड़ी", urdu: "پہاڑی" },
+            { english: "Valley", hindi: "घाटी", urdu: "وادی" },
+            { english: "Desert", hindi: "रेगिस्तान", urdu: "صحرا" },
+            { english: "Forest", hindi: "जंगल", urdu: "جنگل" },
+            { english: "Jungle", hindi: "जंगल", urdu: "جنگل" },
+            { english: "Tree", hindi: "पेड़", urdu: "درخت" },
+            { english: "Plant", hindi: "पौधा", urdu: "پودا" },
+            { english: "Flower", hindi: "फूल", urdu: "پھول" },
+            { english: "Grass", hindi: "घास", urdu: "گھاس" },
+            { english: "Leaf", hindi: "पत्ता", urdu: "پتا" },
+            { english: "Branch", hindi: "शाखा", urdu: "شاخ" },
+            { english: "Root", hindi: "जड़", urdu: "جڑ" },
+            { english: "Seed", hindi: "बीज", urdu: "بیج" },
+            { english: "Sky", hindi: "आसमान", urdu: "آسمان" },
+            { english: "Cloud", hindi: "बादल", urdu: "بادل" },
+            { english: "Rain", hindi: "बारिश", urdu: "بارش" },
+            { english: "Snow", hindi: "बर्फ", urdu: "برف" },
+            { english: "Hail", hindi: "ओले", urdu: "اولے" },
+            { english: "Fog", hindi: "कोहरा", urdu: "دھند" },
+            { english: "Mist", hindi: "कुहरा", urdu: "کہر" },
+            { english: "Wind", hindi: "हवा", urdu: "ہوا" },
+            { english: "Storm", hindi: "तूफान", urdu: "طوفان" },
+            { english: "Hurricane", hindi: "चक्रवात", urdu: "سمندری طوفان" },
+            { english: "Tornado", hindi: "बवंडर", urdu: "بگولا" },
+            { english: "Cyclone", hindi: "चक्रवात", urdu: "چکر والا" },
+            { english: "Thunder", hindi: "गरज", urdu: "گرج" },
+            { english: "Lightning", hindi: "बिजली", urdu: "بجلی" },
+            { english: "Rainbow", hindi: "इंद्रधनुष", urdu: "قوس قزح" },
+            { english: "Sun", hindi: "सूरज", urdu: "سورج" },
+            { english: "Moon", hindi: "चाँद", urdu: "چاند" },
+            { english: "Star", hindi: "तारा", urdu: "ستارہ" },
+            { english: "Planet", hindi: "ग्रह", urdu: "سیارہ" },
+            { english: "Galaxy", hindi: "आकाशगंगा", urdu: "کہکشاں" },
+            { english: "Universe", hindi: "ब्रह्मांड", urdu: "کائنات" },
+            { english: "Space", hindi: "अंतरिक्ष", urdu: "خلاء" },
+            { english: "Ocean", hindi: "महासागर", urdu: "سمندر" },
+            { english: "Sea", hindi: "समुद्र", urdu: "بحر" },
+            { english: "River", hindi: "नदी", urdu: "دریا" },
+            { english: "Lake", hindi: "झील", urdu: "جھیل" },
+            { english: "Pond", hindi: "तालाब", urdu: "تالاب" },
+            { english: "Waterfall", hindi: "झरना", urdu: "آبشار" },
+            { english: "Wave", hindi: "लहर", urdu: "لہر" },
+            { english: "Tide", hindi: "ज्वार", urdu: "جوار" },
+            { english: "Beach", hindi: "समुद्र तट", urdu: "ساحل سمندر" },
+            { english: "Island", hindi: "द्वीप", urdu: "جزیرہ" },
+            { english: "Cave", hindi: "गुफा", urdu: "غار" },
+            { english: "Volcano", hindi: "ज्वालामुखी", urdu: "آتش فشاں" },
+            { english: "Earthquake", hindi: "भूकंप", urdu: "زلزلہ" },
+            { english: "Flood", hindi: "बाढ़", urdu: "سیلاب" },
+            { english: "Drought", hindi: "सूखा", urdu: "خشک سالی" },
+            { english: "Fire", hindi: "आग", urdu: "آگ" }
+        ];
+
+        // 10. EMOTIONS
+        const emotionWords = [
+            { english: "Emotion", hindi: "भावना", urdu: "جذبہ" },
+            { english: "Love", hindi: "प्यार", urdu: "محبت" },
+            { english: "Hate", hindi: "नफरत", urdu: "نفرت" },
+            { english: "Anger", hindi: "गुस्सा", urdu: "غصہ" },
+            { english: "Happiness", hindi: "खुशी", urdu: "خوشی" },
+            { english: "Sadness", hindi: "दुःख", urdu: "غم" },
+            { english: "Fear", hindi: "डर", urdu: "خوف" },
+            { english: "Courage", hindi: "साहस", urdu: "ہمت" },
+            { english: "Bravery", hindi: "वीरता", urdu: "بہادری" },
+            { english: "Jealousy", hindi: "ईर्ष्या", urdu: "حسد" },
+            { english: "Envy", hindi: "जलन", urdu: "رشک" },
+            { english: "Pride", hindi: "गर्व", urdu: "فخر" },
+            { english: "Shame", hindi: "शर्म", urdu: "شرم" },
+            { english: "Guilt", hindi: "अपराध", urdu: "جرم" },
+            { english: "Regret", hindi: "पछतावा", urdu: "پچھتاوا" },
+            { english: "Surprise", hindi: "आश्चर्य", urdu: "حیرت" },
+            { english: "Shock", hindi: "सदमा", urdu: "صدمہ" },
+            { english: "Excitement", hindi: "उत्साह", urdu: "جوش" },
+            { english: "Enthusiasm", hindi: "जोश", urdu: "ولولہ" },
+            { english: "Boredom", hindi: "ऊब", urdu: "بیزاری" },
+            { english: "Tiredness", hindi: "थकान", urdu: "تھکان" },
+            { english: "Relief", hindi: "राहत", urdu: "راحت" },
+            { english: "Comfort", hindi: "आराम", urdu: "آرام" },
+            { english: "Discomfort", hindi: "बेचैनी", urdu: "بے چینی" },
+            { english: "Pain", hindi: "दर्द", urdu: "درد" },
+            { english: "Pleasure", hindi: "सुख", urdu: "خوشی" },
+            { english: "Joy", hindi: "आनंद", urdu: "مسرت" },
+            { english: "Grief", hindi: "शोक", urdu: "سوگ" },
+            { english: "Sorrow", hindi: "दुख", urdu: "دکھ" },
+            { english: "Sympathy", hindi: "सहानुभूति", urdu: "ہمدردی" },
+            { english: "Empathy", hindi: "समानुभूति", urdu: "ہمدردی" },
+            { english: "Pity", hindi: "दया", urdu: "رحم" },
+            { english: "Mercy", hindi: "कृपा", urdu: "رحم" },
+            { english: "Forgiveness", hindi: "क्षमा", urdu: "معافی" },
+            { english: "Gratitude", hindi: "कृतज्ञता", urdu: "شکر" },
+            { english: "Thankfulness", hindi: "धन्यवाद", urdu: "شکریہ" },
+            { english: "Hope", hindi: "आशा", urdu: "امید" },
+            { english: "Despair", hindi: "निराशा", urdu: "مایوسی" },
+            { english: "Optimism", hindi: "आशावाद", urdu: "امید پرستی" },
+            { english: "Pessimism", hindi: "निराशावाद", urdu: "مایوسی" }
+        ];
+
+        // 11. ACTIONS
+        const actionWords = [
+            { english: "Action", hindi: "क्रिया", urdu: "عمل" },
+            { english: "Walk", hindi: "चलना", urdu: "چلنا" },
+            { english: "Run", hindi: "दौड़ना", urdu: "دوڑنا" },
+            { english: "Jump", hindi: "कूदना", urdu: "چھلانگ لگانا" },
+            { english: "Swim", hindi: "तैरना", urdu: "تیرنا" },
+            { english: "Fly", hindi: "उड़ना", urdu: "اڑنا" },
+            { english: "Crawl", hindi: "रेंगना", urdu: "رینگنا" },
+            { english: "Climb", hindi: "चढ़ना", urdu: "چڑھنا" },
+            { english: "Slide", hindi: "फिसलना", urdu: "پھسلنا" },
+            { english: "Fall", hindi: "गिरना", urdu: "گرنا" },
+            { english: "Stand", hindi: "खड़ा होना", urdu: "کھڑا ہونا" },
+            { english: "Sit", hindi: "बैठना", urdu: "بیٹھنا" },
+            { english: "Lie", hindi: "लेटना", urdu: "لیٹنا" },
+            { english: "Sleep", hindi: "सोना", urdu: "سونا" },
+            { english: "Wake", hindi: "जागना", urdu: "جاگنا" },
+            { english: "Eat", hindi: "खाना", urdu: "کھانا" },
+            { english: "Drink", hindi: "पीना", urdu: "پینا" },
+            { english: "Chew", hindi: "चबाना", urdu: "چبانا" },
+            { english: "Swallow", hindi: "निगलना", urdu: "نگلنا" },
+            { english: "Breathe", hindi: "साँस लेना", urdu: "سانس لینا" },
+            { english: "Cough", hindi: "खाँसना", urdu: "کھانسنا" },
+            { english: "Sneeze", hindi: "छींकना", urdu: "چھینکنا" },
+            { english: "Yawn", hindi: "उबासी लेना", urdu: "انگھائی لینا" },
+            { english: "Laugh", hindi: "हँसना", urdu: "ہنسنا" },
+            { english: "Smile", hindi: "मुस्कुराना", urdu: "مسکرانا" },
+            { english: "Cry", hindi: "रोना", urdu: "رونا" },
+            { english: "Shout", hindi: "चिल्लाना", urdu: "چلانا" },
+            { english: "Whisper", hindi: "फुसफुसाना", urdu: "سرگوشی کرنا" },
+            { english: "Talk", hindi: "बात करना", urdu: "بات کرنا" },
+            { english: "Speak", hindi: "बोलना", urdu: "بولنا" },
+            { english: "Say", hindi: "कहना", urdu: "کہنا" },
+            { english: "Tell", hindi: "बताना", urdu: "بتانا" },
+            { english: "Ask", hindi: "पूछना", urdu: "پوچھنا" },
+            { english: "Answer", hindi: "जवाब देना", urdu: "جواب دینا" },
+            { english: "Question", hindi: "प्रश्न", urdu: "سوال" },
+            { english: "Explain", hindi: "समझाना", urdu: "سمجھانا" },
+            { english: "Describe", hindi: "वर्णन करना", urdu: "بیان کرنا" },
+            { english: "Write", hindi: "लिखना", urdu: "لکھنا" },
+            { english: "Read", hindi: "पढ़ना", urdu: "پڑھنا" },
+            { english: "Draw", hindi: "चित्र बनाना", urdu: "تصویر بنانا" },
+            { english: "Paint", hindi: "रंगना", urdu: "رنگنا" },
+            { english: "Sing", hindi: "गाना", urdu: "گانا" },
+            { english: "Dance", hindi: "नाचना", urdu: "ناچنا" },
+            { english: "Play", hindi: "खेलना", urdu: "کھیلنا" },
+            { english: "Work", hindi: "काम करना", urdu: "काम کرنا" },
+            { english: "Study", hindi: "पढ़ाई करना", urdu: "پڑھنا" },
+            { english: "Learn", hindi: "सीखना", urdu: "سیکھنا" },
+            { english: "Teach", hindi: "सिखाना", urdu: "سکھانا" },
+            { english: "Understand", hindi: "समझना", urdu: "سمجھنا" }
+        ];
+
+        // 12. PROFESSIONS
+        const professionWords = [
+            { english: "Profession", hindi: "पेशा", urdu: "پیشہ" },
+            { english: "Doctor", hindi: "डॉक्टर", urdu: "ڈاکٹر" },
+            { english: "Engineer", hindi: "इंजीनियर", urdu: "انجینئر" },
+            { english: "Teacher", hindi: "शिक्षक", urdu: "استاد" },
+            { english: "Professor", hindi: "प्रोफेसर", urdu: "پروفیسر" },
+            { english: "Student", hindi: "छात्र", urdu: "طالب علم" },
+            { english: "Lawyer", hindi: "वकील", urdu: "وکیل" },
+            { english: "Judge", hindi: "न्यायाधीश", urdu: "جج" },
+            { english: "Police", hindi: "पुलिस", urdu: "پولیس" },
+            { english: "Soldier", hindi: "सैनिक", urdu: "سپاہی" },
+            { english: "Farmer", hindi: "किसान", urdu: "کسان" },
+            { english: "Worker", hindi: "मजदूर", urdu: "مزدور" },
+            { english: "Laborer", hindi: "श्रमिक", urdu: "مزدور" },
+            { english: "Businessman", hindi: "व्यापारी", urdu: "تاجر" },
+            { english: "Shopkeeper", hindi: "दुकानदार", urdu: "دکاندار" },
+            { english: "Driver", hindi: "ड्राइवर", urdu: "ڈرائیور" },
+            { english: "Pilot", hindi: "पायलट", urdu: "پائلٹ" },
+            { english: "Chef", hindi: "रसोइया", urdu: "باورچی" },
+            { english: "Cook", hindi: "रसोइया", urdu: "خانساماں" },
+            { english: "Waiter", hindi: "वेटर", urdu: "ویٹر" },
+            { english: "Barber", hindi: "नाई", urdu: "حجام" },
+            { english: "Tailor", hindi: "दर्जी", urdu: "درزی" },
+            { english: "Carpenter", hindi: "बढ़ई", urdu: "ترکھان" },
+            { english: "Electrician", hindi: "इलेक्ट्रीशियन", urdu: "الیکٹریشن" },
+            { english: "Plumber", hindi: "प्लम्बर", urdu: "پلمبر" },
+            { english: "Mechanic", hindi: "मैकेनिक", urdu: "میکینک" },
+            { english: "Painter", hindi: "चित्रकार", urdu: "مصور" },
+            { english: "Artist", hindi: "कलाकार", urdu: "فنکار" },
+            { english: "Musician", hindi: "संगीतकार", urdu: "موسیقار" },
+            { english: "Singer", hindi: "गायक", urdu: "گلوکار" },
+            { english: "Dancer", hindi: "नर्तक", urdu: "رقاص" },
+            { english: "Actor", hindi: "अभिनेता", urdu: "اداکار" },
+            { english: "Actress", hindi: "अभिनेत्री", urdu: "اداکارہ" },
+            { english: "Writer", hindi: "लेखक", urdu: "مصنف" },
+            { english: "Poet", hindi: "कवि", urdu: "شاعر" },
+            { english: "Journalist", hindi: "पत्रकार", urdu: "صحافی" },
+            { english: "Reporter", hindi: "रिपोर्टर", urdu: "رپورٹر" },
+            { english: "Photographer", hindi: "फ़ोटोग्राफ़र", urdu: "فوٹوگرافر" },
+            { english: "Scientist", hindi: "वैज्ञानिक", urdu: "سائنسدان" },
+            { english: "Astronaut", hindi: "अंतरिक्ष यात्री", urdu: "خلائی مسافر" }
+        ];
+
+        // 13. DAILY LIFE WORDS
+        const dailyLifeWords = [
+            { english: "Home", hindi: "घर", urdu: "گھر" },
+            { english: "House", hindi: "मकान", urdu: "مکان" },
+            { english: "Room", hindi: "कमरा", urdu: "کمرہ" },
+            { english: "Kitchen", hindi: "रसोईघर", urdu: "باورچی خانہ" },
+            { english: "Bathroom", hindi: "स्नानघर", urdu: "غسل خانہ" },
+            { english: "Bedroom", hindi: "शयनकक्ष", urdu: "سونے کا کمرہ" },
+            { english: "Living room", hindi: "बैठक कक्ष", urdu: "بیٹھک" },
+            { english: "Dining room", hindi: "भोजन कक्ष", urdu: "کھانے کا کمرہ" },
+            { english: "Door", hindi: "दरवाजा", urdu: "دروازہ" },
+            { english: "Window", hindi: "खिड़की", urdu: "کھڑکی" },
+            { english: "Wall", hindi: "दीवार", urdu: "دیوار" },
+            { english: "Floor", hindi: "फर्श", urdu: "فرش" },
+            { english: "Ceiling", hindi: "छत", urdu: "چھت" },
+            { english: "Roof", hindi: "छत", urdu: "چھت" },
+            { english: "Stairs", hindi: "सीढ़ियाँ", urdu: "سیڑھیاں" },
+            { english: "Balcony", hindi: "बालकनी", urdu: "بالکنی" },
+            { english: "Garden", hindi: "बगीचा", urdu: "باغ" },
+            { english: "Garage", hindi: "गैरेज", urdu: "گیراج" },
+            { english: "Terrace", hindi: "छत", urdu: "چھت" },
+            { english: "Basement", hindi: "तहखाना", urdu: "تہ خانہ" },
+            { english: "Furniture", hindi: "फर्नीचर", urdu: "فرنیچر" },
+            { english: "Table", hindi: "मेज", urdu: "میز" },
+            { english: "Chair", hindi: "कुर्सी", urdu: "کرسی" },
+            { english: "Bed", hindi: "बिस्तर", urdu: "بستر" },
+            { english: "Sofa", hindi: "सोफा", urdu: "صوفہ" },
+            { english: "Cupboard", hindi: "अलमारी", urdu: "الماری" },
+            { english: "Shelf", hindi: "शेल्फ", urdu: "شیلف" },
+            { english: "Drawer", hindi: "दराज", urdu: "دراز" },
+            { english: "Lamp", hindi: "दीपक", urdu: "چراغ" },
+            { english: "Fan", hindi: "पंखा", urdu: "پنکھا" },
+            { english: "Air conditioner", hindi: "एयर कंडीशनर", urdu: "ایئر کنڈیشنر" },
+            { english: "Heater", hindi: "हीटर", urdu: "ہیٹر" },
+            { english: "Fridge", hindi: "फ्रिज", urdu: "فرج" },
+            { english: "Freezer", hindi: "फ्रीजर", urdu: "فریزر" },
+            { english: "Oven", hindi: "ओवन", urdu: "اوون" },
+            { english: "Stove", hindi: "चूल्हा", urdu: "چولہا" },
+            { english: "Microwave", hindi: "माइक्रोवेव", urdu: "مائکروویو" },
+            { english: "Toaster", hindi: "टोस्टर", urdu: "ٹوسٹر" },
+            { english: "Kettle", hindi: "केतली", urdu: "کیتلی" },
+            { english: "Dishwasher", hindi: "डिशवॉशर", urdu: "ڈش واشر" },
+            { english: "Washing machine", hindi: "वॉशिंग मशीन", urdu: "واشنگ مشین" },
+            { english: "Dryer", hindi: "ड्रायर", urdu: "ڈرائر" },
+            { english: "Iron", hindi: "इस्त्री", urdu: "استری" },
+            { english: "Vacuum cleaner", hindi: "वैक्यूम क्लीनर", urdu: "ویکیوم کلینر" },
+            { english: "Broom", hindi: "झाड़ू", urdu: "جھاڑو" },
+            { english: "Mop", hindi: "पोंछा", urdu: "پوچھا" },
+            { english: "Bucket", hindi: "बाल्टी", urdu: "بالٹی" },
+            { english: "Dustbin", hindi: "कूड़ेदान", urdu: "کوڑے دان" },
+            { english: "Towel", hindi: "तौलिया", urdu: "تولیہ" },
+            { english: "Soap", hindi: "साबुन", urdu: "صابن" },
+            { english: "Shampoo", hindi: "शैम्पू", urdu: "شیمپو" },
+            { english: "Toothbrush", hindi: "टूथब्रश", urdu: "ٹوتھ برش" },
+            { english: "Toothpaste", hindi: "टूथपेस्ट", urdu: "ٹوتھ پیسٹ" },
+            { english: "Clothes", hindi: "कपड़े", urdu: "کپڑے" },
+            { english: "Shirt", hindi: "कमीज", urdu: "قمیض" },
+            { english: "T-shirt", hindi: "टी-शर्ट", urdu: "ٹی شرٹ" },
+            { english: "Pant", hindi: "पैंट", urdu: "پینٹ" },
+            { english: "Jeans", hindi: "जींस", urdu: "جینز" },
+            { english: "Skirt", hindi: "स्कर्ट", urdu: "اسکرٹ" },
+            { english: "Dress", hindi: "पोशाक", urdu: "لباس" },
+            { english: "Suit", hindi: "सूट", urdu: "سوٹ" },
+            { english: "Coat", hindi: "कोट", urdu: "کوٹ" },
+            { english: "Jacket", hindi: "जैकेट", urdu: "جیکٹ" },
+            { english: "Sweater", hindi: "स्वेटर", urdu: "سویٹر" },
+            { english: "Socks", hindi: "मोज़े", urdu: "موزے" },
+            { english: "Shoes", hindi: "जूते", urdu: "جوتے" },
+            { english: "Slippers", hindi: "चप्पल", urdu: "چپل" },
+            { english: "Hat", hindi: "टोपी", urdu: "ٹوپی" },
+            { english: "Cap", hindi: "कैप", urdu: "کیپ" },
+            { english: "Gloves", hindi: "दस्ताने", urdu: "دستانے" },
+            { english: "Scarf", hindi: "दुपट्टा", urdu: "دوپٹہ" },
+            { english: "Belt", hindi: "बेल्ट", urdu: "بیلٹ" },
+            { english: "Watch", hindi: "घड़ी", urdu: "گھڑی" },
+            { english: "Wallet", hindi: "बटुआ", urdu: "بٹوا" },
+            { english: "Bag", hindi: "बैग", urdu: "بیگ" },
+            { english: "Backpack", hindi: "बैकपैक", urdu: "بیک پیک" },
+            { english: "Luggage", hindi: "सामान", urdu: "سامان" },
+            { english: "Health", hindi: "स्वास्थ्य", urdu: "صحت" },
+            { english: "Medicine", hindi: "दवा", urdu: "دوا" },
+            { english: "Doctor", hindi: "डॉक्टर", urdu: "ڈاکٹر" },
+            { english: "Nurse", hindi: "नर्स", urdu: "نرس" },
+            { english: "Hospital", hindi: "अस्पताल", urdu: "ہسپتال" },
+            { english: "Clinic", hindi: "क्लिनिक", urdu: "کلینک" },
+            { english: "Pharmacy", hindi: "दवाखाना", urdu: "دواخانہ" },
+            { english: "Tablet", hindi: "गोली", urdu: "گولی" },
+            { english: "Capsule", hindi: "कैप्सूल", urdu: "کیپسول" },
+            { english: "Syrup", hindi: "शरबत", urdu: "شربت" },
+            { english: "Injection", hindi: "इंजेक्शन", urdu: "انجیکشن" },
+            { english: "Bandage", hindi: "पट्टी", urdu: "پٹی" },
+            { english: "Thermometer", hindi: "थर्मामीटर", urdu: "تھرمامیٹر" },
+            { english: "Stethoscope", hindi: "स्टेथोस्कोप", urdu: "سٹیتھوسکوپ" },
+            { english: "Ambulance", hindi: "एम्बुलेंस", urdu: "ایمبولینس" },
+            { english: "Disease", hindi: "बीमारी", urdu: "بیماری" },
+            { english: "Fever", hindi: "बुखार", urdu: "بخار" },
+            { english: "Cough", hindi: "खांसी", urdu: "کھانسی" },
+            { english: "Cold", hindi: "ज़ुकाम", urdu: "زکام" },
+            { english: "Headache", hindi: "सिरदर्द", urdu: "سر درد" },
+            { english: "Stomachache", hindi: "पेट दर्द", urdu: "پیٹ درد" },
+            { english: "Toothache", hindi: "दांत दर्द", urdu: "دانت درد" },
+            { english: "Pain", hindi: "दर्द", urdu: "درد" },
+            { english: "Injury", hindi: "चोट", urdu: "چوٹ" },
+            { english: "Wound", hindi: "घाव", urdu: "زخم" },
+            { english: "Allergy", hindi: "एलर्जी", urdu: "الرجی" },
+            { english: "Diabetes", hindi: "मधुमेह", urdu: "ذیابیطس" },
+            { english: "Blood pressure", hindi: "रक्तचाप", urdu: "بلڈ پریشر" },
+            { english: "Heart attack", hindi: "दिल का दौरा", urdu: "دل کا دورہ" },
+            { english: "Stroke", hindi: "आघात", urdu: "فالج" },
+            { english: "Cancer", hindi: "कैंसर", urdu: "کینسر" },
+            { english: "Education", hindi: "शिक्षा", urdu: "تعلیم" },
+            { english: "School", hindi: "स्कूल", urdu: "اسکول" },
+            { english: "College", hindi: "कॉलेज", urdu: "کالج" },
+            { english: "University", hindi: "विश्वविद्यालय", urdu: "یونیورسٹی" },
+            { english: "Class", hindi: "कक्षा", urdu: "کلاس" },
+            { english: "Student", hindi: "छात्र", urdu: "طالب علم" },
+            { english: "Teacher", hindi: "शिक्षक", urdu: "استاد" },
+            { english: "Professor", hindi: "प्रोफेसर", urdu: "پروفیسر" },
+            { english: "Principal", hindi: "प्रधानाचार्य", urdu: "پرنسپل" },
+            { english: "Library", hindi: "पुस्तकालय", urdu: "کتب خانہ" },
+            { english: "Book", hindi: "किताब", urdu: "کتاب" },
+            { english: "Notebook", hindi: "नोटबुक", urdu: "نوٹ بک" },
+            { english: "Pen", hindi: "कलम", urdu: "قلم" },
+            { english: "Pencil", hindi: "पेंसिल", urdu: "پنسل" },
+            { english: "Eraser", hindi: "रबड़", urdu: "ربڑ" },
+            { english: "Sharpener", hindi: "शार्पनर", urdu: "شارپنر" },
+            { english: "Ruler", hindi: "पैमाना", urdu: "پیمانہ" },
+            { english: "Compass", hindi: "परकार", urdu: "پرکار" },
+            { english: "Bag", hindi: "बस्ता", urdu: "بستہ" },
+            { english: "Exam", hindi: "परीक्षा", urdu: "امتحان" },
+            { english: "Test", hindi: "टेस्ट", urdu: "ٹیسٹ" },
+            { english: "Result", hindi: "परिणाम", urdu: "نتیجہ" },
+            { english: "Marks", hindi: "अंक", urdu: "نمبر" },
+            { english: "Grade", hindi: "ग्रेड", urdu: "گریڈ" },
+            { english: "Degree", hindi: "डिग्री", urdu: "ڈگری" },
+            { english: "Diploma", hindi: "डिप्लोमा", urdu: "ڈپلومہ" },
+            { english: "Certificate", hindi: "प्रमाणपत्र", urdu: "سرٹیفکیٹ" },
+            { english: "Lesson", hindi: "पाठ", urdu: "سبق" },
+            { english: "Homework", hindi: "गृहकार्य", urdu: "ہوم ورک" },
+            { english: "Assignment", hindi: "कार्य", urdu: "اسائنمنٹ" },
+            { english: "Travel", hindi: "यात्रा", urdu: "سفر" },
+            { english: "Journey", hindi: "यात्रा", urdu: "سفر" },
+            { english: "Trip", hindi: "ट्रिप", urdu: "ٹرپ" },
+            { english: "Tour", hindi: "दौरा", urdu: "دورہ" },
+            { english: "Ticket", hindi: "टिकट", urdu: "ٹکٹ" },
+            { english: "Passport", hindi: "पासपोर्ट", urdu: "پاسپورٹ" },
+            { english: "Visa", hindi: "वीज़ा", urdu: "ویزا" },
+            { english: "Airport", hindi: "हवाई अड्डा", urdu: "ہوائی اڈہ" },
+            { english: "Railway station", hindi: "रेलवे स्टेशन", urdu: "ریلوے اسٹیشن" },
+            { english: "Bus stop", hindi: "बस स्टॉप", urdu: "بس اسٹاپ" },
+            { english: "Train", hindi: "रेलगाड़ी", urdu: "ٹرین" },
+            { english: "Bus", hindi: "बस", urdu: "بس" },
+            { english: "Car", hindi: "कार", urdu: "کار" },
+            { english: "Taxi", hindi: "टैक्सी", urdu: "ٹیکسی" },
+            { english: "Rickshaw", hindi: "रिक्शा", urdu: "رکشہ" },
+            { english: "Bicycle", hindi: "साइकिल", urdu: "سائیکل" },
+            { english: "Motorcycle", hindi: "मोटरसाइकिल", urdu: "موٹر سائیکل" },
+            { english: "Boat", hindi: "नाव", urdu: "کشتی" },
+            { english: "Ship", hindi: "जहाज", urdu: "جہاز" },
+            { english: "Plane", hindi: "हवाई जहाज", urdu: "ہوائی جہاز" },
+            { english: "Helicopter", hindi: "हेलिकॉप्टर", urdu: "ہیلی کاپٹر" },
+            { english: "Hotel", hindi: "होटल", urdu: "ہوٹل" },
+            { english: "Restaurant", hindi: "रेस्तरां", urdu: "ریستوران" },
+            { english: "Cafe", hindi: "कैफे", urdu: "کیفے" },
+            { english: "Menu", hindi: "मेनू", urdu: "مینو" },
+            { english: "Bill", hindi: "बिल", urdu: "بل" },
+            { english: "Reservation", hindi: "आरक्षण", urdu: "ریزرویشن" },
+            { english: "Luggage", hindi: "सामान", urdu: "سامان" },
+            { english: "Baggage", hindi: "सामान", urdu: "سامان" },
+            { english: "Suitcase", hindi: "सूटकेस", urdu: "سوٹ کیس" },
+            { english: "Technology", hindi: "प्रौद्योगिकी", urdu: "ٹیکنالوجی" },
+            { english: "Computer", hindi: "कंप्यूटर", urdu: "کمپ्यूटर" },
+            { english: "Laptop", hindi: "लैपटॉप", urdu: "لیپ ٹاپ" },
+            { english: "Mobile phone", hindi: "मोबाइल फोन", urdu: "موبائل فون" },
+            { english: "Smartphone", hindi: "स्मार्टफोन", urdu: "اسمارٹ فون" },
+            { english: "Tablet", hindi: "टैबलेट", urdu: "ٹیبلیٹ" },
+            { english: "Internet", hindi: "इंटरनेट", urdu: "انٹرنیٹ" },
+            { english: "WiFi", hindi: "वाईफाई", urdu: "وائی فائی" },
+            { english: "Website", hindi: "वेबसाइट", urdu: "ویب سائٹ" },
+            { english: "Email", hindi: "ईमेल", urdu: "ای میل" },
+            { english: "Message", hindi: "संदेश", urdu: "پیغام" },
+            { english: "Chat", hindi: "चैट", urdu: "چیٹ" },
+            { english: "Video call", hindi: "वीडियो कॉल", urdu: "ویڈیو کال" },
+            { english: "Social media", hindi: "सोशल मीडिया", urdu: "سوشل میڈیا" },
+            { english: "Facebook", hindi: "फेसबुक", urdu: "فیس بک" },
+            { english: "WhatsApp", hindi: "व्हाट्सएप", urdu: "واٹس ایپ" },
+            { english: "Instagram", hindi: "इंस्टाग्राम", urdu: "انسٹاگرام" },
+            { english: "Twitter", hindi: "ट्विटर", urdu: "ٹویٹر" },
+            { english: "YouTube", hindi: "यूट्यूब", urdu: "یوٹیوب" },
+            { english: "Google", hindi: "गूगल", urdu: "گوگل" },
+            { english: "Camera", hindi: "कैमरा", urdu: "کیمرہ" },
+            { english: "Photo", hindi: "फोटो", urdu: "فوٹو" },
+            { english: "Video", hindi: "वीडियो", urdu: "ویڈیو" },
+            { english: "Music", hindi: "संगीत", urdu: "موسیقی" },
+            { english: "Movie", hindi: "फिल्म", urdu: "فلم" },
+            { english: "Game", hindi: "खेल", urdu: "کھیل" },
+            { english: "App", hindi: "ऐप", urdu: "ایپ" },
+            { english: "Software", hindi: "सॉफ्टवेयर", urdu: "سافٹ ویئر" },
+            { english: "Hardware", hindi: "हार्डवेयर", urdu: "ہارڈ ویئر" },
+            { english: "Battery", hindi: "बैटरी", urdu: "بیٹری" },
+            { english: "Charger", hindi: "चार्जर", urdu: "چارجر" },
+            { english: "Headphones", hindi: "हेडफोन", urdu: "ہیڈ فون" },
+            { english: "Speaker", hindi: "اسپیکर", urdu: "اسپیکر" },
+            { english: "Keyboard", hindi: "कीबोर्ड", urdu: "کی بورڈ" },
+            { english: "Mouse", hindi: "माउस", urdu: "ماؤس" },
+            { english: "Screen", hindi: "स्क्रीन", urdu: "اسکرین" },
+            { english: "Printer", hindi: "प्रिंटर", urdu: "پرنٹر" },
+            { english: "Scanner", hindi: "स्कैनर", urdu: "اسکینر" },
+            { english: "USB", hindi: "यूएसबी", urdu: "یو ایس بی" },
+            { english: "Memory card", hindi: "मेमोरी कार्ड", urdu: "میموری کارڈ" },
+            { english: "Password", hindi: "पासवर्ड", urdu: "پاس ورڈ" },
+            { english: "Username", hindi: "उपयोगकर्ता नाम", urdu: "صارف نام" },
+            { english: "Login", hindi: "लॉगिन", urdu: "لاگ ان" },
+            { english: "Logout", hindi: "लॉगआउट", urdu: "لاگ آؤٹ" },
+            { english: "Download", hindi: "डाउनलोड", urdu: "ڈاؤن لوڈ" },
+            { english: "Upload", hindi: "अपलोड", urdu: "اپ لوڈ" },
+            { english: "Update", hindi: "अपडेट", urdu: "اپ ڈیٹ" },
+            { english: "Delete", hindi: "हटाना", urdu: "حذف کریں" },
+            { english: "Save", hindi: "सहेजें", urdu: "محفوظ کریں" },
+            { english: "Copy", hindi: "कॉपी", urdu: "کاپی" },
+            { english: "Paste", hindi: "पेस्ट", urdu: "پیسٹ" }
+        ];
+
+        // Combine all words into main array
+        wordsData.push(...basicWords.map(w => ({ ...w, category: "Basic" })));
+        wordsData.push(...familyWords.map(w => ({ ...w, category: "Family" })));
+        wordsData.push(...timeWords.map(w => ({ ...w, category: "Time" })));
+        wordsData.push(...numberWords.map(w => ({ ...w, category: "Numbers" })));
+        wordsData.push(...colorWords.map(w => ({ ...w, category: "Colors" })));
+        wordsData.push(...foodWords.map(w => ({ ...w, category: "Food" })));
+        wordsData.push(...animalWords.map(w => ({ ...w, category: "Animals" })));
+        wordsData.push(...bodyWords.map(w => ({ ...w, category: "Body" })));
+        wordsData.push(...natureWords.map(w => ({ ...w, category: "Nature" })));
+        wordsData.push(...emotionWords.map(w => ({ ...w, category: "Emotions" })));
+        wordsData.push(...actionWords.map(w => ({ ...w, category: "Actions" })));
+        wordsData.push(...professionWords.map(w => ({ ...w, category: "Professions" })));
+        wordsData.push(...dailyLifeWords.map(w => ({ ...w, category: "Daily Life" })));
+
+        // ==================== DYNAMIC COUNT LOGIC ====================
+        function updateCounters(displayedCount) {
+            const total = wordsData.length;
+            document.getElementById('totalWords').textContent = total + '+';
+            document.getElementById('currentCount').textContent = displayedCount + '+';
+            document.getElementById('subHeaderCount').textContent = total + '+';
+            document.getElementById('footerWordCount').textContent = total + '+';
+        }
+
+        // ==================== AUDIO FUNCTION ====================
+        function speakWord(text, language) {
+            if (!window.speechSynthesis) {
+                alert('आपका ब्राउज़र ऑडियो सुविधा सपोर्ट नहीं करता');
+                return;
+            }
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            
+            switch(language) {
+                case 'english': utterance.lang = 'en-US'; break;
+                case 'hindi': utterance.lang = 'hi-IN'; break;
+                case 'urdu': utterance.lang = 'ur-PK'; break;
+                default: utterance.lang = 'en-US';
+            }
+            
+            utterance.rate = 0.9;
+            utterance.pitch = 1;
+            utterance.volume = 1;
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // ==================== LOAD CATEGORIES ====================
+        function loadCategories() {
+            const categoriesNav = document.getElementById('categoriesNav');
+            const categories = [...new Set(wordsData.map(word => word.category))];
+            
+            const allBtn = document.createElement('div');
+            allBtn.className = 'category-btn active';
+            allBtn.textContent = 'सभी शब्द (All)';
+            allBtn.onclick = () => {
+                document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
+                allBtn.classList.add('active');
+                document.getElementById('searchInput').value = ''; // Clear search when switching categories
+                loadWords('all');
+            };
+            categoriesNav.appendChild(allBtn);
+            
+            categories.forEach(category => {
+                const btn = document.createElement('div');
+                btn.className = 'category-btn';
+                btn.textContent = `${category} (${wordsData.filter(w => w.category === category).length})`;
+                btn.onclick = () => {
+                    document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
+                    btn.classList.add('active');
+                    document.getElementById('searchInput').value = ''; // Clear search when switching categories
+                    loadWords(category);
+                };
+                categoriesNav.appendChild(btn);
+            });
+
+            document.getElementById('categoryCount').textContent = categories.length;
+        }
+
+        // ==================== LOAD WORDS ====================
+        function loadWords(category) {
+            const container = document.getElementById('wordsContainer');
+            container.innerHTML = '';
+            
+            let filteredWords = wordsData;
+            if (category !== 'all') {
+                filteredWords = wordsData.filter(word => word.category === category);
+            }
+            
+            filteredWords.forEach(word => {
+                const wordItem = document.createElement('div');
+                wordItem.className = 'word-item';
+                wordItem.innerHTML = `
+                    <span class="english" onclick="speakWord('${word.english}', 'english')" title="English pronunciation">${word.english}</span>
+                    <span class="hindi" onclick="speakWord('${word.hindi}', 'hindi')" title="हिंदी उच्चारण">${word.hindi}</span>
+                    <span class="urdu" onclick="speakWord('${word.urdu}', 'urdu')" title="اردو تلفظ">${word.urdu}</span>
+                    <button class="audio-btn" onclick="speakWord('${word.english}', 'english')">🔊</button>
+                `;
+                container.appendChild(wordItem);
+            });
+
+            updateCounters(filteredWords.length);
+        }
+
+        // ==================== SEARCH FUNCTION ====================
+        document.getElementById('searchInput').addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase().trim();
+            const allWordItems = document.querySelectorAll('.word-item');
+            
+            if (searchTerm === '') {
+                const activeBtn = document.querySelector('.category-btn.active');
+                // Correctly extract category name before bracket
+                const activeCategory = activeBtn.textContent.split(' (')[0];
+                if (activeCategory === 'सभी शब्द' || activeCategory === 'All') {
+                    loadWords('all');
+                } else {
+                    loadWords(activeCategory);
+                }
+                return;
+            }
+
+            let foundCount = 0;
+            allWordItems.forEach(item => {
+                const english = item.querySelector('.english').textContent.toLowerCase();
+                const hindi = item.querySelector('.hindi').textContent.toLowerCase();
+                const urdu = item.querySelector('.urdu').textContent.toLowerCase();
+                
+                if (english.includes(searchTerm) || hindi.includes(searchTerm) || urdu.includes(searchTerm)) {
+                    item.style.display = 'grid';
+                    foundCount++;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+
+            document.getElementById('currentCount').textContent = foundCount + '+';
+        });
+
+        // Initialize
+        window.onload = function() {
+            loadCategories();
+            loadWords('all');
+        };
+    </script>
+</body>
+</html>
