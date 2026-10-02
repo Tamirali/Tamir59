@@ -1,0 +1,269 @@
+<!DOCTYPE html> 
+<html lang="hi"> 
+<head> 
+    <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes"> 
+    <title>महासंग्रह: टेंस लॉजिक · रैंडम मोड</title> 
+    <style> 
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            font-weight: 900 !important; /* सभी अक्षर बहुत मोटे */
+        } 
+ 
+        body { 
+            background: #f5d7b4; 
+            min-height: 100vh; 
+            display: flex; 
+            flex-direction: column;
+            align-items: center; 
+            justify-content: center; 
+            font-family: 'Comic Sans MS', sans-serif; 
+            padding: 10px; 
+        } 
+ 
+        .game-card { 
+            width: 100%; 
+            max-width: 400px; 
+            background: #fffef0; 
+            border: 6px solid #fb8b24; 
+            border-radius: 40px; 
+            padding: 20px; 
+            box-shadow: 0 12px 0 #b95a1c; 
+            position: relative;
+        } 
+ 
+        .header { 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            background: #faa75e; 
+            border-radius: 60px; 
+            padding: 10px 15px; 
+            margin-bottom: 20px; 
+            border: 3px solid #a3490c; 
+        } 
+        
+        .header h1 { font-size: 0.9rem; color: #2d1b0c; } 
+ 
+        .lang-pills { display: flex; gap: 8px; }
+
+        .lang-pill { 
+            background: white; border: 3px solid #9c4a1a; 
+            border-radius: 40px; padding: 6px 12px; 
+            font-size: 0.75rem; cursor: pointer; text-transform: uppercase;
+        } 
+ 
+        .lang-pill.active { background: #f77f00; color: white; } 
+ 
+        .sentence-box { 
+            background: #b6e2f0; border: 6px solid #1e6091; 
+            border-radius: 40px; padding: 35px 15px; 
+            margin-bottom: 20px; box-shadow: inset 0 -6px 0 #146b9e; 
+            min-height: 180px; display: flex; align-items: center; justify-content: center;
+        } 
+ 
+        .sentence-main { 
+            font-size: 1.8rem; text-align: center; 
+            color: #022b40; line-height: 1.2; text-transform: uppercase;
+        } 
+ 
+        .option-row { display: flex; gap: 10px; margin-bottom: 20px; } 
+ 
+        .opt-btn { 
+            background: #ffe18e; border: 4px solid #b65800; 
+            color: #441f00; font-size: 0.85rem; padding: 15px 2px; 
+            border-radius: 20px; box-shadow: 0 6px 0 #8f4600; 
+            flex: 1; text-align: center; text-transform: uppercase;
+            cursor: pointer;
+        } 
+ 
+        .feedback-mini { 
+            background: #fff3bf; border-radius: 25px; 
+            padding: 15px; font-size: 1.4rem; text-align: center; 
+            border: 4px solid #b95a1c; margin-bottom: 20px; 
+            color: #3f2d12; text-transform: uppercase; min-height: 60px;
+        } 
+ 
+        .next-button { 
+            background: #f48c06; font-size: 1.6rem; padding: 15px; 
+            border-radius: 50px; border: none; border-bottom: 8px solid #9c4a1a; 
+            color: white; cursor: pointer; width: 100%; text-transform: uppercase; 
+        } 
+ 
+        .next-button:active { transform: translateY(4px); border-bottom-width: 2px; }
+
+        .status-row {
+            display: flex; justify-content: space-between; 
+            margin-top: 15px; font-size: 1.1rem; text-transform: uppercase;
+        }
+
+        /* होम पोर्टल लिंक स्टाइल */
+        .back-portal {
+            display: inline-block;
+            margin-bottom: 12px;
+            text-decoration: none;
+            color: #b95a1c;
+            font-size: 1rem;
+            background: #fffef0;
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 3px solid #fb8b24;
+            box-shadow: 0 4px 0 #b95a1c;
+        }
+        .back-portal:active { transform: translateY(2px); box-shadow: 0 2px 0 #b95a1c; }
+    </style> 
+</head> 
+<body> 
+
+<a href="index.html" class="back-portal">➔ मुख्य पोर्टल (Home)</a>
+
+<div class="game-card"> 
+    <div class="header"> 
+        <h1>⏳ TENSE LOGIC</h1> 
+        <div class="lang-pills"> 
+            <span class="lang-pill active" id="pillHi">HINDI</span> 
+            <span class="lang-pill" id="pillEn">ENGLISH</span> 
+        </div> 
+    </div> 
+ 
+    <div class="sentence-box"> 
+        <div class="sentence-main" id="sentenceText">लोड हो रहा है...</div> 
+    </div> 
+ 
+    <div class="option-row"> 
+        <div class="opt-btn" data-tense="present">PRESENT<br>वर्तमान</div> 
+        <div class="opt-btn" data-tense="past">PAST<br>भूतकाल</div> 
+        <div class="opt-btn" data-tense="future">FUTURE<br>भविष्य</div> 
+    </div> 
+ 
+    <div id="feedbackMsg" class="feedback-mini">SELECT / चुनो</div> 
+ 
+    <button class="next-button" id="nextBtn">NEXT / अगला</button>
+
+    <div class="status-row">
+        <span>🏆 SCORE: <span id="scoreValue">0</span></span>
+        <span>Q: <span id="qCount">1</span>/30</span>
+    </div>
+</div> 
+ 
+<script> 
+(function() { 
+    const allQuestions = [
+        // PRESENT (10)
+        {hi: "मैं फल खाता हूँ।", en: "I EAT FRUITS.", t: "present"},
+        {hi: "सूरज चमकता है।", en: "THE SUN SHINES.", t: "present"},
+        {hi: "वह गाना गाती है।", en: "SHE SINGS A SONG.", t: "present"},
+        {hi: "बच्चे शोर करते हैं।", en: "CHILDREN MAKE NOISE.", t: "present"},
+        {hi: "गाय घास खाती है Singer", en: "COW EATS GRASS.", t: "present"},
+        {hi: "हम दिल्ली में रहते हैं।", en: "WE LIVE IN DELHI.", t: "present"},
+        {hi: "माँ खाना बनाती हैं।", en: "MOTHER COOKS FOOD.", t: "present"},
+        {hi: "पक्षी उड़ते हैं।", en: "BIRDS FLY.", t: "present"},
+        {hi: "तुम सच बोलते हो।", en: "YOU SPEAK THE TRUTH.", t: "present"},
+        {hi: "पानी ठंडा है।", en: "WATER IS COLD.", t: "present"},
+        // PAST (10)
+        {hi: "मैंने फिल्म देखी।", en: "I WATCHED A MOVIE.", t: "past"},
+        {hi: "वह कल आया था।", en: "HE CAME YESTERDAY.", t: "past"},
+        {hi: "शेर दहाड़ा।", en: "THE LION ROARED.", t: "past"},
+        {hi: "हमने मैच जीता।", en: "WE WON THE MATCH.", t: "past"},
+        {hi: "बारिश हुई थी।", en: "IT RAINED.", t: "past"},
+        {hi: "उसने पत्र लिखा।", en: "HE WROTE A LETTER.", t: "past"},
+        {hi: "दूध गरम था।", en: "MILK WAS HOT.", t: "past"},
+        {hi: "राम वन गए थे।", en: "RAM WENT TO FOREST.", t: "past"},
+        {hi: "बंदर कूदा।", en: "THE MONKEY JUMPED.", t: "past"},
+        {hi: "गाड़ी रुक गई।", en: "THE TRAIN STOPPED.", t: "past"},
+        // FUTURE (10)
+        {hi: "हम कल स्कूल जाएँगे।", en: "WE WILL GO TO SCHOOL.", t: "future"},
+        {hi: "वह नया घर खरीदेगा।", en: "HE WILL BUY A HOUSE.", t: "future"},
+        {hi: "आज बारिश होगी।", en: "IT WILL RAIN TODAY.", t: "future"},
+        {hi: "मैं डॉक्टर बनूँगा।", en: "I WILL BECOME A DOCTOR.", t: "future"},
+        {hi: "वे खेलने जाएँगे।", en: "THEY WILL GO TO PLAY.", t: "future"},
+        {hi: "तुम जीत जाओगे।", en: "YOU WILL WIN.", t: "future"},
+        {hi: "खाना तैयार होगा।", en: "FOOD WILL BE READY.", t: "future"},
+        {hi: "पक्षी उड़ जाएँगे।", en: "BIRDS WILL FLY AWAY.", t: "future"},
+        {hi: "तारे चमकेंगे।", en: "STARS WILL SHINE.", t: "future"},
+        {hi: "मैं तुम्हारी मदद करूँगा।", en: "I WILL HELP YOU.", t: "future"}
+    ]; 
+
+    // वाक्यों को रैंडम करने का फंक्शन (Shuffle)
+    function shuffle(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
+    let shuffledQuestions = shuffle([...allQuestions]);
+    let qIndex = 0; 
+    let score = 0; 
+    let currentLang = 'hi';
+    let locked = false;
+
+    const txt = document.getElementById('sentenceText');
+    const fb = document.getElementById('feedbackMsg');
+    const sc = document.getElementById('scoreValue');
+    const nxt = document.getElementById('nextBtn');
+    const btns = document.querySelectorAll('.opt-btn');
+    const pHi = document.getElementById('pillHi');
+    const pEn = document.getElementById('pillEn');
+
+    function loadQ() {
+        locked = false;
+        const q = shuffledQuestions[qIndex];
+        txt.innerText = currentLang === 'hi' ? q.hi : q.en;
+        fb.innerText = "SELECT / चुनो";
+        btns.forEach(b => {
+            b.style.background = "#ffe18e";
+            b.style.color = "#441f00";
+            b.style.opacity = "1";
+            b.style.border = "4px solid #b65800"; // बॉर्डर रिसेट
+        });
+    }
+
+    pHi.onclick = () => { currentLang = 'hi'; pHi.classList.add('active'); pEn.classList.remove('active'); loadQ(); };
+    pEn.onclick = () => { currentLang = 'en'; pEn.classList.add('active'); pHi.classList.remove('active'); loadQ(); };
+
+    btns.forEach(b => {
+        b.addEventListener('click', () => {
+            if(locked) return;
+            const sel = b.getAttribute('data-tense');
+            const cor = shuffledQuestions[qIndex].t;
+            locked = true;
+            if(sel === cor) {
+                fb.innerText = "CORRECT / सही ✅";
+                b.style.background = "#2ecc71";
+                b.style.color = "white";
+                score += 5;
+                sc.innerText = score;
+            } else {
+                fb.innerText = "WRONG / गलत ❌";
+                b.style.background = "#e74c3c";
+                b.style.color = "white";
+                // सही उत्तर वाले बटन को हल्का सा चमकाना
+                btns.forEach(btn => {
+                    if(btn.getAttribute('data-tense') === cor) {
+                        btn.style.border = "4px solid #2ecc71";
+                    }
+                });
+            }
+        });
+    });
+
+    nxt.addEventListener('click', () => {
+        qIndex++;
+        // अगर 30 सवाल खत्म हो जाएं, तो फिर से शफल करें और शुरू करें
+        if(qIndex >= shuffledQuestions.length) {
+            shuffledQuestions = shuffle([...allQuestions]);
+            qIndex = 0;
+        }
+        document.getElementById('qCount').innerText = qIndex + 1;
+        loadQ();
+    });
+
+    loadQ();
+})(); 
+</script> 
+</body> 
+</html>
