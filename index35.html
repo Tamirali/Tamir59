@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>हिंदी मात्रा · संयुक्त अक्षर</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            font-family: 'Nirmala UI', 'Segoe UI', 'Noto Sans Devanagari', sans-serif;
+            background: #0e2d22;
+            overflow: hidden;
+        }
+
+        .app-container {
+            display: flex;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        /* ---------- बायाँ कीबोर्ड ---------- */
+        .keyboard-panel {
+            width: 30%;
+            background: #1e4f3a;
+            padding: 20px 15px;
+            overflow-y: auto;
+            border-right: 6px solid #f9b81b;
+            box-shadow: 6px 0 20px #00000055;
+            scrollbar-width: thin;
+            scrollbar-color: #f9b81b #236b4a;
+        }
+
+        .keyboard-panel h2 {
+            color: #ffdd99;
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 20px;
+            text-shadow: 3px 3px 0 #1a5a38;
+            border-bottom: 3px solid #f9b81b;
+            padding-bottom: 10px;
+        }
+
+        .varna-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .varna-btn {
+            background: #fef7d6;
+            border: none;
+            border-radius: 40px 10px 40px 10px;
+            padding: 18px 0;
+            font-size: 2.3rem;
+            font-weight: bold;
+            color: #1c5227;
+            box-shadow: 0 7px 0 #b1731c, 0 8px 15px black;
+            cursor: pointer;
+            transition: 0.07s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            line-height: 1.1;
+        }
+
+        .varna-btn small {
+            font-size: 1rem;
+            background: #ffd966;
+            padding: 3px 12px;
+            border-radius: 30px;
+            color: #3d2b0f;
+            margin-top: 4px;
+        }
+
+        .varna-btn:active {
+            transform: translateY(6px);
+            box-shadow: 0 2px 0 #b1731c, 0 5px 10px black;
+        }
+
+        .current-badge {
+            background: #feca57;
+            color: #1d452b;
+            padding: 15px;
+            margin-top: 25px;
+            border-radius: 50px;
+            font-size: 1.7rem;
+            font-weight: 800;
+            text-align: center;
+            border: 3px solid white;
+        }
+
+        /* ---------- दायाँ भाग (मात्रा कार्ड) ---------- */
+        .scroll-panel {
+            width: 70%;
+            background: #fcf6e6;
+            padding: 25px 30px;
+            overflow-y: auto;
+            background-image: linear-gradient(145deg, #fff6da, #ffefc0);
+        }
+
+        .header-strip {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 80px 20px 80px 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 0 #b67924, 0 12px 25px #00000040;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-strip h1 {
+            font-size: 2.5rem;
+            color: #175632;
+            text-shadow: 3px 3px 0 #ffbc5c;
+        }
+
+        .header-strip p {
+            font-size: 1.4rem;
+            color: #b1570c;
+            font-weight: 600;
+        }
+
+        .audio-bar {
+            display: flex;
+            gap: 15px;
+        }
+
+        .audio-btn {
+            background: #2f7654;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 40px;
+            color: white;
+            font-size: 1.3rem;
+            font-weight: bold;
+            border: 2px solid #fdc55e;
+            box-shadow: 0 5px 0 #1c5238;
+            cursor: pointer;
+            transition: 0.05s linear;
+        }
+
+        .audio-btn:active {
+            transform: translateY(5px);
+            box-shadow: 0 1px 0 #1c5238;
+        }
+
+        .cards-holder {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .matra-item {
+            background: #fffff2;
+            border-radius: 70px 20px 70px 20px;
+            padding: 20px 30px;
+            border: 5px solid #faa51a;
+            box-shadow: 0 12px 0 #a4661a, 0 15px 30px #724b1b;
+            transition: 0.2s;
+        }
+
+        .matra-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 16px 0 #a4661a, 0 22px 35px #724b1b;
+        }
+
+        .matra-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: #d9f0c5;
+            padding: 8px 28px;
+            border-radius: 50px;
+            width: fit-content;
+            border: 2px solid #ea9010;
+        }
+
+        .matra-sign {
+            font-size: 3.2rem;
+            font-weight: 800;
+            color: #b33f00;
+        }
+
+        .matra-header span:last-child {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1b6535;
+        }
+
+        .joint-block {
+            background: #ffeec2;
+            margin: 25px 0 15px 0;
+            padding: 30px 20px;
+            border-radius: 70px;
+            border: 4px dashed #d97d0b;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: 0.2s;
+            min-height: 160px;
+        }
+
+        .joint-block:active {
+            background: #fede99;
+            transform: scale(0.99);
+        }
+
+        .joint-char {
+            font-size: 7.5rem;
+            font-weight: 800;
+            color: #1e3d29;
+            text-shadow: 5px 5px 0 #fec458;
+            line-height: 1.3;
+            font-family: 'Nirmala UI', 'Noto Sans Devanagari', sans-serif;
+            font-feature-settings: "dlig" on, "clig" on;
+            letter-spacing: normal;
+        }
+
+        .pronounce {
+            display: inline-block;
+            background: #f7bd50;
+            font-size: 2rem;
+            font-weight: 600;
+            padding: 10px 40px;
+            border-radius: 40px;
+            color: #1d4a21;
+            border: 2px solid #aa4d06;
+            margin: 10px 0 5px;
+        }
+
+        .eg-text {
+            font-size: 1.5rem;
+            color: #2d5016;
+            background: #ecffe1;
+            padding: 10px 30px;
+            border-radius: 40px;
+            display: inline-block;
+            font-weight: bold;
+        }
+
+        .speak-flash {
+            animation: soundWave 0.4s ease 2;
+            background-color: #fddf9e !important;
+        }
+
+        @keyframes soundWave {
+            0% { background-color: #ffe39b; border-color: #f39c12; }
+            50% { background-color: #fbb83b; border-color: #c4450c; transform: scale(1.01); }
+        }
+
+        .new-char-anim {
+            animation: charPop 0.2s ease-out;
+        }
+
+        @keyframes charPop {
+            from { opacity: 0.6; transform: scale(0.95); }
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <div class="keyboard-panel">
+        <h2>🔤 व्यंजन चुनें</h2>
+        <div class="varna-grid" id="varnaGrid"></div>
+        <div class="current-badge" id="currentVarna">✔ क (ka)</div>
+    </div>
+
+    <div class="scroll-panel">
+        <div class="header-strip">
+            <div>
+                <h1>🌸 संयुक्त मात्रा 🌸</h1>
+                <p>अक्षर और मात्रा एक में ढले</p>
+            </div>
+            <div class="audio-bar">
+                <button class="audio-btn" id="playAllBtn">🔊 सभी सुनें</button>
+                <button class="audio-btn" id="stopBtn">⏹️ शांत</button>
+            </div>
+        </div>
+
+        <div class="cards-holder" id="cardsHolder"></div>
+        <p style="text-align: center; margin-top: 25px; color: #a34904;">✦ कार्ड पर क्लिक करें — उच्चारण सुनें ✦</p>
+    </div>
+</div>
+
+<script>
+    (function() {
+        const consonants = [
+            ['क','ka'],['ख','kha'],['ग','ga'],['घ','gha'],['ङ','nga'],
+            ['च','cha'],['छ','chha'],['ज','ja'],['झ','jha'],['ञ','nya'],
+            ['ट','ta'],['ठ','tha'],['ड','da'],['ढ','dha'],['ण','na'],
+            ['त','ta'],['थ','tha'],['द','da'],['ध','dha'],['न','na'],
+            ['प','pa'],['फ','pha'],['ब','ba'],['भ','bha'],['म','ma'],
+            ['य','ya'],['र','ra'],['ल','la'],['व','va'],['श','sha'],
+            ['ष','sha'],['स','sa'],['ह','ha'],['क्ष','ksha'],['त्र','tra'],['ज्ञ','gya']
+        ];
+
+        const matras = [
+            { id: 'aa', sign: 'ा', roman: 'aa', name: 'आ (ा)', eg: 'न' },
+            { id: 'i', sign: 'ि', roman: 'i', name: 'इ (ि)', eg: 'ताब' },   
+            { id: 'ee', sign: 'ी', roman: 'ee', name: 'ई (ी)', eg: 'मत' },
+            { id: 'u', sign: 'ु', roman: 'u', name: 'उ (ु)', eg: 'लाब' },
+            { id: 'oo', sign: 'ू', roman: 'oo', name: 'ऊ (ू)', eg: 'ल' },
+            { id: 'e', sign: 'े', roman: 'e', name: 'ए (े)', eg: 'ला' },
+            { id: 'ai', sign: 'ै', roman: 'ai', name: 'ऐ (ै)', eg: 'सा' },
+            { id: 'o', sign: 'ो', roman: 'o', name: 'ओ (ो)', eg: 'टा' },
+            { id: 'au', sign: 'ौ', roman: 'au', name: 'औ (ौ)', eg: 'न' },
+            { id: 'an', sign: 'ं', roman: 'an', name: 'अं (ं)', eg: 'ग' },
+            { id: 'ah', sign: 'ः', roman: 'ah', name: 'अः (ः)', eg: ' नमः' }
+        ];
+
+        let currentConsonant = 'क';
+        let currentRoman = 'ka';
+
+        const varnaGrid = document.getElementById('varnaGrid');
+        const currentVarnaSpan = document.getElementById('currentVarna');
+        const cardsHolder = document.getElementById('cardsHolder');
+        const playAllBtn = document.getElementById('playAllBtn');
+        const stopBtn = document.getElementById('stopBtn');
+
+        const synth = window.speechSynthesis;
+        let timeoutId = null;
+
+        consonants.forEach(([hindi, roman]) => {
+            const btn = document.createElement('button');
+            btn.className = 'varna-btn';
+            btn.innerHTML = `${hindi} <small>${roman}</small>`;
+            btn.addEventListener('click', () => setConsonant(hindi, roman));
+            varnaGrid.appendChild(btn);
+        });
+
+        function buildMatraCards() {
+            cardsHolder.innerHTML = '';
+            matras.forEach(m => {
+                const card = document.createElement('div');
+                card.className = 'matra-item';
+                card.dataset.matraId = m.id;
+
+                const head = document.createElement('div');
+                head.className = 'matra-header';
+                head.innerHTML = `<span class="matra-sign">${m.sign}</span><span>${m.name}</span>`;
+
+                const jointDiv = document.createElement('div');
+                jointDiv.className = 'joint-block';
+                jointDiv.id = `joint-${m.id}`;
+
+                const jointChar = document.createElement('div');
+                jointChar.className = 'joint-char';
+                jointChar.id = `char-${m.id}`;
+                
+                // र + उ / ऊ का लॉजिकल अपवाद हैंडलर
+                if (currentConsonant === 'र' && m.id === 'u') {
+                    jointChar.textContent = 'रु';
+                } else if (currentConsonant === 'र' && m.id === 'oo') {
+                    jointChar.textContent = 'रू';
+                } else {
+                    jointChar.textContent = currentConsonant + m.sign;
+                }
+                
+                jointDiv.appendChild(jointChar);
+
+                const phone = document.createElement('div');
+                phone.className = 'pronounce';
+                phone.id = `phone-${m.id}`;
+                
+                // रोमन संयोजन में सुधार
+                let baseRoman = currentRoman.endsWith('a') ? currentRoman.slice(0, -1) : currentRoman;
+                if(m.id === 'aa') phone.textContent = baseRoman + 'aa';
+                else if(m.id === 'an') phone.textContent = baseRoman + 'an';
+                else if(m.id === 'ah') phone.textContent = baseRoman + 'ah';
+                else phone.textContent = baseRoman + m.roman;
+
+                const eg = document.createElement('div');
+                eg.className = 'eg-text';
+                eg.id = `eg-${m.id}`;
+                
+                // डायनेमिक असली शब्द उदाहरण जेनरेशन
+                let displayText = (currentConsonant === 'र' && m.id === 'u') ? 'रु' : ((currentConsonant === 'र' && m.id === 'oo') ? 'रू' : currentConsonant + m.sign);
+                eg.textContent = `उदाहरण शब्द: ${displayText}${m.eg}`;
+
+                jointDiv.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    speakMatra(m.id);
+                });
+
+                card.appendChild(head);
+                card.appendChild(jointDiv);
+                card.appendChild(phone);
+                card.appendChild(eg);
+                cardsHolder.appendChild(card);
+            });
+        }
+        buildMatraCards();
+
+        function setConsonant(hindi, roman) {
+            currentConsonant = hindi;
+            currentRoman = roman;
+            currentVarnaSpan.innerText = `✔ ${hindi} (${roman})`;
+
+            matras.forEach(m => {
+                const charDiv = document.getElementById(`char-${m.id}`);
+                if (charDiv) {
+                    if (hindi === 'र' && m.id === 'u') charDiv.textContent = 'रु';
+                    else if (hindi === 'र' && m.id === 'oo') charDiv.textContent = 'रू';
+                    else charDiv.textContent = hindi + m.sign;
+                }
+
+                const phoneDiv = document.getElementById(`phone-${m.id}`);
+                if (phoneDiv) {
+                    let baseRoman = roman.endsWith('a') ? roman.slice(0, -1) : roman;
+                    if(m.id === 'aa') phoneDiv.textContent = baseRoman + 'aa';
+                    else if(m.id === 'an') phoneDiv.textContent = baseRoman + 'an';
+                    else if(m.id === 'ah') phoneDiv.textContent = baseRoman + 'ah';
+                    else phoneDiv.textContent = baseRoman + m.roman;
+                }
+
+                const egDiv = document.getElementById(`eg-${m.id}`);
+                if (egDiv) {
+                    let displayText = (hindi === 'र' && m.id === 'u') ? 'रु' : ((hindi === 'र' && m.id === 'oo') ? 'रू' : hindi + m.sign);
+                    egDiv.textContent = `उदाहरण शब्द: ${displayText}${m.eg}`;
+                }
+            });
+
+            document.querySelectorAll('.matra-item').forEach(el => {
+                el.classList.add('new-char-anim');
+                setTimeout(() => el.classList.remove('new-char-anim'), 200);
+            });
+        }
+
+        function speakMatra(matraId) {
+            stopSpeech();
+
+            const matra = matras.find(m => m.id === matraId);
+            if (!matra) return;
+
+            let word = currentConsonant + matra.sign;
+            if (currentConsonant === 'र' && matraId === 'u') word = 'रु';
+            if (currentConsonant === 'र' && matraId === 'oo') word = 'रू';
+
+            const utterance = new SpeechSynthesisUtterance(word);
+            utterance.lang = 'hi-IN';
+            utterance.rate = 0.8;
+            utterance.pitch = 1.0;
+
+            const setHindiVoice = () => {
+                const voices = synth.getVoices();
+                const hindiVoice = voices.find(v => v.lang.includes('hi') || v.lang.includes('IN'));
+                if (hindiVoice) utterance.voice = hindiVoice;
+            };
+            setHindiVoice();
+
+            const jointBlock = document.getElementById(`joint-${matraId}`);
+            if (jointBlock) jointBlock.classList.add('speak-flash');
+
+            utterance.onend = () => {
+                if (jointBlock) jointBlock.classList.remove('speak-flash');
+            };
+            utterance.onerror = () => {
+                if (jointBlock) jointBlock.classList.remove('speak-flash');
+            };
+
+            synth.speak(utterance);
+        }
+
+        function stopSpeech() {
+            if (synth.speaking) {
+                synth.cancel();
+            }
+            document.querySelectorAll('.joint-block').forEach(el => el.classList.remove('speak-flash'));
+            if (timeoutId) clearTimeout(timeoutId);
+        }
+
+        function playAllCards() {
+            stopSpeech();
+            let idx = 0;
+
+            function playNext() {
+                if (idx < matras.length) {
+                    const matraId = matras[idx].id;
+                    speakMatra(matraId);
+                    timeoutId = setTimeout(() => {
+                        idx++;
+                        playNext();
+                    }, 1400);
+                } else {
+                    timeoutId = null;
+                }
+            }
+            playNext();
+        }
+
+        playAllBtn.addEventListener('click', playAllCards);
+        stopBtn.addEventListener('click', stopSpeech);
+
+        setConsonant('क', 'ka');
+    })();
+</script>
+</body>
+</html>
