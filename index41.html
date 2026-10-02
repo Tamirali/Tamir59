@@ -1,0 +1,1491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Total – 1000 Daily Life Sentences</title>
+    <style>
+        /* ----- RESET & BASE ----- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #ffffff;
+            font-family: 'Segoe UI', Roboto, system-ui, -apple-system, sans-serif;
+            color: #000000;
+            padding: 20px 16px 40px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 20px 24px 40px;
+        }
+
+        /* ----- BANNER: "English total" ----- */
+        .banner {
+            text-align: center;
+            padding: 30px 20px 20px;
+            border-bottom: 4px solid #000000;
+            margin-bottom: 28px;
+        }
+
+        .banner h1 {
+            font-size: 4.2rem;
+            font-weight: 900;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: #000000;
+            margin: 0;
+            line-height: 1.1;
+            word-break: break-word;
+        }
+
+        .banner .sub-tag {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #222;
+            margin-top: 6px;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            border-top: 2px solid #000;
+            display: inline-block;
+            padding-top: 6px;
+        }
+
+        @media (max-width: 600px) {
+            .banner h1 {
+                font-size: 2.6rem;
+                letter-spacing: 2px;
+            }
+            .banner .sub-tag {
+                font-size: 0.8rem;
+                letter-spacing: 3px;
+            }
+        }
+
+        /* ----- INTRO TEXT ----- */
+        .intro-text {
+            font-size: 1.05rem;
+            font-weight: 500;
+            color: #111;
+            padding: 14px 0 18px;
+            border-bottom: 1px solid #ccc;
+            margin-bottom: 30px;
+            line-height: 1.7;
+        }
+
+        .intro-text strong {
+            color: #000;
+            font-weight: 700;
+        }
+
+        /* ----- CATEGORY ----- */
+        .category {
+            margin-bottom: 44px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 28px;
+        }
+
+        .category:last-of-type {
+            border-bottom: none;
+            margin-bottom: 10px;
+        }
+
+        .cat-title {
+            font-size: 1.9rem;
+            font-weight: 800;
+            color: #000000;
+            margin-bottom: 4px;
+            letter-spacing: -0.5px;
+            border-left: 8px solid #000;
+            padding-left: 16px;
+        }
+
+        .cat-sub {
+            font-size: 1.05rem;
+            font-weight: 500;
+            color: #222;
+            margin-bottom: 18px;
+            padding-left: 24px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 8px;
+        }
+
+        .cat-sub span {
+            font-weight: 300;
+            color: #444;
+        }
+
+        /* ----- SENTENCE GRID ----- */
+        .sentence-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .sentence-item {
+            display: flex;
+            align-items: baseline;
+            gap: 6px 14px;
+            padding: 4px 6px 4px 12px;
+            border-bottom: 1px solid #f0f0f0;
+            flex-wrap: wrap;
+            transition: background 0.1s;
+        }
+
+        .sentence-item:hover {
+            background: #f8f8f8;
+        }
+
+        .s-number {
+            font-weight: 700;
+            color: #000000;
+            min-width: 48px;
+            font-size: 0.9rem;
+        }
+
+        .s-hi {
+            font-weight: 500;
+            color: #000000;
+            font-size: 1rem;
+            flex: 1 1 200px;
+        }
+
+        .s-en {
+            font-weight: 400;
+            color: #111;
+            font-size: 0.98rem;
+            flex: 1 1 260px;
+            padding-left: 4px;
+            border-left: 2px solid #ddd;
+            padding-left: 12px;
+        }
+
+        .s-en::before {
+            content: "→ ";
+            color: #555;
+            font-weight: 300;
+        }
+
+        /* ----- RESPONSIVE ----- */
+        @media (max-width: 700px) {
+            .container {
+                padding: 12px 12px 28px;
+            }
+
+            .cat-title {
+                font-size: 1.5rem;
+                padding-left: 12px;
+                border-left-width: 6px;
+            }
+
+            .cat-sub {
+                font-size: 0.9rem;
+                padding-left: 18px;
+            }
+
+            .sentence-item {
+                padding: 4px 4px 4px 8px;
+                gap: 2px 8px;
+            }
+
+            .s-number {
+                min-width: 38px;
+                font-size: 0.8rem;
+            }
+
+            .s-hi {
+                font-size: 0.92rem;
+                flex: 1 1 100%;
+            }
+
+            .s-en {
+                font-size: 0.88rem;
+                flex: 1 1 100%;
+                border-left: none;
+                padding-left: 0;
+                padding-left: 10px;
+                border-top: 1px dashed #eee;
+                padding-top: 2px;
+            }
+
+            .s-en::before {
+                content: "→ ";
+            }
+
+            .intro-text {
+                font-size: 0.95rem;
+                padding: 10px 0 14px;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .banner h1 {
+                font-size: 2.0rem;
+            }
+            .cat-title {
+                font-size: 1.25rem;
+            }
+            .s-hi {
+                font-size: 0.85rem;
+            }
+            .s-en {
+                font-size: 0.82rem;
+            }
+        }
+
+        /* ----- END NOTE ----- */
+        .end-note {
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.1rem;
+            padding: 28px 0 10px;
+            border-top: 3px solid #000;
+            margin-top: 20px;
+            color: #000;
+        }
+
+        .end-note small {
+            font-weight: 400;
+            font-size: 0.9rem;
+            color: #333;
+            display: block;
+            margin-top: 6px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <!-- ===== BANNER: English total ===== -->
+        <header class="banner">
+            <h1>English total</h1>
+            <div class="sub-tag">1000 Daily Life Sentences</div>
+        </header>
+
+        <!-- ===== INTRO ===== -->
+        <div class="intro-text">
+            भारत में रोज़मर्रा की बातचीत में सबसे ज़्यादा इस्तेमाल होने वाले वाक्यों का यह एक महासंग्रह है।
+            इन वाक्यों को सीखकर आप किसी से भी आसानी से बात कर सकते हैं, अपनी बात समझा सकते हैं
+            और दूसरों की बात समझ सकते हैं।<br>
+            <strong>1000 वाक्यों को 20 अलग-अलग श्रेणियों (Categories)</strong> में बाँटा गया है,
+            जिसमें हर श्रेणी में <strong>50-50</strong> बेहद काम के वाक्य दिए गए हैं।
+        </div>
+
+        <!-- ============================================================== -->
+        <!-- CATEGORY 1: सामान्य अभिवादन और शिष्टाचार (1-50)                -->
+        <!-- ============================================================== -->
+        <section class="category">
+            <h2 class="cat-title">1. सामान्य अभिवादन और शिष्टाचार</h2>
+            <div class="cat-sub">Greetings &amp; Manners <span>— 1 to 50</span></div>
+            <div class="sentence-grid">
+                <div class="sentence-item"><span class="s-number">1.</span><span class="s-hi">नमस्ते, आप कैसे हैं?</span><span class="s-en">Hello, how are you?</span></div>
+                <div class="sentence-item"><span class="s-number">2.</span><span class="s-hi">मैं ठीक हूँ, धन्यवाद।</span><span class="s-en">I am fine, thank you.</span></div>
+                <div class="sentence-item"><span class="s-number">3.</span><span class="s-hi">आपका नाम क्या है?</span><span class="s-en">What is your name?</span></div>
+                <div class="sentence-item"><span class="s-number">4.</span><span class="s-hi">मेरा नाम तामीर है।</span><span class="s-en">My name is Tamir.</span></div>
+                <div class="sentence-item"><span class="s-number">5.</span><span class="s-hi">आपसे मिलकर खुशी हुई।</span><span class="s-en">Nice to meet you.</span></div>
+                <div class="sentence-item"><span class="s-number">6.</span><span class="s-hi">बहुत-बहुत धन्यवाद।</span><span class="s-en">Thank you so much.</span></div>
+                <div class="sentence-item"><span class="s-number">7.</span><span class="s-hi">कोई बात नहीं।</span><span class="s-en">No problem. / It's okay.</span></div>
+                <div class="sentence-item"><span class="s-number">8.</span><span class="s-hi">स्वागत है।</span><span class="s-en">You are welcome.</span></div>
+                <div class="sentence-item"><span class="s-number">9.</span><span class="s-hi">माफ़ कीजिये।</span><span class="s-en">Excuse me. / I am sorry.</span></div>
+                <div class="sentence-item"><span class="s-number">10.</span><span class="s-hi">कृपया मेरी मदद करें।</span><span class="s-en">Please help me.</span></div>
+                <div class="sentence-item"><span class="s-number">11.</span><span class="s-hi">सब ठीक है?</span><span class="s-en">Is everything okay?</span></div>
+                <div class="sentence-item"><span class="s-number">12.</span><span class="s-hi">हाँ, सब ठीक है।</span><span class="s-en">Yes, everything is fine.</span></div>
+                <div class="sentence-item"><span class="s-number">13.</span><span class="s-hi">आप कहाँ से हैं?</span><span class="s-en">Where are you from?</span></div>
+                <div class="sentence-item"><span class="s-number">14.</span><span class="s-hi">मैं भारत से हूँ।</span><span class="s-en">I am from India.</span></div>
+                <div class="sentence-item"><span class="s-number">15.</span><span class="s-hi">आप क्या करते हैं?</span><span class="s-en">What do you do?</span></div>
+                <div class="sentence-item"><span class="s-number">16.</span><span class="s-hi">मैं एक डेवलपर हूँ।</span><span class="s-en">I am a developer.</span></div>
+                <div class="sentence-item"><span class="s-number">17.</span><span class="s-hi">बहुत बढ़िया!</span><span class="s-en">Awesome! / Great!</span></div>
+                <div class="sentence-item"><span class="s-number">18.</span><span class="s-hi">कोई बात नहीं, जाने दो।</span><span class="s-en">Never mind, let it be.</span></div>
+                <div class="sentence-item"><span class="s-number">19.</span><span class="s-hi">क्या आप अंग्रेज़ी बोलते हैं?</span><span class="s-en">Do you speak English?</span></div>
+                <div class="sentence-item"><span class="s-number">20.</span><span class="s-hi">थोड़ी-बहुत बोल लेता हूँ।</span><span class="s-en">I speak a little bit.</span></div>
+                <div class="sentence-item"><span class="s-number">21.</span><span class="s-hi">आपका दिन शुभ हो!</span><span class="s-en">Have a nice day!</span></div>
+                <div class="sentence-item"><span class="s-number">22.</span><span class="s-hi">फिर मिलेंगे।</span><span class="s-en">See you again.</span></div>
+                <div class="sentence-item"><span class="s-number">23.</span><span class="s-hi">अलविदा!</span><span class="s-en">Goodbye!</span></div>
+                <div class="sentence-item"><span class="s-number">24.</span><span class="s-hi">अपना ख्याल रखना।</span><span class="s-en">Take care of yourself.</span></div>
+                <div class="sentence-item"><span class="s-number">25.</span><span class="s-hi">बधाई हो!</span><span class="s-en">Congratulations!</span></div>
+                <div class="sentence-item"><span class="s-number">26.</span><span class="s-hi">यह मेरा सौभाग्य है।</span><span class="s-en">It's my pleasure.</span></div>
+                <div class="sentence-item"><span class="s-number">27.</span><span class="s-hi">क्या चल रहा है?</span><span class="s-en">What's up? / What's going on?</span></div>
+                <div class="sentence-item"><span class="s-number">28.</span><span class="s-hi">कुछ खास नहीं।</span><span class="s-en">Nothing special.</span></div>
+                <div class="sentence-item"><span class="s-number">29.</span><span class="s-hi">सच में?</span><span class="s-en">Really?</span></div>
+                <div class="sentence-item"><span class="s-number">30.</span><span class="s-hi">मुझे ऐसा नहीं लगता।</span><span class="s-en">I don't think so.</span></div>
+                <div class="sentence-item"><span class="s-number">31.</span><span class="s-hi">बिल्कुल सही।</span><span class="s-en">Absolutely right.</span></div>
+                <div class="sentence-item"><span class="s-number">32.</span><span class="s-hi">शांत हो जाओ।</span><span class="s-en">Calm down.</span></div>
+                <div class="sentence-item"><span class="s-number">33.</span><span class="s-hi">चिंता मत करो।</span><span class="s-en">Don't worry.</span></div>
+                <div class="sentence-item"><span class="s-number">34.</span><span class="s-hi">मैं समझता हूँ।</span><span class="s-en">I understand.</span></div>
+                <div class="sentence-item"><span class="s-number">35.</span><span class="s-hi">क्या आप समझ रहे हैं?</span><span class="s-en">Do you understand?</span></div>
+                <div class="sentence-item"><span class="s-number">36.</span><span class="s-hi">मुझे माफ़ कर दो।</span><span class="s-en">Please forgive me.</span></div>
+                <div class="sentence-item"><span class="s-number">37.</span><span class="s-hi">यह बहुत अच्छा है।</span><span class="s-en">This is very good.</span></div>
+                <div class="sentence-item"><span class="s-number">38.</span><span class="s-hi">जैसी आपकी मर्ज़ी।</span><span class="s-en">As you wish. / As you like.</span></div>
+                <div class="sentence-item"><span class="s-number">39.</span><span class="s-hi">क्या आप व्यस्त हैं?</span><span class="s-en">Are you busy?</span></div>
+                <div class="sentence-item"><span class="s-number">40.</span><span class="s-hi">नहीं, मैं खाली हूँ।</span><span class="s-en">No, I am free.</span></div>
+                <div class="sentence-item"><span class="s-number">41.</span><span class="s-hi">थोड़ा रुको।</span><span class="s-en">Wait a minute. / Hold on.</span></div>
+                <div class="sentence-item"><span class="s-number">42.</span><span class="s-hi">अंदर आ जाओ।</span><span class="s-en">Come in.</span></div>
+                <div class="sentence-item"><span class="s-number">43.</span><span class="s-hi">बैठ जाइए।</span><span class="s-en">Please sit down.</span></div>
+                <div class="sentence-item"><span class="s-number">44.</span><span class="s-hi">ध्यान से सुनो।</span><span class="s-en">Listen carefully.</span></div>
+                <div class="sentence-item"><span class="s-number">45.</span><span class="s-hi">धीरे बोलिए।</span><span class="s-en">Speak slowly, please.</span></div>
+                <div class="sentence-item"><span class="s-number">46.</span><span class="s-hi">ज़ोर से बोलिए।</span><span class="s-en">Speak louder, please.</span></div>
+                <div class="sentence-item"><span class="s-number">47.</span><span class="s-hi">मुझे जाने दीजिए।</span><span class="s-en">Please let me go.</span></div>
+                <div class="sentence-item"><span class="s-number">48.</span><span class="s-hi">कोई बात नहीं।</span><span class="s-en">It doesn't matter.</span></div>
+                <div class="sentence-item"><span class="s-number">49.</span><span class="s-hi">क्या यह सच है?</span><span class="s-en">Is it true?</span></div>
+                <div class="sentence-item"><span class="s-number">50.</span><span class="s-hi">हाँ, यह सच है।</span><span class="s-en">Yes, it is true.</span></div>
+            </div>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- CATEGORY 2: घर और परिवार (51-100)                               -->
+        <!-- ============================================================== -->
+        <section class="category">
+            <h2 class="cat-title">2. घर और परिवार की बातचीत</h2>
+            <div class="cat-sub">Home &amp; Family <span>— 51 to 100</span></div>
+            <div class="sentence-grid">
+                <div class="sentence-item"><span class="s-number">51.</span><span class="s-hi">आप कब उठे?</span><span class="s-en">When did you wake up?</span></div>
+                <div class="sentence-item"><span class="s-number">52.</span><span class="s-hi">मैं सुबह 6 बजे उठा।</span><span class="s-en">I woke up at 6 AM.</span></div>
+                <div class="sentence-item"><span class="s-number">53.</span><span class="s-hi">जाकर ब्रश कर लो।</span><span class="s-en">Go and brush your teeth.</span></div>
+                <div class="sentence-item"><span class="s-number">54.</span><span class="s-hi">नाश्ता तैयार है।</span><span class="s-en">Breakfast is ready.</span></div>
+                <div class="sentence-item"><span class="s-number">55.</span><span class="s-hi">आज नाश्ते में क्या है?</span><span class="s-en">What is for breakfast today?</span></div>
+                <div class="sentence-item"><span class="s-number">56.</span><span class="s-hi">मुझे चाय चाहिए।</span><span class="s-en">I want tea.</span></div>
+                <div class="sentence-item"><span class="s-number">57.</span><span class="s-hi">दूध उबल रहा है।</span><span class="s-en">The milk is boiling.</span></div>
+                <div class="sentence-item"><span class="s-number">58.</span><span class="s-hi">पानी गर्म कर दो।</span><span class="s-en">Heat the water.</span></div>
+                <div class="sentence-item"><span class="s-number">59.</span><span class="s-hi">पंखा चालू कर दो।</span><span class="s-en">Turn on the fan.</span></div>
+                <div class="sentence-item"><span class="s-number">60.</span><span class="s-hi">लाइट बंद कर दो।</span><span class="s-en">Turn off the light.</span></div>
+                <div class="sentence-item"><span class="s-number">61.</span><span class="s-hi">दरवाज़ा बंद करो।</span><span class="s-en">Close the door.</span></div>
+                <div class="sentence-item"><span class="s-number">62.</span><span class="s-hi">खिड़की खोल दो।</span><span class="s-en">Open the window.</span></div>
+                <div class="sentence-item"><span class="s-number">63.</span><span class="s-hi">बिस्तर सही कर लो।</span><span class="s-en">Make the bed.</span></div>
+                <div class="sentence-item"><span class="s-number">64.</span><span class="s-hi">मेरे कपड़े कहाँ हैं?</span><span class="s-en">Where are my clothes?</span></div>
+                <div class="sentence-item"><span class="s-number">65.</span><span class="s-hi">अलमारी में देखो।</span><span class="s-en">Look in the almirah.</span></div>
+                <div class="sentence-item"><span class="s-number">66.</span><span class="s-hi">आज बहुत काम है।</span><span class="s-en">There is a lot of work today.</span></div>
+                <div class="sentence-item"><span class="s-number">67.</span><span class="s-hi">घर साफ़ करो।</span><span class="s-en">Clean the house.</span></div>
+                <div class="sentence-item"><span class="s-number">68.</span><span class="s-hi">झाड़ू लगा दो।</span><span class="s-en">Sweep the floor.</span></div>
+                <div class="sentence-item"><span class="s-number">69.</span><span class="s-hi">पोछा मार दो।</span><span class="s-en">Mop the floor.</span></div>
+                <div class="sentence-item"><span class="s-number">70.</span><span class="s-hi">कपड़े धो लो।</span><span class="s-en">Wash the clothes.</span></div>
+                <div class="sentence-item"><span class="s-number">71.</span><span class="s-hi">कपड़े सूखने डाल दो।</span><span class="s-en">Hang the clothes to dry.</span></div>
+                <div class="sentence-item"><span class="s-number">72.</span><span class="s-hi">खाना पक गया है।</span><span class="s-en">The food is cooked.</span></div>
+                <div class="sentence-item"><span class="s-number">73.</span><span class="s-hi">थाली लगा दो।</span><span class="s-en">Serve the food. / Set the plate.</span></div>
+                <div class="sentence-item"><span class="s-number">74.</span><span class="s-hi">खाना बहुत स्वादिष्ट है।</span><span class="s-en">The food is delicious.</span></div>
+                <div class="sentence-item"><span class="s-number">75.</span><span class="s-hi">थोड़ा और लो।</span><span class="s-en">Have some more.</span></div>
+                <div class="sentence-item"><span class="s-number">76.</span><span class="s-hi">मेरा पेट भर गया।</span><span class="s-en">I am full.</span></div>
+                <div class="sentence-item"><span class="s-number">77.</span><span class="s-hi">बर्तन धो लो।</span><span class="s-en">Do the dishes.</span></div>
+                <div class="sentence-item"><span class="s-number">78.</span><span class="s-hi">कूड़ा बाहर फेंक दो।</span><span class="s-en">Throw the garbage outside.</span></div>
+                <div class="sentence-item"><span class="s-number">79.</span><span class="s-hi">बच्चे कहाँ हैं?</span><span class="s-en">Where are the children?</span></div>
+                <div class="sentence-item"><span class="s-number">80.</span><span class="s-hi">बच्चे पढ़ाई कर रहे हैं।</span><span class="s-en">The children are studying.</span></div>
+                <div class="sentence-item"><span class="s-number">81.</span><span class="s-hi">टीवी बंद करो।</span><span class="s-en">Turn off the TV.</span></div>
+                <div class="sentence-item"><span class="s-number">82.</span><span class="s-hi">बहुत शोर हो रहा है।</span><span class="s-en">It's too noisy.</span></div>
+                <div class="sentence-item"><span class="s-number">83.</span><span class="s-hi">सो जाओ, देर हो गई है।</span><span class="s-en">Go to sleep, it's late.</span></div>
+                <div class="sentence-item"><span class="s-number">84.</span><span class="s-hi">चाबी कहाँ रखी है?</span><span class="s-en">Where is the key kept?</span></div>
+                <div class="sentence-item"><span class="s-number">85.</span><span class="s-hi">मेज़ पर देखो।</span><span class="s-en">Look on the table.</span></div>
+                <div class="sentence-item"><span class="s-number">86.</span><span class="s-hi">आज कौन आ रहा है?</span><span class="s-en">Who is coming today?</span></div>
+                <div class="sentence-item"><span class="s-number">87.</span><span class="s-hi">मेहमान आने वाले हैं।</span><span class="s-en">Guests are about to arrive.</span></div>
+                <div class="sentence-item"><span class="s-number">88.</span><span class="s-hi">उन्हें पानी दो।</span><span class="s-en">Give them water.</span></div>
+                <div class="sentence-item"><span class="s-number">89.</span><span class="s-hi">बैठिए, पापा आते ही होंगे।</span><span class="s-en">Please sit, father will be here soon.</span></div>
+                <div class="sentence-item"><span class="s-number">90.</span><span class="s-hi">अपनी माँ की मदद करो।</span><span class="s-en">Help your mother.</span></div>
+                <div class="sentence-item"><span class="s-number">91.</span><span class="s-hi">जूते बाहर निकालो।</span><span class="s-en">Take off your shoes outside.</span></div>
+                <div class="sentence-item"><span class="s-number">92.</span><span class="s-hi">हाथ धोकर खाना खाओ।</span><span class="s-en">Wash your hands and eat.</span></div>
+                <div class="sentence-item"><span class="s-number">93.</span><span class="s-hi">नल बंद कर दो, पानी बह रहा है।</span><span class="s-en">Turn off the tap, water is running.</span></div>
+                <div class="sentence-item"><span class="s-number">94.</span><span class="s-hi">आज का अखबार कहाँ है?</span><span class="s-en">Where is today's newspaper?</span></div>
+                <div class="sentence-item"><span class="s-number">95.</span><span class="s-hi">पापा बुला रहे हैं।</span><span class="s-en">Father is calling.</span></div>
+                <div class="sentence-item"><span class="s-number">96.</span><span class="s-hi">अपनी बहन से मत लड़ो।</span><span class="s-en">Don't fight with your sister.</span></div>
+                <div class="sentence-item"><span class="s-number">97.</span><span class="s-hi">बड़ों का आदर करो।</span><span class="s-en">Respect your elders.</span></div>
+                <div class="sentence-item"><span class="s-number">98.</span><span class="s-hi">सीधे बैठो।</span><span class="s-en">Sit upright.</span></div>
+                <div class="sentence-item"><span class="s-number">99.</span><span class="s-hi">पैर मत हिलाओ।</span><span class="s-en">Don't shake your legs.</span></div>
+                <div class="sentence-item"><span class="s-number">100.</span><span class="s-hi">चलो सोते हैं।</span><span class="s-en">Let's go to sleep.</span></div>
+            </div>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- CATEGORY 3: बाज़ार और ख़रीददारी (101-150)                      -->
+        <!-- ============================================================== -->
+        <section class="category">
+            <h2 class="cat-title">3. बाज़ार और ख़रीददारी</h2>
+            <div class="cat-sub">Market &amp; Shopping <span>— 101 to 150</span></div>
+            <div class="sentence-grid">
+                <div class="sentence-item"><span class="s-number">101.</span><span class="s-hi">मुझे बाज़ार जाना है।</span><span class="s-en">I have to go to the market.</span></div>
+                <div class="sentence-item"><span class="s-number">102.</span><span class="s-hi">क्या लाना है?</span><span class="s-en">What is to be brought?</span></div>
+                <div class="sentence-item"><span class="s-number">103.</span><span class="s-hi">एक लिस्ट बना लो।</span><span class="s-en">Make a list.</span></div>
+                <div class="sentence-item"><span class="s-number">104.</span><span class="s-hi">यह दुकान कहाँ है?</span><span class="s-en">Where is this shop?</span></div>
+                <div class="sentence-item"><span class="s-number">105.</span><span class="s-hi">आलू क्या भाव है?</span><span class="s-en">What is the price of potatoes?</span></div>
+                <div class="sentence-item"><span class="s-number">106.</span><span class="s-hi">यह बहुत महँगा है।</span><span class="s-en">This is very expensive.</span></div>
+                <div class="sentence-item"><span class="s-number">107.</span><span class="s-hi">कुछ सस्ता दिखाओ।</span><span class="s-en">Show something cheaper.</span></div>
+                <div class="sentence-item"><span class="s-number">108.</span><span class="s-hi">भैया, सही दाम लगाओ।</span><span class="s-en">Brother, give a fair price.</span></div>
+                <div class="sentence-item"><span class="s-number">109.</span><span class="s-hi">क्या आपके पास ताज़ी सब्ज़ियाँ हैं?</span><span class="s-en">Do you have fresh vegetables?</span></div>
+                <div class="sentence-item"><span class="s-number">110.</span><span class="s-hi">एक किलो टमाटर देना।</span><span class="s-en">Give me one kg of tomatoes.</span></div>
+                <div class="sentence-item"><span class="s-number">111.</span><span class="s-hi">यह कितने का है?</span><span class="s-en">How much is this for?</span></div>
+                <div class="sentence-item"><span class="s-number">112.</span><span class="s-hi">इसका कुल कितना हुआ?</span><span class="s-en">How much is the total?</span></div>
+                <div class="sentence-item"><span class="s-number">113.</span><span class="s-hi">क्या आप ऑनलाइन पेमेंट लेते हैं?</span><span class="s-en">Do you accept online payment?</span></div>
+                <div class="sentence-item"><span class="s-number">114.</span><span class="s-hi">मेरे पास छुट्टे पैसे नहीं हैं।</span><span class="s-en">I don't have change.</span></div>
+                <div class="sentence-item"><span class="s-number">115.</span><span class="s-hi">मुझे एक बैग चाहिए।</span><span class="s-en">I need a bag.</span></div>
+                <div class="sentence-item"><span class="s-number">116.</span><span class="s-hi">यह कपड़ा अच्छा है।</span><span class="s-en">This cloth is good.</span></div>
+                <div class="sentence-item"><span class="s-number">117.</span><span class="s-hi">क्या इसका कोई और रंग है?</span><span class="s-en">Do you have any other color for this?</span></div>
+                <div class="sentence-item"><span class="s-number">118.</span><span class="s-hi">मुझे यह साइज़ नहीं आएगा।</span><span class="s-en">This size won't fit me.</span></div>
+                <div class="sentence-item"><span class="s-number">119.</span><span class="s-hi">कोई बड़ा साइज़ दिखाओ।</span><span class="s-en">Show a bigger size.</span></div>
+                <div class="sentence-item"><span class="s-number">120.</span><span class="s-hi">यह दुकान कब खुलती है?</span><span class="s-en">When does this shop open?</span></div>
+                <div class="sentence-item"><span class="s-number">121.</span><span class="s-hi">यह दुकान रविवार को बंद रहती है।</span><span class="s-en">This shop remains closed on Sundays.</span></div>
+                <div class="sentence-item"><span class="s-number">122.</span><span class="s-hi">मुझे पैसे वापस चाहिए।</span><span class="s-en">I want a refund.</span></div>
+                <div class="sentence-item"><span class="s-number">123.</span><span class="s-hi">क्या मैं इसे बदल सकता हूँ?</span><span class="s-en">Can I exchange this?</span></div>
+                <div class="sentence-item"><span class="s-number">124.</span><span class="s-hi">बिल कहाँ है?</span><span class="s-en">Where is the bill?</span></div>
+                <div class="sentence-item"><span class="s-number">125.</span><span class="s-hi">मुझे रसीद दीजिए।</span><span class="s-en">Give me the receipt.</span></div>
+                <div class="sentence-item"><span class="s-number">126.</span><span class="s-hi">बाज़ार में बहुत भीड़ थी।</span><span class="s-en">The market was very crowded.</span></div>
+                <div class="sentence-item"><span class="s-number">127.</span><span class="s-hi">रास्ते में जाम था।</span><span class="s-en">There was a traffic jam on the way.</span></div>
+                <div class="sentence-item"><span class="s-number">128.</span><span class="s-hi">यह नकली सामान है।</span><span class="s-en">This is a fake product.</span></div>
+                <div class="sentence-item"><span class="s-number">129.</span><span class="s-hi">यह असली चीज़ है।</span><span class="s-en">This is the original item.</span></div>
+                <div class="sentence-item"><span class="s-number">130.</span><span class="s-hi">इसकी गारंटी कितनी है?</span><span class="s-en">How long is the warranty?</span></div>
+                <div class="sentence-item"><span class="s-number">131.</span><span class="s-hi">क्या इस पर कोई डिस्काउंट है?</span><span class="s-en">Is there any discount on this?</span></div>
+                <div class="sentence-item"><span class="s-number">132.</span><span class="s-hi">मुझे दूध का पैकेट चाहिए।</span><span class="s-en">I need a milk packet.</span></div>
+                <div class="sentence-item"><span class="s-number">133.</span><span class="s-hi">अंडे ताज़े हैं ना?</span><span class="s-en">Are the eggs fresh, right?</span></div>
+                <div class="sentence-item"><span class="s-number">134.</span><span class="s-hi">चीनी ख़त्म हो गई है।</span><span class="s-en">Sugar is out of stock. / Sugar is finished.</span></div>
+                <div class="sentence-item"><span class="s-number">135.</span><span class="s-hi">राशन की दुकान कहाँ है?</span><span class="s-en">Where is the grocery shop?</span></div>
+                <div class="sentence-item"><span class="s-number">136.</span><span class="s-hi">दवा की दुकान खुली है क्या?</span><span class="s-en">Is the medical shop open?</span></div>
+                <div class="sentence-item"><span class="s-number">137.</span><span class="s-hi">मुझे यह पसंद नहीं आया।</span><span class="s-en">I didn't like this.</span></div>
+                <div class="sentence-item"><span class="s-number">138.</span><span class="s-hi">मैं बाद में आऊँगा।</span><span class="s-en">I will come later.</span></div>
+                <div class="sentence-item"><span class="s-number">139.</span><span class="s-hi">पैसे संभाल कर रखो।</span><span class="s-en">Keep the money safely.</span></div>
+                <div class="sentence-item"><span class="s-number">140.</span><span class="s-hi">आपका बटुआ गिर गया।</span><span class="s-en">Your wallet dropped.</span></div>
+                <div class="sentence-item"><span class="s-number">141.</span><span class="s-hi">यहाँ सब कुछ मिलता है।</span><span class="s-en">Everything is available here.</span></div>
+                <div class="sentence-item"><span class="s-number">142.</span><span class="s-hi">यह मॉल बहुत बड़ा है।</span><span class="s-en">This mall is very big.</span></div>
+                <div class="sentence-item"><span class="s-number">143.</span><span class="s-hi">क्या यहाँ पार्किंग है?</span><span class="s-en">Is there parking here?</span></div>
+                <div class="sentence-item"><span class="s-number">144.</span><span class="s-hi">गाड़ी कहाँ खड़ी करूँ?</span><span class="s-en">Where should I park the vehicle?</span></div>
+                <div class="sentence-item"><span class="s-number">145.</span><span class="s-hi">वह दुकान बंद हो चुकी है।</span><span class="s-en">That shop has closed down.</span></div>
+                <div class="sentence-item"><span class="s-number">146.</span><span class="s-hi">आधा किलो दे दो।</span><span class="s-en">Give me half a kilo.</span></div>
+                <div class="sentence-item"><span class="s-number">147.</span><span class="s-hi">पैसे काट लो।</span><span class="s-en">Deduct the money.</span></div>
+                <div class="sentence-item"><span class="s-number">148.</span><span class="s-hi">बाकी पैसे वापस करो।</span><span class="s-en">Return the remaining change.</span></div>
+                <div class="sentence-item"><span class="s-number">149.</span><span class="s-hi">बहुत-बहुत शुक्रिया, भैया।</span><span class="s-en">Thank you very much, brother.</span></div>
+                <div class="sentence-item"><span class="s-number">150.</span><span class="s-hi">फिर आएँगे।</span><span class="s-en">Will come again.</span></div>
+            </div>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- CATEGORY 4: समय, दिन और मौसम (151-200)                        -->
+        <!-- ============================================================== -->
+        <section class="category">
+            <h2 class="cat-title">4. समय, दिन और मौसम</h2>
+            <div class="cat-sub">Time, Days &amp; Weather <span>— 151 to 200</span></div>
+            <div class="sentence-grid">
+                <div class="sentence-item"><span class="s-number">151.</span><span class="s-hi">अभी क्या समय हुआ है?</span><span class="s-en">What time is it now?</span></div>
+                <div class="sentence-item"><span class="s-number">152.</span><span class="s-hi">अभी 5 बज रहे हैं।</span><span class="s-en">It is 5 o'clock right now.</span></div>
+                <div class="sentence-item"><span class="s-number">153.</span><span class="s-hi">आपकी घड़ी में क्या बजा है?</span><span class="s-en">What's the time by your watch?</span></div>
+                <div class="sentence-item"><span class="s-number">154.</span><span class="s-hi">मेरी घड़ी तेज़ है।</span><span class="s-en">My watch is fast.</span></div>
+                <div class="sentence-item"><span class="s-number">155.</span><span class="s-hi">आपकी घड़ी धीमी है।</span><span class="s-en">Your watch is slow.</span></div>
+                <div class="sentence-item"><span class="s-number">156.</span><span class="s-hi">आज कौन सा दिन है?</span><span class="s-en">What day is it today?</span></div>
+                <div class="sentence-item"><span class="s-number">157.</span><span class="s-hi">आज सोमवार है।</span><span class="s-en">Today is Monday.</span></div>
+                <div class="sentence-item"><span class="s-number">158.</span><span class="s-hi">कल छुट्टी है।</span><span class="s-en">Tomorrow is a holiday.</span></div>
+                <div class="sentence-item"><span class="s-number">159.</span><span class="s-hi">बीता हुआ कल बहुत व्यस्त था।</span><span class="s-en">Yesterday was very busy.</span></div>
+                <div class="sentence-item"><span class="s-number">160.</span><span class="s-hi">आज तारीख क्या है?</span><span class="s-en">What is the date today?</span></div>
+                <div class="sentence-item"><span class="s-number">161.</span><span class="s-hi">आज बहुत गर्मी है।</span><span class="s-en">It is very hot today.</span></div>
+                <div class="sentence-item"><span class="s-number">162.</span><span class="s-hi">बाहर धूप तेज़ है।</span><span class="s-en">The sun is bright outside.</span></div>
+                <div class="sentence-item"><span class="s-number">163.</span><span class="s-hi">पंखा तेज़ कर दो।</span><span class="s-en">Speed up the fan.</span></div>
+                <div class="sentence-item"><span class="s-number">164.</span><span class="s-hi">आज मौसम कैसा है?</span><span class="s-en">How is the weather today?</span></div>
+                <div class="sentence-item"><span class="s-number">165.</span><span class="s-hi">आज बादल छाए हुए हैं।</span><span class="s-en">It is cloudy today.</span></div>
+                <div class="sentence-item"><span class="s-number">166.</span><span class="s-hi">ऐसा लगता है बारिश होगी।</span><span class="s-en">It looks like it will rain.</span></div>
+                <div class="sentence-item"><span class="s-number">167.</span><span class="s-hi">बारिश हो रही है।</span><span class="s-en">It is raining.</span></div>
+                <div class="sentence-item"><span class="s-number">168.</span><span class="s-hi">बिजली कड़क रही है।</span><span class="s-en">Lightning is flashing.</span></div>
+                <div class="sentence-item"><span class="s-number">169.</span><span class="s-hi">हवा ठंडी है।</span><span class="s-en">The wind is cold.</span></div>
+                <div class="sentence-item"><span class="s-number">170.</span><span class="s-hi">मुझे ठंड लग रही है।</span><span class="s-en">I am feeling cold.</span></div>
+                <div class="sentence-item"><span class="s-number">171.</span><span class="s-hi">कोहरा बहुत ज़्यादा है।</span><span class="s-en">It is very foggy.</span></div>
+                <div class="sentence-item"><span class="s-number">172.</span><span class="s-hi">स्वेटर पहन लो।</span><span class="s-en">Wear a sweater.</span></div>
+                <div class="sentence-item"><span class="s-number">173.</span><span class="s-hi">छाता लेकर जाओ।</span><span class="s-en">Take an umbrella with you.</span></div>
+                <div class="sentence-item"><span class="s-number">174.</span><span class="s-hi">तुम भीग जाओगे।</span><span class="s-en">You will get wet.</span></div>
+                <div class="sentence-item"><span class="s-number">175.</span><span class="s-hi">मौसम बदल रहा है।</span><span class="s-en">The weather is changing.</span></div>
+                <div class="sentence-item"><span class="s-number">176.</span><span class="s-hi">शाम होने वाली है।</span><span class="s-en">Evening is about to fall.</span></div>
+                <div class="sentence-item"><span class="s-number">177.</span><span class="s-hi">रात हो गई है।</span><span class="s-en">It is night now.</span></div>
+                <div class="sentence-item"><span class="s-number">178.</span><span class="s-hi">चाँद चमक रहा है।</span><span class="s-en">The moon is shining.</span></div>
+                <div class="sentence-item"><span class="s-number">179.</span><span class="s-hi">तारे टिमटिला रहे हैं।</span><span class="s-en">Stars are twinkling.</span></div>
+                <div class="sentence-item"><span class="s-number">180.</span><span class="s-hi">समय बहुत कम है।</span><span class="s-en">Time is very short.</span></div>
+                <div class="sentence-item"><span class="s-number">181.</span><span class="s-hi">समय का सदुपयोग करो।</span><span class="s-en">Make good use of time.</span></div>
+                <div class="sentence-item"><span class="s-number">182.</span><span class="s-hi">समय किसी का इंतज़ार नहीं करता।</span><span class="s-en">Time waits for no one.</span></div>
+                <div class="sentence-item"><span class="s-number">183.</span><span class="s-hi">देर मत करो।</span><span class="s-en">Don't be late.</span></div>
+                <div class="sentence-item"><span class="s-number">184.</span><span class="s-hi">मैं समय पर आ जाऊँगा।</span><span class="s-en">I will come on time.</span></div>
+                <div class="sentence-item"><span class="s-number">185.</span><span class="s-hi">वह हमेशा देर से आता है।</span><span class="s-en">He always comes late.</span></div>
+                <div class="sentence-item"><span class="s-number">186.</span><span class="s-hi">आज बहुत सुहाना मौसम है।</span><span class="s-en">The weather is very pleasant today.</span></div>
+                <div class="sentence-item"><span class="s-number">187.</span><span class="s-hi">बर्फ गिर रही है।</span><span class="s-en">Snow is falling.</span></div>
+                <div class="sentence-item"><span class="s-number">188.</span><span class="s-hi">नदी सूखी है।</span><span class="s-en">The river is dry.</span></div>
+                <div class="sentence-item"><span class="s-number">189.</span><span class="s-hi">पौधे सूख रहे हैं, पानी डालो।</span><span class="s-en">Plants are drying up, water them.</span></div>
+                <div class="sentence-item"><span class="s-number">190.</span><span class="s-hi">सुबह की हवा अच्छी होती है।</span><span class="s-en">Morning air is good.</span></div>
+                <div class="sentence-item"><span class="s-number">191.</span><span class="s-hi">दोपहर को बाहर मत जाओ।</span><span class="s-en">Don't go out in the afternoon.</span></div>
+                <div class="sentence-item"><span class="s-number">192.</span><span class="s-hi">सूरज डूब रहा है।</span><span class="s-en">The sun is setting.</span></div>
+                <div class="sentence-item"><span class="s-number">193.</span><span class="s-hi">सूरज उग रहा है।</span><span class="s-en">The sun is rising.</span></div>
+                <div class="sentence-item"><span class="s-number">194.</span><span class="s-hi">अंधेरा हो रहा है।</span><span class="s-en">It is getting dark.</span></div>
+                <div class="sentence-item"><span class="s-number">195.</span><span class="s-hi">दिन कितनी जल्दी बीत जाता है।</span><span class="s-en">How quickly the day passes.</span></div>
+                <div class="sentence-item"><span class="s-number">196.</span><span class="s-hi">यह साल ख़त्म होने वाला है।</span><span class="s-en">This year is about to end.</span></div>
+                <div class="sentence-item"><span class="s-number">197.</span><span class="s-hi">नया महीना शुरू हो गया।</span><span class="s-en">A new month has started.</span></div>
+                <div class="sentence-item"><span class="s-number">198.</span><span class="s-hi">अगले हफ्ते मिलेंगे।</span><span class="s-en">See you next week.</span></div>
+                <div class="sentence-item"><span class="s-number">199.</span><span class="s-hi">समय ही धन है।</span><span class="s-en">Time is money.</span></div>
+                <div class="sentence-item"><span class="s-number">200.</span><span class="s-hi">सही समय का इंतज़ार करो।</span><span class="s-en">Wait for the right time.</span></div>
+            </div>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- CATEGORY 5: यात्रा और रास्ते की बातचीत (201-250)              -->
+        <!-- ============================================================== -->
+        <section class="category">
+            <h2 class="cat-title">5. यात्रा और रास्ते की बातचीत</h2>
+            <div class="cat-sub">Travel &amp; Directions <span>— 201 to 250</span></div>
+            <div class="sentence-grid">
+                <div class="sentence-item"><span class="s-number">201.</span><span class="s-hi">मुझे स्टेशन जाना है।</span><span class="s-en">I have to go to the station.</span></div>
+                <div class="sentence-item"><span class="s-number">202.</span><span class="s-hi">बस स्टैंड कहाँ है?</span><span class="s-en">Where is the bus stand?</span></div>
+                <div class="sentence-item"><span class="s-number">203.</span><span class="s-hi">ट्रेन कब आएगी?</span><span class="s-en">When will the train arrive?</span></div>
+                <div class="sentence-item"><span class="s-number">204.</span><span class="s-hi">क्या यह ट्रेन लेट है?</span><span class="s-en">Is this train late?</span></div>
+                <div class="sentence-item"><span class="s-number">205.</span><span class="s-hi">मेरी टिकट कहाँ है?</span><span class="s-en">Where is my ticket?</span></div>
+                <div class="sentence-item"><span class="s-number">206.</span><span class="s-hi">सीट नंबर क्या है?</span><span class="s-en">What is the seat number?</span></div>
+                <div class="sentence-item"><span class="s-number">207.</span><span class="s-hi">यह सीट खाली है क्या?</span><span class="s-en">Is this seat empty?</span></div>
+                <div class="sentence-item"><span class="s-number">208.</span><span class="s-hi">यहाँ कोई बैठा है।</span><span class="s-en">Someone is sitting here.</span></div>
+                <div class="sentence-item"><span class="s-number">209.</span><span class="s-hi">थोड़ा खिसकिए।</span><span class="s-en">Please shift a little.</span></div>
+                <div class="sentence-item"><span class="s-number">210.</span><span class="s-hi">ऑटो कहाँ मिलेगा?</span><span class="s-en">Where can I get an auto?</span></div>
+                <div class="sentence-item"><span class="s-number">211.</span><span class="s-hi">यहाँ से कितनी दूर है?</span><span class="s-en">How far is it from here?</span></div>
+                <div class="sentence-item"><span class="s-number">212.</span><span class="s-hi">यह बस पटना जाएगी क्या?</span><span class="s-en">Will this bus go to Patna?</span></div>
+                <div class="sentence-item"><span class="s-number">213.</span><span class="s-hi">किराया कितना है?</span><span class="s-en">How much is the fare?</span></div>
+                <div class="sentence-item"><span class="s-number">214.</span><span class="s-hi">सीधे जाओ।</span><span class="s-en">Go straight.</span></div>
+                <div class="sentence-item"><span class="s-number">215.</span><span class="s-hi">वहाँ से दाएँ मुड़ जाना।</span><span class="s-en">Turn right from there.</span></div>
+                <div class="sentence-item"><span class="s-number">216.</span><span class="s-hi">फिर बाएँ मुड़ना।</span><span class="s-en">Then turn left.</span></div>
+                <div class="sentence-item"><span class="s-number">217.</span><span class="s-hi">रास्ता बंद है।</span><span class="s-en">The road is closed.</span></div>
+                <div class="sentence-item"><span class="s-number">218.</span><span class="s-hi">गाड़ी धीरे चलाओ।</span><span class="s-en">Drive slowly.</span></div>
+                <div class="sentence-item"><span class="s-number">219.</span><span class="s-hi">सीट बेल्ट लगा लो।</span><span class="s-en">Wear your seat belt.</span></div>
+                <div class="sentence-item"><span class="s-number">220.</span><span class="s-hi">हेलमेट कहाँ है?</span><span class="s-en">Where is the helmet?</span></div>
+                <div class="sentence-item"><span class="s-number">221.</span><span class="s-hi">पेट्रोल ख़त्म हो गया।</span><span class="s-en">Out of petrol.</span></div>
+                <div class="sentence-item"><span class="s-number">222.</span><span class="s-hi">पेट्रोल पंप कहाँ है?</span><span class="s-en">Where is the petrol pump?</span></div>
+                <div class="sentence-item"><span class="s-number">223.</span><span class="s-hi">टायर में हवा कम है।</span><span class="s-en">The air in the tire is low.</span></div>
+                <div class="sentence-item"><span class="s-number">224.</span><span class="s-hi">मेरी गाड़ी पंचर हो गई।</span><span class="s-en">My vehicle got a flat tire.</span></div>
+                <div class="sentence-item"><span class="s-number">225.</span><span class="s-hi">मुझे एक टैक्सी चाहिए।</span><span class="s-en">I need a taxi.</span></div>
+                <div class="sentence-item"><span class="s-number">226.</span><span class="s-hi">लोकेशन क्या है?</span><span class="s-en">What is the location?</span></div>
+                <div class="sentence-item"><span class="s-number">227.</span><span class="s-hi">मुझे यह पता ढूँढना है।</span><span class="s-en">I need to find this address.</span></div>
+                <div class="sentence-item"><span class="s-number">228.</span><span class="s-hi">क्या आप इस रास्ते को जानते हैं?</span><span class="s-en">Do you know this route?</span></div>
+                <div class="sentence-item"><span class="s-number">229.</span><span class="s-hi">मैं रास्ता भूल गया हूँ।</span><span class="s-en">I have lost my way.</span></div>
+                <div class="sentence-item"><span class="s-number">230.</span><span class="s-hi">क्या आप मेरी मदद कर सकते हैं?</span><span class="s-en">Can you help me?</span></div>
+                <div class="sentence-item"><span class="s-number">231.</span><span class="s-hi">अगला स्टेशन कौन सा है?</span><span class="s-en">Which is the next station?</span></div>
+                <div class="sentence-item"><span class="s-number">232.</span><span class="s-hi">मुझे यहाँ उतरना है।</span><span class="s-en">I have to get off here.</span></div>
+                <div class="sentence-item"><span class="s-number">233.</span><span class="s-hi">गाड़ी रोको।</span><span class="s-en">Stop the vehicle.</span></div>
+                <div class="sentence-item"><span class="s-number">234.</span><span class="s-hi">सफ़र कैसा रहा?</span><span class="s-en">How was the journey?</span></div>
+                <div class="sentence-item"><span class="s-number">235.</span><span class="s-hi">सफ़र बहुत अच्छा था।</span><span class="s-en">The journey was very good.</span></div>
+                <div class="sentence-item"><span class="s-number">236.</span><span class="s-hi">मुझे उल्टी आ रही है।</span><span class="s-en">I feel like vomiting.</span></div>
+                <div class="sentence-item"><span class="s-number">237.</span><span class="s-hi">चक्कर आ रहे हैं।</span><span class="s-en">I feel dizzy.</span></div>
+                <div class="sentence-item"><span class="s-number">238.</span><span class="s-hi">खिड़की का शीशा बंद कर दो।</span><span class="s-en">Close the window pane.</span></div>
+                <div class="sentence-item"><span class="s-number">239.</span><span class="s-hi">बाहर मत झाँको।</span><span class="s-en">Don't look outside.</span></div>
+                <div class="sentence-item"><span class="s-number">240.</span><span class="s-hi">सामान बहुत भारी है।</span><span class="s-en">The luggage is very heavy.</span></div>
+                <div class="sentence-item"><span class="s-number">241.</span><span class="s-hi">कुली को बुलाओ।</span><span class="s-en">Call the porter.</span></div>
+                <div class="sentence-item"><span class="s-number">242.</span><span class="s-hi">आपकी यात्रा मंगलमय हो!</span><span class="s-en">Have a safe journey!</span></div>
+                <div class="sentence-item"><span class="s-number">243.</span><span class="s-hi">हम पहुँच गए।</span><span class="s-en">We have arrived. / We reached.</span></div>
+                <div class="sentence-item"><span class="s-number">244.</span><span class="s-hi">अभी बहुत रास्ता बाकी है।</span><span class="s-en">There is still a long way to go.</span></div>
+                <div class="sentence-item"><span class="s-number">245.</span><span class="s-hi">होटल कहाँ है?</span><span class="s-en">Where is the hotel?</span></div>
+                <div class="sentence-item"><span class="s-number">246.</span><span class="s-hi">एक कमरा बुक करना है।</span><span class="s-en">I want to book a room.</span></div>
+                <div class="sentence-item"><span class="s-number">247.</span><span class="s-hi">पहचान पत्र दिखाइए।</span><span class="s-en">Show your ID card.</span></div>
+                <div class="sentence-item"><span class="s-number">248.</span><span class="s-hi">कमरा नंबर 204 ऊपर है।</span><span class="s-en">Room number 204 is upstairs.</span></div>
+                <div class="sentence-item"><span class="s-number">249.</span><span class="s-hi">लिफ्ट कहाँ है?</span><span class="s-en">Where is the lift?</span></div>
+                <div class="sentence-item"><span class="s-number">250.</span><span class="s-hi">चलो बाहर घूमने चलते हैं।</span><span class="s-en">Let's go out for a walk.</span></div>
+            </div>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- CATEGORY 6: मोबाइल, इंटरनेट और तकनीक (251-300)              -->
+        <!-- ============================================================== -->
+        <section class="category">
+            <h2 class="cat-title">6. मोबाइल, इंटरनेट और तकनीक</h2>
+            <div class="cat-sub">Mobile, Internet &amp; Tech <span>— 251 to 300</span></div>
+            <div class="sentence-grid">
+                <div class="sentence-item"><span class="s-number">251.</span><span class="s-hi">मेरा मोबाइल कहाँ है?</span><span class="s-en">Where is my mobile?</span></div>
+                <div class="sentence-item"><span class="s-number">252.</span><span class="s-hi">फोन बज रहा है।</span><span class="s-en">The phone is ringing.</span></div>
+                <div class="sentence-item"><span class="s-number">253.</span><span class="s-hi">फोन उठाओ।</span><span class="s-en">Pick up the phone.</span></div>
+                <div class="sentence-item"><span class="s-number">254.</span><span class="s-hi">हेलो, कौन बोल रहा है?</span><span class="s-en">Hello, who is speaking?</span></div>
+                <div class="sentence-item"><span class="s-number">255.</span><span class="s-hi">मैं तामीर बोल रहा हूँ।</span><span class="s-en">I am Tamir speaking.</span></div>
+                <div class="sentence-item"><span class="s-number">256.</span><span class="s-hi">आपकी आवाज़ नहीं आ रही है।</span><span class="s-en">I cannot hear your voice.</span></div>
+                <div class="sentence-item"><span class="s-number">257.</span><span class="s-hi">थोड़ा ज़ोर से बोलिए।</span><span class="s-en">Speak a bit louder, please.</span></div>
+                <div class="sentence-item"><span class="s-number">258.</span><span class="s-hi">नेटवर्क बहुत कम है।</span><span class="s-en">The network is very weak.</span></div>
+                <div class="sentence-item"><span class="s-number">259.</span><span class="s-hi">आवाज़ कट रही है।</span><span class="s-en">The voice is breaking.</span></div>
+                <div class="sentence-item"><span class="s-number">260.</span><span class="s-hi">मैं आपको बाद में कॉल करूँगा।</span><span class="s-en">I will call you later.</span></div>
+                <div class="sentence-item"><span class="s-number">261.</span><span class="s-hi">मेरा फोन मत काटना।</span><span class="s-en">Don't hang up on me.</span></div>
+                <div class="sentence-item"><span class="s-number">262.</span><span class="s-hi">बैटरी ख़त्म होने वाली है।</span><span class="s-en">The battery is about to die.</span></div>
+                <div class="sentence-item"><span class="s-number">263.</span><span class="s-hi">चार्जर कहाँ है?</span><span class="s-en">Where is the charger?</span></div>
+                <div class="sentence-item"><span class="s-number">264.</span><span class="s-hi">फोन को चार्जिंग पर लगा दो।</span><span class="s-en">Put the phone on charging.</span></div>
+                <div class="sentence-item"><span class="s-number">265.</span><span class="s-hi">क्या आपके पास वाई-फाई है?</span><span class="s-en">Do you have Wi-Fi?</span></div>
+                <div class="sentence-item"><span class="s-number">266.</span><span class="s-hi">वाई-फाई का पासवर्ड क्या है?</span><span class="s-en">What is the Wi-Fi password?</span></div>
+                <div class="sentence-item"><span class="s-number">267.</span><span class="s-hi">इंटरनेट काम नहीं कर रहा है।</span><span class="s-en">The internet is not working.</span></div>
+                <div class="sentence-item"><span class="s-number">268.</span><span class="s-hi">स्पीड बहुत कम है।</span><span class="s-en">The speed is very slow.</span></div>
+                <div class="sentence-item"><span class="s-number">269.</span><span class="s-hi">मुझे एक मैसेज भेज दो।</span><span class="s-en">Send me a message.</span></div>
+                <div class="sentence-item"><span class="s-number">270.</span><span class="s-hi">व्हाट्सएप पर फोटो भेजो।</span><span class="s-en">Send the photo on WhatsApp.</span></div>
+                <div class="sentence-item"><span class="s-number">271.</span><span class="s-hi">मैंने उसे ब्लॉक कर दिया।</span><span class="s-en">I blocked him.</span></div>
+                <div class="sentence-item"><span class="s-number">272.</span><span class="s-hi">स्टेटस चेक करो।</span><span class="s-en">Check the status.</span></div>
+                <div class="sentence-item"><span class="s-number">273.</span><span class="s-hi">फोन को साइलेंट कर दो।</span><span class="s-en">Put the phone on silent.</span></div>
+                <div class="sentence-item"><span class="s-number">274.</span><span class="s-hi">रील्स देखना बंद करो।</span><span class="s-en">Stop watching reels.</span></div>
+                <div class="sentence-item"><span class="s-number">275.</span><span class="s-hi">स्क्रीन टाइम बहुत ज़्यादा है।</span><span class="s-en">Screen time is too high.</span></div>
+                <div class="sentence-item"><span class="s-number">276.</span><span class="s-hi">एक आँख वाले मोबाइल से दूर रहो।</span><span class="s-en">Stay away from the one-eyed mobile.</span></div>
+                <div class="sentence-item"><span class="s-number">277.</span><span class="s-hi">यह समय बर्बाद करता है।</span><span class="s-en">This wastes time.</span></div>
+                <div class="sentence-item"><span class="s-number">278.</span><span class="s-hi">ऐप को अपडेट करो।</span><span class="s-en">Update the app.</span></div>
+                <div class="sentence-item"><span class="s-number">279.</span><span class="s-hi">नया वर्जन डाउनलोड कर लो।</span><span class="s-en">Download the new version.</span></div>
+                <div class="sentence-item"><span class="s-number">280.</span><span class="s-hi">पासवर्ड भूल गया हूँ।</span><span class="s-en">I have forgotten the password.</span></div>
+                <div class="sentence-item"><span class="s-number">281.</span><span class="s-hi">इसे रीसेट कैसे करें?</span><span class="s-en">How to reset it?</span></div>
+                <div class="sentence-item"><span class="s-number">282.</span><span class="s-hi">कंप्यूटर चालू करो।</span><span class="s-en">Turn on the computer.</span></div>
+                <div class="sentence-item"><span class="s-number">283.</span><span class="s-hi">फाइल सेव कर लो।</span><span class="s-en">Save the file.</span></div>
+                <div class="sentence-item"><span class="s-number">284.</span><span class="s-hi">लैपटॉप हैंग हो रहा है।</span><span class="s-en">The laptop is hanging.</span></div>
+                <div class="sentence-item"><span class="s-number">285.</span><span class="s-hi">इसे रीस्टार्ट करो।</span><span class="s-en">Restart it.</span></div>
+                <div class="sentence-item"><span class="s-number">286.</span><span class="s-hi">लिंक पर क्लिक करो।</span><span class="s-en">Click on the link.</span></div>
+                <div class="sentence-item"><span class="s-number">287.</span><span class="s-hi">यह फ्रॉड हो सकता है।</span><span class="s-en">This could be a fraud.</span></div>
+                <div class="sentence-item"><span class="s-number">288.</span><span class="s-hi">ओटीपी किसी को मत देना।</span><span class="s-en">Never share your OTP with anyone.</span></div>
+                <div class="sentence-item"><span class="s-number">289.</span><span class="s-hi">ईमेल चेक करो।</span><span class="s-en">Check the email.</span></div>
+                <div class="sentence-item"><span class="s-number">290.</span><span class="s-hi">उसने मुझे अनफॉलो कर दिया।</span><span class="s-en">He unfollowed me.</span></div>
+                <div class="sentence-item"><span class="s-number">291.</span><span class="s-hi">कैमरा साफ़ करो।</span><span class="s-en">Clean the camera.</span></div>
+                <div class="sentence-item"><span class="s-number">292.</span><span class="s-hi">एक सेल्फी लेते हैं।</span><span class="s-en">Let's take a selfie.</span></div>
+                <div class="sentence-item"><span class="s-number">293.</span><span class="s-hi">फोटो बहुत अच्छी आई है।</span><span class="s-en">The photo turned out great.</span></div>
+                <div class="sentence-item"><span class="s-number">294.</span><span class="s-hi">इसे सोशल मीडिया पर पोस्ट कर दो।</span><span class="s-en">Post it on social media.</span></div>
+                <div class="sentence-item"><span class="s-number">295.</span><span class="s-hi">नोटिफिकेशन बंद कर दो।</span><span class="s-en">Turn off notifications.</span></div>
+                <div class="sentence-item"><span class="s-number">296.</span><span class="s-hi">स्टोरेज फुल हो गया है।</span><span class="s-en">Storage is full.</span></div>
+                <div class="sentence-item"><span class="s-number">297.</span><span class="s-hi">कुछ वीडियो डिलीट कर दो।</span><span class="s-en">Delete some videos.</span></div>
+                <div class="sentence-item"><span class="s-number">298.</span><span class="s-hi">हेडफ़ोन कहाँ हैं?</span><span class="s-en">Where are the headphones?</span></div>
+                <div class="sentence-item"><span class="s-number">299.</span><span class="s-hi">आवाज़ बहुत तेज़ है, कम करो।</span><span class="s-en">The volume is too high, turn it down.</span></div>
+                <div class="sentence-item"><span class="s-number">300.</span><span class="s-hi">तकनीक का सही इस्तेमाल करो।</span><span class="s-en">Use technology wisely.</span></div>
+            </div>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- CATEGORY 7: दफ़्तर, नौकरी और काम (301-350)                   -->
+        <!-- ============================================================== -->
+        <section class="category">
+            <h2 class="cat-title">7. दफ़्तर, नौकरी और काम</h2>
+            <div class="cat-sub">Office, Job &amp; Work <span>— 301 to 350</span></div>
+            <div class="sentence-grid">
+                <div class="sentence-item"><span class="s-number">301.</span><span class="s-hi">आज मुझे दफ़्तर जाना है।</span><span class="s-en">I have to go to the office today.</span></div>
+                <div class="sentence-item"><span class="s-number">302.</span><span class="s-hi">मीटिंग कब शुरू होगी?</span><span class="s-en">When will the meeting start?</span></div>
+                <div class="sentence-item"><span class="s-number">303.</span><span class="s-hi">बॉस बुला रहे हैं।</span><span class="s-en">The boss is calling.</span></div>
+                <div class="sentence-item"><span class="s-number">304.</span><span class="s-hi">फाइल तैयार है।</span><span class="s-en">The file is ready.</span></div>
+                <div class="sentence-item"><span class="s-number">305.</span><span class="s-hi">इस पर साइन कर दीजिए।</span><span class="s-en">Please sign this.</span></div>
+                <div class="sentence-item"><span class="s-number">306.</span><span class="s-hi">आज बहुत काम का दबाव है।</span><span class="s-en">There is a lot of work pressure today.</span></div>
+                <div class="sentence-item"><span class="s-number">307.</span><span class="s-hi">प्रोजेक्ट की समय सीमा क्या है?</span><span class="s-en">What is the project deadline?</span></div>
+                <div class="sentence-item"><span class="s-number">308.</span><span class="s-hi">इसे आज ही ख़त्म करना है।</span><span class="s-en">This has to be finished today itself.</span></div>
+                <div class="sentence-item"><span class="s-number">309.</span><span class="s-hi">वह छुट्टी पर है।</span><span class="s-en">He is on leave.</span></div>
+                <div class="sentence-item"><span class="s-number">310.</span><span class="s-hi">मुझे एक दिन की छुट्टी चाहिए।</span><span class="s-en">I need a day's leave.</span></div>
+                <div class="sentence-item"><span class="s-number">311.</span><span class="s-hi">ईमेल का जवाब दो।</span><span class="s-en">Reply to the email.</span></div>
+                <div class="sentence-item"><span class="s-number">312.</span><span class="s-hi">अपनी प्रोग्रेस रिपोर्ट दिखाओ।</span><span class="s-en">Show your progress report.</span></div>
+                <div class="sentence-item"><span class="s-number">313.</span><span class="s-hi">नया कर्मचारी आया है।</span><span class="s-en">A new employee has arrived.</span></div>
+                <div class="sentence-item"><span class="s-number">314.</span><span class="s-hi">इंटरव्यू कब है?</span><span class="s-en">When is the interview?</span></div>
+                <div class="sentence-item"><span class="s-number">315.</span><span class="s-hi">रिज्यूमे जमा करो।</span><span class="s-en">Submit the resume.</span></div>
+                <div class="sentence-item"><span class="s-number">316.</span><span class="s-hi">वह बहुत मेहनती है।</span><span class="s-en">He is very hardworking.</span></div>
+                <div class="sentence-item"><span class="s-number">317.</span><span class="s-hi">वह समय पर आता है।</span><span class="s-en">He comes on time.</span></div>
+                <div class="sentence-item"><span class="s-number">318.</span><span class="s-hi">आज लंच में क्या लाए हो?</span><span class="s-en">What have you brought for lunch today?</span></div>
+                <div class="sentence-item"><span class="s-number">319.</span><span class="s-hi">चलो चाय पीने चलते हैं।</span><span class="s-en">Let's go for tea.</span></div>
+                <div class="sentence-item"><span class="s-number">320.</span><span class="s-hi">काम पर ध्यान दो।</span><span class="s-en">Focus on your work.</span></div>
+                <div class="sentence-item"><span class="s-number">321.</span><span class="s-hi">बातें करना बंद करो।</span><span class="s-en">Stop talking.</span></div>
+                <div class="sentence-item"><span class="s-number">322.</span><span class="s-hi">सैलरी आ गई क्या?</span><span class="s-en">Has the salary been credited?</span></div>
+                <div class="sentence-item"><span class="s-number">323.</span><span class="s-hi">इस महीने का टारगेट पूरा हो गया।</span><span class="s-en">This month's target is achieved.</span></div>
+                <div class="sentence-item"><span class="s-number">324.</span><span class="s-hi">कंप्यूटर खराब हो गया है।</span><span class="s-en">The computer is out of order.</span></div>
+                <div class="sentence-item"><span class="s-number">325.</span><span class="s-hi">आईटी टीम को बुलाओ।</span><span class="s-en">Call the IT team.</span></div>
+                <div class="sentence-item"><span class="s-number">326.</span><span class="s-hi">प्रेजेंटेशन बहुत अच्छा था।</span><span class="s-en">The presentation was very good.</span></div>
+                <div class="sentence-item"><span class="s-number">327.</span><span class="s-hi">मुझे प्रमोशन मिल गया।</span><span class="s-en">I got a promotion.</span></div>
+                <div class="sentence-item"><span class="s-number">328.</span><span class="s-hi">बधाई हो, भाई!</span><span class="s-en">Congratulations, brother!</span></div>
+                <div class="sentence-item"><span class="s-number">329.</span><span class="s-hi">वह नौकरी छोड़ रहा है।</span><span class="s-en">He is quitting the job.</span></div>
+                <div class="sentence-item"><span class="s-number">330.</span><span class="s-hi">नई नौकरी की तलाश करो।</span><span class="s-en">Search for a new job.</span></div>
+                <div class="sentence-item"><span class="s-number">331.</span><span class="s-hi">क्या आपके पास कोई वैकेंसी है?</span><span class="s-en">Do you have any vacancy?</span></div>
+                <div class="sentence-item"><span class="s-number">332.</span><span class="s-hi">ऑफिस का समय क्या है?</span><span class="s-en">What are the office hours?</span></div>
+                <div class="sentence-item"><span class="s-number">333.</span><span class="s-hi">सुबह 9 से शाम 5 बजे तक।</span><span class="s-en">9 AM to 5 PM.</span></div>
+                <div class="sentence-item"><span class="s-number">334.</span><span class="s-hi">आज ओवरटाइम करना पड़ेगा।</span><span class="s-en">I will have to do overtime today.</span></div>
+                <div class="sentence-item"><span class="s-number">335.</span><span class="s-hi">थक गया हूँ।</span><span class="s-en">I am exhausted. / I am tired.</span></div>
+                <div class="sentence-item"><span class="s-number">336.</span><span class="s-hi">कल सुबह जल्दी आना।</span><span class="s-en">Come early tomorrow morning.</span></div>
+                <div class="sentence-item"><span class="s-number">337.</span><span class="s-hi">इस फाइल को संभाल कर रखो।</span><span class="s-en">Keep this file safely.</span></div>
+                <div class="sentence-item"><span class="s-number">338.</span><span class="s-hi">प्रिंटर काम नहीं कर रहा।</span><span class="s-en">The printer is not working.</span></div>
+                <div class="sentence-item"><span class="s-number">339.</span><span class="s-hi">स्याही ख़त्म हो गई है।</span><span class="s-en">The ink is finished.</span></div>
+                <div class="sentence-item"><span class="s-number">340.</span><span class="s-hi">कागज़ कहाँ है?</span><span class="s-en">Where is the paper?</span></div>
+                <div class="sentence-item"><span class="s-number">341.</span><span class="s-hi">डेस्क साफ़ रखो।</span><span class="s-en">Keep the desk clean.</span></div>
+                <div class="sentence-item"><span class="s-number">342.</span><span class="s-hi">अपनी ज़िम्मेदारी समझो।</span><span class="s-en">Understand your responsibility.</span></div>
+                <div class="sentence-item"><span class="s-number">343.</span><span class="s-hi">टीम वर्क बहुत ज़रूरी है।</span><span class="s-en">Teamwork is very important.</span></div>
+                <div class="sentence-item"><span class="s-number">344.</span><span class="s-hi">बहस मत करो।</span><span class="s-en">Don't argue.</span></div>
+                <div class="sentence-item"><span class="s-number">345.</span><span class="s-hi">शांति बनाए रखें।</span><span class="s-en">Maintain silence. / Keep calm.</span></div>
+                <div class="sentence-item"><span class="s-number">346.</span><span class="s-hi">यह एक अच्छा अवसर है।</span><span class="s-en">This is a good opportunity.</span></div>
+                <div class="sentence-item"><span class="s-number">347.</span><span class="s-hi">अनुभव से सीखो।</span><span class="s-en">Learn from experience.</span></div>
+                <div class="sentence-item"><span class="s-number">348.</span><span class="s-hi">हार मत मानो।</span><span class="s-en">Don't give up.</span></div>
+                <div class="sentence-item"><span class="s-number">349.</span><span class="s-hi">छुट्टी का समय हो गया।</span><span class="s-en">It's time to pack up.</span></div>
+                <div class="sentence-item"><span class="s-number">350.</span><span class="s-hi">कल मिलते हैं।</span><span class="s-en">See you tomorrow.</span></div>
+            </div>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- CATEGORY 8: स्कूल, कॉलेज और पढ़ाई (351-400)                  -->
+        <!-- ============================================================== -->
+        <section class="category">
+            <h2 class="cat-title">8. स्कूल, कॉलेज और पढ़ाई</h2>
+            <div class="cat-sub">School, College &amp; Education <span>— 351 to 400</span></div>
+            <div class="sentence-grid">
+                <div class="sentence-item"><span class="s-number">351.</span><span class="s-hi">स्कूल का समय हो गया।</span><span class="s-en">It's time for school.</span></div>
+                <div class="sentence-item"><span class="s-number">352.</span><span class="s-hi">अपना बैग तैयार करो।</span><span class="s-en">Prepare your bag.</span></div>
+                <div class="sentence-item"><span class="s-number">353.</span><span class="s-hi">किताबें कहाँ हैं?</span><span class="s-en">Where are the books?</span></div>
+                <div class="sentence-item"><span class="s-number">354.</span><span class="s-hi">आज टेस्ट है।</span><span class="s-en">There is a test today.</span></div>
+                <div class="sentence-item"><span class="s-number">355.</span><span class="s-hi">क्या तुमने पढ़ाई की?</span><span class="s-en">Did you study?</span></div>
+                <div class="sentence-item"><span class="s-number">356.</span><span class="s-hi">होमवर्क पूरा करो।</span><span class="s-en">Complete the homework.</span></div>
+                <div class="sentence-item"><span class="s-number">357.</span><span class="s-hi">पेंसिल छील लो।</span><span class="s-en">Sharpen the pencil.</span></div>
+                <div class="sentence-item"><span class="s-number">358.</span><span class="s-hi">पेन की स्याही ख़त्म हो गई।</span><span class="s-en">The pen ran out of ink.</span></div>
+                <div class="sentence-item"><span class="s-number">359.</span><span class="s-hi">कॉपी का पन्ना मत फाड़ो।</span><span class="s-en">Don't tear the notebook page.</span></div>
+                <div class="sentence-item"><span class="s-number">360.</span><span class="s-hi">टीचर आ रहे हैं।</span><span class="s-en">The teacher is coming.</span></div>
+                <div class="sentence-item"><span class="s-number">361.</span><span class="s-hi">सीधे बैठो और सुनो।</span><span class="s-en">Sit straight and listen.</span></div>
+                <div class="sentence-item"><span class="s-number">362.</span><span class="s-hi">ब्लैकबोर्ड की तरफ देखो।</span><span class="s-en">Look at the blackboard.</span></div>
+                <div class="sentence-item"><span class="s-number">363.</span><span class="s-hi">सवाल का जवाब दो।</span><span class="s-en">Answer the question.</span></div>
+                <div class="sentence-item"><span class="s-number">364.</span><span class="s-hi">मुझे समझ नहीं आया।</span><span class="s-en">I did not understand.</span></div>
+                <div class="sentence-item"><span class="s-number">365.</span><span class="s-hi">दोबारा समझाइए, सर।</span><span class="s-en">Please explain again, sir.</span></div>
+                <div class="sentence-item"><span class="s-number">366.</span><span class="s-hi">आज कौन अनुपस्थित है?</span><span class="s-en">Who is absent today?</span></div>
+                <div class="sentence-item"><span class="s-number">367.</span><span class="s-hi">वह बीमार है।</span><span class="s-en">He is sick.</span></div>
+                <div class="sentence-item"><span class="s-number">368.</span><span class="s-hi">परीक्षा कब से है?</span><span class="s-en">When do the exams start?</span></div>
+                <div class="sentence-item"><span class="s-number">369.</span><span class="s-hi">अगले महीने से।</span><span class="s-en">From next month.</span></div>
+                <div class="sentence-item"><span class="s-number">370.</span><span class="s-hi">टाइम टेबल कहाँ है?</span><span class="s-en">Where is the timetable?</span></div>
+                <div class="sentence-item"><span class="s-number">371.</span><span class="s-hi">रोल नंबर क्या है?</span><span class="s-en">What is the roll number?</span></div>
+                <div class="sentence-item"><span class="s-number">372.</span><span class="s-hi">शांति से बैठो।</span><span class="s-en">Sit quietly.</span></div>
+                <div class="sentence-item"><span class="s-number">373.</span><span class="s-hi">लाइब्रेरी कहाँ है?</span><span class="s-en">Where is the library?</span></div>
+                <div class="sentence-item"><span class="s-number">374.</span><span class="s-hi">मुझे एक किताब चाहिए।</span><span class="s-en">I need a book.</span></div>
+                <div class="sentence-item"><span class="s-number">375.</span><span class="s-hi">बातें मत करो, पढ़ाई करो।</span><span class="s-en">Don't talk, study.</span></div>
+                <div class="sentence-item"><span class="s-number">376.</span><span class="s-hi">उसने परीक्षा पास कर ली।</span><span class="s-en">He passed the exam.</span></div>
+                <div class="sentence-item"><span class="s-number">377.</span><span class="s-hi">उसने टॉप किया है।</span><span class="s-en">He topped the class.</span></div>
+                <div class="sentence-item"><span class="s-number">378.</span><span class="s-hi">रिज़ल्ट कैसा रहा?</span><span class="s-en">How was the result?</span></div>
+                <div class="sentence-item"><span class="s-number">379.</span><span class="s-hi">मैं बहुत खुश हूँ।</span><span class="s-en">I am very happy.</span></div>
+                <div class="sentence-item"><span class="s-number">380.</span><span class="s-hi">कॉलेज का पहला दिन था।</span><span class="s-en">It was the first day of college.</span></div>
+                <div class="sentence-item"><span class="s-number">381.</span><span class="s-hi">तुम्हारा पसंदीदा विषय कौन सा है?</span><span class="s-en">Which is your favorite subject?</span></div>
+                <div class="sentence-item"><span class="s-number">382.</span><span class="s-hi">मुझे विज्ञान पसंद है।</span><span class="s-en">I like science.</span></div>
+                <div class="sentence-item"><span class="s-number">383.</span><span class="s-hi">गणित बहुत कठिन है।</span><span class="s-en">Mathematics is very difficult.</span></div>
+                <div class="sentence-item"><span class="s-number">384.</span><span class="s-hi">अभ्यास से सब आसान हो जाता है।</span><span class="s-en">Practice makes everything easy.</span></div>
+                <div class="sentence-item"><span class="s-number">385.</span><span class="s-hi">नया पाठ शुरू करो।</span><span class="s-en">Start the new lesson.</span></div>
+                <div class="sentence-item"><span class="s-number">386.</span><span class="s-hi">इसे याद कर लो।</span><span class="s-en">Memorize this. / Learn this.</span></div>
+                <div class="sentence-item"><span class="s-number">387.</span><span class="s-hi">स्पेलिंग गलत है।</span><span class="s-en">The spelling is wrong.</span></div>
+                <div class="sentence-item"><span class="s-number">388.</span><span class="s-hi">इसे दोबारा लिखो।</span><span class="s-en">Write it again.</span></div>
+                <div class="sentence-item"><span class="s-number">389.</span><span class="s-hi">साफ-साफ लिखो।</span><span class="s-en">Write neatly.</span></div>
+                <div class="sentence-item"><span class="s-number">390.</span><span class="s-hi">आज स्कूल की छुट्टी है।</span><span class="s-en">Today is a school holiday.</span></div>
+                <div class="sentence-item"><span class="s-number">391.</span><span class="s-hi">फीस कब जमा करनी है?</span><span class="s-en">When is the fee to be paid?</span></div>
+                <div class="sentence-item"><span class="s-number">392.</span><span class="s-hi">आखिरी तारीख कल है।</span><span class="s-en">The last date is tomorrow.</span></div>
+                <div class="sentence-item"><span class="s-number">393.</span><span class="s-hi">स्कूल बस आ गई।</span><span class="s-en">The school bus has arrived.</span></div>
+                <div class="sentence-item"><span class="s-number">394.</span><span class="s-hi">दौड़ो मत, गिर जाओगे।</span><span class="s-en">Don't run, you will fall.</span></div>
+                <div class="sentence-item"><span class="s-number">395.</span><span class="s-hi">अपने दोस्तों के साथ साझा करो।</span><span class="s-en">Share with your friends.</span></div>
+                <div class="sentence-item"><span class="s-number">396.</span><span class="s-hi">लंच बॉक्स कहाँ है?</span><span class="s-en">Where is the lunch box?</span></div>
+                <div class="sentence-item"><span class="s-number">397.</span><span class="s-hi">पानी की बोतल भर लो।</span><span class="s-en">Fill the water bottle.</span></div>
+                <div class="sentence-item"><span class="s-number">398.</span><span class="s-hi">उसने मेरी पेंसिल ले ली।</span><span class="s-en">He took my pencil.</span></div>
+                <div class="sentence-item"><span class="s-number">399.</span><span class="s-hi">लड़ाई मत करो।</span><span class="s-en">Don't fight.</span></div>
+                <div class="sentence-item"><span class="s-number">400.</span><span class="s-hi">हमेशा कुछ नया सीखो।</span><span class="s-en">Always learn something new.</span></div>
+            </div>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- CATEGORY 9: स्वास्थ्य, डॉक्टर और फिटनेस (401-450)           -->
+        <!-- ============================================================== -->
+        <section class="category">
+            <h2 class="cat-title">9. स्वास्थ्य, डॉक्टर और फिटनेस</h2>
+            <div class="cat-sub">Health, Doctor &amp; Fitness <span>— 401 to 450</span></div>
+            <div class="sentence-grid">
+                <div class="sentence-item"><span class="s-number">401.</span><span class="s-hi">आपकी तबियत कैसी है?</span><span class="s-en">How is your health?</span></div>
+                <div class="sentence-item"><span class="s-number">402.</span><span class="s-hi">मेरी तबियत ठीक नहीं है।</span><span class="s-en">I am not feeling well.</span></div>
+                <div class="sentence-item"><span class="s-number">403.</span><span class="s-hi">मुझे बुखार है।</span><span class="s-en">I have a fever.</span></div>
+                <div class="sentence-item"><span class="s-number">404.</span><span class="s-hi">उसे खाँसी और जुकाम है।</span><span class="s-en">He has a cough and cold.</span></div>
+                <div class="sentence-item"><span class="s-number">405.</span><span class="s-hi">मेरे सिर में दर्द है।</span><span class="s-en">I have a headache.</span></div>
+                <div class="sentence-item"><span class="s-number">406.</span><span class="s-hi">पेट में दर्द हो रहा है।</span><span class="s-en">My stomach is hurting.</span></div>
+                <div class="sentence-item"><span class="s-number">407.</span><span class="s-hi">डॉक्टर के पास चलो।</span><span class="s-en">Let's go to the doctor.</span></div>
+                <div class="sentence-item"><span class="s-number">408.</span><span class="s-hi">क्लिनिक खुला है क्या?</span><span class="s-en">Is the clinic open?</span></div>
+                <div class="sentence-item"><span class="s-number">409.</span><span class="s-hi">नंबर लगाना पड़ेगा।</span><span class="s-en">You have to get a appointment number.</span></div>
+                <div class="sentence-item"><span class="s-number">410.</span><span class="s-hi">डॉक्टर साहब देख रहे हैं।</span><span class="s-en">The doctor is examining.</span></div>
+                <div class="sentence-item"><span class="s-number">411.</span><span class="s-hi">यह दवा दिन में दो बार लेनी है।</span><span class="s-en">Take this medicine twice a day.</span></div>
+                <div class="sentence-item"><span class="s-number">412.</span><span class="s-hi">गर्म पानी पियो।</span><span class="s-en">Drink warm water.</span></div>
+                <div class="sentence-item"><span class="s-number">413.</span><span class="s-hi">ठंडी चीज़ों से परहेज़ करो।</span><span class="s-en">Avoid cold items.</span></div>
+                <div class="sentence-item"><span class="s-number">414.</span><span class="s-hi">आराम करो, आराम मिलेगा।</span><span class="s-en">Rest, you will feel better.</span></div>
+                <div class="sentence-item"><span class="s-number">415.</span><span class="s-hi">क्या आपको दर्द हो रहा है?</span><span class="s-en">Are you in pain?</span></div>
+                <div class="sentence-item"><span class="s-number">416.</span><span class="s-hi">हाँ, यहाँ दर्द है।</span><span class="s-en">Yes, it hurts here.</span></div>
+                <div class="sentence-item"><span class="s-number">417.</span><span class="s-hi">घाव पर पट्टी बांध दो।</span><span class="s-en">Bandage the wound.</span></div>
+                <div class="sentence-item"><span class="s-number">418.</span><span class="s-hi">खून बह रहा है।</span><span class="s-en">It is bleeding.</span></div>
+                <div class="sentence-item"><span class="s-number">419.</span><span class="s-hi">घबराओ मत, सब ठीक हो जाएगा।</span><span class="s-en">Don't panic, everything will be fine.</span></div>
+                <div class="sentence-item"><span class="s-number">420.</span><span class="s-hi">अस्पताल कहाँ है?</span><span class="s-en">Where is the hospital?</span></div>
+                <div class="sentence-item"><span class="s-number">421.</span><span class="s-hi">एम्बुलेंस को बुलाओ।</span><span class="s-en">Call the ambulance.</span></div>
+                <div class="sentence-item"><span class="s-number">422.</span><span class="s-hi">मेडिकल स्टोर से दवा ले आओ।</span><span class="s-en">Bring medicine from the medical store.</span></div>
+                <div class="sentence-item"><span class="s-number">423.</span><span class="s-hi">यह पर्चा दिखाओ।</span><span class="s-en">Show this prescription.</span></div>
+                <div class="sentence-item"><span class="s-number">424.</span><span class="s-hi">इंजेक्शन लगाना पड़ेगा क्या?</span><span class="s-en">Will an injection be needed?</span></div>
+                <div class="sentence-item"><span class="s-number">425.</span><span class="s-hi">नहीं, सिर्फ दवा से ठीक हो जाएगा।</span><span class="s-en">No, it will heal just with medicine.</span></div>
+                <div class="sentence-item"><span class="s-number">426.</span><span class="s-hi">स्वास्थ्य ही धन है।</span><span class="s-en">Health is wealth.</span></div>
+                <div class="sentence-item"><span class="s-number">427.</span><span class="s-hi">रोज़ सुबह टहला करो।</span><span class="s-en">Walk every morning.</span></div>
+                <div class="sentence-item"><span class="s-number">428.</span><span class="s-hi">कसरत करना सेहत के लिए अच्छा है।</span><span class="s-en">Exercise is good for health.</span></div>
+                <div class="sentence-item"><span class="s-number">429.</span><span class="s-hi">योग करो, स्वस्थ रहो।</span><span class="s-en">Do yoga, stay healthy.</span></div>
+                <div class="sentence-item"><span class="s-number">430.</span><span class="s-hi">फल और सब्ज़ियाँ खाओ।</span><span class="s-en">Eat fruits and vegetables.</span></div>
+                <div class="sentence-item"><span class="s-number">431.</span><span class="s-hi">जंक फूड मत खाओ।</span><span class="s-en">Don't eat junk food.</span></div>
+                <div class="sentence-item"><span class="s-number">432.</span><span class="s-hi">बाहर का खाना मत खाओ।</span><span class="s-en">Don't eat outside food.</span></div>
+                <div class="sentence-item"><span class="s-number">433.</span><span class="s-hi">पर्याप्त पानी पियो।</span><span class="s-en">Drink enough water.</span></div>
+                <div class="sentence-item"><span class="s-number">434.</span><span class="s-hi">8 घंटे की नींद ज़रूरी है।</span><span class="s-en">8 hours of sleep is necessary.</span></div>
+                <div class="sentence-item"><span class="s-number">435.</span><span class="s-hi">मेरा वज़न बढ़ रहा है।</span><span class="s-en">I am gaining weight.</span></div>
+                <div class="sentence-item"><span class="s-number">436.</span><span class="s-hi">वज़न कम करना है।</span><span class="s-en">I want to lose weight.</span></div>
+                <div class="sentence-item"><span class="s-number">437.</span><span class="s-hi">वह बहुत फिट है।</span><span class="s-en">He is very fit.</span></div>
+                <div class="sentence-item"><span class="s-number">438.</span><span class="s-hi">उसे कमज़ोरी लग रही है।</span><span class="s-en">She is feeling weak.</span></div>
+                <div class="sentence-item"><span class="s-number">439.</span><span class="s-hi">ताकत की दवा खाओ।</span><span class="s-en">Take energy supplements.</span></div>
+                <div class="sentence-item"><span class="s-number">440.</span><span class="s-hi">गहरी साँस लो।</span><span class="s-en">Take a deep breath.</span></div>
+                <div class="sentence-item"><span class="s-number">441.</span><span class="s-hi">साँस रोको।</span><span class="s-en">Hold your breath.</span></div>
+                <div class="sentence-item"><span class="s-number">442.</span><span class="s-hi">अब छोड़ो।</span><span class="s-en">Now release.</span></div>
+                <div class="sentence-item"><span class="s-number">443.</span><span class="s-hi">आँखों की जाँच करानी है।</span><span class="s-en">I need to get my eyes checked.</span></div>
+                <div class="sentence-item"><span class="s-number">444.</span><span class="s-hi">मुझे चश्मा लग गया है।</span><span class="s-en">I have got glasses.</span></div>
+                <div class="sentence-item"><span class="s-number">445.</span><span class="s-hi">साफ़-सफ़ाई का ध्यान रखो।</span><span class="s-en">Take care of cleanliness.</span></div>
+                <div class="sentence-item"><span class="s-number">446.</span><span class="s-hi">मच्छर काट रहे हैं।</span><span class="s-en">Mosquitoes are biting.</span></div>
+                <div class="sentence-item"><span class="s-number">447.</span><span class="s-hi">ऑल-आउट लगाओ।</span><span class="s-en">Turn on the mosquito repellent.</span></div>
+                <div class="sentence-item"><span class="s-number">448.</span><span class="s-hi">बीमारी से बचो।</span><span class="s-en">Prevention is better than cure.</span></div>
+                <div class="sentence-item"><span class="s-number">449.</span><span class="s-hi">वह अब पूरी तरह ठीक है।</span><span class="s-en">He is perfectly fine now.</span></div>
+                <div class="sentence-item"><span class="s-number">450.</span><span class="s-hi">भगवान का शुक्र है।</span><span class="s-en">Thank God.</span></div>
+            </div>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- CATEGORY 10: होटल, रेस्तरां और खाना-पीना (451-500)          -->
+        <!-- ============================================================== -->
+        <section class="category">
+            <h2 class="cat-title">10. होटल, रेस्तरां और खाना-पीना</h2>
+            <div class="cat-sub">Hotel, Restaurant &amp; Food <span>— 451 to 500</span></div>
+            <div class="sentence-grid">
+                <div class="sentence-item"><span class="s-number">451.</span><span class="s-hi">मुझे भूख लगी है।</span><span class="s-en">I am hungry.</span></div>
+                <div class="sentence-item"><span class="s-number">452.</span><span class="s-hi">क्या आपके पास टेबल खाली है?</span><span class="s-en">Do you have a vacant table?</span></div>
+                <div class="sentence-item"><span class="s-number">453.</span><span class="s-hi">चार लोगों के लिए टेबल चाहिए।</span><span class="s-en">Need a table for four people.</span></div>
+                <div class="sentence-item"><span class="s-number">454.</span><span class="s-hi">मेनू कार्ड लाइए।</span><span class="s-en">Please bring the menu card.</span></div>
+                <div class="sentence-item"><span class="s-number">455.</span><span class="s-hi">आज स्पेशल क्या है?</span><span class="s-en">What is special today?</span></div>
+                <div class="sentence-item"><span class="s-number">456.</span><span class="s-hi">मुझे शाकाहारी खाना चाहिए।</span><span class="s-en">I want vegetarian food.</span></div>
+                <div class="sentence-item"><span class="s-number">457.</span><span class="s-hi">पानी की बोतल लाओ।</span><span class="s-en">Bring a water bottle.</span></div>
+                <div class="sentence-item"><span class="s-number">458.</span><span class="s-hi">ठंडा पानी मत लाना।</span><span class="s-en">Don't bring cold water.</span></div>
+                <div class="sentence-item"><span class="s-number">459.</span><span class="s-hi">एक प्लेट पनीर बटर मसाला।</span><span class="s-en">One plate of Paneer Butter Masala.</span></div>
+                <div class="sentence-item"><span class="s-number">460.</span><span class="s-hi">रोटी गरमा-गरम होनी चाहिए।</span><span class="s-en">Roti should be piping hot.</span></div>
+                <div class="sentence-item"><span class="s-number">461.</span><span class="s-hi">खाने में कितना समय लगेगा?</span><span class="s-en">How long will the food take?</span></div>
+                <div class="sentence-item"><span class="s-number">462.</span><span class="s-hi">बस दस मिनट लगेंगे, सर।</span><span class="s-en">Just ten minutes, sir.</span></div>
+                <div class="sentence-item"><span class="s-number">463.</span><span class="s-hi">खाना परोसिए।</span><span class="s-en">Serve the food.</span></div>
+                <div class="sentence-item"><span class="s-number">464.</span><span class="s-hi">नमक कम है।</span><span class="s-en">Salt is less.</span></div>
+                <div class="sentence-item"><span class="s-number">465.</span><span class="s-hi">थोड़ा नमक देना।</span><span class="s-en">Give some salt.</span></div>
+                <div class="sentence-item"><span class="s-number">466.</span><span class="s-hi">मिर्ची बहुत ज़्यादा है।</span><span class="s-en">It is too spicy.</span></div>
+                <div class="sentence-item"><span class="s-number">467.</span><span class="s-hi">खाना सच में लाजवाब है।</span><span class="s-en">The food is really awesome.</span></div>
+                <div class="sentence-item"><span class="s-number">468.</span><span class="s-hi">मुझे मीठा खाना है।</span><span class="s-en">I want to eat dessert.</span></div>
+                <div class="sentence-item"><span class="s-number">469.</span><span class="s-hi">आइसक्रीम लाओ।</span><span class="s-en">Bring ice cream.</span></div>
+                <div class="sentence-item"><span class="s-number">470.</span><span class="s-hi">बिल ले आइए।</span><span class="s-en">Please bring the bill.</span></div>
+                <div class="sentence-item"><span class="s-number">471.</span><span class="s-hi">बिल कितने का हुआ?</span><span class="s-en">How much is the bill?</span></div>
+                <div class="sentence-item"><span class="s-number">472.</span><span class="s-hi">पैसे कार्ड से दूँगा।</span><span class="s-en">I will pay by card.</span></div>
+                <div class="sentence-item"><span class="s-number">473.</span><span class="s-hi">कैश भी चलेगा।</span><span class="s-en">Cash will also work.</span></div>
+                <div class="sentence-item"><span class="s-number">474.</span><span class="s-hi">बाकी पैसे आप रख लो (टिप)।</span><span class="s-en">Keep the change (tip).</span></div>
+                <div class="sentence-item"><span class="s-number">475.</span><span class="s-hi">सर्विस बहुत अच्छी थी।</span><span class="s-en">The service was very good.</span></div>
+                <div class="sentence-item"><span class="s-number">476.</span><span class="s-hi">यह रेस्तरां बहुत महँगा है।</span><span class="s-en">This restaurant is very expensive.</span></div>
+                <div class="sentence-item"><span class="s-number">477.</span><span class="s-hi">यहाँ का खाना अच्छा नहीं है।</span><span class="s-en">The food here is not good.</span></div>
+                <div class="sentence-item"><span class="s-number">478.</span><span class="s-hi">चलो किसी और जगह चलते हैं।</span><span class="s-en">Let's go somewhere else.</span></div>
+                <div class="sentence-item"><span class="s-number">479.</span><span class="s-hi">मुझे प्यास लगी है।</span><span class="s-en">I am thirsty.</span></div>
+                <div class="sentence-item"><span class="s-number">480.</span><span class="s-hi">कुछ ठंडा पीना है।</span><span class="s-en">I want to drink something cold.</span></div>
+                <div class="sentence-item"><span class="s-number">481.</span><span class="s-hi">जूस की दुकान कहाँ है?</span><span class="s-en">Where is the juice shop?</span></div>
+                <div class="sentence-item"><span class="s-number">482.</span><span class="s-hi">एक गिलास आम का जूस।</span><span class="s-en">One glass of mango juice.</span></div>
+                <div class="sentence-item"><span class="s-number">483.</span><span class="s-hi">चीनी मत डालना।</span><span class="s-en">Don't add sugar.</span></div>
+                <div class="sentence-item"><span class="s-number">484.</span><span class="s-hi">बर्फ कम रखना।</span><span class="s-en">Keep the ice low.</span></div>
+                <div class="sentence-item"><span class="s-number">485.</span><span class="s-hi">यह बहुत मीठा है।</span><span class="s-en">This is too sweet.</span></div>
+                <div class="sentence-item"><span class="s-number">486.</span><span class="s-hi">चाय की टपरी कहाँ है?</span><span class="s-en">Where is the tea stall?</span></div>
+                <div class="sentence-item"><span class="s-number">487.</span><span class="s-hi">एक कप कड़क चाय बनाओ।</span><span class="s-en">Make a cup of strong tea.</span></div>
+                <div class="sentence-item"><span class="s-number">488.</span><span class="s-hi">समोसा गरम है ना?</span><span class="s-en">Is the samosa hot, right?</span></div>
+                <div class="sentence-item"><span class="s-number">489.</span><span class="s-hi">मुझे तली हुई चीज़ें पसंद नहीं।</span><span class="s-en">I don't like fried food.</span></div>
+                <div class="sentence-item"><span class="s-number">490.</span><span class="s-hi">मुझे सादा खाना पसंद है।</span><span class="s-en">I like simple food.</span></div>
+                <div class="sentence-item"><span class="s-number">491.</span><span class="s-hi">पेट खराब हो जाएगा।</span><span class="s-en">The stomach will get upset.</span></div>
+                <div class="sentence-item"><span class="s-number">492.</span><span class="s-hi">हाथ साफ़ करने के लिए टिशू पेपर देना।</span><span class="s-en">Give a tissue paper to clean hands.</span></div>
+                <div class="sentence-item"><span class="s-number">493.</span><span class="s-hi">वाशबेसिन कहाँ है?</span><span class="s-en">Where is the washbasin?</span></div>
+                <div class="sentence-item"><span class="s-number">494.</span><span class="s-hi">वहाँ बाएँ तरफ।</span><span class="s-en">Over there on the left.</span></div>
+                <div class="sentence-item"><span class="s-number">495.</span><span class="s-hi">खाना पैक कर दो।</span><span class="s-en">Pack the food.</span></div>
+                <div class="sentence-item"><span class="s-number">496.</span><span class="s-hi">यह बचा हुआ खाना है।</span><span class="s-en">This is leftover food.</span></div>
+                <div class="sentence-item"><span class="s-number">497.</span><span class="s-hi">भूखों को खाना खिलाओ।</span><span class="s-en">Feed the hungry.</span></div>
+                <div class="sentence-item"><span class="s-number">498.</span><span class="s-hi">अन्न का अपमान मत करो।</span><span class="s-en">Don't waste food.</span></div>
+                <div class="sentence-item"><span class="s-number">499.</span><span class="s-hi">पेट भर गया, मन तृप्त हो गया।</span><span class="s-en">Stomach is full, mind is satisfied.</span></div>
+                <div class="sentence-item"><span class="s-number">500.</span><span class="s-hi">बहुत अच्छा अनुभव था।</span><span class="s-en">It was a very good experience.</span></div>
+            </div>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- CATEGORY 11: बैंक, पैसे और लेन-देन (501-550)                -->
+        <!-- ============================================================== -->
+        <section class="category">
+            <h2 class="cat-title">11. बैंक, पैसे और लेन-देन</h2>
+            <div class="cat-sub">Bank, Money &amp; Transactions <span>— 501 to 550</span></div>
+            <div class="sentence-grid">
+                <div class="sentence-item"><span class="s-number">501.</span><span class="s-hi">बैंक कहाँ है?</span><span class="s-en">Where is the bank?</span></div>
+                <div class="sentence-item"><span class="s-number">502.</span><span class="s-hi">एटीएम में पैसे नहीं हैं।</span><span class="s-en">There is no money in the ATM.</span></div>
+                <div class="sentence-item"><span class="s-number">503.</span><span class="s-hi">मुझे पैसे निकालने हैं।</span><span class="s-en">I want to withdraw money.</span></div>
+                <div class="sentence-item"><span class="s-number">504.</span><span class="s-hi">मुझे पैसे जमा करने हैं।</span><span class="s-en">I want to deposit money.</span></div>
+                <div class="sentence-item"><span class="s-number">505.</span><span class="s-hi">एक नया खाता खोलना है।</span><span class="s-en">I want to open a new account.</span></div>
+                <div class="sentence-item"><span class="s-number">506.</span><span class="s-hi">फॉर्म कहाँ मिलेगा?</span><span class="s-en">Where can I get the form?</span></div>
+                <div class="sentence-item"><span class="s-number">507.</span><span class="s-hi">इस काउंटर पर जाइए।</span><span class="s-en">Go to this counter.</span></div>
+                <div class="sentence-item"><span class="s-number">508.</span><span class="s-hi">मैनेजर का केबिन कहाँ है?</span><span class="s-en">Where is the manager's cabin?</span></div>
+                <div class="sentence-item"><span class="s-number">509.</span><span class="s-hi">चेक बुक चाहिए।</span><span class="s-en">I need a checkbook.</span></div>
+                <div class="sentence-item"><span class="s-number">510.</span><span class="s-hi">पासबुक प्रिंट करानी है।</span><span class="s-en">I need to print my passbook.</span></div>
+                <div class="sentence-item"><span class="s-number">511.</span><span class="s-hi">मशीन खराब है।</span><span class="s-en">The machine is out of order.</span></div>
+                <div class="sentence-item"><span class="s-number">512.</span><span class="s-hi">लाइन में लग जाओ।</span><span class="s-en">Stand in the queue.</span></div>
+                <div class="sentence-item"><span class="s-number">513.</span><span class="s-hi">आपकी बारी आ गई।</span><span class="s-en">Your turn has come.</span></div>
+                <div class="sentence-item"><span class="s-number">514.</span><span class="s-hi">यहाँ हस्ताक्षर कीजिए।</span><span class="s-en">Sign here.</span></div>
+                <div class="sentence-item"><span class="s-number">515.</span><span class="s-hi">अंगूठा मत लगाओ, साइन करो।</span><span class="s-en">Don't use thumb impression, sign.</span></div>
+                <div class="sentence-item"><span class="s-number">516.</span><span class="s-hi">आधार कार्ड की फोटोकॉपी चाहिए।</span><span class="s-en">Need a photocopy of the Aadhaar card.</span></div>
+                <div class="sentence-item"><span class="s-number">517.</span><span class="s-hi">पैन कार्ड कहाँ है?</span><span class="s-en">Where is the PAN card?</span></div>
+                <div class="sentence-item"><span class="s-number">518.</span><span class="s-hi">लोन की प्रक्रिया क्या है?</span><span class="s-en">What is the loan process?</span></div>
+                <div class="sentence-item"><span class="s-number">519.</span><span class="s-hi">ब्याज दर बहुत ज़्यादा है।</span><span class="s-en">The interest rate is too high.</span></div>
+                <div class="sentence-item"><span class="s-number">520.</span><span class="s-hi">मुझे कर्ज़ नहीं चाहिए।</span><span class="s-en">I don't want a loan.</span></div>
+                <div class="sentence-item"><span class="s-number">521.</span><span class="s-hi">मैंने पैसे ट्रांसफर कर दिए हैं।</span><span class="s-en">I have transferred the money.</span></div>
+                <div class="sentence-item"><span class="s-number">522.</span><span class="s-hi">स्क्रीनशॉट भेजो।</span><span class="s-en">Send the screenshot.</span></div>
+                <div class="sentence-item"><span class="s-number">523.</span><span class="s-hi">पैसे अभी तक नहीं मिले।</span><span class="s-en">Money has not been received yet.</span></div>
+                <div class="sentence-item"><span class="s-number">524.</span><span class="s-hi">थोड़ा इंतज़ार करो, आ जाएगा।</span><span class="s-en">Wait a bit, it will come.</span></div>
+                <div class="sentence-item"><span class="s-number">525.</span><span class="s-hi">बैंक का सर्वर डाउन है।</span><span class="s-en">The bank server is down.</span></div>
+                <div class="sentence-item"><span class="s-number">526.</span><span class="s-hi">लिंक फेल है।</span><span class="s-en">The link is down.</span></div>
+                <div class="sentence-item"><span class="s-number">527.</span><span class="s-hi">मेरा खाता ब्लॉक हो गया है।</span><span class="s-en">My account has been blocked.</span></div>
+                <div class="sentence-item"><span class="s-number">528.</span><span class="s-hi">इसे चालू करवाओ।</span><span class="s-en">Get it activated.</span></div>
+                <div class="sentence-item"><span class="s-number">529.</span><span class="s-hi">गुप्त पिन किसी को मत बताओ।</span><span class="s-en">Don't tell your secret PIN to anyone.</span></div>
+                <div class="sentence-item"><span class="s-number">530.</span><span class="s-hi">ठगी से बचो।</span><span class="s-en">Beware of fraud.</span></div>
+                <div class="sentence-item"><span class="s-number">531.</span><span class="s-hi">मेरे पास बहुत कम पैसे हैं।</span><span class="s-en">I have very little money.</span></div>
+                <div class="sentence-item"><span class="s-number">532.</span><span class="s-hi">पैसे पेड़ पर नहीं उगते।</span><span class="s-en">Money doesn't grow on trees.</span></div>
+                <div class="sentence-item"><span class="s-number">533.</span><span class="s-hi">सोच-समझकर खर्च करो।</span><span class="s-en">Spend wisely.</span></div>
+                <div class="sentence-item"><span class="s-number">534.</span><span class="s-hi">फिजूलखर्ची मत करो।</span><span class="s-en">Don't waste money.</span></div>
+                <div class="sentence-item"><span class="s-number">535.</span><span class="s-hi">पैसे बचाना एक अच्छी आदत है।</span><span class="s-en">Saving money is a good habit.</span></div>
+                <div class="sentence-item"><span class="s-number">536.</span><span class="s-hi">उसने मुझसे उधार लिया था।</span><span class="s-en">He borrowed from me.</span></div>
+                <div class="sentence-item"><span class="s-number">537.</span><span class="s-hi">वह पैसे वापस नहीं कर रहा।</span><span class="s-en">He is not returning the money.</span></div>
+                <div class="sentence-item"><span class="s-number">538.</span><span class="s-hi">कल पक्का दे दूँगा।</span><span class="s-en">Will definitely give tomorrow.</span></div>
+                <div class="sentence-item"><span class="s-number">539.</span><span class="s-hi">अपनी जुबान पर कायम रहो।</span><span class="s-en">Keep your word.</span></div>
+                <div class="sentence-item"><span class="s-number">540.</span><span class="s-hi">ईमानदारी सबसे अच्छी नीति है।</span><span class="s-en">Honesty is the best policy.</span></div>
+                <div class="sentence-item"><span class="s-number">541.</span><span class="s-hi">हिसाब साफ़ रखो।</span><span class="s-en">Keep the account clear.</span></div>
+                <div class="sentence-item"><span class="s-number">542.</span><span class="s-hi">इस महीने का बजट बिगड़ गया।</span><span class="s-en">This month's budget got upset.</span></div>
+                <div class="sentence-item"><span class="s-number">543.</span><span class="s-hi">कमाई से ज़्यादा खर्च मत करो।</span><span class="s-en">Don't spend more than your earning.</span></div>
+                <div class="sentence-item"><span class="s-number">544.</span><span class="s-hi">वह बहुत अमीर है।</span><span class="s-en">He is very rich.</span></div>
+                <div class="sentence-item"><span class="s-number">545.</span><span class="s-hi">वह बहुत गरीब है।</span><span class="s-en">He is very poor.</span></div>
+                <div class="sentence-item"><span class="s-number">546.</span><span class="s-hi">उसकी मदद करो।</span><span class="s-en">Help him.</span></div>
+                <div class="sentence-item"><span class="s-number">547.</span><span class="s-hi">दान देना अच्छी बात है।</span><span class="s-en">Giving charity is a good thing.</span></div>
+                <div class="sentence-item"><span class="s-number">548.</span><span class="s-hi">तिजोरी बंद कर दो।</span><span class="s-en">Close the locker/safe.</span></div>
+                <div class="sentence-item"><span class="s-number">549.</span><span class="s-hi">चाबी संभाल कर रखो।</span><span class="s-en">Keep the key safely.</span></div>
+                <div class="sentence-item"><span class="s-number">550.</span><span class="s-hi">सब पैसे सुरक्षित हैं।</span><span class="s-en">All money is safe.</span></div>
+            </div>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- CATEGORY 12: भावनाएँ, मूड और प्रतिक्रियाएँ (551-600)       -->
+        <!-- ============================================================== -->
+        <section class="category">
+            <h2 class="cat-title">12. भावनाएँ, मूड और प्रतिक्रियाएँ</h2>
+            <div class="cat-sub">Feelings, Moods &amp; Reactions <span>— 551 to 600</span></div>
+            <div class="sentence-grid">
+                <div class="sentence-item"><span class="s-number">551.</span><span class="s-hi">तुम उदास क्यों हो?</span><span class="s-en">Why are you sad?</span></div>
+                <div class="sentence-item"><span class="s-number">552.</span><span class="s-hi">मैं बहुत खुश हूँ।</span><span class="s-en">I am very happy.</span></div>
+                <div class="sentence-item"><span class="s-number">553.</span><span class="s-hi">मुझे गुस्सा मत दिलाओ।</span><span class="s-en">Don't make me angry.</span></div>
+                <div class="sentence-item"><span class="s-number">554.</span><span class="s-hi">चिल्लाओ मत।</span><span class="s-en">Don't shout.</span></div>
+                <div class="sentence-item"><span class="s-number">555.</span><span class="s-hi">रोना बंद करो।</span><span class="s-en">Stop crying.</span></div>
+                <div class="sentence-item"><span class="s-number">556.</span><span class="s-hi">वह मुस्कुरा रही है।</span><span class="s-en">She is smiling.</span></div>
+                <div class="sentence-item"><span class="s-number">557.</span><span class="s-hi">हँसना सेहत के लिए अच्छा है।</span><span class="s-en">Laughing is good for health.</span></div>
+                <div class="sentence-item"><span class="s-number">558.</span><span class="s-hi">मुझे डर लग रहा है।</span><span class="s-en">I am feeling scared.</span></div>
+                <div class="sentence-item"><span class="s-number">559.</span><span class="s-hi">घबराने की कोई बात नहीं है।</span><span class="s-en">There is nothing to panic.</span></div>
+                <div class="sentence-item"><span class="s-number">560.</span><span class="s-hi">हिम्मत रखो।</span><span class="s-en">Have courage.</span></div>
+                <div class="sentence-item"><span class="s-number">561.</span><span class="s-hi">मुझे तुम पर गर्व है।</span><span class="s-en">I am proud of you.</span></div>
+                <div class="sentence-item"><span class="s-number">562.</span><span class="s-hi">क्या तुम्हें जलन हो रही है?</span><span class="s-en">Are you feeling jealous?</span></div>
+                <div class="sentence-item"><span class="s-number">563.</span><span class="s-hi">मुझे कोई फर्क नहीं पड़ता।</span><span class="s-en">It doesn't matter to me. / I don't care.</span></div>
+                <div class="sentence-item"><span class="s-number">564.</span><span class="s-hi">सब्र का फल मीठा होता है।</span><span class="s-en">Patience bears sweet fruit.</span></div>
+                <div class="sentence-item"><span class="s-number">565.</span><span class="s-hi">सब्र रखो।</span><span class="s-en">Have patience.</span></div>
+                <div class="sentence-item"><span class="s-number">566.</span><span class="s-hi">वह बहुत दयालु है।</span><span class="s-en">He is very kind.</span></div>
+                <div class="sentence-item"><span class="s-number">567.</span><span class="s-hi">क्रूर मत बनो।</span><span class="s-en">Don't be cruel.</span></div>
+                <div class="sentence-item"><span class="s-number">568.</span><span class="s-hi">मुझे शर्म आ रही है।</span><span class="s-en">I am feeling shy.</span></div>
+                <div class="sentence-item"><span class="s-number">569.</span><span class="s-hi">शर्माओ मत, खुलकर बोलो।</span><span class="s-en">Don't be shy, speak openly.</span></div>
+                <div class="sentence-item"><span class="s-number">570.</span><span class="s-hi">मुझे अचंभा हो रहा है।</span><span class="s-en">I am feeling surprised.</span></div>
+                <div class="sentence-item"><span class="s-number">571.</span><span class="s-hi">यह तो जादू जैसा है।</span><span class="s-en">This is like magic.</span></div>
+                <div class="sentence-item"><span class="s-number">572.</span><span class="s-hi">मुझे बहुत अकेलापन लग रहा है।</span><span class="s-en">I am feeling very lonely.</span></div>
+                <div class="sentence-item"><span class="s-number">573.</span><span class="s-hi">मैं हमेशा तुम्हारे साथ हूँ।</span><span class="s-en">I am always with you.</span></div>
+                <div class="sentence-item"><span class="s-number">574.</span><span class="s-hi">तुम मेरे सबसे अच्छे दोस्त हो।</span><span class="s-en">You are my best friend.</span></div>
+                <div class="sentence-item"><span class="s-number">575.</span><span class="s-hi">धोखा मत देना।</span><span class="s-en">Don't betray. / Don't cheat.</span></div>
+                <div class="sentence-item"><span class="s-number">576.</span><span class="s-hi">मुझे तुम पर पूरा भरोसा है।</span><span class="s-en">I trust you completely.</span></div>
+                <div class="sentence-item"><span class="s-number">577.</span><span class="s-hi">भरोसा जीतना मुश्किल है।</span><span class="s-en">Winning trust is difficult.</span></div>
+                <div class="sentence-item"><span class="s-number">578.</span><span class="s-hi">और भरोसा तोड़ना आसान है।</span><span class="s-en">And breaking trust is easy.</span></div>
+                <div class="sentence-item"><span class="s-number">579.</span><span class="s-hi">झूठी उम्मीद मत दो।</span><span class="s-en">Don't give false hope.</span></div>
+                <div class="sentence-item"><span class="s-number">580.</span><span class="s-hi">सच हमेशा कड़वा होता है।</span><span class="s-en">Truth is always bitter.</span></div>
+                <div class="sentence-item"><span class="s-number">581.</span><span class="s-hi">वह बहुत भावुक है।</span><span class="s-en">He is very emotional.</span></div>
+                <div class="sentence-item"><span class="s-number">582.</span><span class="s-hi">बात को समझो।</span><span class="s-en">Understand the point.</span></div>
+                <div class="sentence-item"><span class="s-number">583.</span><span class="s-hi">दिल छोटा मत करो।</span><span class="s-en">Don't lose heart.</span></div>
+                <div class="sentence-item"><span class="s-number">584.</span><span class="s-hi">सब ठीक हो जाएगा।</span><span class="s-en">Everything will be fine.</span></div>
+                <div class="sentence-item"><span class="s-number">585.</span><span class="s-hi">समय हर घाव भर देता है।</span><span class="s-en">Time heals every wound.</span></div>
+                <div class="sentence-item"><span class="s-number">586.</span><span class="s-hi">सकारात्मक सोचो।</span><span class="s-en">Think positive.</span></div>
+                <div class="sentence-item"><span class="s-number">587.</span><span class="s-hi">नकारात्मकता से दूर रहो।</span><span class="s-en">Stay away from negativity.</span></div>
+                <div class="sentence-item"><span class="s-number">588.</span><span class="s-hi">तुम कमाल हो!</span><span class="s-en">You are amazing!</span></div>
+                <div class="sentence-item"><span class="s-number">589.</span><span class="s-hi">मुझे तुम्हारी बहुत याद आई।</span><span class="s-en">I missed you a lot.</span></div>
+                <div class="sentence-item"><span class="s-number">590.</span><span class="s-hi">भूल जाओ जो हुआ।</span><span class="s-en">Forget what happened.</span></div>
+                <div class="sentence-item"><span class="s-number">591.</span><span class="s-hi">एक नई शुरुआत करो।</span><span class="s-en">Make a new start.</span></div>
+                <div class="sentence-item"><span class="s-number">592.</span><span class="s-hi">तुम्हारी आँखों में आँसू क्यों हैं?</span><span class="s-en">Why are there tears in your eyes?</span></div>
+                <div class="sentence-item"><span class="s-number">593.</span><span class="s-hi">खुशी के आँसू हैं।</span><span class="s-en">These are tears of joy.</span></div>
+                <div class="sentence-item"><span class="s-number">594.</span><span class="s-hi">हमेशा खुश रहो।</span><span class="s-en">Always stay happy.</span></div>
+                <div class="sentence-item"><span class="s-number">595.</span><span class="s-hi">परेशान मत हो।</span><span class="s-en">Don't be upset.</span></div>
+                <div class="sentence-item"><span class="s-number">596.</span><span class="s-hi">मैं तुम्हारी समस्या समझ सकता हूँ।</span><span class="s-en">I can understand your problem.</span></div>
+                <div class="sentence-item"><span class="s-number">597.</span><span class="s-hi">मिलकर समाधान निकालेंगे।</span><span class="s-en">We will find a solution together.</span></div>
+                <div class="sentence-item"><span class="s-number">598.</span><span class="s-hi">शांत रहो और सोचो।</span><span class="s-en">Keep calm and think.</span></div>
+                <div class="sentence-item"><span class="s-number">599.</span><span class="s-hi">अक्ल की हमेशा जीत होती है।</span><span class="s-en">Intellect always wins.</span></div>
+                <div class="sentence-item"><span class="s-number">600.</span><span class="s-hi">मुस्कुराते रहो।</span><span class="s-en">Keep smiling.</span></div>
+            </div>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- CATEGORY 13: दोस्तों और पड़ोसियों से बातचीत (601-650)       -->
+        <!-- ============================================================== -->
+        <section class="category">
+            <h2 class="cat-title">13. दोस्तों और पड़ोसियों से बातचीत</h2>
+            <div class="cat-sub">Friends &amp; Neighbors <span>— 601 to 650</span></div>
+            <div class="sentence-grid">
+                <div class="sentence-item"><span class="s-number">601.</span><span class="s-hi">अरे भाई, कहाँ थे इतने दिन?</span><span class="s-en">Hey brother, where were you all these days?</span></div>
+                <div class="sentence-item"><span class="s-number">602.</span><span class="s-hi">मैं थोड़ा व्यस्त था।</span><span class="s-en">I was a bit busy.</span></div>
+                <div class="sentence-item"><span class="s-number">603.</span><span class="s-hi">चलो कहीं बाहर बैठते हैं।</span><span class="s-en">Let's sit somewhere outside.</span></div>
+                <div class="sentence-item"><span class="s-number">604.</span><span class="s-hi">शाम को मेरे घर आना।</span><span class="s-en">Come to my house in the evening.</span></div>
+                <div class="sentence-item"><span class="s-number">605.</span><span class="s-hi">क्या तुम आ रहे हो?</span><span class="s-en">Are you coming?</span></div>
+                <div class="sentence-item"><span class="s-number">606.</span><span class="s-hi">हाँ, मैं आऊँगा।</span><span class="s-en">Yes, I will come.</span></div>
+                <div class="sentence-item"><span class="s-number">607.</span><span class="s-hi">मुझे थोड़ा काम है, शायद न आ पाऊँ।</span><span class="s-en">I have some work, might not be able to come.</span></div>
+                <div class="sentence-item"><span class="s-number">608.</span><span class="s-hi">बहाने मत बनाओ।</span><span class="s-en">Don't make excuses.</span></div>
+                <div class="sentence-item"><span class="s-number">609.</span><span class="s-hi">झूठ मत बोलो।</span><span class="s-en">Don't tell a lie.</span></div>
+                <div class="sentence-item"><span class="s-number">610.</span><span class="s-hi">मैं सच कह रहा हूँ।</span><span class="s-en">I am telling the truth.</span></div>
+                <div class="sentence-item"><span class="s-number">611.</span><span class="s-hi">चलो क्रिकेट खेलते हैं।</span><span class="s-en">Let's play cricket.</span></div>
+                <div class="sentence-item"><span class="s-number">612.</span><span class="s-hi">आज बहुत मज़ा आया।</span><span class="s-en">Enjoyed a lot today.</span></div>
+                <div class="sentence-item"><span class="s-number">613.</span><span class="s-hi">वह मेरा पड़ोसी है।</span><span class="s-en">He is my neighbor.</span></div>
+                <div class="sentence-item"><span class="s-number">614.</span><span class="s-hi">हमारे पड़ोसी बहुत अच्छे हैं।</span><span class="s-en">Our neighbors are very good.</span></div>
+                <div class="sentence-item"><span class="s-number">615.</span><span class="s-hi">आपस में मिलजुल कर रहना चाहिए।</span><span class="s-en">We should live together in harmony.</span></div>
+                <div class="sentence-item"><span class="s-number">616.</span><span class="s-hi">किसी से झगड़ा मत करो।</span><span class="s-en">Don't quarrel with anyone.</span></div>
+                <div class="sentence-item"><span class="s-number">617.</span><span class="s-hi">क्या बात है?</span><span class="s-en">What is the matter?</span></div>
+                <div class="sentence-item"><span class="s-number">618.</span><span class="s-hi">कुछ नहीं, सब ठीक है।</span><span class="s-en">Nothing, everything is fine.</span></div>
+                <div class="sentence-item"><span class="s-number">619.</span><span class="s-hi">वह नया रहने आया है।</span><span class="s-en">He has newly come to live here.</span></div>
+                <div class="sentence-item"><span class="s-number">620.</span><span class="s-hi">उसका नाम क्या है?</span><span class="s-en">What is his name?</span></div>
+                <div class="sentence-item"><span class="s-number">621.</span><span class="s-hi">क्या तुम उसे जानते हो?</span><span class="s-en">Do you know him?</span></div>
+                <div class="sentence-item"><span class="s-number">622.</span><span class="s-hi">हाँ, वह मेरा सहपाठी था।</span><span class="s-en">Yes, he was my classmate.</span></div>
+                <div class="sentence-item"><span class="s-number">623.</span><span class="s-hi">पुरानी यादें ताज़ा हो गईं।</span><span class="s-en">Old memories got refreshed.</span></div>
+                <div class="sentence-item"><span class="s-number">624.</span><span class="s-hi">बचपन के दिन अच्छे थे।</span><span class="s-en">Childhood days were good.</span></div>
+                <div class="sentence-item"><span class="s-number">625.</span><span class="s-hi">तुम बदल गए हो।</span><span class="s-en">You have changed.</span></div>
+                <div class="sentence-item"><span class="s-number">626.</span><span class="s-hi">नहीं, मैं वैसा ही हूँ।</span><span class="s-en">No, I am the same.</span></div>
+                <div class="sentence-item"><span class="s-number">627.</span><span class="s-hi">चाय पीओगे या कॉफ़ी?</span><span class="s-en">Will you have tea or coffee?</span></div>
+                <div class="sentence-item"><span class="s-number">628.</span><span class="s-hi">चाय ही ठीक है।</span><span class="s-en">Tea is fine.</span></div>
+                <div class="sentence-item"><span class="s-number">629.</span><span class="s-hi">बिस्कुट लो।</span><span class="s-en">Have some biscuits.</span></div>
+                <div class="sentence-item"><span class="s-number">630.</span><span class="s-hi">और बताओ, घर में सब कैसे हैं?</span><span class="s-en">Tell more, how is everyone at home?</span></div>
+                <div class="sentence-item"><span class="s-number">631.</span><span class="s-hi">सब बढ़िया हैं।</span><span class="s-en">Everyone is fine.</span></div>
+                <div class="sentence-item"><span class="s-number">632.</span><span class="s-hi">अपनी गाड़ी यहाँ मत खड़ी करो।</span><span class="s-en">Don't park your vehicle here.</span></div>
+                <div class="sentence-item"><span class="s-number">633.</span><span class="s-hi">रास्ता रुक रहा है।</span><span class="s-en">The way is getting blocked.</span></div>
+                <div class="sentence-item"><span class="s-number">634.</span><span class="s-hi">ठीक है, मैं हटा लेता हूँ।</span><span class="s-en">Okay, I am moving it.</span></div>
+                <div class="sentence-item"><span class="s-number">635.</span><span class="s-hi">मुझे तुम्हारी मदद चाहिए।</span><span class="s-en">I need your help.</span></div>
+                <div class="sentence-item"><span class="s-number">636.</span><span class="s-hi">बोलो, क्या काम है?</span><span class="s-en">Tell me, what is the work?</span></div>
+                <div class="sentence-item"><span class="s-number">637.</span><span class="s-hi">सुख-दुख में दोस्त ही काम आते हैं।</span><span class="s-en">Friends are helpful in ups and downs.</span></div>
+                <div class="sentence-item"><span class="s-number">638.</span><span class="s-hi">वह स्वार्थी है।</span><span class="s-en">He is selfish.</span></div>
+                <div class="sentence-item"><span class="s-number">639.</span><span class="s-hi">उससे दूर रहो।</span><span class="s-en">Stay away from him.</span></div>
+                <div class="sentence-item"><span class="s-number">640.</span><span class="s-hi">वह एक सच्चा दोस्त है।</span><span class="s-en">He is a true friend.</span></div>
+                <div class="sentence-item"><span class="s-number">641.</span><span class="s-hi">गपशप करना बंद करो।</span><span class="s-en">Stop gossiping.</span></div>
+                <div class="sentence-item"><span class="s-number">642.</span><span class="s-hi">समय बहुत कीमती है।</span><span class="s-en">Time is very precious.</span></div>
+                <div class="sentence-item"><span class="s-number">643.</span><span class="s-hi">चलो कल सुबह वॉक पर चलेंगे।</span><span class="s-en">Come on, we will go for a walk tomorrow morning.</span></div>
+                <div class="sentence-item"><span class="s-number">644.</span><span class="s-hi">ठीक है, मुझे जगा देना।</span><span class="s-en">Okay, wake me up.</span></div>
+                <div class="sentence-item"><span class="s-number">645.</span><span class="s-hi">फोन कर देना।</span><span class="s-en">Give me a call.</span></div>
+                <div class="sentence-item"><span class="s-number">646.</span><span class="s-hi">मैं तैयार रहूँगा।</span><span class="s-en">I will be ready.</span></div>
+                <div class="sentence-item"><span class="s-number">647.</span><span class="s-hi">देर मत करना।</span><span class="s-en">Don't be late.</span></div>
+                <div class="sentence-item"><span class="s-number">648.</span><span class="s-hi">अलार्म लगा लो।</span><span class="s-en">Set the alarm.</span></div>
+                <div class="sentence-item"><span class="s-number">649.</span><span class="s-hi">शुभ रात्रि, मेरे दोस्त।</span><span class="s-en">Good night, my friend.</span></div>
+                <div class="sentence-item"><span class="s-number">650.</span><span class="s-hi">मीठे सपने देखो।</span><span class="s-en">Sweet dreams.</span></div>
+            </div>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- CATEGORY 14: सामान्य आदेश और निर्देश (651-700)              -->
+        <!-- ============================================================== -->
+        <section class="category">
+            <h2 class="cat-title">14. सामान्य आदेश और निर्देश</h2>
+            <div class="cat-sub">Commands &amp; Instructions <span>— 651 to 700</span></div>
+            <div class="sentence-grid">
+                <div class="sentence-item"><span class="s-number">651.</span><span class="s-hi">यहाँ आओ।</span><span class="s-en">Come here.</span></div>
+                <div class="sentence-item"><span class="s-number">652.</span><span class="s-hi">वहाँ जाओ।</span><span class="s-en">Go there.</span></div>
+                <div class="sentence-item"><span class="s-number">653.</span><span class="s-hi">खड़े हो जाओ।</span><span class="s-en">Stand up.</span></div>
+                <div class="sentence-item"><span class="s-number">654.</span><span class="s-hi">बैठ जाओ।</span><span class="s-en">Sit down.</span></div>
+                <div class="sentence-item"><span class="s-number">655.</span><span class="s-hi">चुप रहो।</span><span class="s-en">Keep quiet. / Shut up.</span></div>
+                <div class="sentence-item"><span class="s-number">656.</span><span class="s-hi">इसे अभी करो।</span><span class="s-en">Do it right now.</span></div>
+                <div class="sentence-item"><span class="s-number">657.</span><span class="s-hi">मत छुओ।</span><span class="s-en">Don't touch.</span></div>
+                <div class="sentence-item"><span class="s-number">658.</span><span class="s-hi">बाहर इंतज़ार करो।</span><span class="s-en">Wait outside.</span></div>
+                <div class="sentence-item"><span class="s-number">659.</span><span class="s-hi">अंदर आओ।</span><span class="s-en">Come inside.</span></div>
+                <div class="sentence-item"><span class="s-number">660.</span><span class="s-hi">अपनी किताबें खोलो।</span><span class="s-en">Open your books.</span></div>
+                <div class="sentence-item"><span class="s-number">661.</span><span class="s-hi">लिखना शुरू करो।</span><span class="s-en">Start writing.</span></div>
+                <div class="sentence-item"><span class="s-number">662.</span><span class="s-hi">पेन नीचे रखो।</span><span class="s-en">Put the pen down.</span></div>
+                <div class="sentence-item"><span class="s-number">663.</span><span class="s-hi">मेरी बात सुनो।</span><span class="s-en">Listen to me.</span></div>
+                <div class="sentence-item"><span class="s-number">664.</span><span class="s-hi">उधर देखो।</span><span class="s-en">Look over there.</span></div>
+                <div class="sentence-item"><span class="s-number">665.</span><span class="s-hi">यहाँ देखो।</span><span class="s-en">Look here.</span></div>
+                <div class="sentence-item"><span class="s-number">666.</span><span class="s-hi">इसे साफ करो।</span><span class="s-en">Clean it.</span></div>
+                <div class="sentence-item"><span class="s-number">667.</span><span class="s-hi">ध्यान से चलो।</span><span class="s-en">Walk carefully.</span></div>
+                <div class="sentence-item"><span class="s-number">668.</span><span class="s-hi">जल्दी करो।</span><span class="s-en">Hurry up.</span></div>
+                <div class="sentence-item"><span class="s-number">669.</span><span class="s-hi">सीधे खड़े रहो, हिलो मत।</span><span class="s-en">Stand straight, don't move.</span></div>
+                <div class="sentence-item"><span class="s-number">670.</span><span class="s-hi">पीछे मुड़ो।</span><span class="s-en">Turn back.</span></div>
+                <div class="sentence-item"><span class="s-number">671.</span><span class="s-hi">आगे देखो।</span><span class="s-en">Look ahead.</span></div>
+                <div class="sentence-item"><span class="s-number">672.</span><span class="s-hi">इसे वापस रखो।</span><span class="s-en">Put it back.</span></div>
+                <div class="sentence-item"><span class="s-number">673.</span><span class="s-hi">इसे उठाओ।</span><span class="s-en">Pick it up.</span></div>
+                <div class="sentence-item"><span class="s-number">674.</span><span class="s-hi">इसे फेंक दो।</span><span class="s-en">Throw it away.</span></div>
+                <div class="sentence-item"><span class="s-number">675.</span><span class="s-hi">रोना बंद करो।</span><span class="s-en">Stop crying.</span></div>
+                <div class="sentence-item"><span class="s-number">676.</span><span class="s-hi">ज़ोर से मत चिल्लाओ।</span><span class="s-en">Don't shout loudly.</span></div>
+                <div class="sentence-item"><span class="s-number">677.</span><span class="s-hi">बत्तियां बुझा दो।</span><span class="s-en">Turn off the lights.</span></div>
+                <div class="sentence-item"><span class="s-number">678.</span><span class="s-hi">पंखा चला दो।</span><span class="s-en">Turn on the fan.</span></div>
+                <div class="sentence-item"><span class="s-number">679.</span><span class="s-hi">नल बंद करो।</span><span class="s-en">Close the tap.</span></div>
+                <div class="sentence-item"><span class="s-number">680.</span><span class="s-hi">खाना धीरे-धीरे चबाकर खाओ।</span><span class="s-en">Chew your food slowly.</span></div>
+                <div class="sentence-item"><span class="s-number">681.</span><span class="s-hi">जूते पहन लो।</span><span class="s-en">Put on your shoes.</span></div>
+                <div class="sentence-item"><span class="s-number">682.</span><span class="s-hi">चप्पल निकाल दो।</span><span class="s-en">Take off your slippers.</span></div>
+                <div class="sentence-item"><span class="s-number">683.</span><span class="s-hi">बाल संवार लो।</span><span class="s-en">Comb your hair.</span></div>
+                <div class="sentence-item"><span class="s-number">684.</span><span class="s-hi">अपना चेहरा धो लो।</span><span class="s-en">Wash your face.</span></div>
+                <div class="sentence-item"><span class="s-number">685.</span><span class="s-hi">समय पर आया करो।</span><span class="s-en">Come on time.</span></div>
+                <div class="sentence-item"><span class="s-number">686.</span><span class="s-hi">बहाने मत बनाओ।</span><span class="s-en">Don't make excuses.</span></div>
+                <div class="sentence-item"><span class="s-number">687.</span><span class="s-hi">मुझे तंग मत करो।</span><span class="s-en">Don't disturb me. / Don't tease me.</span></div>
+                <div class="sentence-item"><span class="s-number">688.</span><span class="s-hi">अपने काम से काम रखो।</span><span class="s-en">Mind your own business.</span></div>
+                <div class="sentence-item"><span class="s-number">689.</span><span class="s-hi">यहाँ हस्ताक्षर करो।</span><span class="s-en">Sign here.</span></div>
+                <div class="sentence-item"><span class="s-number">690.</span><span class="s-hi">इसे दोबारा पढ़ो।</span><span class="s-en">Read it again.</span></div>
+                <div class="sentence-item"><span class="s-number">691.</span><span class="s-hi">भूलना मत।</span><span class="s-en">Don't forget.</span></div>
+                <div class="sentence-item"><span class="s-number">692.</span><span class="s-hi">याद रखना।</span><span class="s-en">Remember it.</span></div>
+                <div class="sentence-item"><span class="s-number">693.</span><span class="s-hi">कोशिश करते रहो।</span><span class="s-en">Keep trying.</span></div>
+                <div class="sentence-item"><span class="s-number">694.</span><span class="s-hi">हिम्मत मत हारो।</span><span class="s-en">Don't lose courage.</span></div>
+                <div class="sentence-item"><span class="s-number">695.</span><span class="s-hi">सच बोलो।</span><span class="s-en">Speak the truth.</span></div>
+                <div class="sentence-item"><span class="s-number">696.</span><span class="s-hi">चोरी मत करो।</span><span class="s-en">Don't steal.</span></div>
+                <div class="sentence-item"><span class="s-number">697.</span><span class="s-hi">दूसरों की मदद करो।</span><span class="s-en">Help others.</span></div>
+                <div class="sentence-item"><span class="s-number">698.</span><span class="s-hi">हमेशा खुश रहो।</span><span class="s-en">Always stay happy.</span></div>
+                <div class="sentence-item"><span class="s-number">699.</span><span class="s-hi">अब तुम जा सकते हो।</span><span class="s-en">You may go now.</span></div>
+                <div class="sentence-item"><span class="s-number">700.</span><span class="s-hi">अपना ख्याल रखना।</span><span class="s-en">Take care of yourself.</span></div>
+            </div>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- CATEGORY 15: घर की मरम्मत और समस्याएँ (701-750)             -->
+        <!-- ============================================================== -->
+        <section class="category">
+            <h2 class="cat-title">15. घर की मरम्मत और समस्याएँ</h2>
+            <div class="cat-sub">Household Maintenance <span>— 701 to 750</span></div>
+            <div class="sentence-grid">
+                <div class="sentence-item"><span class="s-number">701.</span><span class="s-hi">नल से पानी टपक रहा है।</span><span class="s-en">Water is dripping from the tap.</span></div>
+                <div class="sentence-item"><span class="s-number">702.</span><span class="s-hi">प्लम्बर को बुलाओ।</span><span class="s-en">Call the plumber.</span></div>
+                <div class="sentence-item"><span class="s-number">703.</span><span class="s-hi">लाइट चली गई है।</span><span class="s-en">The power has gone out.</span></div>
+                <div class="sentence-item"><span class="s-number">704.</span><span class="s-hi">इन्वर्टर काम नहीं कर रहा।</span><span class="s-en">The inverter is not working.</span></div>
+                <div class="sentence-item"><span class="s-number">705.</span><span class="s-hi">इलेक्ट्रिशियन का नंबर कहाँ है?</span><span class="s-en">Where is the electrician's number?</span></div>
+                <div class="sentence-item"><span class="s-number">706.</span><span class="s-hi">पंखा आवाज़ कर रहा है।</span><span class="s-en">The fan is making noise.</span></div>
+                <div class="sentence-item"><span class="s-number">707.</span><span class="s-hi">इसकी सर्विसिंग करानी पड़ेगी।</span><span class="s-en">It needs to be serviced.</span></div>
+                <div class="sentence-item"><span class="s-number">708.</span><span class="s-hi">दीवार पर सीलन आ गई है।</span><span class="s-en">There is dampness on the wall.</span></div>
+                <div class="sentence-item"><span class="s-number">709.</span><span class="s-hi">छत टपक रही है।</span><span class="s-en">The roof is leaking.</span></div>
+                <div class="sentence-item"><span class="s-number">710.</span><span class="s-hi">दरवाज़े का ताला खराब है।</span><span class="s-en">The door lock is broken.</span></div>
+                <div class="sentence-item"><span class="s-number">711.</span><span class="s-hi">नई चाबी बनानी पड़ेगी।</span><span class="s-en">A new key needs to be made.</span></div>
+                <div class="sentence-item"><span class="s-number">712.</span><span class="s-hi">खिड़की का काँच टूट गया।</span><span class="s-en">The window glass broke.</span></div>
+                <div class="sentence-item"><span class="s-number">713.</span><span class="s-hi">इसे बदलवा दो।</span><span class="s-en">Get it replaced.</span></div>
+                <div class="sentence-item"><span class="s-number">714.</span><span class="s-hi">घर में पेंट कराना है।</span><span class="s-en">The house needs to be painted.</span></div>
+                <div class="sentence-item"><span class="s-number">715.</span><span class="s-hi">कौन सा रंग अच्छा रहेगा?</span><span class="s-en">Which color will be good?</span></div>
+                <div class="sentence-item"><span class="s-number">716.</span><span class="s-hi">सफ़ेद रंग सबसे अच्छा है।</span><span class="s-en">White color is the best.</span></div>
+                <div class="sentence-item"><span class="s-number">717.</span><span class="s-hi">फ़र्श बहुत गंदा है।</span><span class="s-en">The floor is very dirty.</span></div>
+                <div class="sentence-item"><span class="s-number">718.</span><span class="s-hi">दाग साफ़ नहीं हो रहा।</span><span class="s-en">The stain is not coming off.</span></div>
+                <div class="sentence-item"><span class="s-number">719.</span><span class="s-hi">वॉशिंग मशीन खराब हो गई।</span><span class="s-en">The washing machine broke down.</span></div>
+                <div class="sentence-item"><span class="s-number">720.</span><span class="s-hi">हाथ से कपड़े धोने पड़ेंगे।</span><span class="s-en">Will have to wash clothes by hand.</span></div>
+                <div class="sentence-item"><span class="s-number">721.</span><span class="s-hi">गीज़र चालू कर दो, पानी ठंडा है।</span><span class="s-en">Turn on the geyser, the water is cold.</span></div>
+                <div class="sentence-item"><span class="s-number">722.</span><span class="s-hi">फ्यूज उड़ गया है।</span><span class="s-en">The fuse has blown.</span></div>
+                <div class="sentence-item"><span class="s-number">723.</span><span class="s-hi">बिजली का बिल बहुत ज़्यादा आया है।</span><span class="s-en">The electricity bill is very high.</span></div>
+                <div class="sentence-item"><span class="s-number">724.</span><span class="s-hi">बिजली बचाओ।</span><span class="s-en">Save electricity.</span></div>
+                <div class="sentence-item"><span class="s-number">725.</span><span class="s-hi">ज़रूरत न हो तो लाइट बंद कर दो।</span><span class="s-en">Turn off the light if not needed.</span></div>
+                <div class="sentence-item"><span class="s-number">726.</span><span class="s-hi">गैस सिलेंडर ख़त्म होने वाला है।</span><span class="s-en">The gas cylinder is about to finish.</span></div>
+                <div class="sentence-item"><span class="s-number">727.</span><span class="s-hi">नया बुक कर दो।</span><span class="s-en">Book a new one.</span></div>
+                <div class="sentence-item"><span class="s-number">728.</span><span class="s-hi">चूल्हा साफ़ करो।</span><span class="s-en">Clean the stove.</span></div>
+                <div class="sentence-item"><span class="s-number">729.</span><span class="s-hi">सिंक में बर्तन जमा हैं।</span><span class="s-en">Dishes are piled up in the sink.</span></div>
+                <div class="sentence-item"><span class="s-number">730.</span><span class="s-hi">नाली जाम हो गई है।</span><span class="s-en">The drain is clogged.</span></div>
+                <div class="sentence-item"><span class="s-number">731.</span><span class="s-hi">बदबू आ रही है।</span><span class="s-en">It is smelling bad.</span></div>
+                <div class="sentence-item"><span class="s-number">732.</span><span class="s-hi">फिनाइल डालो।</span><span class="s-en">Put phenyl.</span></div>
+                <div class="sentence-item"><span class="s-number">733.</span><span class="s-hi">कूड़ेदान खाली करो।</span><span class="s-en">Empty the dustbin.</span></div>
+                <div class="sentence-item"><span class="s-number">734.</span><span class="s-hi">घर में चूहे आ गए हैं।</span><span class="s-en">Mice have entered the house.</span></div>
+                <div class="sentence-item"><span class="s-number">735.</span><span class="s-hi">चूहेदानी लगाओ।</span><span class="s-en">Set a mousetrap.</span></div>
+                <div class="sentence-item"><span class="s-number">736.</span><span class="s-hi">चींटियाँ बहुत हैं।</span><span class="s-en">There are too many ants.</span></div>
+                <div class="sentence-item"><span class="s-number">737.</span><span class="s-hi">दवा छिड़क दो।</span><span class="s-en">Spray the medicine.</span></div>
+                <div class="sentence-item"><span class="s-number">738.</span><span class="s-hi">मकड़ी के जाले साफ़ करो।</span><span class="s-en">Clean the spider webs.</span></div>
+                <div class="sentence-item"><span class="s-number">739.</span><span class="s-hi">घर चमचमा रहा है।</span><span class="s-en">The house is sparkling.</span></div>
+                <div class="sentence-item"><span class="s-number">740.</span><span class="s-hi">सोफे का कवर गंदा है।</span><span class="s-en">The sofa cover is dirty.</span></div>
+                <div class="sentence-item"><span class="s-number">741.</span><span class="s-hi">इसे धोना पड़ेगा।</span><span class="s-en">It needs to be washed.</span></div>
+                <div class="sentence-item"><span class="s-number">742.</span><span class="s-hi">पर्दा बदल दो।</span><span class="s-en">Change the curtain.</span></div>
+                <div class="sentence-item"><span class="s-number">743.</span><span class="s-hi">घड़ी की बैटरी ख़त्म हो गई।</span><span class="s-en">The clock battery is dead.</span></div>
+                <div class="sentence-item"><span class="s-number">744.</span><span class="s-hi">नया सेल डालो।</span><span class="s-en">Put a new cell.</span></div>
+                <div class="sentence-item"><span class="s-number">745.</span><span class="s-hi">पौधों में पानी डाल दिया क्या?</span><span class="s-en">Did you water the plants?</span></div>
+                <div class="sentence-item"><span class="s-number">746.</span><span class="s-hi">हाँ, सुबह ही डाल दिया था।</span><span class="s-en">Yes, watered them in the morning itself.</span></div>
+                <div class="sentence-item"><span class="s-number">747.</span><span class="s-hi">गमला टूट गया।</span><span class="s-en">The flowerpot broke.</span></div>
+                <div class="sentence-item"><span class="s-number">748.</span><span class="s-hi">मिट्टी बिखर गई।</span><span class="s-en">The soil scattered.</span></div>
+                <div class="sentence-item"><span class="s-number">749.</span><span class="s-hi">इसे झाड़ू से साफ़ करो।</span><span class="s-en">Clean it with a broom.</span></div>
+                <div class="sentence-item"><span class="s-number">750.</span><span class="s-hi">घर को हमेशा साफ़ रखो।</span><span class="s-en">Always keep the house clean.</span></div>
+            </div>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- CATEGORY 16: मौसम और बीमारियाँ (751-800)                    -->
+        <!-- ============================================================== -->
+        <section class="category">
+            <h2 class="cat-title">16. मौसम और बीमारियाँ</h2>
+            <div class="cat-sub">Weather &amp; Illnesses <span>— 751 to 800</span></div>
+            <div class="sentence-grid">
+                <div class="sentence-item"><span class="s-number">751.</span><span class="s-hi">अचानक मौसम बदल गया।</span><span class="s-en">The weather changed suddenly.</span></div>
+                <div class="sentence-item"><span class="s-number">752.</span><span class="s-hi">ठंडी हवा चल रही है।</span><span class="s-en">Cold wind is blowing.</span></div>
+                <div class="sentence-item"><span class="s-number">753.</span><span class="s-hi">मुझे छींक आ रही है।</span><span class="s-en">I am sneezing.</span></div>
+                <div class="sentence-item"><span class="s-number">754.</span><span class="s-hi">लगता है मुझे जुकाम होने वाला है।</span><span class="s-en">Looks like I am going to catch a cold.</span></div>
+                <div class="sentence-item"><span class="s-number">755.</span><span class="s-hi">गरम काढ़ा पी लो।</span><span class="s-en">Drink hot herbal decoction (Kadha).</span></div>
+                <div class="sentence-item"><span class="s-number">756.</span><span class="s-hi">गले में खराश है।</span><span class="s-en">I have a sore throat.</span></div>
+                <div class="sentence-item"><span class="s-number">757.</span><span class="s-hi">नमक पानी से गरारे करो।</span><span class="s-en">Gargle with salt water.</span></div>
+                <div class="sentence-item"><span class="s-number">758.</span><span class="s-hi">मेरी नाक बह रही है।</span><span class="s-en">I have a runny nose.</span></div>
+                <div class="sentence-item"><span class="s-number">759.</span><span class="s-hi">टिश्यू पेपर देना।</span><span class="s-en">Give me a tissue paper.</span></div>
+                <div class="sentence-item"><span class="s-number">760.</span><span class="s-hi">उसे बहुत तेज़ बुखार है।</span><span class="s-en">He has a very high fever.</span></div>
+                <div class="sentence-item"><span class="s-number">761.</span><span class="s-hi">थर्मामीटर से चेक करो।</span><span class="s-en">Check with a thermometer.</span></div>
+                <div class="sentence-item"><span class="s-number">762.</span><span class="s-hi">तापमान 101 डिग्री है।</span><span class="s-en">The temperature is 101 degrees.</span></div>
+                <div class="sentence-item"><span class="s-number">763.</span><span class="s-hi">गीली पट्टी माथे पर रखो।</span><span class="s-en">Put a wet cloth on the forehead.</span></div>
+                <div class="sentence-item"><span class="s-number">764.</span><span class="s-hi">दवा खाकर सो जाओ।</span><span class="s-en">Take the medicine and sleep.</span></div>
+                <div class="sentence-item"><span class="s-number">765.</span><span class="s-hi">शरीर में दर्द हो रहा है।</span><span class="s-en">The body is aching.</span></div>
+                <div class="sentence-item"><span class="s-number">766.</span><span class="s-hi">पैर में मोच आ गई है।</span><span class="s-en">The foot is sprained.</span></div>
+                <div class="sentence-item"><span class="s-number">767.</span><span class="s-hi">सूजन आ गई है।</span><span class="s-en">There is swelling.</span></div>
+                <div class="sentence-item"><span class="s-number">768.</span><span class="s-hi">बर्फ से सिकाई करो।</span><span class="s-en">Apply ice pack.</span></div>
+                <div class="sentence-item"><span class="s-number">769.</span><span class="s-hi">उसे उल्टी-दस्त की शिकायत है।</span><span class="s-en">He is suffering from vomiting and diarrhea.</span></div>
+                <div class="sentence-item"><span class="s-number">770.</span><span class="s-hi">ओआरएस (ORS) का घोल पिलाओ।</span><span class="s-en">Give ORS solution.</span></div>
+                <div class="sentence-item"><span class="s-number">771.</span><span class="s-hi">पानी की कमी नहीं होनी चाहिए।</span><span class="s-en">There should be no dehydration.</span></div>
+                <div class="sentence-item"><span class="s-number">772.</span><span class="s-hi">आज दफ़्तर नहीं जा पाऊँगा।</span><span class="s-en">Won't be able to go to the office today.</span></div>
+                <div class="sentence-item"><span class="s-number">773.</span><span class="s-hi">बीमारी की छुट्टी (Sick Leave) लेनी पड़ेगी।</span><span class="s-en">Will have to take sick leave.</span></div>
+                <div class="sentence-item"><span class="s-number">774.</span><span class="s-hi">आँखें आ गई हैं (कंजंक्टिवाइटिस)।</span><span class="s-en">Having pink eye (conjunctivitis).</span></div>
+                <div class="sentence-item"><span class="s-number">775.</span><span class="s-hi">काला चश्मा पहनो।</span><span class="s-en">Wear black sunglasses.</span></div>
+                <div class="sentence-item"><span class="s-number">776.</span><span class="s-hi">दूसरों से दूरी बना कर रखो।</span><span class="s-en">Maintain distance from others.</span></div>
+                <div class="sentence-item"><span class="s-number">777.</span><span class="s-hi">संक्रमण फैल सकता है।</span><span class="s-en">Infection can spread.</span></div>
+                <div class="sentence-item"><span class="s-number">778.</span><span class="s-hi">मच्छर जनित बीमारियाँ बढ़ रही हैं।</span><span class="s-en">Mosquito-borne diseases are increasing.</span></div>
+                <div class="sentence-item"><span class="s-number">779.</span><span class="s-hi">डेंगू और मलेरिया से बचो।</span><span class="s-en">Beware of dengue and malaria.</span></div>
+                <div class="sentence-item"><span class="s-number">780.</span><span class="s-hi">पानी जमा मत होने दो।</span><span class="s-en">Don't let water accumulate.</span></div>
+                <div class="sentence-item"><span class="s-number">781.</span><span class="s-hi">पूरी आस्तीन के कपड़े पहनो।</span><span class="s-en">Wear full-sleeved clothes.</span></div>
+                <div class="sentence-item"><span class="s-number">782.</span><span class="s-hi">मॉस्किटो क्रीम लगाओ।</span><span class="s-en">Apply mosquito repellent cream.</span></div>
+                <div class="sentence-item"><span class="s-number">783.</span><span class="s-hi">उसकी सेहत में सुधार हो रहा है।</span><span class="s-en">His health is improving.</span></div>
+                <div class="sentence-item"><span class="s-number">784.</span><span class="s-hi">अब वह खतरे से बाहर है।</span><span class="s-en">Now he is out of danger.</span></div>
+                <div class="sentence-item"><span class="s-number">785.</span><span class="s-hi">डॉक्टर ने आराम करने की सलाह दी है।</span><span class="s-en">The doctor has advised rest.</span></div>
+                <div class="sentence-item"><span class="s-number">786.</span><span class="s-hi">भारी सामान मत उठाओ।</span><span class="s-en">Don't lift heavy weights.</span></div>
+                <div class="sentence-item"><span class="s-number">787.</span><span class="s-hi">रीढ़ की हड्डी में दर्द है।</span><span class="s-en">Having backache/spine pain.</span></div>
+                <div class="sentence-item"><span class="s-number">788.</span><span class="s-hi">सीधे लेटो।</span><span class="s-en">Lie down straight.</span></div>
+                <div class="sentence-item"><span class="s-number">789.</span><span class="s-hi">तकिया मत लगाओ।</span><span class="s-en">Don't use a pillow.</span></div>
+                <div class="sentence-item"><span class="s-number">790.</span><span class="s-hi">धूप सेकना अच्छा होता है।</span><span class="s-en">Sunbathing is good.</span></div>
+                <div class="sentence-item"><span class="s-number">791.</span><span class="s-hi">विटामिन डी मिलता है।</span><span class="s-en">Gives Vitamin D.</span></div>
+                <div class="sentence-item"><span class="s-number">792.</span><span class="s-hi">शुद्ध हवा में साँस लो।</span><span class="s-en">Breathe in pure air.</span></div>
+                <div class="sentence-item"><span class="s-number">793.</span><span class="s-hi">सुबह जल्दी उठने के फायदे हैं।</span><span class="s-en">Waking up early in the morning has benefits.</span></div>
+                <div class="sentence-item"><span class="s-number">794.</span><span class="s-hi">तनाव से दूर रहो।</span><span class="s-en">Stay away from stress.</span></div>
+                <div class="sentence-item"><span class="s-number">795.</span><span class="s-hi">खुश रहने से बीमारियाँ दूर होती हैं।</span><span class="s-en">Staying happy keeps diseases away.</span></div>
+                <div class="sentence-item"><span class="s-number">796.</span><span class="s-hi">अपनी सेहत का ध्यान खुद रखो।</span><span class="s-en">Take care of your health yourself.</span></div>
+                <div class="sentence-item"><span class="s-number">797.</span><span class="s-hi">कोई और नहीं आएगा।</span><span class="s-en">No one else will come.</span></div>
+                <div class="sentence-item"><span class="s-number">798.</span><span class="s-hi">जान है तो जहान है।</span><span class="s-en">Health is wealth. / If there is life, there is world.</span></div>
+                <div class="sentence-item"><span class="s-number">799.</span><span class="s-hi">वह अब पूरी तरह तंदुरुस्त है।</span><span class="s-en">He is perfectly healthy now.</span></div>
+                <div class="sentence-item"><span class="s-number">800.</span><span class="s-hi">सदा स्वस्थ रहो।</span><span class="s-en">Stay healthy forever.</span></div>
+            </div>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- CATEGORY 17: समय की पाबंदी और दिनचर्या (801-850)           -->
+        <!-- ============================================================== -->
+        <section class="category">
+            <h2 class="cat-title">17. समय की पाबंदी और दिनचर्या</h2>
+            <div class="cat-sub">Punctuality &amp; Routine <span>— 801 to 850</span></div>
+            <div class="sentence-grid">
+                <div class="sentence-item"><span class="s-number">801.</span><span class="s-hi">हमेशा समय के पाबंद रहो।</span><span class="s-en">Always be punctual.</span></div>
+                <div class="sentence-item"><span class="s-number">802.</span><span class="s-hi">समय का मूल्य समझो।</span><span class="s-en">Understand the value of time.</span></div>
+                <div class="sentence-item"><span class="s-number">803.</span><span class="s-hi">देर करना आपकी आदत बन गई है।</span><span class="s-en">Delaying has become your habit.</span></div>
+                <div class="sentence-item"><span class="s-number">804.</span><span class="s-hi">इसे बदलो।</span><span class="s-en">Change it.</span></div>
+                <div class="sentence-item"><span class="s-number">805.</span><span class="s-hi">कल से मैं सुबह जल्दी उठूँगा।</span><span class="s-en">From tomorrow I will wake up early in the morning.</span></div>
+                <div class="sentence-item"><span class="s-number">806.</span><span class="s-hi">सुबह की दिनचर्या बहुत ज़रूरी है।</span><span class="s-en">Morning routine is very important.</span></div>
+                <div class="sentence-item"><span class="s-number">807.</span><span class="s-hi">मैं रोज़ डायरी लिखता हूँ।</span><span class="s-en">I write a diary every day.</span></div>
+                <div class="sentence-item"><span class="s-number">808.</span><span class="s-hi">आज का दिन कैसा बीता?</span><span class="s-en">How was today?</span></div>
+                <div class="sentence-item"><span class="s-number">809.</span><span class="s-hi">आज का दिन बहुत उत्पादक (Productive) था।</span><span class="s-en">Today was a very productive day.</span></div>
+                <div class="sentence-item"><span class="s-number">810.</span><span class="s-hi">मैंने अपना सारा काम समय पर पूरा कर लिया।</span><span class="s-en">I completed all my work on time.</span></div>
+                <div class="sentence-item"><span class="s-number">811.</span><span class="s-hi">टालमटोल मत करो।</span><span class="s-en">Don't procrastinate.</span></div>
+                <div class="sentence-item"><span class="s-number">812.</span><span class="s-hi">आज का काम कल पर मत छोड़ो।</span><span class="s-en">Don't leave today's work for tomorrow.</span></div>
+                <div class="sentence-item"><span class="s-number">813.</span><span class="s-hi">जो करना है, अभी करो।</span><span class="s-en">Whatever you have to do, do it now.</span></div>
+                <div class="sentence-item"><span class="s-number">814.</span><span class="s-hi">कल कभी नहीं आता।</span><span class="s-en">Tomorrow never comes.</span></div>
+                <div class="sentence-item"><span class="s-number">815.</span><span class="s-hi">समय रेत की तरह हाथ से फिसल जाता है।</span><span class="s-en">Time slips from hands like sand.</span></div>
+                <div class="sentence-item"><span class="s-number">816.</span><span class="s-hi">वह अपने समय का पक्का है।</span><span class="s-en">He is true to his time.</span></div>
+                <div class="sentence-item"><span class="s-number">817.</span><span class="s-hi">क्या आपके पास दो मिनट हैं?</span><span class="s-en">Do you have two minutes?</span></div>
+                <div class="sentence-item"><span class="s-number">818.</span><span class="s-hi">हाँ, बोलिए क्या बात है?</span><span class="s-en">Yes, tell me what's the matter?</span></div>
+                <div class="sentence-item"><span class="s-number">819.</span><span class="s-hi">मैं आपका ज़्यादा समय नहीं लूँगा।</span><span class="s-en">I won't take much of your time.</span></div>
+                <div class="sentence-item"><span class="s-number">820.</span><span class="s-hi">संक्षिप्त में बताओ।</span><span class="s-en">Tell me in brief.</span></div>
+                <div class="sentence-item"><span class="s-number">821.</span><span class="s-hi">बात को घुमाओ मत।</span><span class="s-en">Don't beat around the bush.</span></div>
+                <div class="sentence-item"><span class="s-number">822.</span><span class="s-hi">सीधे मुद्दे पर आओ।</span><span class="s-en">Come straight to the point.</span></div>
+                <div class="sentence-item"><span class="s-number">823.</span><span class="s-hi">मेरे पास फालतू समय नहीं है।</span><span class="s-en">I don't have free time.</span></div>
+                <div class="sentence-item"><span class="s-number">824.</span><span class="s-hi">तुम अपना समय बर्बाद कर रहे हो।</span><span class="s-en">You are wasting your time.</span></div>
+                <div class="sentence-item"><span class="s-number">825.</span><span class="s-hi">सोशल मीडिया पर समय मत गंवाओ।</span><span class="s-en">Don't waste time on social media.</span></div>
+                <div class="sentence-item"><span class="s-number">826.</span><span class="s-hi">यह आपको कहीं नहीं ले जाएगा।</span><span class="s-en">This will take you nowhere.</span></div>
+                <div class="sentence-item"><span class="s-number">827.</span><span class="s-hi">अपने कौशल (Skills) को सुधारो।</span><span class="s-en">Improve your skills.</span></div>
+                <div class="sentence-item"><span class="s-number">828.</span><span class="s-hi">कुछ नया सीखो।</span><span class="s-en">Learn something new.</span></div>
+                <div class="sentence-item"><span class="s-number">829.</span><span class="s-hi">किताब पढ़ना एक अच्छी आदत है।</span><span class="s-en">Reading books is a good habit.</span></div>
+                <div class="sentence-item"><span class="s-number">830.</span><span class="s-hi">ज्ञान ही शक्ति है।</span><span class="s-en">Knowledge is power.</span></div>
+                <div class="sentence-item"><span class="s-number">831.</span><span class="s-hi">वह बहुत ज्ञानी है।</span><span class="s-en">He is very knowledgeable.</span></div>
+                <div class="sentence-item"><span class="s-number">832.</span><span class="s-hi">अपनी बुद्धि का सही प्रयोग करो।</span><span class="s-en">Use your intellect correctly.</span></div>
+                <div class="sentence-item"><span class="s-number">833.</span><span class="s-hi">अक्ल बड़ी या भैंस?</span><span class="s-en">Wisdom is better than strength.</span></div>
+                <div class="sentence-item"><span class="s-number">834.</span><span class="s-hi">निश्चित रूप से अक्ल बड़ी है।</span><span class="s-en">Definitely, intellect is greater.</span></div>
+                <div class="sentence-item"><span class="s-number">835.</span><span class="s-hi">सोच-समझकर निर्णय लो।</span><span class="s-en">Take decisions thoughtfully.</span></div>
+                <div class="sentence-item"><span class="s-number">836.</span><span class="s-hi">जल्दबाजी में गलतियाँ होती हैं।</span><span class="s-en">Haste makes waste. / Mistakes happen in haste.</span></div>
+                <div class="sentence-item"><span class="s-number">837.</span><span class="s-hi">धैर्य से काम लो।</span><span class="s-en">Act with patience.</span></div>
+                <div class="sentence-item"><span class="s-number">838.</span><span class="s-hi">मुश्किल समय भी बीत जाएगा।</span><span class="s-en">Hard times will also pass.</span></div>
+                <div class="sentence-item"><span class="s-number">839.</span><span class="s-hi">सुबह के बाद शाम आती है।</span><span class="s-en">Evening follows morning.</span></div>
+                <div class="sentence-item"><span class="s-number">840.</span><span class="s-hi">रात के बाद सवेरा होता है।</span><span class="s-en">Dawn follows night.</span></div>
+                <div class="sentence-item"><span class="s-number">841.</span><span class="s-hi">कभी उम्मीद मत छोड़ना।</span><span class="s-en">Never lose hope.</span></div>
+                <div class="sentence-item"><span class="s-number">842.</span><span class="s-hi">मेहनत रंग लाती है।</span><span class="s-en">Hard work pays off.</span></div>
+                <div class="sentence-item"><span class="s-number">843.</span><span class="s-hi">सफलता का कोई शॉर्टकट नहीं होता।</span><span class="s-en">There is no shortcut to success.</span></div>
+                <div class="sentence-item"><span class="s-number">844.</span><span class="s-hi">दृढ़ निश्चय रखो।</span><span class="s-en">Have strong determination.</span></div>
+                <div class="sentence-item"><span class="s-number">845.</span><span class="s-hi">लक्ष्य पर ध्यान केंद्रित करो।</span><span class="s-en">Focus on the goal.</span></div>
+                <div class="sentence-item"><span class="s-number">846.</span><span class="s-hi">भटको मत।</span><span class="s-en">Don't get distracted.</span></div>
+                <div class="sentence-item"><span class="s-number">847.</span><span class="s-hi">तुम यह कर सकते हो।</span><span class="s-en">You can do this.</span></div>
+                <div class="sentence-item"><span class="s-number">848.</span><span class="s-hi">मुझे तुम पर पूरा विश्वास है।</span><span class="s-en">I have full faith in you.</span></div>
+                <div class="sentence-item"><span class="s-number">849.</span><span class="s-hi">समय आ गया है, कर दिखाओ।</span><span class="s-en">The time has come, make it happen.</span></div>
+                <div class="sentence-item"><span class="s-number">850.</span><span class="s-hi">ऑल द बेस्ट!</span><span class="s-en">All the best!</span></div>
+            </div>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- CATEGORY 18: भोजन, रसोइया और पकवान (851-900)               -->
+        <!-- ============================================================== -->
+        <section class="category">
+            <h2 class="cat-title">18. भोजन, रसोइया और पकवान</h2>
+            <div class="cat-sub">Food, Cooking &amp; Dishes <span>— 851 to 900</span></div>
+            <div class="sentence-grid">
+                <div class="sentence-item"><span class="s-number">851.</span><span class="s-hi">आज रात का खाना बाहर खाएँगे।</span><span class="s-en">We will dine out tonight.</span></div>
+                <div class="sentence-item"><span class="s-number">852.</span><span class="s-hi">नहीं, घर का खाना ही अच्छा है।</span><span class="s-en">No, home-cooked food is better.</span></div>
+                <div class="sentence-item"><span class="s-number">853.</span><span class="s-hi">माँ के हाथ के खाने का कोई जवाब नहीं।</span><span class="s-en">Mother's cooked food is matchless.</span></div>
+                <div class="sentence-item"><span class="s-number">854.</span><span class="s-hi">सब्ज़ी में नमक ज़्यादा हो गया।</span><span class="s-en">Salt is too high in the vegetable.</span></div>
+                <div class="sentence-item"><span class="s-number">855.</span><span class="s-hi">थोड़ा पानी डाल दो।</span><span class="s-en">Add a little water.</span></div>
+                <div class="sentence-item"><span class="s-number">856.</span><span class="s-hi">चावल कच्चे हैं।</span><span class="s-en">The rice is undercooked.</span></div>
+                <div class="sentence-item"><span class="s-number">857.</span><span class="s-hi">एक सीटी और लगवा लो।</span><span class="s-en">Get one more whistle.</span></div>
+                <div class="sentence-item"><span class="s-number">858.</span><span class="s-hi">कुकर की सीटी बज रही है।</span><span class="s-en">The pressure cooker is whistling.</span></div>
+                <div class="sentence-item"><span class="s-number">859.</span><span class="s-hi">गैस बंद कर दो।</span><span class="s-en">Turn off the gas.</span></div>
+                <div class="sentence-item"><span class="s-number">860.</span><span class="s-hi">दूध फट गया।</span><span class="s-en">The milk turned sour. / The milk curdled.</span></div>
+                <div class="sentence-item"><span class="s-number">861.</span><span class="s-hi">पनीर बना लो।</span><span class="s-en">Make paneer out of it.</span></div>
+                <div class="sentence-item"><span class="s-number">862.</span><span class="s-hi">आटा गूंथ लो।</span><span class="s-en">Knead the dough.</span></div>
+                <div class="sentence-item"><span class="s-number">863.</span><span class="s-hi">रोटियां बेल लो।</span><span class="s-en">Roll the rotis.</span></div>
+                <div class="sentence-item"><span class="s-number">864.</span><span class="s-hi">रोटी सेक लो।</span><span class="s-en">Bake the roti.</span></div>
+                <div class="sentence-item"><span class="s-number">865.</span><span class="s-hi">रोटी फूल गई है।</span><span class="s-en">The roti is puffed up.</span></div>
+                <div class="sentence-item"><span class="s-number">866.</span><span class="s-hi">घी लगा दो।</span><span class="s-en">Apply ghee.</span></div>
+                <div class="sentence-item"><span class="s-number">867.</span><span class="s-hi">गरमा-गरम परोसो।</span><span class="s-en">Serve piping hot.</span></div>
+                <div class="sentence-item"><span class="s-number">868.</span><span class="s-hi">खाना ठंडा हो रहा है।</span><span class="s-en">The food is getting cold.</span></div>
+                <div class="sentence-item"><span class="s-number">869.</span><span class="s-hi">खा लो, देर मत करो।</span><span class="s-en">Eat, don't delay.</span></div>
+                <div class="sentence-item"><span class="s-number">870.</span><span class="s-hi">खाना ढक कर रखो।</span><span class="s-en">Keep the food covered.</span></div>
+                <div class="sentence-item"><span class="s-number">871.</span><span class="s-hi">मक्खियाँ भिनभिना रही हैं।</span><span class="s-en">Flies are buzzing.</span></div>
+                <div class="sentence-item"><span class="s-number">872.</span><span class="s-hi">हाथ धोकर ही भोजन छुओ।</span><span class="s-en">Touch food only after washing hands.</span></div>
+                <div class="sentence-item"><span class="s-number">873.</span><span class="s-hi">चम्मच से खाओगे या हाथ से?</span><span class="s-en">Will you eat with a spoon or hand?</span></div>
+                <div class="sentence-item"><span class="s-number">874.</span><span class="s-hi">हाथ से खाना अच्छा लगता है।</span><span class="s-en">Eating with hand feels good.</span></div>
+                <div class="sentence-item"><span class="s-number">875.</span><span class="s-hi">सलाद काट लो।</span><span class="s-en">Cut the salad.</span></div>
+                <div class="sentence-item"><span class="s-number">876.</span><span class="s-hi">खीरा छील लो।</span><span class="s-en">Peel the cucumber.</span></div>
+                <div class="sentence-item"><span class="s-number">877.</span><span class="s-hi">नींबू निचोड़ दो।</span><span class="s-en">Squeeze the lemon.</span></div>
+                <div class="sentence-item"><span class="s-number">878.</span><span class="s-hi">थोड़ा तीखा बनाओ।</span><span class="s-en">Make it a bit spicy.</span></div>
+                <div class="sentence-item"><span class="s-number">879.</span><span class="s-hi">मुझे मीठा बहुत पसंद है।</span><span class="s-en">I love sweets.</span></div>
+                <div class="sentence-item"><span class="s-number">880.</span><span class="s-hi">खीर बहुत अच्छी बनी है। / हलवा बहुत अच्छा बना है।</span><span class="s-en">The kheer/halwa is made very well.</span></div>
+                <div class="sentence-item"><span class="s-number">881.</span><span class="s-hi">थोड़ा और लीजिये।</span><span class="s-en">Please have some more.</span></div>
+                <div class="sentence-item"><span class="s-number">882.</span><span class="s-hi">नहीं शुक्रिया, मेरा हो गया।</span><span class="s-en">No thanks, I am done.</span></div>
+                <div class="sentence-item"><span class="s-number">883.</span><span class="s-hi">थोड़ा सा भी नहीं?</span><span class="s-en">Not even a little bit?</span></div>
+                <div class="sentence-item"><span class="s-number">884.</span><span class="s-hi">नहीं, जगह नहीं है बिल्कुल।</span><span class="s-en">No, there is absolutely no room.</span></div>
+                <div class="sentence-item"><span class="s-number">885.</span><span class="s-hi">बहुत भारी लग रहा है।</span><span class="s-en">Feeling very heavy.</span></div>
+                <div class="sentence-item"><span class="s-number">886.</span><span class="s-hi">थोड़ा टहलना पड़ेगा।</span><span class="s-en">Will have to walk a bit.</span></div>
+                <div class="sentence-item"><span class="s-number">887.</span><span class="s-hi">पाचन सही रहेगा।</span><span class="s-en">Digestion will remain good.</span></div>
+                <div class="sentence-item"><span class="s-number">888.</span><span class="s-hi">छाछ पी लो, ठंडक मिलेगी।</span><span class="s-en">Drink buttermilk, it will be cooling.</span></div>
+                <div class="sentence-item"><span class="s-number">889.</span><span class="s-hi">आज उपवास (Fast) है क्या?</span><span class="s-en">Is it a fast today?</span></div>
+                <div class="sentence-item"><span class="s-number">890.</span><span class="s-hi">हाँ, आज मेरा व्रत है।</span><span class="s-en">Yes, today is my fast.</span></div>
+                <div class="sentence-item"><span class="s-number">891.</span><span class="s-hi">फलाहार कर लो।</span><span class="s-en">Have some fruits.</span></div>
+                <div class="sentence-item"><span class="s-number">892.</span><span class="s-hi">साबूदाने की खिचड़ी बना दो।</span><span class="s-en">Make sago khichdi.</span></div>
+                <div class="sentence-item"><span class="s-number">893.</span><span class="s-hi">सेंधा नमक डालना।</span><span class="s-en">Add rock salt.</span></div>
+                <div class="sentence-item"><span class="s-number">894.</span><span class="s-hi">पानी पीते रहो।</span><span class="s-en">Keep drinking water.</span></div>
+                <div class="sentence-item"><span class="s-number">895.</span><span class="s-hi">शाम को व्रत खोलना है।</span><span class="s-en">Have to break the fast in the evening.</span></div>
+                <div class="sentence-item"><span class="s-number">896.</span><span class="s-hi">भोजन जीवन की बुनियादी ज़रूरत है।</span><span class="s-en">Food is the basic necessity of life.</span></div>
+                <div class="sentence-item"><span class="s-number">897.</span><span class="s-hi">गरीब को भोजन कराना पुण्य है।</span><span class="s-en">Feeding the poor is a virtue.</span></div>
+                <div class="sentence-item"><span class="s-number">898.</span><span class="s-hi">कभी अन्न की बर्बादी मत करो।</span><span class="s-en">Never waste food.</span></div>
+                <div class="sentence-item"><span class="s-number">899.</span><span class="s-hi">जितना खाना हो, उतना ही लो।</span><span class="s-en">Take only as much as you can eat.</span></div>
+                <div class="sentence-item"><span class="s-number">900.</span><span class="s-hi">अन्नदाता सुखी भव।</span><span class="s-en">May the food provider be blessed with happiness.</span></div>
+            </div>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- CATEGORY 19: शिष्टाचार, संस्कार और समाज (901-950)          -->
+        <!-- ============================================================== -->
+        <section class="category">
+            <h2 class="cat-title">19. शिष्टाचार, संस्कार और समाज</h2>
+            <div class="cat-sub">Etiquette, Values &amp; Society <span>— 901 to 950</span></div>
+            <div class="sentence-grid">
+                <div class="sentence-item"><span class="s-number">901.</span><span class="s-hi">हमेशा तमीज़ से बात करो।</span><span class="s-en">Always speak politely/with manners.</span></div>
+                <div class="sentence-item"><span class="s-number">902.</span><span class="s-hi">अपशब्दों का प्रयोग मत करो।</span><span class="s-en">Don't use abusive language.</span></div>
+                <div class="sentence-item"><span class="s-number">903.</span><span class="s-hi">बड़ों के पैर छूकर आशीर्वाद लो।</span><span class="s-en">Touch the feet of elders and take blessings.</span></div>
+                <div class="sentence-item"><span class="s-number">904.</span><span class="s-hi">मेहमान भगवान का रूप होते हैं।</span><span class="s-en">Guests are like Gods.</span></div>
+                <div class="sentence-item"><span class="s-number">905.</span><span class="s-hi">अतिथि देवो भव।</span><span class="s-en">Guest is God.</span></div>
+                <div class="sentence-item"><span class="s-number">906.</span><span class="s-hi">किसी का दिल मत दुखाओ।</span><span class="s-en">Don't hurt anyone's feelings.</span></div>
+                <div class="sentence-item"><span class="s-number">907.</span><span class="s-hi">कड़वी बातें मत बोलो।</span><span class="s-en">Don't speak bitter words.</span></div>
+                <div class="sentence-item"><span class="s-number">908.</span><span class="s-hi">मीठी वाणी बोलिए।</span><span class="s-en">Speak sweet words.</span></div>
+                <div class="sentence-item"><span class="s-number">909.</span><span class="s-hi">निंदा करना पाप है।</span><span class="s-en">Backbiting is a sin.</span></div>
+                <div class="sentence-item"><span class="s-number">910.</span><span class="s-hi">पीठ पीछे बात मत करो।</span><span class="s-en">Don't talk behind someone's back.</span></div>
+                <div class="sentence-item"><span class="s-number">911.</span><span class="s-hi">सामने आकर बोलो।</span><span class="s-en">Say it to the face.</span></div>
+                <div class="sentence-item"><span class="s-number">912.</span><span class="s-hi">वह बहुत संस्कारी लड़का है।</span><span class="s-en">He is a very well-mannered boy.</span></div>
+                <div class="sentence-item"><span class="s-number">913.</span><span class="s-hi">अच्छे संस्कार माता-पिता से मिलते हैं।</span><span class="s-en">Good values come from parents.</span></div>
+                <div class="sentence-item"><span class="s-number">914.</span><span class="s-hi">अपने बच्चों को अच्छी शिक्षा दो।</span><span class="s-en">Give good education to your children.</span></div>
+                <div class="sentence-item"><span class="s-number">915.</span><span class="s-hi">समाज में मान-सम्मान कमाओ।</span><span class="s-en">Earn respect in society.</span></div>
+                <div class="sentence-item"><span class="s-number">916.</span><span class="s-hi">पैसा तो आता-जाता है, चरित्र मायने रखता है।</span><span class="s-en">Money comes and goes, character matters.</span></div>
+                <div class="sentence-item"><span class="s-number">917.</span><span class="s-hi">चरित्र ही सब कुछ है।</span><span class="s-en">Character is everything.</span></div>
+                <div class="sentence-item"><span class="s-number">918.</span><span class="s-hi">वह एक ईमानदार व्यक्ति है।</span><span class="s-en">He is an honest man.</span></div>
+                <div class="sentence-item"><span class="s-number">919.</span><span class="s-hi">बेईमानी का अंत बुरा होता है।</span><span class="s-en">Dishonesty ends badly.</span></div>
+                <div class="sentence-item"><span class="s-number">920.</span><span class="s-hi">लालच बुरी बला है।</span><span class="s-en">Greed is a vice.</span></div>
+                <div class="sentence-item"><span class="s-number">921.</span><span class="s-hi">जो मिला है, उसमें संतुष्ट रहो।</span><span class="s-en">Be content with what you have.</span></div>
+                <div class="sentence-item"><span class="s-number">922.</span><span class="s-hi">मेहनत की कमाई सबसे अच्छी है।</span><span class="s-en">Hard-earned money is the best.</span></div>
+                <div class="sentence-item"><span class="s-number">923.</span><span class="s-hi">किसी का हक मत मारो।</span><span class="s-en">Don't usurp anyone's right.</span></div>
+                <div class="sentence-item"><span class="s-number">924.</span><span class="s-hi">न्याय हमेशा जीतता है।</span><span class="s-en">Justice always wins.</span></div>
+                <div class="sentence-item"><span class="s-number">925.</span><span class="s-hi">कानून का पालन करो।</span><span class="s-en">Follow the law.</span></div>
+                <div class="sentence-item"><span class="s-number">926.</span><span class="s-hi">नियमों को मत तोड़ो।</span><span class="s-en">Don't break the rules.</span></div>
+                <div class="sentence-item"><span class="s-number">927.</span><span class="s-hi">जुर्माना भरना पड़ेगा।</span><span class="s-en">Will have to pay a fine.</span></div>
+                <div class="sentence-item"><span class="s-number">928.</span><span class="s-hi">जागरूक नागरिक बनो।</span><span class="s-en">Be an aware citizen.</span></div>
+                <div class="sentence-item"><span class="s-number">929.</span><span class="s-hi">देश से प्यार करो।</span><span class="s-en">Love your country.</span></div>
+                <div class="sentence-item"><span class="s-number">930.</span><span class="s-hi">मतदान करना हमारा अधिकार है।</span><span class="s-en">Voting is our right.</span></div>
+                <div class="sentence-item"><span class="s-number">931.</span><span class="s-hi">अपना वोट ज़रूर दें।</span><span class="s-en">Do cast your vote.</span></div>
+                <div class="sentence-item"><span class="s-number">932.</span><span class="s-hi">समाज सुधार की शुरुआत खुद से होती है।</span><span class="s-en">Social reform begins with oneself.</span></div>
+                <div class="sentence-item"><span class="s-number">933.</span><span class="s-hi">दूसरों को बदलने से पहले खुद को बदलो।</span><span class="s-en">Change yourself before changing others.</span></div>
+                <div class="sentence-item"><span class="s-number">934.</span><span class="s-hi">यह मुश्किल है पर असंभव नहीं।</span><span class="s-en">This is difficult but not impossible.</span></div>
+                <div class="sentence-item"><span class="s-number">935.</span><span class="s-hi">एकता में शक्ति है।</span><span class="s-en">Unity is strength.</span></div>
+                <div class="sentence-item"><span class="s-number">936.</span><span class="s-hi">मिलजुल कर रहने से ताकत बढ़ती है।</span><span class="s-en">Living together increases strength.</span></div>
+                <div class="sentence-item"><span class="s-number">937.</span><span class="s-hi">जाति-पाति के भेदभाव से दूर रहो।</span><span class="s-en">Stay away from caste discrimination.</span></div>
+                <div class="sentence-item"><span class="s-number">938.</span><span class="s-hi">सब इंसान बराबर हैं।</span><span class="s-en">All humans are equal.</span></div>
+                <div class="sentence-item"><span class="s-number">939.</span><span class="s-hi">उस एक ईश्वर/खुदा ने सबको बनाया है।</span><span class="s-en">That one God created everyone.</span></div>
+                <div class="sentence-item"><span class="s-number">940.</span><span class="s-hi">तौहीद (Tawheed) ही सत्य का मार्ग है।</span><span class="s-en">Oneness of God (Tawheed) is the path of truth.</span></div>
+                <div class="sentence-item"><span class="s-number">941.</span><span class="s-hi">मानवता सबसे बड़ा धर्म है।</span><span class="s-en">Humanity is the greatest religion.</span></div>
+                <div class="sentence-item"><span class="s-number">942.</span><span class="s-hi">जीवों पर दया करो।</span><span class="s-en">Be kind to living beings.</span></div>
+                <div class="sentence-item"><span class="s-number">943.</span><span class="s-hi">जानवरों को मत मारो।</span><span class="s-en">Don't kill animals.</span></div>
+                <div class="sentence-item"><span class="s-number">944.</span><span class="s-hi">पेड़ मत काटो, पर्यावरण बचाओ।</span><span class="s-en">Don't cut trees, save the environment.</span></div>
+                <div class="sentence-item"><span class="s-number">945.</span><span class="s-hi">पानी की हर बूंद कीमती है।</span><span class="s-en">Every drop of water is precious.</span></div>
+                <div class="sentence-item"><span class="s-number">946.</span><span class="s-hi">पानी बर्बाद मत करो।</span><span class="s-en">Don't waste water.</span></div>
+                <div class="sentence-item"><span class="s-number">947.</span><span class="s-hi">पृथ्वी हमारा घर है।</span><span class="s-en">Earth is our home.</span></div>
+                <div class="sentence-item"><span class="s-number">948.</span><span class="s-hi">इसे साफ़ और हरा-भरा रखें।</span><span class="s-en">Keep it clean and green.</span></div>
+                <div class="sentence-item"><span class="s-number">949.</span><span class="s-hi">आने वाली पीढ़ी के लिए कुछ छोड़ो।</span><span class="s-en">Leave something for the coming generation.</span></div>
+                <div class="sentence-item"><span class="s-number">950.</span><span class="s-hi">नेक काम करते रहो।</span><span class="s-en">Keep doing good deeds.</span></div>
+            </div>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- CATEGORY 20: जीवन दर्शन, कर्म और अंतिम विचार (951-1000)    -->
+        <!-- ============================================================== -->
+        <section class="category">
+            <h2 class="cat-title">20. जीवन दर्शन, कर्म और अंतिम विचार</h2>
+            <div class="cat-sub">Philosophy of Life &amp; Karma <span>— 951 to 1000</span></div>
+            <div class="sentence-grid">
+                <div class="sentence-item"><span class="s-number">951.</span><span class="s-hi">जीवन एक खेल की तरह है।</span><span class="s-en">Life is like a game.</span></div>
+                <div class="sentence-item"><span class="s-number">952.</span><span class="s-hi">हम सब यहाँ सिर्फ कुछ समय के लिए हैं।</span><span class="s-en">We all are here only for a short time.</span></div>
+                <div class="sentence-item"><span class="s-number">953.</span><span class="s-hi">यह दुनिया एक सराय जैसी है।</span><span class="s-en">This world is like an inn.</span></div>
+                <div class="sentence-item"><span class="s-number">954.</span><span class="s-hi">खाली हाथ आए थे, खाली हाथ जाओगे।</span><span class="s-en">Empty-handed you came, empty-handed you will go.</span></div>
+                <div class="sentence-item"><span class="s-number">955.</span><span class="s-hi">केवल आपके कर्म साथ जाएँगे।</span><span class="s-en">Only your deeds will go with you.</span></div>
+                <div class="sentence-item"><span class="s-number">956.</span><span class="s-hi">जैसा बोओगे, वैसा काटोगे।</span><span class="s-en">As you sow, so shall you reap.</span></div>
+                <div class="sentence-item"><span class="s-number">957.</span><span class="s-hi">अच्छे कर्मों का फल अच्छा होता है।</span><span class="s-en">The fruit of good deeds is good.</span></div>
+                <div class="sentence-item"><span class="s-number">958.</span><span class="s-hi">बुरे कर्मों का नतीजा बुरा होता है।</span><span class="s-en">The result of bad deeds is bad.</span></div>
+                <div class="sentence-item"><span class="s-number">959.</span><span class="s-hi">कर्मों का हिसाब यहीं होना है।</span><span class="s-en">Accountability of deeds happens right here.</span></div>
+                <div class="sentence-item"><span class="s-number">960.</span><span class="s-hi">भगवान/खुदा सब देख रहा है।</span><span class="s-en">God is watching everything.</span></div>
+                <div class="sentence-item"><span class="s-number">961.</span><span class="s-hi">उससे कुछ भी छुपा नहीं है।</span><span class="s-en">Nothing is hidden from Him.</span></div>
+                <div class="sentence-item"><span class="s-number">962.</span><span class="s-hi">वह 'गैब का मालिक' (Owner of Unseen Knowledge) है।</span><span class="s-en">He is the Knower of the Unseen.</span></div>
+                <div class="sentence-item"><span class="s-number">963.</span><span class="s-hi">उसका कोई आकार नहीं है, वह निराकार है।</span><span class="s-en">He has no form, He is formless.</span></div>
+                <div class="sentence-item"><span class="s-number">964.</span><span class="s-hi">वह अजन्मा और अमर है।</span><span class="s-en">He is unborn and eternal.</span></div>
+                <div class="sentence-item"><span class="s-number">965.</span><span class="s-hi">पूरी सृष्टि को बिना किसी माध्यम के चलाता है।</span><span class="s-en">He runs the entire creation without any medium.</span></div>
+                <div class="sentence-item"><span class="s-number">966.</span><span class="s-hi">व्यवस्था के लिए 'सोच' और 'पासा फेंकने वाले' की ज़रूरत होती है।</span><span class="s-en">Order requires thought and a 'dice thrower'.</span></div>
+                <div class="sentence-item"><span class="s-number">967.</span><span class="s-hi">धमाके से कोई चीज़ व्यवस्थित नहीं होती।</span><span class="s-en">Nothing gets organized by an explosion.</span></div>
+                <div class="sentence-item"><span class="s-number">968.</span><span class="s-hi">पानी के बुलबुले की मिसाल याद रखो।</span><span class="s-en">Remember the example of the water bubble.</span></div>
+                <div class="sentence-item"><span class="s-number">969.</span><span class="s-hi">ब्रह्मांड अचानक या बिना सोचे-समझे नहीं बना।</span><span class="s-en">The universe was not created accidentally or without thought.</span></div>
+                <div class="sentence-item"><span class="s-number">970.</span><span class="s-hi">इंसानी अक्ल भगवान को पहचानने का ज़रिया है।</span><span class="s-en">Human intellect is the medium to recognize God.</span></div>
+                <div class="sentence-item"><span class="s-number">971.</span><span class="s-hi">अक्ल की जीत (Aql ki Jeet) ही असली जीत है।</span><span class="s-en">Victory of Intellect is the true victory.</span></div>
+                <div class="sentence-item"><span class="s-number">972.</span><span class="s-hi">अपनी अक्ल को मोबाइल की आभासी दुनिया में मत खोने दो।</span><span class="s-en">Don't let your intellect get lost in the virtual world of mobiles.</span></div>
+                <div class="sentence-item"><span class="s-number">973.</span><span class="s-hi">वास्तविक दुनिया में जियो।</span><span class="s-en">Live in the real world.</span></div>
+                <div class="sentence-item"><span class="s-number">974.</span><span class="s-hi">अपने माता-पिता की सेवा करो।</span><span class="s-en">Serve your parents.</span></div>
+                <div class="sentence-item"><span class="s-number">975.</span><span class="s-hi">उनकी दुआओं में बहुत ताकत है।</span><span class="s-en">There is great power in their blessings.</span></div>
+                <div class="sentence-item"><span class="s-number">976.</span><span class="s-hi">जीवन का कोई न कोई उद्देश्य होना चाहिए।</span><span class="s-en">Life must have some purpose.</span></div>
+                <div class="sentence-item"><span class="s-number">977.</span><span class="s-hi">बिना उद्देश्य के जीवन व्यर्थ है।</span><span class="s-en">Life without a purpose is useless.</span></div>
+                <div class="sentence-item"><span class="s-number">978.</span><span class="s-hi">अपने लक्ष्य की ओर बढ़ते रहो।</span><span class="s-en">Keep moving towards your goal.</span></div>
+                <div class="sentence-item"><span class="s-number">979.</span><span class="s-hi">रास्ते में मुश्किलें आएँगी।</span><span class="s-en">Obstacles will come along the way.</span></div>
+                <div class="sentence-item"><span class="s-number">980.</span><span class="s-hi">मुश्किलों से डरो मत, उनका सामना करो।</span><span class="s-en">Don't fear difficulties, face them.</span></div>
+                <div class="sentence-item"><span class="s-number">981.</span><span class="s-hi">हर मुश्किल एक नया सबक सिखाती है।</span><span class="s-en">Every difficulty teaches a new lesson.</span></div>
+                <div class="sentence-item"><span class="s-number">982.</span><span class="s-hi">अनुभव सबसे बड़ा शिक्षक है।</span><span class="s-en">Experience is the greatest teacher.</span></div>
+                <div class="sentence-item"><span class="s-number">983.</span><span class="s-hi">समय के साथ सब बदल जाता है।</span><span class="s-en">Everything changes with time.</span></div>
+                <div class="sentence-item"><span class="s-number">984.</span><span class="s-hi">बदलाव ही संसार का नियम है।</span><span class="s-en">Change is the law of nature.</span></div>
+                <div class="sentence-item"><span class="s-number">985.</span><span class="s-hi">जो आज तुम्हारा है, कल किसी और का था।</span><span class="s-en">What is yours today, belonged to someone else yesterday.</span></div>
+                <div class="sentence-item"><span class="s-number">986.</span><span class="s-hi">घमंड मत करो।</span><span class="s-en">Don't be arrogant.</span></div>
+                <div class="sentence-item"><span class="s-number">987.</span><span class="s-hi">विनम्रता सबसे बड़ा आभूषण है।</span><span class="s-en">Humility is the greatest ornament.</span></div>
+                <div class="sentence-item"><span class="s-number">988.</span><span class="s-hi">सबके प्रति प्रेम और सद्भावना रखो।</span><span class="s-en">Have love and goodwill towards all.</span></div>
+                <div class="sentence-item"><span class="s-number">989.</span><span class="s-hi">घृणा से सिर्फ विनाश होता है।</span><span class="s-en">Hatred only leads to destruction.</span></div>
+                <div class="sentence-item"><span class="s-number">990.</span><span class="s-hi">प्रेम से दुनिया को जीता जा सकता है।</span><span class="s-en">The world can be won with love.</span></div>
+                <div class="sentence-item"><span class="s-number">991.</span><span class="s-hi">अपनी वाणी पर नियंत्रण रखो।</span><span class="s-en">Control your speech.</span></div>
+                <div class="sentence-item"><span class="s-number">992.</span><span class="s-hi">सोच-समझकर बोलो।</span><span class="s-en">Speak thoughtfully.</span></div>
+                <div class="sentence-item"><span class="s-number">993.</span><span class="s-hi">किसी का अपमान मत करो।</span><span class="s-en">Don't insult anyone.</span></div>
+                <div class="sentence-item"><span class="s-number">994.</span><span class="s-hi">हमेशा सत्य और न्याय का साथ दो।</span><span class="s-en">Always support truth and justice.</span></div>
+                <div class="sentence-item"><span class="s-number">995.</span><span class="s-hi">सच का मार्ग कठिन हो सकता है, पर अंत में जीत उसी की होती है।</span><span class="s-en">The path of truth may be difficult, but victory belongs to it in the end.</span></div>
+                <div class="sentence-item"><span class="s-number">996.</span><span class="s-hi">यह जीवन एक परीक्षा है।</span><span class="s-en">This life is an exam.</span></div>
+                <div class="sentence-item"><span class="s-number">997.</span><span class="s-hi">अच्छे नंबरों से पास होना है।</span><span class="s-en">Have to pass with good marks.</span></div>
+                <div class="sentence-item"><span class="s-number">998.</span><span class="s-hi">अपने कर्मों के प्रति जवाबदेह बनो।</span><span class="s-en">Be accountable for your deeds.</span></div>
+                <div class="sentence-item"><span class="s-number">999.</span><span class="s-hi">खेल का अंत (The winding up of the board) निश्चित है।</span><span class="s-en">The end of the game is certain.</span></div>
+                <div class="sentence-item"><span class="s-number">1000.</span><span class="s-hi">अपनी छाप छोड़ जाओ जो लोगों का मार्गदर्शन करे।</span><span class="s-en">Leave your mark that guides people.</span></div>
+            </div>
+        </section>
+
+        <!-- ===== END NOTE ===== -->
+        <div class="end-note">
+            ✅ 1000 Daily Life Sentences – Complete
+            <small>Practice daily, speak confidently, and let your intellect win.</small>
+        </div>
+
+    </div><!-- end container -->
+
+</body>
+</html>
