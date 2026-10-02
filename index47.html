@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>महासंग्रह: अक्ल की जीत और खुदा की तलाश — दुआओं सहित</title>
+    <!-- Google Fonts for Arabic & Devanagari -->
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #0b3c5d;
+            --secondary-color: #328cc1;
+            --gold-color: #d9b310;
+            --dark-color: #1d2731;
+            --light-color: #f9f9f9;
+            --arabic-font: 'Amiri', 'Traditional Arabic', serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', 'Nirmala UI', 'Mangal', sans-serif;
+        }
+
+        body {
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            line-height: 1.7;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--dark-color));
+            color: white;
+            text-align: center;
+            padding: 2.5rem 1rem;
+            border-bottom: 5px solid var(--gold-color);
+        }
+
+        header h1 {
+            font-size: 2.3rem;
+            margin-bottom: 0.5rem;
+            color: var(--gold-color);
+        }
+
+        header p {
+            font-size: 1.1rem;
+            font-style: italic;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 1.5rem auto;
+            padding: 0 1rem;
+        }
+
+        .intro-box {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 1.5rem;
+            border-left: 5px solid var(--secondary-color);
+        }
+
+        /* Horizontal Navigation */
+        .horizontal-nav-container {
+            background: white;
+            padding: 10px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background-color: var(--light-color);
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 2rem;
+        }
+
+        .horizontal-nav {
+            display: flex;
+            overflow-x: auto;
+            white-space: nowrap;
+            gap: 10px;
+            padding: 5px 10px;
+            scrollbar-width: thin;
+        }
+
+        .horizontal-nav::-webkit-scrollbar {
+            height: 6px;
+        }
+        .horizontal-nav::-webkit-scrollbar-thumb {
+            background-color: var(--secondary-color);
+            border-radius: 10px;
+        }
+
+        .chapter-btn {
+            background-color: white;
+            color: var(--dark-color);
+            border: 2px solid var(--primary-color);
+            padding: 0.7rem 1.2rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            text-decoration: none;
+            display: inline-block;
+            flex-shrink: 0;
+        }
+
+        .chapter-btn:hover, .chapter-btn.active-btn {
+            background-color: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .content-section {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 2.5rem;
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .content-section h2 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--gold-color);
+            padding-bottom: 0.5rem;
+        }
+
+        .sub-block {
+            margin-bottom: 1.8rem;
+            padding-left: 1rem;
+            border-left: 3px solid var(--secondary-color);
+        }
+
+        .sub-block h3 {
+            color: var(--secondary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Dua specific styling */
+        .arabic-text {
+            font-family: var(--arabic-font);
+            font-size: 1.6rem;
+            line-height: 2;
+            text-align: right;
+            direction: rtl;
+            background: #f2f6f2;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin: 12px 0;
+            color: #1a3a1a;
+        }
+
+        .hindi-trans {
+            font-size: 1.05rem;
+            background: #f8fafa;
+            padding: 10px 16px;
+            border-radius: 8px;
+            border-left: 4px solid var(--gold-color);
+            margin: 8px 0 12px 0;
+        }
+
+        .hindi-trans strong {
+            color: var(--primary-color);
+        }
+
+        .dua-context {
+            background: #f0f4f0;
+            padding: 12px 18px;
+            border-radius: 8px;
+            font-size: 0.98rem;
+            color: #2d3d2d;
+            border-left: 4px solid var(--secondary-color);
+            margin-top: 10px;
+        }
+
+        .dua-context i {
+            color: var(--gold-color);
+            margin-right: 6px;
+        }
+
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 4rem;
+            font-size: 1rem;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>📚 महासंग्रह: अक्ल की जीत और खुदा की तलाश</h1>
+        <p>सत्य का घोषणापत्र (Manifesto of Truth) — तामीर अली (786) <br> <span style="font-size:0.9rem; color:#d9b310;">➕ अम्बिया करम की दुआएँ और हिफ़ाज़त का ख़ज़ाना</span></p>
+    </header>
+
+    <!-- Horizontal Navigation -->
+    <div class="horizontal-nav-container">
+        <div class="horizontal-nav">
+            <button id="btn-ch1" class="chapter-btn active-btn" onclick="showChapter('ch1')">1. बिग बैंग</button>
+            <button id="btn-ch2" class="chapter-btn" onclick="showChapter('ch2')">2. लूडो</button>
+            <button id="btn-ch3" class="chapter-btn" onclick="showChapter('ch3')">3. गैलेक्सी</button>
+            <button id="btn-ch4" class="chapter-btn" onclick="showChapter('ch4')">4. मस्तिष्क</button>
+            <button id="btn-ch5" class="chapter-btn" onclick="showChapter('ch5')">5. नासिया</button>
+            <button id="btn-ch6" class="chapter-btn" onclick="showChapter('ch6')">6. त्वचा</button>
+            <button id="btn-ch7" class="chapter-btn" onclick="showChapter('ch7')">7. न्यूरो-कार्डियो</button>
+            <button id="btn-ch8" class="chapter-btn" onclick="showChapter('ch8')">8. फिंगरप्रिंट</button>
+            <button id="btn-ch9" class="chapter-btn" onclick="showChapter('ch9')">9. पुनरुत्थान</button>
+            <button id="btn-ch10" class="chapter-btn" onclick="showChapter('ch10')">10. डीएनए</button>
+            <button id="btn-ch11" class="chapter-btn" onclick="showChapter('ch11')">11. शिशु</button>
+            <button id="btn-ch12" class="chapter-btn" onclick="showChapter('ch12')">12. पहाड़-फिरौन</button>
+            <button id="btn-ch13" class="chapter-btn" onclick="showChapter('ch13')">13. मधुमक्खी</button>
+            <button id="btn-ch14" class="chapter-btn" onclick="showChapter('ch14')">14. चींटी-मच्छर</button>
+            <button id="btn-ch15" class="chapter-btn" onclick="showChapter('ch15')">15. तौहीद-दज्जाल</button>
+            <!-- नए बटन: दुआओं के अध्याय -->
+            <button id="btn-ch16" class="chapter-btn" onclick="showChapter('ch16')">16. अम्बिया की दुआ</button>
+            <button id="btn-ch17" class="chapter-btn" onclick="showChapter('ch17')">17. हिफ़ाज़त</button>
+        </div>
+    </div>
+
+    <div class="container">
+        
+        <div class="intro-box">
+            <p><strong>तामीर अली जी का संदेश:</strong> यह डिजिटल दस्तावेज ब्रह्मांड के 'द ग्रेट डिजाइनर' की सर्वोच्च बुद्धिमत्ता, तौहीद (एक खुदा के मार्ग) और आधुनिक विज्ञान के चमत्कारों को अक्ल की कसौटी पर परखने का एक वैश्विक मंच है। <br> <strong>नया जोड़:</strong> पिछले अध्यायों में अब हमने <strong>अम्बिया करम (अ.स.) की दुआओं</strong> और <strong>जादू-टोना, बुरी नज़र एवं हिफ़ाज़त की दुआओं</strong> को भी शामिल किया है – अरबी और हिंदी में सुधार के साथ।</p>
+        </div>
+
+        <!-- ===== अध्याय 1 से 15 (पिछले वाले, संक्षिप्त रखे गए हैं) ===== -->
+        <!-- अध्याय 1 -->
+        <div id="ch1" class="content-section active">
+            <h2>अध्याय 1: तामीर अली बिग बैंग फॉर्मूला</h2>
+            <div class="sub-block">
+                <h3>धमाके बनाम व्यवस्था का अकाट्य तर्क</h3>
+                <p>धमाके से कोई चीज कभी व्यवस्थित नहीं होती, केवल अव्यवस्था फैलती है। व्यवस्था (Order) के लिए 'सोच' और 'नियोजक' (Designer) की जरूरत होती है। विज्ञान जिसे बिग बैंग कहता है, वह असल में कोई अंधा धमाका नहीं था, बल्कि इसके पीछे 'द ग्रेट डिजाइनर' की अचूक योजना काम कर रही थी।</p>
+            </div>
+            <div class="sub-block">
+                <h3>पानी के बुलबुले की मिसाल</h3>
+                <p>जैसे पानी में बुलबुले का उठना, निश्चित आकार लेना और विलीन होना एक तय नियम के तहत होता है, वैसे ही यह संपूर्ण ब्रह्मांड भी उस परम चेतना की इच्छा से अस्तित्व में आया और उसी में समाहित होगा।</p>
+            </div>
+        </div>
+
+        <!-- अध्याय 2 -->
+        <div id="ch2" class="content-section">
+            <h2>अध्याय 2: लूडो की बिसात का दर्शन</h2>
+            <div class="sub-block">
+                <h3>बिसात और गोटियां</h3>
+                <p>यह पूरी सृष्टि एक लूडो की बिसात की तरह है, जहां हर ग्रह, नक्षत्र, दिन, महीने, साल और जीव के चलने का एक निश्चित नियम और सीमा तय है।</p>
+            </div>
+            <div class="sub-block">
+                <h3>पहला पासा (The First Move)</h3>
+                <p>इस बिसात पर पहली 'हलचल' लाने और खेल को शुरू करने के लिए 'पासा फेंकने वाले' की जरूरत थी. वह पहली हलचल ही खुदा का फेंका हुआ 'पहला पासा' था। बिना पासा फेंकने वाले (खालिक) के, बिसात पर अपने आप खेल शुरू नहीं हो सकता।</p>
+            </div>
+        </div>
+
+        <!-- अध्याय 3 -->
+        <div id="ch3" class="content-section">
+            <h2>अध्याय 3: विज्ञान का उदय और गैलेक्सीज़ का विस्तार</h2>
+            <div class="sub-block">
+                <h3>भ्रम का टूटना और डेटा का गवाह</h3>
+                <p>शुरुआत में इंसान को लगता था कि उसकी आकाशगंगा (Milky Way) ही सब कुछ है। लेकिन खुदा ने इंसान की अक्ल को वो समझ दी जिससे उसने अरबों बाहरी गैलेक्सीज़ को खोजा और उन्हें लिखित इतिहास में दर्ज (Save) किया। अब वैज्ञानिक पड़ाव का उद्देश्य पूरा हो गया।</p>
+            </div>
+            <div class="sub-block">
+                <h3>वर्तमान संदेश</h3>
+                <p>"अब भटकना बंद करो. बाहर की दुनिया को महफूज करने के बाद वापस लौटकर अपनी खुद की गैलेक्सी को समझो, अपनी मानवीय सीमाओं को पहचानो और इस बिसात पर अपने जीवन के असली मकसद यानी तौहीद को पूरा करो।"</p>
+            </div>
+        </div>
+
+        <!-- अध्याय 4 -->
+        <div id="ch4" class="content-section">
+            <h2>अध्याय 4: स्पिरिचुअल MBBS रिसर्च — मानव मस्तिष्क की 10 सुरक्षा परतें</h2>
+            <p>इंसानी खोपड़ी के अंदर पूरी परफेक्शन के साथ एक के बाद एक 10 परतों की सुरक्षा दीवार बनाई गई है, जो सीधे साबित करती है कि इंसान का शरीर किसी इत्तफाक का नतीजा नहीं हो सकता:</p>
+            <br>
+            <ol style="margin-left: 20px;">
+                <li><strong>Skin (Scalp):</strong> वॉटरप्रूफ और संवेदनशील सुरक्षा कवच।</li>
+                <li><strong>Subcutaneous Tissue (Fat):</strong> झटकों को सोखने वाला वसा का स्तर।</li>
+                <li><strong>Galea Aponeurotica:</strong> मजबूत रेशेदार सुरक्षा हेलमेट।</li>
+                <li><strong>Periosteum:</strong> हड्डी को ढकने और पोषण देने वाली पतली झिल्ली।</li>
+                <li><strong>Skull Bone:</strong> दिमाग की रक्षा करने वाली सबसे मजबूत हड्डियों की तिजोरी।</li>
+                <li><strong>Dura Mater:</strong> मस्तिष्क को स्थिर रखने वाली प्रतिरोधी झिल्ली।</li>
+                <li><strong>Arachnoid Mater:</strong> मकड़ी के जाले जैसी नाजुक झिल्ली जिसके तरल पदार्थ में दिमाग तैरता है।</li>
+                <li><strong>Pia Mater:</strong> मस्तिष्क की सतह से चिपकी महीन झिल्ली जो रक्त और ऑक्सीजन पहुंचाती है।</li>
+                <li><strong>Cerebral Cortex:</strong> सोच, याददाश्त, भावनाओं और 'अक्ल' (Intelligence) का मुख्य केंद्र।</li>
+                <li><strong>Internal Structures:</strong> सांस, दिल की धड़कन और संतुलन चलाने वाली ऑटोमैटिक आंतरिक संरचनाएं।</li>
+            </ol>
+        </div>
+
+        <!-- अध्याय 5 -->
+        <div id="ch5" class="content-section">
+            <h2>अध्याय 5: कुरानिक न्यूरोलॉजी (नासिया)</h2>
+            <div class="sub-block">
+                <h3>माथे का अग्रभाग</h3>
+                <p>कुरान मजीद (सूरह अल-अ़लक़, 96:15-16) में माथे के अग्रभाग को 'नासिया' कहा गया है और इसे 'झूठा और खताकार' बताया गया है।</p>
+            </div>
+            <div class="sub-block">
+                <h3>वैज्ञानिक सत्य</h3>
+                <p>आधुनिक न्यूरोसाइंस मानता है कि दिमाग का अगला हिस्सा (Prefrontal Cortex) ही इंसान के अच्छे-बुरे फैसले लेने, सच या झूठ बोलने का केंद्र है।</p>
+            </div>
+        </div>
+
+        <!-- अध्याय 6 -->
+        <div id="ch6" class="content-section">
+            <h2>अध्याय 6: पेन रिसेप्टर्स और त्वचा विज्ञान</h2>
+            <div class="sub-block">
+                <h3>सूरह अन-निसा (4:56) का प्रमाण</h3>
+                <p>कुरान में कहा गया कि "जब भी उनकी त्वचा (Skin) जल जाएगी, तो हम उसे दूसरी नई त्वचा से बदल देंगे, ताकि वे दर्द का मजा चखते रहें।"</p>
+            </div>
+            <div class="sub-block">
+                <h3>चिकित्सा विज्ञान की गवाही</h3>
+                <p>विज्ञान ने हाल ही में खोजा है कि दर्द महसूस करने वाले मुख्य तंत्र (Pain Receptors) त्वचा में होते हैं। त्वचा पूरी तरह जल जाने पर दर्द का अहसास खत्म हो जाता है। दोबारा दर्द के अहसास के लिए त्वचा का नया आना जरूरी है।</p>
+            </div>
+        </div>
+
+        <!-- अध्याय 7 -->
+        <div id="ch7" class="content-section">
+            <h2>अध्याय 7: न्यूरो-कार्डियोलॉजी और दिल का समानांतर सिस्टम</h2>
+            <div class="sub-block">
+                <h3>दिल की अक्ल (सूरह अल-हज, 22:46)</h3>
+                <p>कुरान कहता है कि उनके पास ऐसे दिल हैं जिससे वे समझ सकें। न्यूरो-कार्डियोलॉजी ने खोजा है कि दिल के पास अपना एक स्वतंत्र नर्वस सिस्टम होता है जिसे 'लिटिल ब्रेन' कहते हैं, जिसमें लगभग 40,000 न्यूरॉन्स होते हैं।</p>
+            </div>
+            <div class="sub-block">
+                <h3>ऐतिहासिक आध्यात्मिक संदर्भ</h3>
+                <p>यही कारण है कि नबी करीम (स.अ.व.) के बचपन में उनके दिल की विशेष सफाई की गई थी ताकि शैतानी वसवसों को उनके पवित्र दिल की अक्ल और रूहानी ऊर्जा को छूने से भी रोका जा सके।</p>
+            </div>
+        </div>
+
+        <!-- अध्याय 8 -->
+        <div id="ch8" class="content-section">
+            <h2>अध्याय 8: फिंगरप्रिंट का दर्शन (खुदा की मुहर)</h2>
+            <div class="sub-block">
+                <h3>अद्वितीय पहचान (Uniqueness)</h3>
+                <p>दुनिया में किन्हीं भी दो व्यक्तियों के फिंगरप्रिंट कभी आपस में मेल नहीं खा सकते, यहां तक कि समरूप जुड़वां बच्चों में भी यह पूरी तरह अलग होता है।</p>
+            </div>
+            <div class="sub-block">
+                <h3>सूरह अल-क़ियामाह (75:3-4)</h3>
+                <p>खुदा ने फरमाया: "क्या इंसान समझता है कि हम उसकी हड्डियों को दोबारा इकट्ठा नहीं कर सकेंगे? हाँ, क्यों नहीं! हम तो इस बात पर भी सक्षम हैं कि उसकी उंगलियों के पोरों (Fingerprints) तक को ठीक वैसे ही दोबारा बना दें।" यह साबित करता है कि हर मखलूक पर 'ग्रेट डिजाइनर' की अनूठी डिजिटल मुहर लगी है।</p>
+            </div>
+        </div>
+
+        <!-- अध्याय 9 -->
+        <div id="ch9" class="content-section">
+            <h2>अध्याय 9: खेती की मिसाल और पुनरुत्थान</h2>
+            <div class="sub-block">
+                <h3>मिट्टी से दोबारा निकलना</h3>
+                <p>जैसे इंसान अपना पेट पालने के लिए खेती करता है, ठीक वैसे ही आख़िरत में इंसान को दोबारा मिट्टी से निकाला जाएगा। सूरह क़ाफ़ (50:9-11) के अनुसार, जैसे सूखी भूमि पर बारिश पड़ने से पौधे निकलते हैं, वैसे ही मरे हुए इंसानों का दोबारा निकलना होगा।</p>
+            </div>
+            <div class="sub-block">
+                <h3>कॉक्सीक्स (Tailbone) का सच</h3>
+                <p>आधुनिक विज्ञान कहता है कि इंसान के मिट्टी में गल जाने के बाद भी उसकी रीढ़ की हड्डी का सबसे निचला हिस्सा (Tailbone) कभी नष्ट नहीं होता। यह एक अदृश्य बीज की तरह काम करता है जिससे आख़िरत में इंसानी वजूद दोबारा उग आएगा।</p>
+            </div>
+        </div>
+
+        <!-- अध्याय 10 -->
+        <div id="ch10" class="content-section">
+            <h2>अध्याय 10: डीएनए (DNA) कोडिंग का रहस्य</h2>
+            <div class="sub-block">
+                <h3>इंसानी शरीर का डिजिटल ब्लूप्रिंट</h3>
+                <p>डीएनए हमारे शरीर की प्रत्येक कोशिका के भीतर मौजूद एक ऐसी कोडिंग भाषा है, जिसमें लाखों किताबों के बराबर डेटा सुरक्षित है। यह इंसान के रंग, रूप, लंबाई और स्वभाव का पूरा प्रोग्राम है।</p>
+            </div>
+            <div class="sub-block">
+                <h3>सूरह अब्बासा (80:18-19)</h3>
+                <p>"एक बूंद से उसे पैदा किया, फिर उसकी तक़दीर तय की।" कंप्यूटर कोडिंग की तरह डीएनए की यह सटीक व्यवस्था बिना किसी सर्वोच्च 'प्रोग्रामर' यानी खुदा के खुद-ब-खुद नहीं लिख सकती।</p>
+            </div>
+        </div>
+
+        <!-- अध्याय 11 -->
+        <div id="ch11" class="content-section">
+            <h2>अध्याय 11: माँ के गर्भ में शिशु का क्रमिक विकास</h2>
+            <div class="sub-block">
+                <h3>भ्रूण विज्ञान (Embryology) और सूरह अल-मुअमिनून</h3>
+                <p>कुरान (23:12-14) ने गर्भ के भीतर विकास के चरणों को हुबहू स्पष्ट किया है: नूत्फा (एक बूंद), अलक़ा (एक जोंक की तरह लटका हुआ भ्रूण), मुज़ग़ा (चबाए हुए मांस का लोथड़ा), फिर हड्डियों का ढांचा बनना और उस पर मांस चढ़ना।</p>
+            </div>
+            <div class="sub-block">
+                <h3>तीन अंधकार (सूरह अज़-ज़ुमर, 39:6)</h3>
+                <p>शिशु का विकास तीन परतों (पेट की दीवार, गर्भाशय की दीवार, और एम्नियोटिक झिल्ली) के भीतर होता है, जिसे कुरान ने 'तीन अंधकार' कहा है।</p>
+            </div>
+        </div>
+
+        <!-- अध्याय 12 -->
+        <div id="ch12" class="content-section">
+            <h2>अध्याय 12: पहाड़, फिरौन और समंदर का सच</h2>
+            <div class="sub-block">
+                <h3>पहाड़ों की जड़ें (मेखें)</h3>
+                <p>विज्ञान के 'आइसोस्टेसी' सिद्धांत के अनुसार पहाड़ों की जड़ें जमीन के अंदर धंसी होती हैं और वे धरती को स्थिर रखती हैं। कुरान ने 1400 साल पहले ही पहाड़ों को 'मेखें' (खूंटियां) कहा है।</p>
+            </div>
+            <div class="sub-block">
+                <h3>फिरौन की लाश और समंदर का बर्ज़ख</h3>
+                <p>सूरह यूनुस (10:92) के वादे के अनुसार डूबकर मरे फिरौन की लाश को आज भी सुरक्षित रखा गया है। साथ ही, जहां दो समंदर आपस में मिलते हैं, उनके रासायनिक घनत्व के कारण उनके बीच एक अदृश्य पर्दा होता है, जिसे कुरान ने 'बर्ज़ख' (सूरह अर-रहमान, 55:19-20) कहा है।</p>
+            </div>
+        </div>
+
+        <!-- अध्याय 13 -->
+        <div id="ch13" class="content-section">
+            <h2>अध्याय 13: मधुमक्खी का अद्भुत साम्राज्य</h2>
+            <div class="sub-block">
+                <h3>षट्कोण वास्तुकला और स्त्रीलिंग व्याकरण</h3>
+                <p>मधुमक्खियां अपना छत्ता हेक्सागोनल (षट्कोण) आकार में बनाती हैं। कुरान (सूरह अन-नह्ल, 16:68-69) ने मक्खियों को हुकम देने के लिए अरबी के स्त्रीलिंग शब्दों (Female Verbs) का प्रयोग किया है, जो वैज्ञानिक सच है कि छत्ते का सारा काम केवल मादा श्रमिक मक्खियां करती हैं।</p>
+            </div>
+        </div>
+
+        <!-- अध्याय 14 -->
+        <div id="ch14" class="content-section">
+            <h2>अध्याय 14: चींटी और मच्छर की मिसाल</h2>
+            <div class="sub-block">
+                <h3>चींटियों की समाज व्यवस्था (सूरह अन-नमल)</h3>
+                <p>चींटियां फेरोमोन्स के जरिए अत्याधुनिक संचार करती हैं। कुरान ने उनके आपस में बात करने की व्यवस्था को सदियों पहले उजागर किया था।</p>
+            </div>
+            <div class="sub-block">
+                <h3>मच्छर की सूक्ष्म इंजीनियरिंग (सूरह अल-बकराह, 2:26)</h3>
+                <p>एक मामूली मच्छर के भीतर 100 आंखें, 48 दांत, 3 दिल और थर्मल सेंसर होते हैं। यह सूक्ष्म परफेक्शन साबित करता है कि यह सब खालिक की योजना है।</p>
+            </div>
+        </div>
+
+        <!-- अध्याय 15 -->
+        <div id="ch15" class="content-section">
+            <h2>अध्याय 15: तौहीद की सर्वोच्चता, आधुनिक दज्जाल और अंतिम जवाबदेही</h2>
+            <div class="sub-block">
+                <h3>खालिक बनाम मखलूक</h3>
+                <p>सच्चे खुदा का मापदंड है कि वह अजन्मा, निराकार, सनातन और गैब का मालिक है। जो नियमों से बंधा है वह मखलूक है, और जो नियमों से परे है वह खालिक है। यही 'तौहीद' का सच्चा मार्ग है।</p>
+            </div>
+            <div class="sub-block">
+                <h3>आधुनिक दज्जाल</h3>
+                <p>वर्तमान युग में 'एक आंख वाला मोबाइल' ही दज्जाल है, जिससे बचने के लिए विवेक और समय प्रबंधन जरूरी है। ब्रह्मांड के 7 ब्लैक होल्स और समय का चक्र हमें रूहानी ऊर्जा के अगले द्वार की ओर ले जा रहे हैं, जिसके बाद अंतिम जवाबदेही होगी।</p>
+            </div>
+        </div>
+
+        <!-- ========================================================== -->
+        <!-- ===== अध्याय 16: अम्बिया करम (अ.स.) की दुआएँ ===== -->
+        <!-- ========================================================== -->
+        <div id="ch16" class="content-section">
+            <h2>📿 अध्याय 16: अम्बिया करम (अ.स.) की दुआएँ</h2>
+            <p style="margin-bottom:1.5rem;">ये वे दुआएँ हैं जो अल्लाह के पैग़म्बरों ने अपनी मुश्किल घड़ियों में माँगीं – हर एक में हमारे लिए एक सबक और रहमत है।</p>
+
+            <!-- 1. Adam (A.S.) -->
+            <div class="sub-block">
+                <h3>1. हज़रत आदम (अ.स.) — तौबा और माफ़ी</h3>
+                <div class="arabic-text" dir="rtl">رَبَّنَا ظَلَمْنَا أَنفُسَنَا وَإِن لَّمْ تَغْفِرْ لَنَا وَتَرْحَمْنَا لَنَكُونَنَّ مِنَ الْخَاسِرِينَ</div>
+                <div class="hindi-trans">
+                    <strong>उच्चारण:</strong> <em>रब्बनाज़लम्ना अन्फुसना, व इल्लम तग़्फिर्लना व तरहम्ना लनकूनन्न मिनल ख़ासिरीन।</em><br>
+                    <strong>अर्थ:</strong> “ऐ हमारे पालनहार! हमने अपनी जानों पर ज़ुल्म किया, और अगर तूने हमें माफ़ न किया और हम पर रहम न किया, तो हम ज़रूर नुक़सान उठाने वालों में से हो जाएँगे।”
+                </div>
+                <div class="dua-context">
+                    <i>📖</i> <strong>कब और क्यों:</strong> जब हज़रत आदम (अ.स.) और हज़रत हव्वा से जन्नत में मना किए गए पेड़ का फल खाने की भूल हुई, तब उन्होंने अपनी ख़ता की माफ़ी और तौबा के लिए यह दुआ माँगी।
+                </div>
+            </div>
+
+            <!-- 2. Nuh (A.S.) -->
+            <div class="sub-block">
+                <h3>2. हज़रत नूह (अ.स.) — मदद और फ़तह</h3>
+                <div class="arabic-text" dir="rtl">رَبِّ إِنِّي مَغْلُوبٌ فَانتَصِرْ</div>
+                <div class="hindi-trans">
+                    <strong>उच्चारण:</strong> <em>रब्बि इन्नी मग़्लूबुन फन्तसिर।</em><br>
+                    <strong>अर्थ:</strong> “ऐ मेरे पालनहार! मैं मग़्लूब (हारा हुआ) हूँ, सो तू (मेरी) मदद कर।”
+                </div>
+                <div class="dua-context">
+                    <i>📖</i> <strong>कब और क्यों:</strong> जब हज़रत नूह (अ.स.) की क़ौम ने सदियों तक उनका मज़ाक उड़ाया, सख़्त मुख़ालिफ़त की और ईमान लाने से इनकार कर दिया, तब उन्होंने बेबसी के आलम में अल्लाह से मदद और फ़तह के लिए यह दुआ माँगी।
+                </div>
+            </div>
+
+            <!-- 3. Ibrahim (A.S.) -->
+            <div class="sub-block">
+                <h3>3. हज़रत इब्राहीम (अ.स.) — सालेह औलाद</h3>
+                <div class="arabic-text" dir="rtl">رَبِّ هَبْ لِي مِنَ الصَّالِحِينَ</div>
+                <div class="hindi-trans">
+                    <strong>उच्चारण:</strong> <em>रब्बि हबली मिनस सालिहीन।</em><br>
+                    <strong>अर्थ:</strong> “ऐ मेरे पालनहार! मुझे सालिहीन (नेक व फ़रमानबरदार) में से (एक बेटा) अता कर।”
+                </div>
+                <div class="dua-context">
+                    <i>📖</i> <strong>कब और क्यों:</strong> हज़रत इब्राहीम (अ.स.) ने बुढ़ापा आने तक कोई औलाद न होने पर, अल्लाह से एक नेक और सालेह (फ़रमानबरदार) बेटे की ख़्वाहिश में यह दुआ माँगी।
+                </div>
+            </div>
+
+            <!-- 4. Musa (A.S.) 1st -->
+            <div class="sub-block">
+                <h3>4. हज़रत मूसा (अ.स.) — पहली दुआ (सीना खुलना)</h3>
+                <div class="arabic-text" dir="rtl">رَبِّ اشْرَحْ لِي صَدْرِي وَيَسِّرْ لِي أَمْرِي</div>
+                <div class="hindi-trans">
+                    <strong>उच्चारण:</strong> <em>रब्बिश्रहली सद्री व यस्सिरली अम्री।</em><br>
+                    <strong>अर्थ:</strong> “ऐ मेरे पालनहार! मेरा सीना खोल दे और मेरे काम को आसान कर दे।”
+                </div>
+                <div class="dua-context">
+                    <i>📖</i> <strong>कब और क्यों:</strong> जब अल्लाह ने हज़रत मूसा (अ.स.) को फ़िरऔन के पास हक़ की दावत देने का बड़ा और मुश्किल काम सौंपा, तब उन्होंने इस ज़िम्मेदारी के ख़ौफ़ और मुश्किल को आसान करने के लिए यह दुआ माँगी।
+                </div>
+            </div>
+
+            <!-- 5. Musa (A.S.) 2nd -->
+            <div class="sub-block">
+                <h3>5. हज़रत मूसा (अ.स.) — दूसरी दुआ (मोहताजी)</h3>
+                <div class="arabic-text" dir="rtl">رَبِّ إِنِّي لِمَا أَنزَلْتَ إِلَيَّ مِنْ خَيْرٍ فَقِيرٌ</div>
+                <div class="hindi-trans">
+                    <strong>उच्चारण:</strong> <em>रब्बि इन्नी लिमा अनज़ल्त इलय्या मिन ख़ैरिन फ़क़ीर।</em><br>
+                    <strong>अर्थ:</strong> “ऐ मेरे पालनहार! जो भी भलाई तूने मेरी तरफ़ उतारी, मैं उसका मोहताज (ज़रूरतमंद) हूँ।”
+                </div>
+                <div class="dua-context">
+                    <i>📖</i> <strong>कब और क्यों:</strong> जब हज़रत मूसा (अ.स.) मिस्र (Egypt) छोड़कर मदयन पहुँचे, और उनके पास न कोई सहारा था, न रहने की जगह और न ही खाना, तब उन्होंने अपनी ज़रूरत और रिज़्क़ की परेशानी के वक़्त अल्लाह के सामने अपनी मोहताजी बयान करते हुए यह दुआ की।
+                </div>
+            </div>
+
+            <!-- 6. Yunus (A.S.) - Ayat-e-Karima -->
+            <div class="sub-block">
+                <h3>6. हज़रत यूनुस (अ.स.) — आयत-ए-करीमा (निजात)</h3>
+                <div class="arabic-text" dir="rtl">لَّا إِلَٰهَ إِلَّا أَنتَ سُبْحَانَكَ إِنِّي كُنتُ مِنَ الظَّالِمِينَ</div>
+                <div class="hindi-trans">
+                    <strong>उच्चारण:</strong> <em>लाइलाहा इल्ला अन्त सुब्हानक इन्नी कुन्तु मिनज़्ज़ालिमीन।</em><br>
+                    <strong>अर्थ:</strong> “तेरे सिवा कोई माबूद (लायक़-ए-इबादत) नहीं, तू पाक है, बेशक मैं ज़ालिमों में से हूँ।”
+                </div>
+                <div class="dua-context">
+                    <i>📖</i> <strong>कब और क्यों:</strong> जब हज़रत यूनुस (अ.स.) को मछली ने निगल लिया था, तब उन्होंने मछली के पेट के अंधेरे में अपनी ग़लती का एहसास करते हुए, अल्लाह की पाकीज़गी बयान की और इस बड़ी मुश्किल से निजात के लिए यह दुआ माँगी।
+                </div>
+            </div>
+
+            <!-- 7. Ayyub (A.S.) -->
+            <div class="sub-block">
+                <h3>7. हज़रत अय्यूब (अ.स.) — शिफ़ा और सब्र</h3>
+                <div class="arabic-text" dir="rtl">أَنِّي مَسَّنِيَ الضُّرُّ وَأَنتَ أَرْحَمُ الرَّاحِمِينَ</div>
+                <div class="hindi-trans">
+                    <strong>उच्चारण:</strong> <em>अन्नी मस्सनियज़्ज़ुर्रु व अन्त अरहमुर्राहिमीन।</em><br>
+                    <strong>अर्थ:</strong> “बेशक मुझे तकलीफ़ (बीमारी) ने छू लिया है, और तू सब से बड़ा रहम करने वाला है।”
+                </div>
+                <div class="dua-context">
+                    <i>📖</i> <strong>कब और क्यों:</strong> हज़रत अय्यूब (अ.स.) जब बरसों तक एक सख़्त बीमारी, तकलीफ़ और आज़माइश में रहे, तब उन्होंने निहायत सब्र के साथ अल्लाह की रहमत को पुकारते हुए शिफ़ा के लिए यह दुआ माँगी।
+                </div>
+            </div>
+
+            <!-- 8. Zakariya (A.S.) -->
+            <div class="sub-block">
+                <h3>8. हज़रत ज़करिया (अ.स.) — औलाद की ख्वाहिश</h3>
+                <div class="arabic-text" dir="rtl">رَبِّ لَا تَذَرْنِي فَرْدًا وَأَنتَ خَيْرُ الْوَارِثِينَ</div>
+                <div class="hindi-trans">
+                    <strong>उच्चारण:</strong> <em>रब्बि ला तज़रनी फ़र्दन व अन्त ख़ैरुल वारिसीन।</em><br>
+                    <strong>अर्थ:</strong> “ऐ मेरे पालनहार! मुझे अकेला (बिना औलाद) न छोड़, और तू सबसे अच्छा वारिस है।”
+                </div>
+                <div class="dua-context">
+                    <i>📖</i> <strong>कब और क्यों:</strong> हज़रत ज़करिया (अ.स.) जब बिल्कुल बूढ़े हो गए थे और उनकी बीवी भी बाँझ थी, तब उन्होंने वारिस (औलाद) की ख़्वाहिश और तन्हा रह जाने के ख़ौफ़ से अल्लाह से औलाद माँगने के लिए यह दुआ की।
+                </div>
+            </div>
+
+            <!-- 9. Yusuf (A.S.) -->
+            <div class="sub-block">
+                <h3>9. हज़रत यूसुफ़ (अ.स.) — ख़ातमा ईमान पर</h3>
+                <div class="arabic-text" dir="rtl">تَوَفَّنِي مُسْلِمًا وَأَلْحِقْنِي بِالصَّالِحِينَ</div>
+                <div class="hindi-trans">
+                    <strong>उच्चारण:</strong> <em>तवफ्फनी मुस्लिमन व अल्हिक्नी बिस्सालिहीन।</em><br>
+                    <strong>अर्थ:</strong> “मुझे मुसलमान (तेरा फ़रमानबरदार) बना कर उठा (मौत दे) और मुझे सालेहीन (नेक लोगों) के साथ मिला दे।”
+                </div>
+                <div class="dua-context">
+                    <i>📖</i> <strong>कब और क्यों:</strong> जब हज़रत यूसुफ़ (अ.स.) को सारी दुनिया की नेअमतें, बादशाही और ख़ुशियाँ मिल गईं और उनका परिवार उनसे दोबारा मिल गया, तब उन्होंने अपने ईमान पर साबित-क़दमी और ख़ातमा ईमान पर होने (मुसलमानी हालत में मौत आने) के लिए यह दुआ माँगी।
+                </div>
+            </div>
+
+            <!-- 10. Muhammad (S.A.W.) -->
+            <div class="sub-block">
+                <h3>10. हज़रत मुहम्मद (स.अ.व.) — इल्म में इज़ाफ़ा</h3>
+                <div class="arabic-text" dir="rtl">رَّبِّ زِدْنِي عِلْمًا</div>
+                <div class="hindi-trans">
+                    <strong>उच्चारण:</strong> <em>रब्बि ज़िद्नी इल्मा।</em><br>
+                    <strong>अर्थ:</strong> “ऐ मेरे पालनहार! मुझे इल्म (ज्ञान) में इज़ाफ़ा (वृद्धि) अता कर।”
+                </div>
+                <div class="dua-context">
+                    <i>📖</i> <strong>कब और क्यों:</strong> अल्लाह तआला ने ख़ुद अपने प्यारे नबी (स.अ.व.) को हुक्म दिया कि वह इल्म (ज्ञान) में इज़ाफ़े की दुआ करें, ताकि दीन और कायनात के असरार को और बेहतर समझ सकें।
+                </div>
+            </div>
+
+        </div> <!-- end ch16 -->
+
+        <!-- ========================================================== -->
+        <!-- ===== अध्याय 17: जादू-टोना, बुरी नज़र और हिफ़ाज़त ===== -->
+        <!-- ========================================================== -->
+        <div id="ch17" class="content-section">
+            <h2>🛡️ अध्याय 17: जादू-टोना, बुरी नज़र और हिफ़ाज़त की दुआएँ</h2>
+            <p style="margin-bottom:1.5rem;">ये वे दुआएँ और आयतें हैं जो हर तरह के शैतानी असर, जादू, हसद और बुरी नज़र से बचाती हैं – क़ुरान और हदीस से साबित।</p>
+
+            <!-- 1. Mu'awwidhatayn -->
+            <div class="sub-block">
+                <h3>1. मुअव्विज़ातैन (सूरह अल-फ़लक़ और सूरह अन-नास)</h3>
+                <div class="arabic-text" dir="rtl">
+                    <div style="margin-bottom:8px;">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+                    <div>قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ * مِن شَرِّ مَا خَلَقَ * وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ * وَمِن شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ * وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ</div>
+                    <div style="margin:12px 0 8px 0;">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+                    <div>قُلْ أَعُوذُ بِرَبِّ النَّاسِ * مَلِكِ النَّاسِ * إِلَٰهِ النَّاسِ * مِن شَرِّ الْوَسْوَاسِ الْخَنَّاسِ * الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ * مِنَ الْجِنَّةِ وَالنَّاسِ</div>
+                </div>
+                <div class="hindi-trans">
+                    <strong>सूरह अल-फ़लक़ का अर्थ:</strong> “कहो: मैं पनाह माँगता हूँ फ़लक़ (सुबह) के पालनहार की… हर बुराई से…”<br>
+                    <strong>सूरह अन-नास का अर्थ:</strong> “कहो: मैं पनाह माँगता हूँ लोगों के पालनहार की… वसवासा डालने वाले (शैतान) की बुराई से…”
+                </div>
+                <div class="dua-context">
+                    <i>📖</i> <strong>तरीक़ा:</strong> हर नमाज़ के बाद, और ख़ास तौर पर सुबह व शाम को <strong>3-3</strong> मर्तबा यह दोनों सूरहें और सूरह अल-इख़लास (قُلْ هُوَ اللَّهُ أَحَدٌ) पढ़ कर अपने हाथों पर फूँक कर पूरे जिस्म पर फेर लें। यह हर तरह के जादू, हसद और बुरी नज़र के असर को ख़त्म करने के लिए ख़ास तौर पर नाज़िल की गईं।
+                </div>
+            </div>
+
+            <!-- 2. Ayat-ul-Kursi -->
+            <div class="sub-block">
+                <h3>2. आयत अल-कुर्सी (सूरह अल-बक़रा, 255)</h3>
+                <div class="arabic-text" dir="rtl" style="font-size:1.3rem;">
+                    اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ ۚ لَهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ ۗ مَنْ ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلَّا بِإِذْنِهِ ۚ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ ۖ وَلَا يُحِيطُونَ بِشَيْءٍ مِنْ عِلْمِهِ إِلَّا بِمَا شَاءَ ۚ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ ۖ وَلَا يَئُودُهُ حِفْظُهُمَا ۚ وَهُوَ الْعَلِيُّ الْعَظِيمُ
+                </div>
+                <div class="hindi-trans">
+                    <strong>उच्चारण:</strong> <em>अल्लाहु ला इलाहा इल्ला हुवल हय्युल क़य्यूम, ला तअ'ख़ुज़ुहू सिनतुव वला नौम, लहू मा फिस्समावाति व मा फिल अर्द…</em> (पूरी आयत)
+                </div>
+                <div class="dua-context">
+                    <i>📖</i> <strong>तरीक़ा:</strong> हर फ़र्ज़ नमाज़ के बाद और रात को सोते वक़्त <strong>1</strong> मर्तबा ज़रूर पढ़ें। हदीस के मुताबिक़, जो शख़्स रात को सोते वक़्त इसे पढ़ता है, अल्लाह की तरफ़ से एक हिफ़ाज़त करने वाला फ़रिश्ता मुक़र्रर हो जाता है और शैतान उसके करीब नहीं आता।
+                </div>
+            </div>
+
+            <!-- 3. Dua 1: A'ūzu bi-kalimātillāh... -->
+            <div class="sub-block">
+                <h3>3. हिफ़ाज़त की दुआ — 1 (कलिमात)</h3>
+                <div class="arabic-text" dir="rtl">أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّاتِ مِن شَرِّ مَا خَلَقَ</div>
+                <div class="hindi-trans">
+                    <strong>उच्चारण:</strong> <em>आऊज़ु बिकलिमातिल्लाहित्ताम्माति मिन शर्रि मा ख़लक़।</em><br>
+                    <strong>अर्थ:</strong> “मैं अल्लाह के पूरे कलिमात (कल्मों) की पनाह माँगता हूँ उस चीज़ के शर से जो उसने पैदा की।”
+                </div>
+                <div class="dua-context">
+                    <i>📖</i> नबी करीम (स.अ.व.) इस दुआ को पढ़ा करते थे। यह हर तरह के शैतानी असर, जानवरों के शर और बुरी नज़र से बचाती है।
+                </div>
+            </div>
+
+            <!-- 4. Dua 2: Bismillāhillezī... -->
+            <div class="sub-block">
+                <h3>4. हिफ़ाज़त की दुआ — 2 (सुबह-शाम)</h3>
+                <div class="arabic-text" dir="rtl">بِسْمِ اللَّهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ</div>
+                <div class="hindi-trans">
+                    <strong>उच्चारण:</strong> <em>बिस्मिल्लाहिल्लज़ी ला यज़ुर्रु मअस्मिही शैउन फिल अर्दि वला फिस्समाई व हुवस समीउल अलीम।</em><br>
+                    <strong>अर्थ:</strong> “अल्लाह के नाम के साथ, जिसके नाम की बरकत से ज़मीन और आसमान में कोई चीज़ नुक़सान नहीं पहुँचा सकती, और वह सब कुछ सुनने वाला, जानने वाला है।”
+                </div>
+                <div class="dua-context">
+                    <i>📖</i> <strong>तरीक़ा:</strong> सुबह और शाम <strong>3</strong> मर्तबा पढ़ें। यह हर तरह के नुक़सान, जादू और आफ़ात से हिफ़ाज़त करती है।
+                </div>
+            </div>
+
+            <!-- अंतिम नसीहत -->
+            <div style="margin-top:2rem; background: #f0f4f0; padding: 20px; border-radius: 12px; border-left: 5px solid var(--gold-color);">
+                <p style="font-size:1.05rem;"><strong>✍️ एक ज़रूरी बात — “एक आँख वाला मोबाइल” का ज़िक्र</strong><br>
+                जहाँ हम रूहानी तौर पर इन दुआओं के ज़रीए अपनी हिफ़ाज़त करते हैं, वहीं आज के दौर में एक और तरह का 'जादू' और धोखा है जो हमारी सोच, वक़्त और रिश्तों को बर्बाद कर रहा है — जिसे हम <strong>“एक आँख वाला मोबाइल”</strong> कह सकते हैं। यह मॉडर्न दौर का वह असर है जो इंसान की 'अक़्ल' (intellect) को सुन्न कर देता है और उसे सही रास्ते से भटकाता है।<br><br>
+                <strong>इसलिए:</strong> जादू-टोना और शैतानी असरात से मुकम्मल नजात के लिए रूहानी दुआओं के साथ-साथ अपने वक़्त का सही इस्तेमाल करें, मोबाइल के ज़्यादा इस्तेमाल से बचें, और <strong>अक़्ल की जीत</strong> और <strong>तौहीद</strong> (एक अल्लाह पर यक़ीन) को मज़बूत पकड़ें। जब आपका यक़ीन सिर्फ़ एक ख़ुदा पर होगा, तो दुनिया की कोई भी शैतानी ताक़त आपको नुक़सान नहीं पहुँचा सकती।</p>
+            </div>
+
+        </div> <!-- end ch17 -->
+
+    </div> <!-- end container -->
+
+    <footer>
+        <p>&copy; 2026 महासंग्रह: अक्ल की जीत और खुदा की तलाश | संकलनकर्ता: तामीर अली</p>
+        <p style="font-size:0.9rem; margin-top:8px; color:#b0b0b0;">इस संस्करण में अम्बिया की दुआएँ और हिफ़ाज़त के अध्याय भी शामिल हैं — अरबी और हिंदी में सुधार के साथ।</p>
+    </footer>
+
+    <script>
+        function showChapter(chapterId) {
+            // हाइड सभी सेक्शन
+            const sections = document.querySelectorAll('.content-section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // शो चुना हुआ सेक्शन
+            const activeSection = document.getElementById(chapterId);
+            if (activeSection) {
+                activeSection.classList.add('active');
+                // स्मूद स्क्रॉल
+                activeSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+
+            // अपडेट बटन एक्टिव स्टेट
+            const buttons = document.querySelectorAll('.chapter-btn');
+            buttons.forEach(btn => {
+                btn.classList.remove('active-btn');
+            });
+            const activeBtn = document.getElementById('btn-' + chapterId);
+            if (activeBtn) {
+                activeBtn.classList.add('active-btn');
+            }
+        }
+    </script>
+
+</body>
+</html>
