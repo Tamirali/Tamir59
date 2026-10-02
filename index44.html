@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes" />
+    <title>📘 मास्टर इलेक्ट्रिशियन डिजिटल बुक (मुफ्त)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        /* ----- RESET & BASE ----- */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
+            line-height: 1.7;
+            padding: 1rem;
+            font-size: 18px;
+        }
+
+        .book-container {
+            max-width: 820px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 28px;
+            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.06);
+            padding: 2rem 1.8rem 3rem;
+            border: 1px solid #e9edf2;
+        }
+
+        /* ----- HEADER ----- */
+        .book-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            padding-bottom: 1.2rem;
+            border-bottom: 2px solid #eef2f6;
+            margin-bottom: 2rem;
+        }
+        .book-title-group {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        .book-title-group .icon {
+            font-size: 2rem;
+            color: #1a365d;
+        }
+        .book-title-group h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #1a365d;
+            letter-spacing: -0.01em;
+        }
+        .book-title-group .sub {
+            font-size: 0.9rem;
+            color: #5a6f8c;
+            font-weight: 400;
+            display: block;
+            margin-top: 2px;
+        }
+        .public-badge {
+            background: #dbeafe;
+            color: #1a365d;
+            padding: 0.4rem 1rem;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            border: 1px solid #bfdbfe;
+        }
+        .public-badge i {
+            color: #2563eb;
+        }
+        .free-tag {
+            display: inline-block;
+            background: #22c55e;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 2px 12px;
+            border-radius: 30px;
+            letter-spacing: 0.5px;
+            margin-left: 6px;
+            vertical-align: middle;
+        }
+
+        /* ----- AUDIO BAR ----- */
+        .audio-bar {
+            background: #e2e8f0;
+            padding: 12px 18px;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .audio-bar .audio-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .audio-bar .audio-info strong {
+            color: #1a365d;
+        }
+        .audio-bar .audio-info #audioStatus {
+            font-size: 0.9rem;
+            color: #475569;
+        }
+        .audio-controls {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .audio-controls button {
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+        .audio-controls #playAudioBtn {
+            background: #1a365d;
+            color: white;
+        }
+        .audio-controls #playAudioBtn:hover {
+            background: #2a4a7f;
+        }
+        .audio-controls #stopAudioBtn {
+            background: #e53e3e;
+            color: white;
+            display: none;
+        }
+        .audio-controls #stopAudioBtn:hover {
+            background: #c53030;
+        }
+        @media (max-width: 600px) {
+            .audio-bar {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+            }
+            .audio-controls {
+                justify-content: center;
+            }
+        }
+
+        /* ----- CHAPTER STYLES ----- */
+        .chapter {
+            margin-top: 2.8rem;
+            scroll-margin-top: 1rem;
+        }
+        .chapter:first-of-type {
+            margin-top: 0.5rem;
+        }
+        .chapter h2 {
+            font-size: 1.9rem;
+            font-weight: 800;
+            color: #1a365d;
+            border-left: 6px solid #1a365d;
+            padding-left: 1rem;
+            margin-bottom: 1.2rem;
+            line-height: 1.2;
+        }
+        .chapter h3 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #1e3a6b;
+            margin-top: 1.8rem;
+            margin-bottom: 0.6rem;
+        }
+        .chapter h4 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #2a4a7f;
+            margin-top: 1.4rem;
+            margin-bottom: 0.4rem;
+        }
+        .chapter p,
+        .chapter li {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            margin-bottom: 0.8rem;
+        }
+        .chapter ul,
+        .chapter ol {
+            padding-left: 1.8rem;
+            margin-bottom: 1rem;
+        }
+        .chapter li {
+            margin-bottom: 0.4rem;
+        }
+        .chapter blockquote {
+            background: #f1f6fc;
+            border-left: 6px solid #d97706;
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+            color: #1a365d;
+            font-size: 1.05rem;
+        }
+        .chapter blockquote i {
+            color: #d97706;
+            margin-right: 0.5rem;
+        }
+        .chapter blockquote strong {
+            color: #b45309;
+        }
+        .chapter img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 12px;
+            border: 1px solid #cbd5e1;
+            margin: 1.2rem 0;
+            display: block;
+            background: #f8fafc;
+        }
+        .img-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1.2rem;
+            margin: 1.2rem 0;
+        }
+        .img-grid figure {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 0.6rem;
+            border: 1px solid #e2e8f0;
+            text-align: center;
+        }
+        .img-grid figure img {
+            margin: 0 auto;
+            border: none;
+            border-radius: 8px;
+            max-height: 120px;
+            width: auto;
+            object-fit: contain;
+        }
+        .img-grid figcaption {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #1a365d;
+            margin-top: 0.3rem;
+        }
+        .diagram-placeholder {
+            background: #f1f6fc;
+            border: 2px dashed #94a3b8;
+            border-radius: 16px;
+            padding: 2rem 1rem;
+            text-align: center;
+            color: #475569;
+            font-weight: 500;
+            margin: 1.5rem 0;
+        }
+        .diagram-placeholder i {
+            font-size: 2.5rem;
+            color: #1a365d;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        /* ----- TABLES ----- */
+        .calc-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.2rem 0;
+            font-size: 0.95rem;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+        .calc-table th {
+            background: #1a365d;
+            color: #fff;
+            padding: 10px 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        .calc-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #e2e8f0;
+            background: #fafcff;
+        }
+        .calc-table tr:last-child td {
+            border-bottom: none;
+        }
+        .calc-table .highlight-row td {
+            background: #eef6ff;
+            font-weight: 600;
+            color: #1a365d;
+        }
+
+        .note-box {
+            background: #f0f7ff;
+            border-radius: 12px;
+            padding: 1.2rem 1.5rem;
+            border-left: 5px solid #2563eb;
+            margin: 1.2rem 0;
+        }
+        .note-box strong {
+            color: #1a365d;
+        }
+
+        /* ===== CALCULATOR STYLES ===== */
+        .calculator-box {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 1.8rem 1.5rem;
+            margin: 1.8rem 0;
+        }
+        .calculator-box .calc-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem 2rem;
+        }
+        .calculator-box .calc-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .calculator-box .calc-item label {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: #1a365d;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .calculator-box .calc-item label i {
+            color: #4a6a8f;
+            width: 20px;
+        }
+        .calculator-box .calc-item input {
+            padding: 10px 14px;
+            border: 2px solid #dce2ec;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 500;
+            background: #ffffff;
+            outline: none;
+            transition: all 0.2s;
+            width: 100%;
+            font-family: 'Inter', sans-serif;
+        }
+        .calculator-box .calc-item input:focus {
+            border-color: #1a365d;
+            box-shadow: 0 0 0 4px rgba(26, 54, 93, 0.08);
+        }
+        .calculator-box .calc-item input[type="number"] {
+            -moz-appearance: textfield;
+        }
+        .calculator-box .calc-item input[type="number"]::-webkit-outer-spin-button,
+        .calculator-box .calc-item input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .calculator-box .calc-result {
+            grid-column: 1 / -1;
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-top: 0.8rem;
+            border: 2px solid #dbeafe;
+            display: none;
+        }
+        .calculator-box .calc-result.active {
+            display: block;
+        }
+        .calculator-box .calc-result h4 {
+            color: #1a365d;
+            margin-bottom: 0.8rem;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .calculator-box .calc-result .result-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+        }
+        .calculator-box .calc-result .result-item {
+            background: #f1f6fc;
+            border-radius: 12px;
+            padding: 0.8rem 1rem;
+            text-align: center;
+        }
+        .calculator-box .calc-result .result-item .label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #5a6f8c;
+            font-weight: 600;
+        }
+        .calculator-box .calc-result .result-item .value {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #1a365d;
+            margin-top: 2px;
+        }
+        .calculator-box .calc-result .result-item .value.success {
+            color: #16a34a;
+        }
+        .calculator-box .calc-result .result-item .value.warning {
+            color: #d97706;
+        }
+        .calculator-box .calc-result .result-item .value.danger {
+            color: #dc2626;
+        }
+
+        .calculator-box .calc-btn {
+            grid-column: 1 / -1;
+            padding: 12px 24px;
+            background: #1a365d;
+            color: #fff;
+            border: none;
+            border-radius: 14px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 0.5rem;
+        }
+        .calculator-box .calc-btn:hover {
+            background: #2a4a7f;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(26, 54, 93, 0.25);
+        }
+
+        @media (max-width: 600px) {
+            .calculator-box .calc-grid {
+                grid-template-columns: 1fr;
+                gap: 0.8rem;
+            }
+            .calculator-box {
+                padding: 1.2rem 1rem;
+            }
+            .calculator-box .calc-result .result-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .calc-table {
+                font-size: 0.82rem;
+            }
+            .calc-table th,
+            .calc-table td {
+                padding: 6px 8px;
+            }
+        }
+        @media (max-width: 400px) {
+            .calculator-box .calc-result .result-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .book-footer {
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid #eef2f6;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #6b7f99;
+        }
+        .book-footer i {
+            color: #d97706;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="book-container" role="main">
+
+        <!-- HEADER - सार्वजनिक संस्करण -->
+        <header class="book-header">
+            <div class="book-title-group">
+                <span class="icon"><i class="fas fa-bolt"></i></span>
+                <div>
+                    <h1>
+                        मास्टर इलेक्ट्रिशियन
+                        <span class="free-tag">🇮🇳 मुफ्त</span>
+                    </h1>
+                    <span class="sub"><i class="fas fa-book-open"></i> डिजिटल बुक — A to Z ज्ञान (सार्वजनिक संस्करण)</span>
+                </div>
+            </div>
+            <div class="public-badge">
+                <i class="fas fa-globe-asia"></i> सभी के लिए निःशुल्क
+            </div>
+        </header>
+
+        <!-- ====== AUDIO BOOK BAR ====== -->
+        <div class="audio-bar" id="audioBar">
+            <div class="audio-info">
+                <strong><i class="fas fa-volume-up"></i> ऑडियो बुक:</strong>
+                <span id="audioStatus">सुनने के लिए बटन दबाएं</span>
+            </div>
+            <div class="audio-controls">
+                <button id="playAudioBtn" onclick="toggleSpeech()">🔊 पूरी किताब सुनें</button>
+                <button id="stopAudioBtn" onclick="stopSpeech()">⏹️ बंद करें</button>
+            </div>
+        </div>
+
+        <!-- ====== CHAPTER 1 ====== -->
+        <section class="chapter" id="ch1">
+            <h2>⚡ अध्याय 1: विद्युत सुरक्षा और प्राथमिक चिकित्सा</h2>
+            <p><strong>बिजली के साथ काम करना खतरनाक हो सकता है, लेकिन सही जानकारी और सतर्कता से हम हर हादसे से बच सकते हैं।</strong> यह अध्याय आपको सुरक्षा के वे सभी नियम सिखाएगा जो हर इलेक्ट्रिशियन को दिल से याद होने चाहिए।</p>
+
+            <h3>🔹 विद्युत झटके से बचाव</h3>
+            <ul>
+                <li><strong>हमेशा टेस्टर का उपयोग करें</strong> — किसी भी तार को छूने से पहले जाँचें कि उसमें करंट है या नहीं।</li>
+                <li><strong>मेन स्विच बंद करें</strong> — किसी भी रिपेयरिंग से पहले मुख्य स्विच को ऑफ कर दें।</li>
+                <li><strong>इन्सुलेटेड टूल्स</strong> — रबर के हैंडल वाले औजारों का ही उपयोग करें।</li>
+                <li><strong>गीले हाथों से न छुएं</strong> — पानी या नमी में बिजली का झटका और भी घातक होता है।</li>
+            </ul>
+
+            <blockquote>
+                <i class="fas fa-exclamation-triangle"></i> <strong>चेतावनी:</strong> बिजली का झटका लगने पर तुरंत मेन स्विच बंद करें और पीड़ित को सूखी लकड़ी या रबर की मदद से छुड़ाएँ। कभी भी नंगे हाथों से न छुएँ। तुरंत डॉक्टर को बुलाएँ।
+            </blockquote>
+
+            <h3>🔹 अर्थिंग (Earthing) का महत्व</h3>
+            <p>अर्थिंग बिजली के फाल्ट करंट को धरती में उतारने का सबसे सुरक्षित रास्ता है। <strong>हर घर में अर्थिंग होना अनिवार्य</strong> है। यह शॉर्ट सर्किट या लीकेज करंट को जमीन में बहा देता है, जिससे हमें झटका नहीं लगता।</p>
+            <ul>
+                <li>अर्थिंग तार (हरा/पीला) हमेशा न्यूट्रल और फेज से अलग होना चाहिए।</li>
+                <li>अर्थिंग का प्रतिरोध (Resistance) 5 ओम से कम होना चाहिए।</li>
+            </ul>
+
+            <h3>🔹 प्राथमिक चिकित्सा (First Aid)</h3>
+            <p>यदि किसी को बिजली का झटका लगे तो:</p>
+            <ol>
+                <li>सबसे पहले बिजली का स्रोत हटाएँ (स्विच ऑफ करें)।</li>
+                <li>यदि व्यक्ति बेहोश है और साँस नहीं ले रहा, तो <strong>CPR</strong> (Cardiopulmonary Resuscitation) दें।</li>
+                <li>तुरंत एम्बुलेंस (108) को कॉल करें।</li>
+            </ol>
+            <p><em>याद रखें: सुरक्षा ही सबसे बड़ा औजार है।</em></p>
+        </section>
+
+        <!-- ====== CHAPTER 2 ====== -->
+        <section class="chapter" id="ch2">
+            <h2>🛠️ अध्याय 2: औजार और उपकरण (Tools Guide)</h2>
+            <p>एक अच्छा इलेक्ट्रिशियन अपने औजारों को पहचानता है और सही समय पर सही टूल का उपयोग करता है। नीचे कुछ मुख्य औजारों की जानकारी दी गई है – <strong>इनकी कंप्रेस्ड इमेजेज़ को /images/ फोल्डर में रखा गया है।</strong></p>
+
+            <div class="img-grid">
+                <figure>
+                    <img src="/images/plier.webp" alt="कॉम्बिनेशन प्लायर" loading="lazy" />
+                    <figcaption>कॉम्बिनेशन प्लायर</figcaption>
+                </figure>
+                <figure>
+                    <img src="/images/stripper.webp" alt="वायर स्ट्रिपर" loading="lazy" />
+                    <figcaption>वायर स्ट्रिपर</figcaption>
+                </figure>
+                <figure>
+                    <img src="/images/tester.webp" alt="लाइन टेस्टर" loading="lazy" />
+                    <figcaption>लाइन टेस्टर</figcaption>
+                </figure>
+                <figure>
+                    <img src="/images/screwdriver.webp" alt="स्क्रूड्राइवर" loading="lazy" />
+                    <figcaption>स्क्रूड्राइवर</figcaption>
+                </figure>
+                <figure>
+                    <img src="/images/multimeter.webp" alt="मल्टीमीटर" loading="lazy" />
+                    <figcaption>मल्टीमीटर</figcaption>
+                </figure>
+            </div>
+
+            <h3>🔹 मल्टीमीटर – सबसे महत्वपूर्ण</h3>
+            <p>मल्टीमीटर से आप <strong>वोल्टेज, करंट, प्रतिरोध</strong> और निरंतरता (Continuity) माप सकते हैं। यह फॉल्ट फाइंडिंग का सबसे बड़ा सहारा है।</p>
+            <ul>
+                <li><strong>AC वोल्टेज</strong> – घर की सप्लाई (220V) मापने के लिए।</li>
+                <li><strong>DC वोल्टेज</strong> – बैटरी और चार्जर के लिए।</li>
+                <li><strong>प्रतिरोध (Ω)</strong> – तारों और कॉइल्स की जाँच के लिए।</li>
+            </ul>
+            <blockquote>
+                <i class="fas fa-lightbulb"></i> <strong>सुझाव:</strong> मल्टीमीटर का उपयोग करने से पहले उसकी रेंज (Range) सही से सेट करें। कम रेंज में अधिक वोल्टेज डालने से मीटर खराब हो सकता है।
+            </blockquote>
+        </section>
+
+        <!-- ====== CHAPTER 3 ====== -->
+        <section class="chapter" id="ch3">
+            <h2>🔌 अध्याय 3: बिजली के सिद्धांत (Basic Concepts)</h2>
+            <p>बिजली को समझने के लिए तीन मूलभूत अवधारणाएँ हैं – <strong>वोल्टेज (V), करंट (I), और प्रतिरोध (R)</strong>। इन्हें पानी के पाइप के उदाहरण से समझना सबसे आसान है:</p>
+            <ul>
+                <li><strong>वोल्टेज (V)</strong> – पानी का दबाव (Pressure) – बिजली को धकेलने वाला बल।</li>
+                <li><strong>करंट (I)</strong> – पानी का बहाव (Flow) – प्रति सेकंड बहने वाले इलेक्ट्रॉनों की मात्रा।</li>
+                <li><strong>प्रतिरोध (R)</strong> – पाइप की रुकावट – करंट के बहाव में बाधा।</li>
+            </ul>
+
+            <h3>🔹 ओहम का नियम (Ohm's Law)</h3>
+            <p><strong>V = I × R</strong> – यह बिजली का सबसे महत्वपूर्ण सूत्र है। यदि आपको वोल्टेज और करंट पता है, तो प्रतिरोध निकाल सकते हैं, और इसी तरह अन्य मान।</p>
+            <ul>
+                <li>यदि वोल्टेज बढ़ेगा और प्रतिरोध स्थिर रहेगा, तो करंट बढ़ेगा।</li>
+                <li>यदि प्रतिरोध बढ़ेगा, तो करंट घटेगा (वोल्टेज स्थिर होने पर)।</li>
+            </ul>
+
+            <h3>🔹 AC और DC में अंतर</h3>
+            <ul>
+                <li><strong>AC (Alternating Current)</strong> – दिशा बदलता रहता है (50 Hz – भारत में)। घरों और कारखानों में AC सप्लाई होती है।</li>
+                <li><strong>DC (Direct Current)</strong> – एक ही दिशा में बहता है। बैटरी, मोबाइल चार्जर, LED लाइटें DC पर काम करती हैं।</li>
+            </ul>
+            <p>व्यावहारिक रूप से, AC को ट्रांसफार्मर से आसानी से बदला जा सकता है, इसलिए बिजली वितरण AC में होता है।</p>
+        </section>
+
+        <!-- ====== CHAPTER 4 (with CALCULATOR) ====== -->
+        <section class="chapter" id="ch4">
+            <h2>🏠 अध्याय 4: घरेलू वायरिंग, कंपोनेंट्स और लोड गणना</h2>
+            <p>यह अध्याय आपको घरों में तारों और स्विचों को जोड़ने का पूरा व्यावहारिक ज्ञान देगा। हम सीखेंगे कि <strong>एक घर में कितने एम्पियर का MCB, कितने स्क्वायर मिमी का तार, और किस रेटिंग का मीटर</strong> लगाना चाहिए।</p>
+
+            <!-- ===== INTERACTIVE CALCULATOR ===== -->
+            <h3>🧮 घरेलू लोड कैलकुलेटर (Load Calculator)</h3>
+            <p>नीचे दिए गए फॉर्म में अपने घर के उपकरणों की संख्या भरें। कैलकुलेटर आपको बताएगा कि <strong>कितने एम्पियर का MCB, कितने स्क्वायर मिमी का तार, और कौन सा मीटर</strong> लगाना चाहिए।</p>
+
+            <div class="calculator-box">
+                <div class="calc-grid">
+                    <!-- Input fields -->
+                    <div class="calc-item">
+                        <label><i class="fas fa-lightbulb"></i> LED बल्ब (10W)</label>
+                        <input type="number" id="bulbs" value="6" min="0" step="1" />
+                    </div>
+                    <div class="calc-item">
+                        <label><i class="fas fa-fan"></i> पंखे (70W)</label>
+                        <input type="number" id="fans" value="4" min="0" step="1" />
+                    </div>
+                    <div class="calc-item">
+                        <label><i class="fas fa-snowflake"></i> AC (1.5 टन, 1500W)</label>
+                        <input type="number" id="ac" value="0" min="0" step="1" />
+                    </div>
+                    <div class="calc-item">
+                        <label><i class="fas fa-fire"></i> हीटर/जीजर (2000W)</label>
+                        <input type="number" id="heater" value="0" min="0" step="1" />
+                    </div>
+                    <div class="calc-item">
+                        <label><i class="fas fa-tv"></i> TV (100W)</label>
+                        <input type="number" id="tv" value="1" min="0" step="1" />
+                    </div>
+                    <div class="calc-item">
+                        <label><i class="fas fa-plug"></i> अन्य प्लग लोड (500W)</label>
+                        <input type="number" id="other" value="0" min="0" step="1" />
+                    </div>
+
+                    <!-- Calculate Button -->
+                    <button class="calc-btn" id="calcBtn">
+                        <i class="fas fa-calculator"></i> गणना करें
+                    </button>
+
+                    <!-- Results -->
+                    <div class="calc-result" id="calcResult">
+                        <h4><i class="fas fa-check-circle" style="color:#16a34a;"></i> अनुशंसित उपकरण (Recommended Components)</h4>
+                        <div class="result-grid">
+                            <div class="result-item">
+                                <div class="label">कुल पावर (Total Load)</div>
+                                <div class="value" id="totalPower">—</div>
+                            </div>
+                            <div class="result-item">
+                                <div class="label">कुल करंट (Current)</div>
+                                <div class="value" id="totalCurrent">—</div>
+                            </div>
+                            <div class="result-item">
+                                <div class="label">मुख्य MCB (Main Switch)</div>
+                                <div class="value success" id="mainMCB">—</div>
+                            </div>
+                            <div class="result-item">
+                                <div class="label">लाइट/फैन MCB</div>
+                                <div class="value" id="lightMCB">—</div>
+                            </div>
+                            <div class="result-item">
+                                <div class="label">पॉवर MCB (AC/हीटर)</div>
+                                <div class="value" id="powerMCB">—</div>
+                            </div>
+                            <div class="result-item">
+                                <div class="label">मुख्य तार (साइज़)</div>
+                                <div class="value" id="mainWire">—</div>
+                            </div>
+                            <div class="result-item">
+                                <div class="label">लाइट/फैन तार</div>
+                                <div class="value" id="lightWire">—</div>
+                            </div>
+                            <div class="result-item">
+                                <div class="label">पॉवर तार (AC/हीटर)</div>
+                                <div class="value" id="powerWire">—</div>
+                            </div>
+                            <div class="result-item">
+                                <div class="label">मीटर रेटिंग (Meter)</div>
+                                <div class="value success" id="meterRating">—</div>
+                            </div>
+                        </div>
+                        <div style="margin-top: 1rem; padding: 0.8rem 1rem; background: #fef9e7; border-radius: 10px; border-left: 4px solid #d97706; font-size: 0.9rem;">
+                            <i class="fas fa-info-circle" style="color:#d97706;"></i>
+                            <strong>सुझाव:</strong> <span id="safetyTip">लोड की गणना 1.5x सुरक्षा कारक (Safety Factor) के साथ की गई है।</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== COMPONENTS EXPLANATION ===== -->
+            <h3>🔹 घरेलू वायरिंग में उपयोग होने वाले मुख्य कंपोनेंट्स</h3>
+
+            <h4>1. Energy Meter (विद्युत मीटर) – "SIGMA" AC 1 Phase</h4>
+            <p>यह वह उपकरण है जो आपके घर की बिजली खपत (kWh) मापता है। स्क्रीनशॉट में <strong>10A से 84500V तक</strong> की रेंज दिखाई गई है – यह <strong>वायर सेलेक्शन चार्ट</strong> है, जो बताता है कि किस करंट और वोल्टेज पर कितने स्क्वायर मिमी का तार उपयोग करना चाहिए।</p>
+            <ul>
+                <li><strong>10A 250V</strong> – छोटे घरेलू सर्किट (लाइट, फैन) के लिए 1.0 mm² तार।</li>
+                <li><strong>10A 1000V</strong> – मध्यम लोड (AC, हीटर) के लिए 1.5 mm² तार।</li>
+                <li><strong>10A 2000V</strong> और उससे ऊपर – औद्योगिक या हाई-वोल्टेज उपयोग।</li>
+            </ul>
+            <p>घरेलू उपयोग के लिए <strong>1-фаз 10A-40A, 230V</strong> मीटर पर्याप्त होता है।</p>
+
+            <h4>2. MCB (Miniature Circuit Breaker) – 40A, 2P, C6, C20</h4>
+            <p>MCB सर्किट को ओवरलोड और शॉर्ट सर्किट से बचाता है।</p>
+            <ul>
+                <li><strong>40A, 2P (2 Pole)</strong> – मुख्य स्विच (Main Switch) के रूप में उपयोग होता है। 2P का मतलब फेज और न्यूट्रल दोनों को काटता है।</li>
+                <li><strong>C6 (6A, C-curve)</strong> – लाइट और फैन सर्किट के लिए। C-curve मोटर या इंडक्टिव लोड के लिए बेहतर है।</li>
+                <li><strong>C20 (20A, C-curve)</strong> – पॉवर सर्किट (AC, हीटर, वॉशिंग मशीन) के लिए।</li>
+            </ul>
+
+            <h4>3. Resistor (प्रतिरोधक)</h4>
+            <p>स्क्रीनशॉट में "Resistor" दिखाया गया है – यह आमतौर पर <strong>ब्लीडर रेसिस्टर</strong> या <strong>लोड रेसिस्टर</strong> होता है। इसका उपयोग सर्किट में करंट को सीमित करने या कैपेसिटर को डिस्चार्ज करने के लिए किया जाता है।</p>
+
+            <!-- ===== MANUAL CALCULATION EXAMPLE ===== -->
+            <h3>🔹 मैन्युअल गणना का उदाहरण (Example Calculation)</h3>
+            <p><strong>4 कमरे, 4 पंखे, 6 LED बल्ब, 1 TV, 1 AC (1.5 टन), 1 हीटर</strong> – कैलकुलेटर का उपयोग करें या खुद गणना करें:</p>
+            <table class="calc-table">
+                <thead>
+                    <tr><th>उपकरण</th><th>संख्या</th><th>प्रति यूनिट (W)</th><th>कुल (W)</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>LED बल्ब</td><td>6</td><td>10</td><td>60</td></tr>
+                    <tr><td>पंखे</td><td>4</td><td>70</td><td>280</td></tr>
+                    <tr><td>TV</td><td>1</td><td>100</td><td>100</td></tr>
+                    <tr><td>AC (1.5 टन)</td><td>1</td><td>1500</td><td>1500</td></tr>
+                    <tr><td>हीटर/जीजर</td><td>1</td><td>2000</td><td>2000</td></tr>
+                    <tr class="highlight-row"><td><strong>कुल पावर</strong></td><td></td><td></td><td><strong>3940 W</strong></td></tr>
+                </tbody>
+            </table>
+            <p><strong>करंट:</strong> I = 3940 ÷ 220 = <strong>17.9 A</strong> <br />
+                <strong>सुरक्षा कारक (1.5x):</strong> 17.9 × 1.5 = <strong>26.8 A</strong></p>
+            <p><strong>अनुशंसा:</strong> मुख्य MCB 40A, मुख्य तार 6 mm², लाइट/फैन MCB C6 (तार 1.5 mm²), AC/हीटर के लिए अलग C20 MCB (तार 2.5 mm²), मीटर 10-40A।</p>
+
+            <!-- ===== WIRING DIAGRAM ===== -->
+            <h3>🔹 1 स्विच, 1 सॉकेट, फ्यूज और इंडिकेटर वाला बोर्ड</h3>
+            <div class="diagram-placeholder">
+                <i class="fas fa-project-diagram"></i>
+                <strong>वायरिंग डायग्राम</strong><br />
+                <span style="font-size:0.9rem;">(फेज → 40A 2P MCB → 6A MCB (लाइट) → स्विच → बल्ब → न्यूट्रल)</span><br />
+                <span style="font-size:0.85rem; color:#6b7f99;">* पूरा डायग्राम /images/board-wiring.webp में उपलब्ध है</span>
+            </div>
+
+            <h3>🔹 MCB और कंसील्ड वायरिंग के नियम</h3>
+            <ul>
+                <li><strong>MCB</strong> – ओवरलोड या शॉर्ट सर्किट पर अपने आप ट्रिप हो जाता है। फ्यूज की तुलना में अधिक सुरक्षित और बार-बार उपयोग हो सकता है।</li>
+                <li><strong>कंसील्ड वायरिंग</strong> – तारों को PVC पाइप के अंदर दीवारों में छिपा कर बिछाना। पाइप का सही आकार और मोड़ (bend) बहुत जरूरी है।</li>
+                <li><strong>तार खींचते समय</strong> – स्प्रिंग और फिशिंग टेप का उपयोग करें। तारों को फंसने से बचाने के लिए पाइप के मोड़ों को बड़ा रखें।</li>
+            </ul>
+
+            <blockquote>
+                <i class="fas fa-calculator"></i> <strong>अभ्यास:</strong> यदि आपके घर में 2 AC (1.5 टन), 1 हीटर (2000W), 5 पंखे, 10 LED बल्ब, 2 TV हैं, तो कैलकुलेटर का उपयोग करें या खुद गणना करें। क्या 40A मुख्य MCB पर्याप्त होगा?
+            </blockquote>
+        </section>
+
+        <!-- ====== CHAPTER 5 ====== -->
+        <section class="chapter" id="ch5">
+            <h2>🔧 अध्याय 5: सामान्य फॉल्ट और रिपेयरिंग</h2>
+            <p>हर इलेक्ट्रिशियन को फॉल्ट्स को पहचानना और ठीक करना आना चाहिए। यहाँ कुछ सबसे आम समस्याएँ और उनके समाधान दिए गए हैं।</p>
+
+            <h3>🔹 शॉर्ट सर्किट (Short Circuit)</h3>
+            <p><strong>लक्षण:</strong> फ्यूज उड़ना, MCB ट्रिप होना, तारों से चिंगारी निकलना।<br />
+                <strong>कारण:</strong> फेज और न्यूट्रल का आपस में छूना (तार की इंसुलेशन खराब होना)।<br />
+                <strong>समाधान:</strong> सबसे पहले मेन स्विच बंद करें, फिर फॉल्ट वाले हिस्से को खोलकर तारों को अलग करें और नई इंसुलेशन लगाएँ या नया तार बिछाएँ।
+            </p>
+
+            <h3>🔹 ओवरलोडिंग (Overloading)</h3>
+            <p><strong>लक्षण:</strong> MCB बार-बार ट्रिप होना, तार गर्म होना।<br />
+                <strong>कारण:</strong> एक सर्किट में बहुत अधिक उपकरण जोड़ना, जिससे करंट सेफ लिमिट से अधिक बह जाता है।<br />
+                <strong>समाधान:</strong> अलग-अलग सर्किट बनाएँ (लाइट, फैन, पॉवर प्लग अलग-अलग) और उच्च क्षमता के MCB लगाएँ (पर तार की क्षमता के अनुसार)।
+            </p>
+
+            <h3>🔹 पंखे, ट्यूबलाइट और LED बल्ब के सामान्य फॉल्ट</h3>
+            <ul>
+                <li><strong>पंखा धीरे चलता है:</strong> कैपेसिटर खराब हो गया है – उसे बदलें (आमतौर पर 2.5 µF या 3.75 µF) ।</li>
+                <li><strong>ट्यूबलाइट झिलमिलाती है:</strong> स्टार्टर या चोक (ballast) खराब – स्टार्टर बदलें, या LED ट्यूब लगाएँ।</li>
+                <li><strong>LED बल्ब जल जाता है:</strong> ड्राइवर (Driver) या एलईडी चिप खराब – नया ड्राइवर लगाएँ या बल्ब बदलें।</li>
+            </ul>
+            <blockquote>
+                <i class="fas fa-check-circle"></i> <strong>याद रखें:</strong> फॉल्ट फाइंडिंग में धैर्य रखें – पहले संभावित कारणों की जाँच करें, फिर एक-एक करके घटकों को बदलें। हमेशा मेन स्विच ऑफ करके ही काम करें।
+            </blockquote>
+        </section>
+
+        <!-- ====== FOOTER ====== -->
+        <footer class="book-footer">
+            <p><i class="fas fa-bolt"></i> <strong>अक्ल की जीत</strong> — यह डिजिटल बुक एक मजबूत नींव है। <br />
+            व्यावहारिक अनुभव के लिए किसी उस्ताद के साथ काम करें। <i class="fas fa-handshake"></i></p>
+            <p style="margin-top: 0.5rem; font-size:0.8rem;">
+                🇮🇳 सार्वजनिक संस्करण · पूरी तरह निःशुल्क · © 2026
+            </p>
+        </footer>
+    </div>
+
+    <!-- ====== SCRIPTS ====== -->
+    <script>
+        // ===== AUDIO BOOK =====
+        (function() {
+            const synth = window.speechSynthesis;
+            let utterance = null;
+            let isSpeaking = false;
+
+            const playBtn = document.getElementById('playAudioBtn');
+            const stopBtn = document.getElementById('stopAudioBtn');
+            const audioStatus = document.getElementById('audioStatus');
+
+            if (!window.speechSynthesis) {
+                audioStatus.innerText = '⚠️ आपका ब्राउज़र ऑडियो बुक सपोर्ट नहीं करता।';
+                if (playBtn) { playBtn.disabled = true;
+                    playBtn.style.opacity = 0.6;
+                    playBtn.style.cursor = 'not-allowed'; }
+                return;
+            }
+
+            function getBookText() {
+                const container = document.querySelector('.book-container');
+                const clone = container.cloneNode(true);
+                const header = clone.querySelector('.book-header');
+                if (header) header.remove();
+                const audioBar = clone.querySelector('.audio-bar');
+                if (audioBar) audioBar.remove();
+                const footer = clone.querySelector('.book-footer');
+                if (footer) footer.remove();
+                return clone.innerText;
+            }
+
+            window.toggleSpeech = function() {
+                if (isSpeaking) {
+                    synth.pause();
+                    isSpeaking = false;
+                    playBtn.innerText = '▶️ जारी रखें';
+                    audioStatus.innerText = '⏸️ ऑडियो रुका हुआ है';
+                    return;
+                }
+                if (synth.paused) {
+                    synth.resume();
+                    isSpeaking = true;
+                    playBtn.innerText = '⏸️ रोकें';
+                    audioStatus.innerText = '📖 किताब पढ़ी जा रही है...';
+                    return;
+                }
+                const bookText = getBookText();
+                if (!bookText.trim()) {
+                    audioStatus.innerText = '❌ कोई सामग्री नहीं मिली।';
+                    return;
+                }
+                if (synth.speaking) synth.cancel();
+                utterance = new SpeechSynthesisUtterance(bookText);
+                utterance.lang = 'hi-IN';
+                utterance.rate = 0.9;
+                utterance.pitch = 1;
+                utterance.onstart = function() {
+                    isSpeaking = true;
+                    playBtn.innerText = '⏸️ रोकें';
+                    stopBtn.style.display = 'inline-block';
+                    audioStatus.innerText = '📖 किताब पढ़ी जा रही है...';
+                };
+                utterance.onend = function() {
+                    stopSpeech();
+                    audioStatus.innerText = '✅ पूरी किताब पढ़ी जा चुकी है।';
+                };
+                utterance.onerror = function() {
+                    stopSpeech();
+                    audioStatus.innerText = '❌ ऑडियो में त्रुटि हुई।';
+                };
+                synth.speak(utterance);
+            };
+
+            window.stopSpeech = function() {
+                if (synth) synth.cancel();
+                isSpeaking = false;
+                playBtn.innerText = '🔊 पूरी किताब सुनें';
+                stopBtn.style.display = 'none';
+                audioStatus.innerText = '⏹️ ऑडियो बंद है';
+            };
+            window.addEventListener('beforeunload', function() { if (synth) synth.cancel(); });
+        })();
+
+        // ===== LOAD CALCULATOR =====
+        (function() {
+            const calcBtn = document.getElementById('calcBtn');
+            const resultDiv = document.getElementById('calcResult');
+
+            // Inputs
+            const bulbsInput = document.getElementById('bulbs');
+            const fansInput = document.getElementById('fans');
+            const acInput = document.getElementById('ac');
+            const heaterInput = document.getElementById('heater');
+            const tvInput = document.getElementById('tv');
+            const otherInput = document.getElementById('other');
+
+            // Result fields
+            const totalPowerEl = document.getElementById('totalPower');
+            const totalCurrentEl = document.getElementById('totalCurrent');
+            const mainMCBEl = document.getElementById('mainMCB');
+            const lightMCBEl = document.getElementById('lightMCB');
+            const powerMCBEl = document.getElementById('powerMCB');
+            const mainWireEl = document.getElementById('mainWire');
+            const lightWireEl = document.getElementById('lightWire');
+            const powerWireEl = document.getElementById('powerWire');
+            const meterRatingEl = document.getElementById('meterRating');
+            const safetyTipEl = document.getElementById('safetyTip');
+
+            function calculate() {
+                // Get values
+                const bulbs = parseInt(bulbsInput.value) || 0;
+                const fans = parseInt(fansInput.value) || 0;
+                const ac = parseInt(acInput.value) || 0;
+                const heater = parseInt(heaterInput.value) || 0;
+                const tv = parseInt(tvInput.value) || 0;
+                const other = parseInt(otherInput.value) || 0;
+
+                // Power per unit (Watts)
+                const P_bulb = 10;
+                const P_fan = 70;
+                const P_ac = 1500;
+                const P_heater = 2000;
+                const P_tv = 100;
+                const P_other = 500;
+
+                // Total Power
+                const totalPower = (bulbs * P_bulb) + (fans * P_fan) + (ac * P_ac) +
+                    (heater * P_heater) + (tv * P_tv) + (other * P_other);
+
+                // Voltage
+                const V = 220;
+
+                // Current (I = P / V)
+                const current = totalPower / V;
+
+                // Safety factor 1.5
+                const safeCurrent = current * 1.5;
+
+                // Determine component sizes
+                let mainMCB, lightMCB, powerMCB, mainWire, lightWire, powerWire, meter;
+
+                // Main MCB
+                if (safeCurrent <= 10) mainMCB = '16A, 2P';
+                else if (safeCurrent <= 16) mainMCB = '20A, 2P';
+                else if (safeCurrent <= 25) mainMCB = '32A, 2P';
+                else if (safeCurrent <= 40) mainMCB = '40A, 2P';
+                else if (safeCurrent <= 63) mainMCB = '63A, 2P';
+                else mainMCB = '80A, 2P (व्यावसायिक)';
+
+                // Light MCB (for bulbs + fans + TV + other small loads)
+                const lightLoad = (bulbs * P_bulb) + (fans * P_fan) + (tv * P_tv) + (other * P_other);
+                const lightCurrent = lightLoad / V;
+                const safeLight = lightCurrent * 1.5;
+                if (safeLight <= 6) lightMCB = 'C6 (6A)';
+                else if (safeLight <= 10) lightMCB = 'C10 (10A)';
+                else if (safeLight <= 16) lightMCB = 'C16 (16A)';
+                else lightMCB = 'C20 (20A)';
+
+                // Power MCB (for AC + Heater)
+                const powerLoad = (ac * P_ac) + (heater * P_heater);
+                const powerCurrent = powerLoad / V;
+                const safePower = powerCurrent * 1.5;
+                if (powerLoad === 0) powerMCB = '— (कोई पॉवर लोड नहीं)';
+                else if (safePower <= 10) powerMCB = 'C10 (10A)';
+                else if (safePower <= 16) powerMCB = 'C16 (16A)';
+                else if (safePower <= 20) powerMCB = 'C20 (20A)';
+                else if (safePower <= 25) powerMCB = 'C25 (25A)';
+                else if (safePower <= 32) powerMCB = 'C32 (32A)';
+                else powerMCB = 'C40 (40A)';
+
+                // Wire sizes (based on current)
+                if (safeCurrent <= 10) mainWire = '2.5 mm²';
+                else if (safeCurrent <= 16) mainWire = '4.0 mm²';
+                else if (safeCurrent <= 25) mainWire = '6.0 mm²';
+                else if (safeCurrent <= 40) mainWire = '10.0 mm²';
+                else if (safeCurrent <= 63) mainWire = '16.0 mm²';
+                else mainWire = '25.0 mm² (व्यावसायिक)';
+
+                if (safeLight <= 6) lightWire = '1.0 mm²';
+                else if (safeLight <= 10) lightWire = '1.5 mm²';
+                else if (safeLight <= 16) lightWire = '2.5 mm²';
+                else lightWire = '4.0 mm²';
+
+                if (powerLoad === 0) powerWire = '—';
+                else if (safePower <= 10) powerWire = '1.5 mm²';
+                else if (safePower <= 16) powerWire = '2.5 mm²';
+                else if (safePower <= 25) powerWire = '4.0 mm²';
+                else if (safePower <= 32) powerWire = '6.0 mm²';
+                else powerWire = '10.0 mm²';
+
+                // Meter rating
+                if (safeCurrent <= 10) meter = '10A, 230V';
+                else if (safeCurrent <= 20) meter = '20A, 230V';
+                else if (safeCurrent <= 40) meter = '10-40A, 230V';
+                else if (safeCurrent <= 60) meter = '10-60A, 230V';
+                else meter = 'व्यावसायिक मीटर (3-फेज़)';
+
+                // Safety Tip
+                let tip = '';
+                if (totalPower === 0) {
+                    tip = 'कृपया कम से कम एक उपकरण की संख्या दर्ज करें।';
+                } else if (safeCurrent > 40) {
+                    tip = '⚠️ आपका लोड 40A से अधिक है। 3-फेज़ कनेक्शन की सलाह दी जाती है।';
+                } else if (safeCurrent > 20 && ac + heater > 0) {
+                    tip = '💡 AC/हीटर के लिए अलग सर्किट (C20 MCB + 2.5 mm² तार) अवश्य बनाएँ।';
+                } else if (lightCurrent > 6 && lightCurrent <= 10) {
+                    tip = '💡 लाइट/फैन लोड 6A से अधिक है, इसलिए C10 MCB का उपयोग करें।';
+                } else {
+                    tip = '✅ यह सेटअप सामान्य घरेलू उपयोग के लिए सुरक्षित है। सभी कनेक्शन अर्थिंग के साथ करें।';
+                }
+
+                // Update UI
+                totalPowerEl.textContent = totalPower + ' W';
+                totalCurrentEl.textContent = current.toFixed(2) + ' A (सुरक्षित: ' + safeCurrent.toFixed(2) + ' A)';
+                mainMCBEl.textContent = mainMCB;
+                lightMCBEl.textContent = lightMCB;
+                powerMCBEl.textContent = powerMCB;
+                mainWireEl.textContent = mainWire;
+                lightWireEl.textContent = lightWire;
+                powerWireEl.textContent = powerWire;
+                meterRatingEl.textContent = meter;
+                safetyTipEl.textContent = tip;
+
+                // Show result
+                resultDiv.classList.add('active');
+            }
+
+            // Calculate on button click
+            calcBtn.addEventListener('click', calculate);
+
+            // Calculate on Enter key (any input)
+            document.querySelectorAll('.calc-item input').forEach(input => {
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        calculate();
+                    }
+                });
+            });
+
+            // Auto-calculate on page load with default values
+            window.addEventListener('load', function() {
+                setTimeout(calculate, 300);
+            });
+
+        })();
+    </script>
+
+</body>
+</html>
