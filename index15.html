@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English to Hindi Sentence Game</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Comic Sans MS', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            padding: 30px;
+            margin-top: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            color: #2575fc;
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .subtitle {
+            color: #6a11cb;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+        
+        .game-area {
+            margin-bottom: 30px;
+        }
+        
+        .sentence-container {
+            background-color: #f0f8ff;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 3px dashed #6a11cb;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .sentence {
+            font-size: 1.8rem;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            text-align: center;
+            color: #333;
+        }
+        
+        .blank {
+            display: inline-block;
+            width: 130px;
+            height: 45px;
+            border-bottom: 3px solid #ff6b6b;
+            margin: 0 8px;
+            vertical-align: middle;
+            position: relative;
+            background-color: #fff;
+            border-radius: 5px;
+            text-align: center;
+            line-height: 45px;
+            font-weight: bold;
+            color: transparent;
+            text-shadow: 0 0 0 #333;
+            transition: all 0.3s;
+        }
+        
+        .blank.filled {
+            border-bottom: 3px solid #4ecdc4;
+            background-color: #f7fff7;
+            color: #333;
+        }
+        
+        .blank.correct {
+            border-bottom: 3px solid #28a745;
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .blank.incorrect {
+            border-bottom: 3px solid #dc3545;
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        
+        .option {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+            color: #333;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1.1rem;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .option:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        .option:disabled {
+            background: #cccccc;
+            color: #666666;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .hint {
+            text-align: center;
+            margin-bottom: 10px;
+            font-style: italic;
+            color: #6a11cb;
+            font-size: 1.1rem;
+            background-color: #e6f7ff;
+            padding: 10px;
+            border-radius: 10px;
+            border-left: 5px solid #2575fc;
+        }
+        
+        .hindi-answer {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            color: #2e8b57;
+            background-color: #f0fff0;
+            padding: 10px;
+            border-radius: 10px;
+            border: 2px solid #2e8b57;
+            font-weight: bold;
+        }
+        
+        .result {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.4rem;
+            font-weight: bold;
+            min-height: 40px;
+            padding: 10px;
+            border-radius: 10px;
+        }
+        
+        .result.correct {
+            color: #2e8b57;
+            background-color: #f0fff0;
+            border: 2px solid #2e8b57;
+        }
+        
+        .result.incorrect {
+            color: #dc143c;
+            background-color: #fff0f5;
+            border: 2px solid #dc143c;
+        }
+        
+        .score-board {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            width: 100%;
+        }
+        
+        .score {
+            font-size: 1.4rem;
+            color: #6a11cb;
+            background-color: #e6e6fa;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: bold;
+        }
+        
+        .progress {
+            font-size: 1.2rem;
+            color: #2575fc;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+            }
+            h1 { font-size: 1.8rem; }
+            .sentence { font-size: 1.4rem; }
+            .blank { width: 100px; height: 40px; line-height: 40px; }
+            .option { padding: 10px 15px; font-size: 1rem; }
+        }
+        
+        .celebration {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+            display: none;
+        }
+        
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            animation: fall linear forwards;
+        }
+        
+        @keyframes fall {
+            to { transform: translateY(100vh) rotate(360deg); }
+        }
+        
+        .auto-next-message {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 1.1rem;
+            color: #6a11cb;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>English to Hindi Sentence Game</h1>
+            <p class="subtitle">Complete the English sentences and see the Hindi translation!</p>
+        </header>
+        
+        <div class="game-area">
+            <div class="sentence-container">
+                <div class="sentence" id="sentence"></div>
+                <div class="hint" id="hint"></div>
+                <div class="hindi-answer" id="hindi-answer"></div>
+            </div>
+            
+            <div class="options" id="options"></div>
+            
+            <div class="result" id="result"></div>
+            
+            <div class="score-board">
+                <div class="score" id="score">Score: 0</div>
+                <div class="progress" id="progress">Question: 1/200</div>
+            </div>
+            
+            <div class="auto-next-message" id="auto-next-message">
+                Correct answers will automatically move to the next question!
+            </div>
+        </div>
+    </div>
+
+    <div class="celebration" id="celebration"></div>
+
+    <script>
+        // Full 200 Questions Database - Without Gaps
+        const sentences = [
+            // 1-30: Basic Words & Pronouns
+            { english: "This is a ___", blanks: ["ball"], options: ["ball", "cat", "book", "pen"], hindi: "यह एक गेंद है।", hint: "You play with it" },
+            { english: "That is my ___", blanks: ["house"], options: ["house", "car", "friend", "school"], hindi: "वह मेरा घर है।", hint: "A place where people live" },
+            { english: "I am a ___", blanks: ["boy"], options: ["boy", "girl", "teacher", "student"], hindi: "मैं एक लड़का हूँ।", hint: "A male child" },
+            { english: "She is a ___", blanks: ["girl"], options: ["girl", "boy", "woman", "man"], hindi: "वह एक लड़की है।", hint: "A female child" },
+            { english: "He is my ___", blanks: ["father"], options: ["father", "mother", "brother", "sister"], hindi: "वह मेरे पिता हैं।", hint: "A male parent" },
+            { english: "It is a ___", blanks: ["dog"], options: ["dog", "cat", "bird", "fish"], hindi: "यह एक कुत्ता है।", hint: "An animal that barks" },
+            { english: "We are ___", blanks: ["friends"], options: ["friends", "students", "children", "players"], hindi: "हम दोस्त हैं।", hint: "People you like to spend time with" },
+            { english: "You are a good ___", blanks: ["student"], options: ["student", "person", "friend", "player"], hindi: "तुम एक अच्छे छात्र हो।", hint: "Someone who learns" },
+            { english: "They are ___", blanks: ["happy"], options: ["happy", "sad", "tall", "small"], hindi: "वे खुश हैं।", hint: "Feeling joy" },
+            { english: "This is not ___", blanks: ["mine"], options: ["mine", "yours", "his", "hers"], hindi: "यह मेरा नहीं है।", hint: "Belongs to me" },
+            { english: "That is ___ book", blanks: ["your"], options: ["your", "my", "his", "her"], hindi: "वह तुम्हारी किताब है।", hint: "Belongs to you" },
+            { english: "These are ___", blanks: ["flowers"], options: ["flowers", "trees", "books", "pens"], hindi: "ये फूल हैं।", hint: "Beautiful plants with petals" },
+            { english: "Those are ___", blanks: ["birds"], options: ["birds", "animals", "clouds", "stars"], hindi: "वे पक्षी हैं।", hint: "Animals that can fly" },
+            { english: "I have a ___", blanks: ["pen"], options: ["pen", "pencil", "book", "bag"], hindi: "मेरे पास एक कलम है।", hint: "Used for writing" },
+            { english: "She has a ___", blanks: ["doll"], options: ["doll", "ball", "toy", "game"], hindi: "उसके पास एक गुड़िया है।", hint: "A toy that looks like a person" },
+            { english: "He has two ___", blanks: ["eyes"], options: ["eyes", "ears", "hands", "legs"], hindi: "उसकी दो आँखें हैं।", hint: "You see with these" },
+            { english: "We have a ___", blanks: ["home"], options: ["home", "car", "school", "garden"], hindi: "हमारे पास एक घर है।", hint: "Where you live" },
+            { english: "They have many ___", blanks: ["books"], options: ["books", "toys", "friends", "pets"], hindi: "उनके पास बहुत सारी किताबें हैं।", hint: "You read these" },
+            { english: "Do you have a ___?", blanks: ["pencil"], options: ["pencil", "ruler", "eraser", "sharpener"], hindi: "क्या तुम्हारे पास एक पेंसिल है?", hint: "Used for writing and drawing" },
+            { english: "Does she have a ___?", blanks: ["bag"], options: ["bag", "box", "bottle", "basket"], hindi: "क्या उसके पास एक बैग है?", hint: "Used to carry things" },
+            { english: "Is this your ___?", blanks: ["book"], options: ["book", "pen", "pencil", "bag"], hindi: "क्या यह तुम्हारी किताब है?", hint: "Contains pages with writing" },
+            { english: "Are these your ___?", blanks: ["shoes"], options: ["shoes", "socks", "clothes", "toys"], hindi: "क्या ये तुम्हारे जूते हैं?", hint: "You wear them on your feet" },
+            { english: "Is that his ___?", blanks: ["bicycle"], options: ["bicycle", "car", "bus", "train"], hindi: "क्या वह उसकी साइकिल है?", hint: "Has two wheels and pedals" },
+            { english: "Are those their ___?", blanks: ["houses"], options: ["houses", "cars", "bicycles", "toys"], hindi: "क्या वे उनके घर हैं?", hint: "Places where people live" },
+            { english: "What is this ___?", blanks: ["thing"], options: ["thing", "object", "item", "stuff"], hindi: "यह क्या चीज़ है?", hint: "Another word for an object" },
+            { english: "What is your ___?", blanks: ["name"], options: ["name", "age", "class", "school"], hindi: "तुम्हारा नाम क्या है?", hint: "What people call you" },
+            { english: "Where is my ___?", blanks: ["bag"], options: ["bag", "book", "pen", "pencil"], hindi: "मेरा बैग कहाँ है?", hint: "You carry books in it" },
+            { english: "Where are my ___?", blanks: ["shoes"], options: ["shoes", "socks", "books", "pens"], hindi: "मेरे जूते कहाँ हैं?", hint: "You wear them on your feet" },
+            { english: "Who is that ___?", blanks: ["man"], options: ["man", "woman", "boy", "girl"], hindi: "वह आदमी कौन है?", hint: "An adult male" },
+            { english: "Who are those ___?", blanks: ["people"], options: ["people", "children", "students", "teachers"], hindi: "वे लोग कौन हैं?", hint: "More than one person" },
+
+            // 31-60: Common Verbs
+            { english: "I ___ to school", blanks: ["go"], options: ["go", "come", "run", "walk"], hindi: "मैं स्कूल जाता हूँ।", hint: "Move to a place" },
+            { english: "You ___ to my house", blanks: ["come"], options: ["come", "go", "run", "walk"], hindi: "तुम मेरे घर आते हो।", hint: "Move towards the speaker" },
+            { english: "He ___ fast", blanks: ["runs"], options: ["runs", "walks", "jumps", "plays"], hindi: "वह तेज़ दौड़ता है।", hint: "Move quickly on foot" },
+            { english: "She ___ slowly", blanks: ["walks"], options: ["walks", "runs", "jumps", "skips"], hindi: "वह धीरे चलती है।", hint: "Move on foot at normal speed" },
+            { english: "We ___ in the park", blanks: ["play"], options: ["play", "study", "work", "sleep"], hindi: "हम पार्क में खेलते हैं।", hint: "Engage in fun activity" },
+            { english: "They ___ English", blanks: ["study"], options: ["study", "learn", "read", "write"], hindi: "वे अंग्रेज़ी पढ़ते हैं।", hint: "Learn through reading" },
+            { english: "I ___ a book", blanks: ["read"], options: ["read", "write", "open", "close"], hindi: "मैं एक किताब पढ़ता हूँ।", hint: "Look at and understand written words" },
+            { english: "You ___ a letter", blanks: ["write"], options: ["write", "read", "draw", "paint"], hindi: "तुम एक चिट्ठी लिखते हो।", hint: "Create words on paper" },
+            { english: "He ___ a picture", blanks: ["draws"], options: ["draws", "paints", "colors", "makes"], hindi: "वह एक चित्र बनाता है।", hint: "Create an image with pencil" },
+            { english: "She ___ a song", blanks: ["sings"], options: ["sings", "dances", "plays", "listens"], hindi: "वह एक गाना गाती है।", hint: "Produce musical sounds with voice" },
+            { english: "We ___ to music", blanks: ["listen"], options: ["listen", "hear", "dance", "sing"], hindi: "हम संगीत सुनते हैं।", hint: "Pay attention to sounds" },
+            { english: "They ___ a game", blanks: ["play"], options: ["play", "watch", "enjoy", "like"], hindi: "वे एक खेल खेलते हैं।", hint: "Participate in a game" },
+            { english: "I ___ food", blanks: ["eat"], options: ["eat", "drink", "cook", "make"], hindi: "मैं खाना खाता हूँ।", hint: "Consume food" },
+            { english: "You ___ water", blanks: ["drink"], options: ["drink", "eat", "pour", "spill"], hindi: "तुम पानी पीते हो।", hint: "Consume liquid" },
+            { english: "He ___ in a chair", blanks: ["sits"], options: ["sits", "stands", "lies", "sleeps"], hindi: "वह एक कुर्सी पर बैठता है।", hint: "Rest on a surface" },
+            { english: "She ___ on a bed", blanks: ["sleeps"], options: ["sleeps", "sits", "lies", "rests"], hindi: "वह एक बिस्तर पर सोती है।", hint: "Rest with eyes closed" },
+            { english: "We ___ at home", blanks: ["stay"], options: ["stay", "live", "remain", "wait"], hindi: "हम घर पर रहते हैं।", hint: "Remain in a place" },
+            { english: "They ___ in a city", blanks: ["live"], options: ["live", "stay", "work", "play"], hindi: "वे एक शहर में रहते हैं।", hint: "Have your home in a place" },
+            { english: "I ___ my hands", blanks: ["wash"], options: ["wash", "clean", "dry", "wipe"], hindi: "मैं अपने हाथ धोता हूँ।", hint: "Clean with water and soap" },
+            { english: "You ___ your face", blanks: ["clean"], options: ["clean", "wash", "dry", "wipe"], hindi: "तुम अपना चेहरा साफ करते हो।", hint: "Make something free from dirt" },
+            { english: "He ___ his teeth", blanks: ["brushes"], options: ["brushes", "cleans", "washes", "polishes"], hindi: "वह अपने दाँत साफ करता है।", hint: "Use a brush to clean teeth" },
+            { english: "She ___ her hair", blanks: ["combs"], options: ["combs", "brushes", "washes", "dries"], hindi: "वह अपने बाल कंघी करती है।", hint: "Use a comb to arrange hair" },
+            { english: "We ___ our clothes", blanks: ["wear"], options: ["wear", "put", "dress", "cover"], hindi: "हम अपने कपड़े पहनते हैं।", hint: "Have clothes on your body" },
+            { english: "They ___ uniforms", blanks: ["wear"], options: ["wear", "put", "dress", "have"], hindi: "वे वर्दी पहनते हैं।", hint: "Have clothes on your body" },
+            { english: "I ___ a question", blanks: ["ask"], options: ["ask", "answer", "tell", "say"], hindi: "मैं एक सवाल पूछता हूँ।", hint: "Request information" },
+            { english: "You ___ the question", blanks: ["answer"], options: ["answer", "ask", "tell", "say"], hindi: "तुम सवाल का जवाब देते हो।", hint: "Respond to a question" },
+            { english: "He ___ a story", blanks: ["tells"], options: ["tells", "says", "speaks", "narrates"], hindi: "वह एक कहानी सुनाता है।", hint: "Narrate or relate information" },
+            { english: "She ___ hello", blanks: ["says"], options: ["says", "tells", "speaks", "utters"], hindi: "वह हैलो कहती है।", hint: "Utter words" },
+            { english: "We ___ English", blanks: ["speak"], options: ["speak", "talk", "say", "tell"], hindi: "हम अंग्रेज़ी बोलते हैं।", hint: "Use a language to communicate" },
+            { english: "They ___ loudly", blanks: ["talk"], options: ["talk", "speak", "shout", "whisper"], hindi: "वे जोर से बात करते हैं।", hint: "Engage in conversation" },
+
+            // 61-90: Everyday Nouns
+            { english: "I see a ___ in the sky", blanks: ["bird"], options: ["bird", "plane", "cloud", "kite"], hindi: "मैं आकाश में एक पक्षी देखता हूँ।", hint: "An animal that can fly" },
+            { english: "You have a red ___", blanks: ["ball"], options: ["ball", "car", "flower", "shirt"], hindi: "तुम्हारे पास एक लाल गेंद है।", hint: "Round object used in games" },
+            { english: "He has a big ___", blanks: ["house"], options: ["house", "car", "tree", "book"], hindi: "उसके पास एक बड़ा घर है।", hint: "A building where people live" },
+            { english: "She has a small ___", blanks: ["bag"], options: ["bag", "box", "bottle", "book"], hindi: "उसके पास एक छोटा बैग है।", hint: "Used to carry things" },
+            { english: "We have a beautiful ___", blanks: ["garden"], options: ["garden", "house", "car", "school"], hindi: "हमारे पास एक सुंदर बगीचा है।", hint: "Area with flowers and plants" },
+            { english: "They have a new ___", blanks: ["car"], options: ["car", "bicycle", "bus", "train"], hindi: "उनके पास एक नई कार है।", hint: "A vehicle with four wheels" },
+            { english: "This is my ___", blanks: ["book"], options: ["book", "pen", "pencil", "bag"], hindi: "यह मेरी किताब है।", hint: "Contains pages with writing" },
+            { english: "That is your ___", blanks: ["pen"], options: ["pen", "pencil", "book", "bag"], hindi: "वह तुम्हारी कलम है।", hint: "Used for writing" },
+            { english: "These are his ___", blanks: ["shoes"], options: ["shoes", "socks", "books", "pens"], hindi: "ये उसके जूते हैं।", hint: "Worn on feet" },
+            { english: "Those are her ___", blanks: ["toys"], options: ["toys", "books", "pens", "shoes"], hindi: "वे उसके खिलौने हैं।", hint: "Objects children play with" },
+            { english: "I want an ___", blanks: ["apple"], options: ["apple", "banana", "orange", "mango"], hindi: "मुझे एक सेब चाहिए।", hint: "A red or green fruit" },
+            { english: "You need a ___", blanks: ["doctor"], options: ["doctor", "teacher", "friend", "helper"], hindi: "तुम्हें एक डॉक्टर की जरूरत है।", hint: "A person who treats sick people" },
+            { english: "He likes the ___", blanks: ["teacher"], options: ["teacher", "doctor", "student", "friend"], hindi: "उसे शिक्षक पसंद है।", hint: "A person who teaches" },
+            { english: "She loves her ___", blanks: ["mother"], options: ["mother", "father", "sister", "brother"], hindi: "वह अपनी माँ से प्यार करती है।", hint: "A female parent" },
+            { english: "We enjoy the ___", blanks: ["movie"], options: ["movie", "game", "party", "picnic"], hindi: "हमें फिल्म अच्छी लगती है।", hint: "A story shown on screen" },
+            { english: "They watch ___", blanks: ["television"], options: ["television", "movie", "game", "play"], hindi: "वे टेलीविजन देखते हैं।", hint: "A device for watching programs" },
+            { english: "I hear a ___", blanks: ["sound"], options: ["sound", "noise", "voice", "music"], hindi: "मैं एक आवाज सुनता हूँ।", hint: "Something that can be heard" },
+            { english: "You feel the ___", blanks: ["heat"], options: ["heat", "cold", "wind", "rain"], hindi: "तुम गर्मी महसूस करते हो।", hint: "High temperature" },
+            { english: "He smells the ___", blanks: ["flower"], options: ["flower", "food", "perfume", "air"], hindi: "वह फूल की खुशबू सूंघता है।", hint: "A plant with pleasant scent" },
+            { english: "She tastes the ___", blanks: ["food"], options: ["food", "fruit", "sweet", "dish"], hindi: "वह खाने का स्वाद लेती है।", hint: "What we eat" },
+            { english: "We touch the ___", blanks: ["table"], options: ["table", "chair", "wall", "door"], hindi: "हम मेज को छूते हैं।", hint: "Furniture with a flat top" },
+            { english: "They see the ___", blanks: ["moon"], options: ["moon", "sun", "star", "sky"], hindi: "वे चाँद देखते हैं।", hint: "Appears in the night sky" },
+            { english: "I open the ___", blanks: ["door"], options: ["door", "window", "book", "box"], hindi: "मैं दरवाजा खोलता हूँ।", hint: "Entry to a room" },
+            { english: "You close the ___", blanks: ["window"], options: ["window", "door", "book", "box"], hindi: "तुम खिड़की बंद करते हो।", hint: "Opening in a wall" },
+            { english: "He breaks the ___", blanks: ["glass"], options: ["glass", "plate", "cup", "bowl"], hindi: "वह गिलास तोड़ता है।", hint: "Transparent material" },
+            { english: "She makes a ___", blanks: ["cake"], options: ["cake", "drawing", "story", "song"], hindi: "वह एक केक बनाती है।", hint: "A sweet baked food" },
+            { english: "We buy a ___", blanks: ["toy"], options: ["toy", "book", "pen", "bag"], hindi: "हम एक खिलौना खरीदते हैं।", hint: "Something children play with" },
+            { english: "They sell ___", blanks: ["fruits"], options: ["fruits", "vegetables", "books", "toys"], hindi: "वे फल बेचते हैं।", hint: "Edible parts of plants" },
+            { english: "I give a ___", blanks: ["gift"], options: ["gift", "book", "pen", "toy"], hindi: "मैं एक उपहार देता हूँ।", hint: "Something given to someone" },
+            { english: "You take the ___", blanks: ["book"], options: ["book", "pen", "pencil", "bag"], hindi: "तुम किताब लेते हो।", hint: "Contains pages with writing" },
+
+            // 91-120: Prepositions and Locations
+            { english: "The book is ___ the table", blanks: ["on"], options: ["on", "in", "under", "above"], hindi: "किताब मेज पर है।", hint: "Resting upon a surface" },
+            { english: "The pen is ___ the box", blanks: ["in"], options: ["in", "on", "under", "beside"], hindi: "कलम डब्बे में है।", hint: "Enclosed by something" },
+            { english: "The cat is ___ the table", blanks: ["under"], options: ["under", "on", "in", "above"], hindi: "बिल्ली मेज के नीचे है।", hint: "Below something" },
+            { english: "The picture is ___ the wall", blanks: ["on"], options: ["on", "in", "under", "against"], hindi: "तस्वीर दीवार पर है।", hint: "Attached to a surface" },
+            { english: "I am ___ home", blanks: ["at"], options: ["at", "in", "on", "to"], hindi: "मैं घर पर हूँ।", hint: "Indicates location" },
+            { english: "She is ___ school", blanks: ["in"], options: ["in", "at", "on", "to"], hindi: "वह स्कूल में है।", hint: "Inside a building" },
+            { english: "He is ___ the park", blanks: ["in"], options: ["in", "at", "on", "to"], hindi: "वह पार्क में है।", hint: "Inside an area" },
+            { english: "We are ___ the bus", blanks: ["on"], options: ["on", "in", "at", "by"], hindi: "हम बस में हैं।", hint: "Riding a vehicle" },
+            { english: "They are ___ the car", blanks: ["in"], options: ["in", "on", "at", "by"], hindi: "वे कार में हैं।", hint: "Inside a vehicle" },
+            { english: "The bird is ___ the tree", blanks: ["on"], options: ["on", "in", "under", "above"], hindi: "पक्षी पेड़ पर है।", hint: "Perched upon a branch" },
+            { english: "The fish is ___ the water", blanks: ["in"], options: ["in", "on", "under", "above"], hindi: "मछली पानी में है।", hint: "Surrounded by liquid" },
+            { english: "The ball is ___ the box", blanks: ["beside"], options: ["beside", "in", "on", "under"], hindi: "गेंद डब्बे के बगल में है।", hint: "Next to something" },
+            { english: "The book is ___ the pen", blanks: ["near"], options: ["near", "far", "beside", "away"], hindi: "किताब कलम के पास है।", hint: "Close to something" },
+            { english: "The school is ___ from here", blanks: ["far"], options: ["far", "near", "close", "away"], hindi: "स्कूल यहाँ से दूर है।", hint: "At a great distance" },
+            { english: "I go ___ school", blanks: ["to"], options: ["to", "at", "in", "on"], hindi: "मैं स्कूल जाता हूँ।", hint: "Indicates direction" },
+            { english: "She comes ___ home", blanks: ["from"], options: ["from", "to", "at", "in"], hindi: "वह घर से आती है।", hint: "Indicates origin" },
+            { english: "He walks ___ the park", blanks: ["to"], options: ["to", "from", "at", "in"], hindi: "वह पार्क की ओर चलता है।", hint: "Indicates direction" },
+            { english: "We run ___ the house", blanks: ["towards"], options: ["towards", "away", "from", "to"], hindi: "हम घर की ओर दौड़ते हैं।", hint: "In the direction of" },
+            { english: "They jump ___ the pool", blanks: ["into"], options: ["into", "in", "on", "at"], hindi: "वे पूल में कूदते हैं।", hint: "Entering something" },
+            { english: "I look ___ the window", blanks: ["through"], options: ["through", "at", "in", "on"], hindi: "मैं खिड़की से देखता हूँ।", hint: "From one side to the other" },
+            { english: "You point ___ the picture", blanks: ["at"], options: ["at", "to", "on", "in"], hindi: "तुम तस्वीर की ओर इशारा करते हो।", hint: "Direct attention to" },
+            { english: "He talks ___ his friend", blanks: ["to"], options: ["to", "with", "at", "for"], hindi: "वह अपने दोस्त से बात करता है।", hint: "In the direction of" },
+            { english: "She speaks ___ her mother", blanks: ["with"], options: ["with", "to", "at", "for"], hindi: "वह अपनी माँ से बात करती है।", hint: "In the company of" },
+            { english: "We think ___ you", blanks: ["about"], options: ["about", "of", "for", "to"], hindi: "हम तुम्हारे बारे में सोचते हैं।", hint: "On the subject of" },
+            { english: "They dream ___ success", blanks: ["of"], options: ["of", "about", "for", "to"], hindi: "वे सफलता का सपना देखते हैं।", hint: "Having a dream" },
+            { english: "I wait ___ the bus", blanks: ["for"], options: ["for", "to", "at", "on"], hindi: "मैं बस का इंतज़ार करता हूँ।", hint: "Await something" },
+            { english: "You care ___ your friend", blanks: ["for"], options: ["for", "about", "of", "to"], hindi: "तुम अपने दोस्त की परवाह करते हो।", hint: "Look after someone" },
+            { english: "He looks ___ his sister", blanks: ["after"], options: ["after", "for", "at", "to"], hindi: "वह अपनी बहन की देखभाल करता है।", hint: "Take care of someone" },
+            { english: "She takes ___ the book", blanks: ["out"], options: ["out", "in", "on", "off"], hindi: "वह किताब बाहर निकालती है।", hint: "Remove from inside" },
+            { english: "We put ___ our shoes", blanks: ["on"], options: ["on", "off", "in", "out"], hindi: "हम अपने जूते पहनते हैं।", hint: "Wear something" },
+
+            // 121-150: Adjectives and Descriptions (The missing 40 solved here)
+            { english: "This is a ___ ball", blanks: ["big"], options: ["big", "small", "red", "round"], hindi: "यह एक बड़ी गेंद है।", hint: "Large in size" },
+            { english: "That is a ___ car", blanks: ["small"], options: ["small", "big", "fast", "red"], hindi: "वह एक छोटी कार है।", hint: "Little in size" },
+            { english: "I have a ___ book", blanks: ["red"], options: ["red", "blue", "green", "yellow"], hindi: "मेरे पास एक लाल किताब है।", hint: "Color of blood" },
+            { english: "You have a ___ pen", blanks: ["blue"], options: ["blue", "red", "green", "black"], hindi: "तुम्हारे पास एक नीली कलम है।", hint: "Color of the sky" },
+            { english: "He has a ___ bag", blanks: ["green"], options: ["green", "red", "blue", "yellow"], hindi: "उसके पास एक हरा बैग है।", hint: "Color of grass" },
+            { english: "She has a ___ dress", blanks: ["yellow"], options: ["yellow", "red", "blue", "green"], hindi: "उसके पास एक पीली पोशाक है।", hint: "Color of the sun" },
+            { english: "We have a ___ house", blanks: ["white"], options: ["white", "black", "red", "blue"], hindi: "हमारे पास एक सफेद घर है।", hint: "Color of milk" },
+            { english: "They have a ___ cat", blanks: ["black"], options: ["black", "white", "brown", "gray"], hindi: "उनके पास एक काली बिल्ली है।", hint: "Darkest color" },
+            { english: "This is a ___ flower", blanks: ["beautiful"], options: ["beautiful", "ugly", "big", "small"], hindi: "यह एक सुंदर फूल है।", hint: "Pleasing to look at" },
+            { english: "That is an ___ animal", blanks: ["ugly"], options: ["ugly", "beautiful", "big", "small"], hindi: "वह एक बदसूरत जानवर है।", hint: "Unpleasant to look at" },
+            { english: "I am ___", blanks: ["happy"], options: ["happy", "sad", "tall", "short"], hindi: "मैं खुश हूँ।", hint: "Feeling joy" },
+            { english: "You are ___", blanks: ["sad"], options: ["sad", "happy", "tall", "short"], hindi: "तुम दुखी हो।", hint: "Feeling sorrow" },
+            { english: "He is ___", blanks: ["tall"], options: ["tall", "short", "fat", "thin"], hindi: "वह लंबा है।", hint: "Of great height" },
+            { english: "She is ___", blanks: ["short"], options: ["short", "tall", "fat", "thin"], hindi: "वह छोटी है।", hint: "Of little height" },
+            { english: "We are ___", blanks: ["fat"], options: ["fat", "thin", "tall", "short"], hindi: "हम मोटे हैं।", hint: "Having excess weight" },
+            { english: "They are ___", blanks: ["thin"], options: ["thin", "fat", "tall", "short"], hindi: "वे पतले हैं।", hint: "Having little fat" },
+            { english: "This food is ___", blanks: ["hot"], options: ["hot", "cold", "sweet", "sour"], hindi: "यह खाना गरम है।", hint: "High temperature" },
+            { english: "That water is ___", blanks: ["cold"], options: ["cold", "hot", "sweet", "sour"], hindi: "वह पानी ठंडा है।", hint: "Low temperature" },
+            { english: "I like ___ food", blanks: ["sweet"], options: ["sweet", "sour", "hot", "cold"], hindi: "मुझे मीठा खाना पसंद है।", hint: "Tasting like sugar" },
+            { english: "You dislike ___ food", blanks: ["sour"], options: ["sour", "sweet", "hot", "cold"], hindi: "तुम्हें खट्टा खाना पसंद नहीं है।", hint: "Tasting like lemon" },
+            { english: "He wants a ___ toy", blanks: ["new"], options: ["new", "old", "big", "small"], hindi: "उसे एक नया खिलौना चाहिए।", hint: "Recently made" },
+            { english: "She has an ___ doll", blanks: ["old"], options: ["old", "new", "big", "small"], hindi: "उसके पास एक पुरानी गुड़िया है।", hint: "Not new" },
+            { english: "We buy ___ clothes", blanks: ["clean"], options: ["clean", "dirty", "new", "old"], hindi: "हम साफ कपड़े खरीदते हैं।", hint: "Free from dirt" },
+            { english: "They wear ___ shoes", blanks: ["dirty"], options: ["dirty", "clean", "new", "old"], hindi: "वे गंदे जूते पहनते हैं।", hint: "Not clean" },
+            { english: "This is a ___ road", blanks: ["long"], options: ["long", "short", "wide", "narrow"], hindi: "यह एक लंबी सड़क है।", hint: "Of great length" },
+            { english: "That is a ___ pencil", blanks: ["short"], options: ["short", "long", "thick", "thin"], hindi: "वह एक छोटी पेंसिल है।", hint: "Of little length" },
+            { english: "I have a ___ rope", blanks: ["thick"], options: ["thick", "thin", "long", "short"], hindi: "मेरे पास एक मोटी रस्सी है।", hint: "Of large diameter" },
+            { english: "You need a ___ thread", blanks: ["thin"], options: ["thin", "thick", "long", "short"], hindi: "तुम्हें एक पतला धागा चाहिए।", hint: "Of small diameter" },
+            { english: "He drives a ___ car", blanks: ["fast"], options: ["fast", "slow", "big", "small"], hindi: "वह एक तेज़ कार चलाता है।", hint: "Moving quickly" },
+            { english: "She walks ___", blanks: ["slowly"], options: ["slowly", "fast", "quickly", "happily"], hindi: "वह धीरे चलती है।", hint: "At a low speed" },
+
+            // 151-180: Common Phrases and Expressions
+            { english: "Good ___", blanks: ["morning"], options: ["morning", "afternoon", "evening", "night"], hindi: "शुभ प्रभात", hint: "Greeting used early in the day" },
+            { english: "Thank you ___", blanks: ["very much"], options: ["very much", "a lot", "so much", "indeed"], hindi: "बहुत बहुत धन्यवाद", hint: "Expression of gratitude" },
+            { english: "You are ___", blanks: ["welcome"], options: ["welcome", "thankful", "grateful", "kind"], hindi: "आपका स्वागत है", hint: "Polite response to thanks" },
+            { english: "I am ___", blanks: ["sorry"], options: ["sorry", "happy", "sad", "angry"], hindi: "मुझे माफ कर दो", hint: "Expression of apology" },
+            { english: "Excuse ___", blanks: ["me"], options: ["me", "us", "them", "you"], hindi: "मुझे माफ करें", hint: "Polite way to get attention" },
+            { english: "How are ___?", blanks: ["you"], options: ["you", "they", "we", "he"], hindi: "तुम कैसे हो?", hint: "Asking about someone's condition" },
+            { english: "I am ___", blanks: ["fine"], options: ["fine", "sick", "tired", "busy"], hindi: "मैं ठीक हूँ", hint: "Doing well" },
+            { english: "What is your ___?", blanks: ["name"], options: ["name", "age", "job", "hobby"], hindi: "तुम्हारा नाम क्या है?", hint: "Asking for identification" },
+            { english: "My name is ___", blanks: ["Rahul"], options: ["Rahul", "Amit", "Rohit", "Sanjay"], hindi: "मेरा नाम राहुल है", hint: "Telling your name" },
+            { english: "How old are ___?", blanks: ["you"], options: ["you", "they", "we", "he"], hindi: "तुम कितने साल के हो?", hint: "Asking about age" },
+            { english: "I am ___ years old", blanks: ["ten"], options: ["ten", "five", "eight", "twelve"], hindi: "मैं दस साल का हूँ", hint: "Telling your age" },
+            { english: "Where are you ___?", blanks: ["from"], options: ["from", "going", "coming", "staying"], hindi: "तुम कहाँ से हो?", hint: "Asking about origin" },
+            { english: "I am from ___", blanks: ["India"], options: ["India", "America", "Japan", "China"], hindi: "मैं भारत से हूँ", hint: "Telling your country" },
+            { english: "What is ___?", blanks: ["this"], options: ["this", "that", "it", "there"], hindi: "यह क्या है?", hint: "Asking about something nearby" },
+            { english: "It is a ___", blanks: ["book"], options: ["book", "pen", "pencil", "bag"], hindi: "यह एक किताब है", hint: "Identifying an object" },
+            { english: "What is that ___?", blanks: ["thing"], options: ["thing", "object", "item", "stuff"], hindi: "वह क्या चीज़ है?", hint: "Asking about something at a distance" },
+            { english: "That is a ___", blanks: ["car"], options: ["car", "bus", "bicycle", "train"], hindi: "वह एक कार है", hint: "Identifying an object" },
+            { english: "Who is ___?", blanks: ["he"], options: ["he", "she", "it", "they"], hindi: "वह कौन है?", hint: "Asking about a male person" },
+            { english: "He is my ___", blanks: ["friend"], options: ["friend", "brother", "father", "teacher"], hindi: "वह मेरा दोस्त है", hint: "A person you know well" },
+            { english: "Who is ___?", blanks: ["she"], options: ["she", "he", "it", "they"], hindi: "वह कौन है? (महिला)", hint: "Asking about a female person" },
+            { english: "She is my ___", blanks: ["sister"], options: ["sister", "mother", "friend", "teacher"], hindi: "वह मेरी बहन है", hint: "A female sibling" },
+            { english: "What time is ___?", blanks: ["it"], options: ["it", "this", "that", "now"], hindi: "क्या समय हुआ है?", hint: "Asking for the current time" },
+            { english: "It is ___ o'clock", blanks: ["ten"], options: ["ten", "five", "eight", "twelve"], hindi: "दस बजे हैं", hint: "Telling the time" },
+            { english: "Where is the ___?", blanks: ["book"], options: ["book", "pen", "pencil", "bag"], hindi: "किताब कहाँ है?", hint: "Asking for location" },
+            { english: "It is on the ___", blanks: ["table"], options: ["table", "chair", "bed", "floor"], hindi: "यह मेज पर है", hint: "Telling location" },
+            { english: "Where are my ___?", blanks: ["shoes"], options: ["shoes", "socks", "books", "pens"], hindi: "मेरे जूते कहाँ हैं?", hint: "Asking for multiple items" },
+            { english: "They are under the ___", blanks: ["bed"], options: ["bed", "table", "chair", "desk"], hindi: "वे बिस्तर के नीचे हैं", hint: "Telling location" },
+            { english: "Can you help ___?", blanks: ["me"], options: ["me", "us", "them", "him"], hindi: "क्या तुम मेरी मदद कर सकते हो?", hint: "Requesting assistance" },
+            { english: "Yes, I can ___ you", blanks: ["help"], options: ["help", "assist", "support", "aid"], hindi: "हाँ, मैं तुम्हारी मदद कर सकता हूँ", hint: "Agreeing to assist" },
+            { english: "No, I ___", blanks: ["cannot"], options: ["cannot", "can", "will not", "may not"], hindi: "नहीं, मैं नहीं कर सकता", hint: "Declining to assist" },
+
+            // 181-200: Additional Daily Activity Sentences
+            { english: "I ___ with my friends", blanks: ["play"], options: ["play", "study", "work", "eat"], hindi: "मैं अपने दोस्तों के साथ खेलता हूँ", hint: "Engage in fun activity" },
+            { english: "You ___ with your toys", blanks: ["play"], options: ["play", "work", "study", "eat"], hindi: "तुम अपने खिलौनों के साथ खेलते हो", hint: "Engage in fun activity" },
+            { english: "He ___ in the garden", blanks: ["works"], options: ["works", "plays", "studies", "eats"], hindi: "वह बगीचे में काम करता है", hint: "Do physical activity" },
+            { english: "She ___ in the kitchen", blanks: ["cooks"], options: ["cooks", "eats", "plays", "studies"], hindi: "वह रसोई में खाना बनाती है", hint: "Prepare food" },
+            { english: "We ___ in the classroom", blanks: ["study"], options: ["study", "play", "work", "eat"], hindi: "हम कक्षा में पढ़ाई करते हैं", hint: "Learn through reading" },
+            { english: "They ___ in the office", blanks: ["work"], options: ["work", "play", "study", "eat"], hindi: "वे कार्यालय में काम करते हैं", hint: "Do job-related activities" },
+            { english: "I ___ an apple", blanks: ["eat"], options: ["eat", "drink", "cook", "buy"], hindi: "मैं एक सेब खाता हूँ", hint: "Consume food" },
+            { english: "You ___ milk", blanks: ["drink"], options: ["drink", "eat", "cook", "buy"], hindi: "तुम दूध पीते हो", hint: "Consume liquid" },
+            { english: "He ___ water", blanks: ["drinks"], options: ["drinks", "eats", "cooks", "buys"], hindi: "वह पानी पीता है", hint: "Consume liquid" },
+            { english: "She ___ food", blanks: ["cooks"], options: ["cooks", "eats", "drinks", "buys"], hindi: "वह खाना बनाती है", hint: "Prepare food" },
+            { english: "We ___ fruits", blanks: ["buy"], options: ["buy", "sell", "eat", "cook"], hindi: "हम फल खरीदते हैं", hint: "Purchase something" },
+            { english: "They ___ vegetables", blanks: ["sell"], options: ["sell", "buy", "eat", "cook"], hindi: "वे सब्जियाँ बेचते हैं", hint: "Exchange goods for money" },
+            { english: "I ___ a story", blanks: ["write"], options: ["write", "read", "tell", "hear"], hindi: "मैं एक कहानी लिखता हूँ", hint: "Create written content" },
+            { english: "You ___ a book", blanks: ["read"], options: ["read", "write", "tell", "hear"], hindi: "तुम एक किताब पढ़ते हो", hint: "Look at written words" },
+            { english: "He ___ a joke", blanks: ["tells"], options: ["tells", "says", "speaks", "utters"], hindi: "वह एक चुटकुला सुनाता है", hint: "Narrate something funny" },
+            { english: "She ___ a song", blanks: ["sings"], options: ["sings", "dances", "plays", "listens"], hindi: "वह एक गाना गाती है", hint: "Produce musical sounds" },
+            { english: "We ___ to music", blanks: ["listen"], options: ["listen", "hear", "dance", "sing"], hindi: "हम संगीत सुनते हैं", hint: "Pay attention to sounds" },
+            { english: "They ___ a dance", blanks: ["dance"], options: ["dance", "sing", "play", "listen"], hindi: "वे एक नृत्य करते हैं", hint: "Move rhythmically" },
+            { english: "I ___ a picture", blanks: ["draw"], options: ["draw", "paint", "color", "make"], hindi: "मैं एक चित्र बनाता हूँ", hint: "Create an image" },
+            { english: "You ___ a painting", blanks: ["paint"], options: ["paint", "draw", "color", "make"], hindi: "तुम एक पेंटिंग बनाते हो", hint: "Create an image with colors" }
+        ];
+
+        // Game state variables
+        let currentSentenceIndex = 0;
+        let score = 0;
+        let blanksFilled = 0;
+        let totalBlanks = 0;
+
+        // DOM elements
+        const sentenceElement = document.getElementById('sentence');
+        const optionsElement = document.getElementById('options');
+        const hintElement = document.getElementById('hint');
+        const hindiAnswerElement = document.getElementById('hindi-answer');
+        const resultElement = document.getElementById('result');
+        const scoreElement = document.getElementById('score');
+        const progressElement = document.getElementById('progress');
+        const celebrationElement = document.getElementById('celebration');
+
+        // Initialize the game
+        function initGame() {
+            currentSentenceIndex = 0;
+            score = 0;
+            updateScore();
+            updateProgress();
+            loadSentence(currentSentenceIndex);
+        }
+
+        // Load a sentence into the game
+        function loadSentence(index) {
+            const sentenceData = sentences[index];
+            const sentenceText = sentenceData.english;
+            const blanks = sentenceData.blanks;
+            const options = [...sentenceData.options];
+            
+            blanksFilled = 0;
+            totalBlanks = blanks.length;
+            resultElement.textContent = '';
+            resultElement.className = 'result';
+            
+            hintElement.textContent = `Hint: ${sentenceData.hint}`;
+            hindiAnswerElement.textContent = `Hindi: ${sentenceData.hindi}`;
+            
+            let displaySentence = sentenceText;
+            blanks.forEach(blank => {
+                displaySentence = displaySentence.replace('___', `<span class="blank" data-correct="${blank}"></span>`);
+            });
+            
+            sentenceElement.innerHTML = displaySentence;
+            
+            optionsElement.innerHTML = '';
+            shuffleArray(options).forEach(option => {
+                const button = document.createElement('button');
+                button.className = 'option';
+                button.textContent = option;
+                button.addEventListener('click', () => selectOption(option));
+                optionsElement.appendChild(button);
+            });
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function selectOption(option) {
+            const blanks = document.querySelectorAll('.blank:not(.filled)');
+            if (blanks.length > 0) {
+                const blank = blanks[0];
+                blank.textContent = option;
+                blank.classList.add('filled');
+                blank.dataset.selected = option;
+                blanksFilled++;
+                
+                const optionButtons = document.querySelectorAll('.option');
+                optionButtons.forEach(button => {
+                    if (button.textContent === option) {
+                        button.disabled = true;
+                    }
+                });
+                
+                if (blanksFilled === totalBlanks) {
+                    checkAnswer();
+                }
+            }
+        }
+
+        function checkAnswer() {
+            const blanks = document.querySelectorAll('.blank');
+            let allCorrect = true;
+            
+            blanks.forEach(blank => {
+                const correct = blank.dataset.correct;
+                const selected = blank.dataset.selected;
+                
+                if (correct === selected) {
+                    blank.classList.add('correct');
+                } else {
+                    blank.classList.add('incorrect');
+                    allCorrect = false;
+                }
+            });
+            
+            if (allCorrect) {
+                resultElement.textContent = 'Correct! Well done!';
+                resultElement.className = 'result correct';
+                score++;
+                updateScore();
+                createCelebration();
+                
+                setTimeout(() => {
+                    nextSentence();
+                }, 1500);
+            } else {
+                resultElement.textContent = 'Wrong! Try again.';
+                resultElement.className = 'result incorrect';
+                
+                setTimeout(() => {
+                    const optionButtons = document.querySelectorAll('.option');
+                    optionButtons.forEach(button => {
+                        button.disabled = false;
+                    });
+                    
+                    blanks.forEach(blank => {
+                        blank.textContent = '';
+                        blank.classList.remove('filled', 'correct', 'incorrect');
+                        delete blank.dataset.selected;
+                    });
+                    
+                    blanksFilled = 0;
+                }, 1200);
+            }
+        }
+
+        function nextSentence() {
+            currentSentenceIndex = (currentSentenceIndex + 1) % sentences.length;
+            updateProgress();
+            loadSentence(currentSentenceIndex);
+        }
+
+        function updateScore() {
+            scoreElement.textContent = `Score: ${score}`;
+        }
+
+        function updateProgress() {
+            progressElement.textContent = `Question: ${currentSentenceIndex + 1}/${sentences.length}`;
+        }
+
+        function createCelebration() {
+            celebrationElement.style.display = 'block';
+            const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff'];
+            
+            for (let i = 0; i < 100; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                celebrationElement.appendChild(confetti);
+                
+                setTimeout(() => { confetti.remove(); }, 5000);
+            }
+            
+            setTimeout(() => {
+                celebrationElement.style.display = 'none';
+                celebrationElement.innerHTML = '';
+            }, 3000);
+        }
+
+        window.addEventListener('DOMContentLoaded', initGame);
+    </script>
+</body>
+</html>
