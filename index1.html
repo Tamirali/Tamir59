@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>तामीर अली: महासंग्रह पोर्टल - अक्ल की जीत</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
+        body {
+            font-family: 'Nirmala UI', 'Segoe UI', 'Arial', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            min-height: 100vh; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            padding: 15px;
+        }
+        .game-card {
+            background: #ffffff; 
+            border-radius: 40px; 
+            padding: 20px 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5); 
+            max-width: 450px; 
+            width: 100%;
+            border: 5px solid #fbbf24; 
+            text-align: center;
+        }
+        h1 { 
+            color: #0f172a; 
+            font-size: 1.6rem; 
+            margin-bottom: 8px; 
+            text-shadow: 2px 2px 0 #fde047;
+            line-height: 1.2;
+        }
+        .subtitle {
+            background: #dc2626; 
+            color: white; 
+            padding: 6px 20px;
+            border-radius: 30px; 
+            display: inline-block; 
+            font-weight: bold; 
+            margin-bottom: 20px; 
+            border: 2px solid #fde047; 
+            font-size: 0.95rem;
+        }
+        
+        /* बटन ग्रिड - 2 लाइन में 4 बटन */
+        .button-grid { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 12px; 
+            margin-bottom: 20px; 
+            padding: 0 5px;
+        }
+        
+        .cat-btn {
+            padding: 14px 5px; 
+            font-size: 0.95rem; 
+            font-weight: bold; 
+            border: none;
+            border-radius: 40px; 
+            cursor: pointer; 
+            color: white; 
+            transition: 0.1s;
+            box-shadow: 0 5px 0 rgba(0,0,0,0.3); 
+            border: 2px solid rgba(255,255,255,0.3);
+            width: 100%;
+        }
+        
+        .cat-btn span {
+            display: inline-block;
+            font-size: 0.8rem;
+            margin-left: 2px;
+            opacity: 0.9;
+        }
+        
+        .cat-btn:active { 
+            transform: translateY(4px);
+            box-shadow: 0 1px 0 rgba(0,0,0,0.3);
+        }
+        
+        .swar-btn { background: #e67e22; }
+        .vyanjan-btn { background: #27ae60; }
+        .matra-btn { background: #9b59b6; }
+        .english-btn { background: #e74c3c; }
+
+        .display-box {
+            width: 180px;
+            height: 180px;
+            margin: 10px auto;
+            border: 10px dashed #fbbf24;
+            background: #fffbeb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 70px; /* मात्राओं के लिए थोड़ा एडजस्ट किया गया */
+            font-weight: bold;
+            border-radius: 40px;
+            cursor: pointer;
+            color: transparent;
+            transition: all 0.2s;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        
+        .display-box.revealed { 
+            border-style: solid; 
+            border-color: #27ae60; 
+            color: #0f172a; 
+            background: white; 
+        }
+        
+        .instruction-box {
+            background: #2d3c4b; 
+            color: white; 
+            padding: 12px; 
+            border-radius: 30px;
+            font-size: 1.1rem; 
+            min-height: 65px; 
+            display: flex; 
+            align-items: center;
+            justify-content: center; 
+            margin: 15px 0; 
+            border: 4px solid #fbbf24; 
+            font-weight: bold;
+            line-height: 1.3;
+        }
+        
+        .confirm-panel { 
+            display: none; 
+            margin-top: 15px; 
+            background: #f1f5f9; 
+            padding: 15px; 
+            border-radius: 30px; 
+            border: 4px solid #3b82f6; 
+        }
+        
+        .question-text { 
+            font-size: 1.2rem; 
+            font-weight: bold; 
+            color: #0f172a; 
+            margin-bottom: 12px; 
+        }
+        
+        .ans-btn { 
+            padding: 10px 25px; 
+            font-size: 1.2rem; 
+            border: none; 
+            border-radius: 40px; 
+            cursor: pointer; 
+            color: white; 
+            margin: 5px 8px; 
+            box-shadow: 0 5px 0 rgba(0,0,0,0.2); 
+            font-weight: bold;
+            transition: 0.1s;
+            min-width: 110px;
+        }
+        
+        .ans-btn:active { 
+            transform: translateY(4px); 
+            box-shadow: 0 1px 0 rgba(0,0,0,0.2); 
+        }
+        
+        .yes { background: #2ecc71; } 
+        .no { background: #ef4444; }
+        
+        .footer-note { 
+            margin-top: 15px; 
+            color: #475569; 
+            font-size: 0.8rem; 
+            font-weight: bold;
+            padding: 0 5px;
+            margin-bottom: 15px;
+        }
+
+        /* 🆕 मुख्य गेट पर वापस जाने का बटन (Back Button) */
+        .back-home-container {
+            margin-top: 20px;
+            border-top: 2px dashed #cbd5e1;
+            padding-top: 15px;
+        }
+        .back-home-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #ff9900, #ff5500);
+            color: #fff;
+            padding: 12px 25px;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 13px;
+            box-shadow: 0 5px 15px rgba(255, 85, 0, 0.3);
+            border: 2px solid #fff;
+        }
+        .back-home-btn:active {
+            transform: scale(0.95);
+        }
+        
+        @media (max-width: 380px) {
+            .game-card { padding: 15px 10px; }
+            h1 { font-size: 1.3rem; }
+            .cat-btn { font-size: 0.85rem; padding: 12px 2px; }
+            .cat-btn span { font-size: 0.7rem; }
+            .display-box { width: 140px; height: 140px; font-size: 55px; }
+            .instruction-box { font-size: 0.95rem; min-height: 60px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="game-card">
+    <h1>📚 काशफ़ुल उलूम: अक्षर ज्ञान</h1>
+    <div class="subtitle">🎯 अक्ल की जीत - सोचो और पहचानो 🎯</div>
+    
+    <div class="button-grid">
+        <button class="cat-btn swar-btn" onclick="startGame('swar')">
+            🔊 स्वर <span>(अ-अः)</span>
+        </button>
+        <button class="cat-btn vyanjan-btn" onclick="startGame('vyanjan')">
+            🔊 व्यंजन <span>(क-ढ़)</span>
+        </button>
+        <button class="cat-btn matra-btn" onclick="startGame('matra')">
+            🔊 मात्रा <span>(का-कृ)</span>
+        </button>
+        <button class="cat-btn english-btn" onclick="startGame('english')">
+            🔠 English <span>(A-Z)</span>
+        </button>
+    </div>
+    
+    <div id="displayBox" class="display-box" onclick="revealLetter()">?</div>
+    <div id="instruction" class="instruction-box">✨ बटन चुनें और आवाज़ सुनें ✨</div>
+
+    <div id="confirmPanel" class="confirm-panel">
+        <div id="questionText" class="question-text">🤔 क्या यह सही है?</div>
+        <div>
+            <button class="ans-btn yes" onclick="handleAnswer(true)">हाँ ✅</button>
+            <button class="ans-btn no" onclick="handleAnswer(false)">ना ❌</button>
+        </div>
+    </div>
+    
+    <div class="footer-note">
+        ⭐ पहले आवाज़ सुनो → सोचो → फिर बॉक्स पर क्लिक करो ⭐
+    </div>
+
+    <!-- 🆕 वापस होम पेज (बिग बैंग प्रोजेक्ट) पर जाने का रास्ता -->
+    <div class="back-home-container">
+        <a href="index.html" class="back-home-btn">⬅️ मुख्य ब्रह्मांड स्क्रीन पर वापस जाएँ</a>
+    </div>
+</div>
+
+<script>
+const letterData = {
+    swar: ['अ', 'आ', 'इ', 'ई', 'उ', 'ऊ', 'ऋ', 'ए', 'ऐ', 'ओ', 'औ', 'अं', 'अः'],
+    vyanjan: ['क', 'ख', 'ग', 'घ', 'ङ', 'च', 'छ', 'ज', 'झ', 'ञ', 
+              'ट', 'ठ', 'ड', 'ढ', 'ण', 'त', 'थ', 'द', 'ध', 'न', 
+              'प', 'फ', 'ब', 'भ', 'म', 'य', 'र', 'ल', 'व', 'श', 
+              'ष', 'स', 'ह', 'क्ष', 'त्र', 'ज्ञ', 'ड़', 'ढ़'],
+    // मात्राओं को डिस्प्ले बॉक्स में बेहतर दिखाने के लिए क के साथ जोड़ा गया है
+    matra: ['ा', 'ि', 'ी', 'ु', 'ू', 'े', 'ै', 'ो', 'ौ', 'ं', 'ृ'],
+    english: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 
+              'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+};
+
+const matraSounds = {
+    'ा': 'का', 'ि': 'कि', 'ी': 'की', 'ु': 'कु', 'ू': 'कू',
+    'े': 'के', 'ै': 'कै', 'ो': 'को', 'ौ': 'कौ', 'ं': 'कं', 'ृ': 'कृ'
+};
+
+let currentLetter = '';
+let currentCategory = '';
+let canReveal = false;
+let isAnswered = false;
+let voiceTimer = null;
+
+const box = document.getElementById('displayBox');
+const instructionEl = document.getElementById('instruction');
+const confirmPanel = document.getElementById('confirmPanel');
+const questionEl = document.getElementById('questionText');
+
+function speakText(message, lang = 'hi-IN') {
+    if (!window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(message);
+    utterance.lang = lang;
+    utterance.rate = 0.85;
+    utterance.pitch = 1.1;
+    
+    const voices = window.speechSynthesis.getVoices();
+    if (lang === 'hi-IN') {
+        const hindiVoice = voices.find(v => v.lang.includes('hi'));
+        if (hindiVoice) utterance.voice = hindiVoice;
+    } else {
+        const englishVoice = voices.find(v => v.lang.includes('en'));
+        if (englishVoice) utterance.voice = englishVoice;
+    }
+    
+    window.speechSynthesis.speak(utterance);
+}
+
+function startGame(category) {
+    if (voiceTimer) {
+        clearTimeout(voiceTimer);
+        voiceTimer = null;
+    }
+    
+    currentCategory = category;
+    const letters = letterData[category];
+    currentLetter = letters[Math.floor(Math.random() * letters.length)];
+    
+    // मात्रा होने पर स्क्रीन पर 'क' के साथ दिखाएँ ताकि बच्चा मात्रा देख सके
+    if(category === 'matra') {
+        box.innerText = 'क' + currentLetter;
+    } else {
+        box.innerText = currentLetter;
+    }
+    
+    box.style.color = 'transparent';
+    box.style.borderStyle = 'dashed';
+    box.style.borderColor = '#fbbf24';
+    box.classList.remove('revealed');
+    confirmPanel.style.display = 'none';
+    canReveal = false;
+    isAnswered = false;
+    
+    instructionEl.innerText = '🔊 आवाज़ सुनो और सोचो... 🔊';
+    
+    let message = '';
+    let lang = 'hi-IN';
+    
+    if(category === 'swar') {
+        message = `स्वर: ${currentLetter}`;
+    } else if(category === 'vyanjan') {
+        message = `व्यंजन: ${currentLetter}`;
+    } else if(category === 'matra') {
+        message = `मात्रा: ${matraSounds[currentLetter] || currentLetter}`;
+    } else {
+        message = `Letter: ${currentLetter}`;
+        lang = 'en-US';
+    }
+    
+    speakText(message, lang);
+    
+    voiceTimer = setTimeout(() => { 
+        if (!isAnswered) { 
+            instructionEl.innerText = '👆 अब बॉक्स पर क्लिक करो 👆'; 
+            canReveal = true; 
+        } 
+        voiceTimer = null;
+    }, 2000);
+}
+
+function revealLetter() {
+    if (!canReveal) { 
+        speakText('पहले आवाज़ सुनो'); 
+        instructionEl.innerText = '⏳ पहले आवाज़ सुनो, फिर क्लिक करो ⏳';
+        return; 
+    }
+    
+    box.style.color = '#0f172a';
+    box.style.borderStyle = 'solid';
+    box.style.borderColor = '#27ae60';
+    box.classList.add('revealed');
+    
+    let displayChar = currentLetter;
+    if (currentCategory === 'matra') {
+        displayChar = `क${currentLetter} (${matraSounds[currentLetter]})`;
+    }
+    questionEl.innerText = `🤔 क्या यह "${displayChar}" है?`;
+    
+    confirmPanel.style.display = 'block';
+    instructionEl.innerText = '❓ पहचानो और चुनो ❓';
+    canReveal = false;
+    
+    if (voiceTimer) {
+        clearTimeout(voiceTimer);
+        voiceTimer = null;
+    }
+    
+    speakText('क्या तुमने सही पहचाना?');
+}
+
+function handleAnswer(isYes) {
+    if (isAnswered) return;
+    isAnswered = true;
+    
+    if (isYes) {
+        speakText('शाबाश! अक्ल की जीत हुई!');
+        instructionEl.innerText = '🏆 सही! अक्ल की जीत! 🏆';
+        box.style.backgroundColor = '#d1fae5';
+    } else {
+        speakText('कोई बात नहीं, फिर कोशिश करो');
+        instructionEl.innerText = '🔄 फिर से कोशिश करें 🔄';
+        box.style.backgroundColor = '#fee2e2';
+    }
+    
+    confirmPanel.style.display = 'none';
+    
+    setTimeout(() => {
+        box.style.backgroundColor = '';
+    }, 500);
+}
+
+window.addEventListener('load', function() {
+    box.innerText = '?';
+    box.style.color = 'transparent';
+    instructionEl.innerText = '✨ बटन चुनें और आवाज़ सुनें ✨';
+    confirmPanel.style.display = 'none';
+    
+    if (window.speechSynthesis) {
+        window.speechSynthesis.getVoices();
+    }
+});
+</script>
+
+</body>
+</html>
