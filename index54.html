@@ -1,0 +1,1066 @@
+
+<!DOCTYPE html> 
+<html lang="hi"> 
+<head> 
+    <meta charset="UTF-8" /> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /> 
+    <title>Mahasangrah 3D – Dynamic Big Bang Universe</title> 
+    <style> 
+        /* ----- RESET & BASE ----- */ 
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+        } 
+        body { 
+            overflow: hidden; 
+            background: #050508; 
+            font-family: 'Segoe UI', Arial, sans-serif; 
+            color: #fff; 
+            height: 100vh; 
+            user-select: none; 
+        } 
+ 
+        /* ----- PARTICLE CANVAS ----- */ 
+        #particleCanvas { 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100vw; 
+            height: 100vh; 
+            z-index: 10; 
+            cursor: pointer; 
+        } 
+ 
+        /* ----- INITIAL OVERLAY (Bigger Text) ----- */ 
+        .initial-overlay { 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100vw; 
+            height: 100vh; 
+            z-index: 12; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            background: rgba(5, 5, 8, 0.88); 
+            backdrop-filter: blur(12px); 
+            transition: opacity 0.5s ease; 
+            cursor: pointer; 
+            padding: 24px; 
+        } 
+        .initial-message-box { 
+            width: 94%; 
+            max-width: 720px; 
+            max-height: 88vh; 
+            overflow-y: auto; 
+            border: 2px solid rgba(255, 215, 0, 0.6); 
+            border-radius: 28px; 
+            background: rgba(10, 10, 30, 0.96); 
+            padding: 36px 32px; 
+            box-shadow: 0 14px 60px rgba(0, 0, 0, 0.9), 0 0 40px rgba(255, 215, 0, 0.15); 
+            text-align: center; 
+        } 
+        .initial-message-box h2 { 
+            color: #ffd700; 
+            font-size: 34px; 
+            margin-bottom: 8px; 
+            letter-spacing: 1px; 
+        } 
+        .initial-message-box h3 { 
+            color: #66ddff; 
+            font-size: 22px; 
+            font-weight: 400; 
+            margin-bottom: 20px; 
+            letter-spacing: 0.5px; 
+        } 
+        .initial-message-box p { 
+            color: #dde4f0; 
+            font-size: 20px; 
+            line-height: 1.8; 
+            margin-bottom: 18px; 
+            text-align: justify; 
+        } 
+        .tap-prompt { 
+            margin-top: 26px; 
+            padding: 16px 36px; 
+            background: linear-gradient(135deg, #00ffcc, #0088ff); 
+            color: #050508; 
+            font-weight: 700; 
+            font-size: 24px; 
+            border-radius: 40px; 
+            display: inline-block; 
+            box-shadow: 0 0 30px rgba(0, 255, 204, 0.4); 
+            animation: pulse 1.5s infinite; 
+        } 
+        @keyframes pulse { 
+            0% { transform: scale(1); } 
+            50% { transform: scale(1.06); } 
+            100% { transform: scale(1); } 
+        } 
+ 
+        /* ----- UNIVERSE CONTAINER ----- */ 
+        #universe-container { 
+            display: none; 
+            opacity: 0; 
+            transition: opacity 1.2s ease-in-out; 
+            width: 100vw; 
+            height: 100vh; 
+            position: relative; 
+        } 
+        #canvas-container { 
+            width: 100vw; 
+            height: calc(100vh - 230px); 
+            display: block; 
+            position: absolute; 
+            top: 230px; 
+            left: 0; 
+            z-index: 0; 
+        } 
+ 
+        /* ----- HUD OVERLAY (Bigger Text) ----- */ 
+        .overlay { 
+            position: absolute; 
+            top: 10px; 
+            left: 0; 
+            width: 100%; 
+            z-index: 5; 
+            pointer-events: none; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+        } 
+        .hud-panel { 
+            width: 95%; 
+            max-width: 1150px; 
+            display: flex; 
+            flex-wrap: wrap; 
+            justify-content: space-between; 
+            align-items: center; 
+            background: rgba(10, 10, 30, 0.88); 
+            backdrop-filter: blur(14px); 
+            border: 1px solid rgba(255, 215, 0, 0.35); 
+            border-radius: 18px; 
+            padding: 12px 22px; 
+            margin-bottom: 10px; 
+            pointer-events: auto; 
+            gap: 10px 16px; 
+        } 
+        .hud-item { 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            font-size: 18px; 
+            flex-wrap: wrap; 
+        } 
+        .hud-title { 
+            color: #88aaff; 
+            font-size: 17px; 
+            text-transform: uppercase; 
+            letter-spacing: 0.6px; 
+            font-weight: 500; 
+        } 
+        .hud-value { 
+            font-weight: 700; 
+            color: #00ffcc; 
+            font-size: 21px; 
+            letter-spacing: 0.3px; 
+        } 
+        .eclipse-alert { 
+            padding: 6px 16px; 
+            border-radius: 20px; 
+            font-weight: 700; 
+            font-size: 17px; 
+        } 
+        .eclipse-none { 
+            background: rgba(255, 255, 255, 0.08); 
+            color: #8899aa; 
+        } 
+        .eclipse-solar { 
+            background: rgba(255, 204, 0, 0.3); 
+            color: #ffcc00; 
+            border: 1px solid #ffcc00; 
+        } 
+        .eclipse-lunar { 
+            background: rgba(255, 50, 50, 0.3); 
+            color: #ff6666; 
+            border: 1px solid #ff4444; 
+        } 
+ 
+        /* ----- Sliders (Scale & Speed) ----- */ 
+        .scale-slider, 
+        .speed-slider { 
+            width: 100px; 
+            height: 7px; 
+            -webkit-appearance: none; 
+            background: linear-gradient(90deg, #0088ff, #00ffcc); 
+            border-radius: 12px; 
+            outline: none; 
+            cursor: pointer; 
+        } 
+        .scale-slider::-webkit-slider-thumb, 
+        .speed-slider::-webkit-slider-thumb { 
+            -webkit-appearance: none; 
+            width: 18px; 
+            height: 18px; 
+            border-radius: 50%; 
+            background: #ffffff; 
+            box-shadow: 0 0 16px rgba(0, 255, 204, 0.7); 
+            border: 2px solid #00ffcc; 
+        } 
+        .scale-value, 
+        .speed-value { 
+            font-weight: 700; 
+            color: #ffd700; 
+            font-size: 20px; 
+            min-width: 50px; 
+            text-align: center; 
+        } 
+ 
+        /* ----- MESSAGE SCROLL (Bigger Text) ----- */ 
+        .message-wrapper { 
+            width: 95%; 
+            max-width: 1150px; 
+            height: 170px; 
+            overflow: hidden; 
+            border: 1px solid rgba(255, 215, 0, 0.3); 
+            border-radius: 18px; 
+            background: rgba(4, 4, 20, 0.88); 
+            backdrop-filter: blur(14px); 
+            pointer-events: auto; 
+            position: relative; 
+        } 
+        .message-scroll { 
+            position: absolute; 
+            left: 0; 
+            width: 100%; 
+            padding: 16px 24px; 
+            color: #e0e8f0; 
+            line-height: 1.7; 
+            font-size: 18px; 
+            text-align: justify; 
+        } 
+        .message-scroll h2 { 
+            color: #ffd700; 
+            text-align: center; 
+            font-size: 28px; 
+            margin-bottom: 6px; 
+        } 
+        .message-scroll h3 { 
+            color: #66ddff; 
+            text-align: center; 
+            font-size: 20px; 
+            font-weight: 400; 
+            margin-bottom: 12px; 
+        } 
+        .message-scroll h4 { 
+            color: #ffaa44; 
+            margin-top: 10px; 
+            font-size: 20px; 
+        } 
+        .message-scroll p { 
+            font-size: 18px; 
+            line-height: 1.8; 
+            margin-bottom: 8px; 
+        } 
+        .planet-table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            font-size: 17px; 
+            margin: 8px 0 12px 0; 
+            background: rgba(0, 0, 0, 0.35); 
+            border-radius: 12px; 
+            overflow: hidden; 
+        } 
+        .planet-table th, 
+        .planet-table td { 
+            padding: 8px 12px; 
+            border-bottom: 1px solid rgba(255, 255, 255, 0.07); 
+            text-align: center; 
+        } 
+        .planet-table th { 
+            color: #88aaff; 
+            font-weight: 600; 
+            font-size: 17px; 
+            background: rgba(255, 255, 255, 0.05); 
+        } 
+        .planet-table td { 
+            font-size: 17px; 
+        } 
+ 
+        /* ----- PLANET LABELS (3D) ----- */ 
+        .planet-label { 
+            color: #ffffff; 
+            font-weight: bold; 
+            font-size: 14px; 
+            pointer-events: none; 
+            background: rgba(0, 0, 0, 0.7); 
+            padding: 4px 10px; 
+            border-radius: 10px; 
+            border: 1px solid rgba(255, 255, 255, 0.2); 
+            white-space: nowrap; 
+        } 
+        .planet-label.sun-label { 
+            color: #ffcc00; 
+            border-color: rgba(255, 204, 0, 0.5); 
+            font-size: 17px; 
+        } 
+        .planet-label.moon-label { 
+            font-size: 11px; 
+            padding: 2px 6px; 
+        } 
+ 
+        /* ----- EXIT BUTTON (Bottom-Right) ----- */ 
+        #exitBtn { 
+            position: absolute; 
+            bottom: 28px; 
+            right: 28px; 
+            z-index: 20; 
+            pointer-events: auto; 
+            background: rgba(255, 50, 50, 0.85); 
+            backdrop-filter: blur(10px); 
+            border: none; 
+            border-radius: 60px; 
+            padding: 16px 32px; 
+            font-size: 20px; 
+            font-weight: 700; 
+            color: #fff; 
+            cursor: pointer; 
+            box-shadow: 0 6px 30px rgba(255, 0, 0, 0.35); 
+            transition: transform 0.25s ease, background 0.25s ease, box-shadow 0.25s ease; 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            letter-spacing: 0.5px; 
+            border: 1px solid rgba(255, 255, 255, 0.15); 
+        } 
+        #exitBtn:hover { 
+            transform: scale(1.08); 
+            background: rgba(255, 30, 30, 0.95); 
+            box-shadow: 0 8px 40px rgba(255, 0, 0, 0.5); 
+        } 
+        #exitBtn:active { 
+            transform: scale(0.94); 
+        } 
+        #exitBtn svg { 
+            width: 26px; 
+            height: 26px; 
+            fill: currentColor; 
+            flex-shrink: 0; 
+        } 
+ 
+        /* ----- RESPONSIVE TWEAKS ----- */ 
+        @media (max-width: 820px) { 
+            .initial-message-box h2 { font-size: 28px; } 
+            .initial-message-box h3 { font-size: 18px; } 
+            .initial-message-box p { font-size: 17px; } 
+            .tap-prompt { font-size: 20px; padding: 14px 28px; } 
+            .hud-title { font-size: 14px; } 
+            .hud-value { font-size: 17px; } 
+            .message-scroll h2 { font-size: 24px; } 
+            .message-scroll h3 { font-size: 17px; } 
+            .message-scroll h4 { font-size: 17px; } 
+            .message-scroll p { font-size: 16px; } 
+            .planet-table { font-size: 15px; } 
+            .planet-table th, .planet-table td { font-size: 15px; } 
+            .message-wrapper { height: 150px; } 
+            #exitBtn { padding: 12px 24px; font-size: 17px; bottom: 20px; right: 20px; } 
+            #exitBtn svg { width: 22px; height: 22px; } 
+            .scale-slider, .speed-slider { width: 80px; } 
+            .scale-value, .speed-value { font-size: 17px; min-width: 42px; } 
+            #canvas-container { height: calc(100vh - 210px); top: 210px; } 
+        } 
+ 
+        @media (max-width: 480px) { 
+            .initial-message-box h2 { font-size: 22px; } 
+            .initial-message-box h3 { font-size: 15px; } 
+            .initial-message-box p { font-size: 14px; } 
+            .tap-prompt { font-size: 16px; padding: 10px 20px; } 
+            .hud-panel { padding: 8px 12px; gap: 4px 8px; } 
+            .hud-title { font-size: 11px; } 
+            .hud-value { font-size: 14px; } 
+            .hud-item { font-size: 13px; gap: 4px; } 
+            .message-scroll h2 { font-size: 19px; } 
+            .message-scroll h3 { font-size: 14px; } 
+            .message-scroll h4 { font-size: 14px; } 
+            .message-scroll p { font-size: 13px; } 
+            .planet-table { font-size: 12px; } 
+            .planet-table th, .planet-table td { font-size: 12px; padding: 4px 6px; } 
+            .message-wrapper { height: 120px; } 
+            #exitBtn { padding: 8px 16px; font-size: 14px; bottom: 14px; right: 14px; } 
+            #exitBtn svg { width: 18px; height: 18px; } 
+            .scale-slider, .speed-slider { width: 55px; } 
+            .scale-value, .speed-value { font-size: 14px; min-width: 34px; } 
+            #canvas-container { height: calc(100vh - 190px); top: 190px; } 
+            .eclipse-alert { font-size: 13px; padding: 4px 10px; } 
+        } 
+    </style> 
+</head> 
+<body> 
+ 
+    <!-- ===== INITIAL OVERLAY ===== --> 
+    <div class="initial-overlay" id="initialOverlay"> 
+        <div class="initial-message-box"> 
+            <h2>🌞 Mahasangrah 3D – Real Order</h2> 
+            <h3>Victory of Intellect · Divine Order</h3> 
+            <p><strong>Tamir Ali Big Bang Formula:</strong> Explosion ≠ Order — a blind blast cannot produce a balanced universe. Behind this precision and order, there is an absolute Designer.</p> 
+            <div class="tap-prompt">✨ टच करें — सम्पूर्ण 3D ब्रह्मांड देखने के लिए!</div> 
+        </div> 
+    </div> 
+ 
+    <!-- ===== PARTICLE CANVAS ===== --> 
+    <canvas id="particleCanvas"></canvas> 
+ 
+    <!-- ===== UNIVERSE CONTAINER ===== --> 
+    <div id="universe-container"> 
+        <div class="overlay"> 
+            <div class="hud-panel"> 
+                <div class="hud-item"> 
+                    <span class="hud-title">🌦️ Season</span> 
+                    <span class="hud-value" id="seasonVal">Summer</span> 
+                </div> 
+                <div class="hud-item"> 
+                    <span class="hud-title">🌑 Eclipse</span> 
+                    <span id="eclipseBadge" class="eclipse-alert eclipse-none">Normal</span> 
+                </div> 
+                <div class="hud-item"> 
+                    <span class="hud-title">🌌 Universe</span> 
+                    <span class="hud-value" style="color:#ffd700;">3D Cosmos</span> 
+                </div> 
+                <div class="hud-item"> 
+                    <span class="hud-title">📏 Scale</span> 
+                    <input type="range" class="scale-slider" id="scaleSlider" min="0.5" max="2.5" step="0.05" value="1.0" /> 
+                    <span class="scale-value" id="scaleValue">1.00×</span> 
+                </div> 
+                <div class="hud-item"> 
+                    <span class="hud-title">⚡ Speed</span> 
+                    <input type="range" class="speed-slider" id="speedSlider" min="0.0" max="3.0" step="0.05" value="1.0" /> 
+                    <span class="speed-value" id="speedValue">1.00×</span> 
+                </div> 
+            </div> 
+ 
+            <div class="message-wrapper" id="messageWrapper"> 
+                <div class="message-scroll" id="messageScroll"> 
+                    <h2>🌞 Mahasangrah 3D – Real Order</h2> 
+                    <h3>Victory of Intellect · Divine Order</h3> 
+ 
+                    <h4>📊 Planets – Distance &amp; Size</h4> 
+                    <table class="planet-table"> 
+                        <tr><th>Planet</th><th>Distance</th><th>Size</th></tr> 
+                        <tr><td>☿ Mercury</td><td>5.5</td><td>0.50</td></tr> 
+                        <tr><td>♀ Venus</td><td>8.5</td><td>0.85</td></tr> 
+                        <tr><td>🌍 Earth</td><td>12.5</td><td>1.05</td></tr> 
+                        <tr><td>♂ Mars</td><td>16.5</td><td>0.70</td></tr> 
+                        <tr><td>♃ Jupiter</td><td>22.5</td><td>2.00</td></tr> 
+                        <tr><td>♄ Saturn</td><td>29.0</td><td>1.60</td></tr> 
+                        <tr><td>⛢ Uranus</td><td>35.5</td><td>1.20</td></tr> 
+                        <tr><td>♆ Neptune</td><td>42.0</td><td>1.00</td></tr> 
+                    </table> 
+ 
+                    <h4>1. Eclipse &amp; Season Laws</h4> 
+                    <p>Solar &amp; Lunar eclipses are precise mechanical movements of the cosmos.</p> 
+ 
+                    <h4>2. Tamir Ali Big Bang Formula</h4> 
+                    <p>Explosion ≠ Order. Pure order requires an absolute designer.</p> 
+                </div> 
+            </div> 
+        </div> 
+ 
+        <div id="canvas-container"></div> 
+ 
+        <!-- EXIT BUTTON (bottom-right) --> 
+        <button id="exitBtn" title="Exit and experience again"> 
+            <svg viewBox="0 0 24 24"><path d="M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zm-4 10h-4v4l-5-5 5-5v4h4v2z"/></svg> 
+            Exit · पुनः अनुभव 
+        </button> 
+    </div> 
+ 
+    <!-- ============================================================ --> 
+    <!-- SCRIPT: Particle System + Reset Logic                         --> 
+    <!-- ============================================================ --> 
+    <script> 
+        (function() { 
+            const canvas = document.getElementById('particleCanvas'); 
+            const ctx = canvas.getContext('2d'); 
+            let W = window.innerWidth, 
+                H = window.innerHeight; 
+            canvas.width = W; 
+            canvas.height = H; 
+ 
+            let balls = []; 
+            let isExploded = false; 
+            let animFrameId = null; 
+ 
+            class ColorBall { 
+                constructor(x, y) { 
+                    this.x = x; 
+                    this.y = y; 
+                    this.radius = Math.random() * 6 + 3; 
+                    const angle = Math.random() * Math.PI * 2; 
+                    const speed = Math.random() * 12 + 2; 
+                    this.vx = Math.cos(angle) * speed; 
+                    this.vy = Math.sin(angle) * speed; 
+                    this.color = `hsl(${Math.random() * 360}, 100%, 60%)`; 
+                    this.alpha = 1; 
+                    this.friction = 0.95; 
+                } 
+                update() { 
+                    this.x += this.vx; 
+                    this.y += this.vy; 
+                    this.vx *= this.friction; 
+                    this.vy *= this.friction; 
+                    this.alpha -= 0.015; 
+                } 
+                draw() { 
+                    ctx.save(); 
+                    ctx.globalAlpha = Math.max(0, this.alpha); 
+                    ctx.beginPath(); 
+                    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); 
+                    ctx.fillStyle = this.color; 
+                    ctx.fill(); 
+                    ctx.restore(); 
+                } 
+            } 
+ 
+            function renderParticles() { 
+                ctx.clearRect(0, 0, canvas.width, canvas.height); 
+                for (let i = 0; i < balls.length; i++) { 
+                    balls[i].update(); 
+                    balls[i].draw(); 
+                    if (balls[i].alpha <= 0) { 
+                        balls.splice(i, 1); 
+                        i--; 
+                    } 
+                } 
+                if (!isExploded || balls.length > 0) { 
+                    animFrameId = requestAnimationFrame(renderParticles); 
+                } else { 
+                    canvas.style.display = 'none'; 
+                    animFrameId = null; 
+                } 
+            } 
+ 
+            function triggerBigBang(x, y) { 
+                if (isExploded) return; 
+                isExploded = true; 
+ 
+                const overlay = document.getElementById('initialOverlay'); 
+                overlay.style.opacity = '0'; 
+                setTimeout(() => { overlay.style.display = 'none'; }, 500); 
+ 
+                for (let i = 0; i < 150; i++) { 
+                    balls.push(new ColorBall(x, y)); 
+                } 
+                canvas.style.display = 'block'; 
+                if (animFrameId) cancelAnimationFrame(animFrameId); 
+                renderParticles(); 
+ 
+                setTimeout(() => { revealUniverse(); }, 350); 
+            } 
+ 
+            function revealUniverse() { 
+                const container = document.getElementById('universe-container'); 
+                container.style.display = 'block'; 
+                requestAnimationFrame(() => { 
+                    container.style.opacity = '1'; 
+                }); 
+                if (window.init3DUniverse) window.init3DUniverse(); 
+            } 
+ 
+            function resetAndExit() { 
+                // Hide universe 
+                const container = document.getElementById('universe-container'); 
+                container.style.opacity = '0'; 
+                setTimeout(() => { container.style.display = 'none'; }, 400); 
+ 
+                // Clean up 3D 
+                if (window.__threeRenderer) { 
+                    try { 
+                        const r = window.__threeRenderer; 
+                        const lr = window.__threeLabelRenderer; 
+                        if (r && r.domElement && r.domElement.parentNode) { 
+                            r.domElement.parentNode.removeChild(r.domElement); 
+                        } 
+                        if (lr && lr.domElement && lr.domElement.parentNode) { 
+                            lr.domElement.parentNode.removeChild(lr.domElement); 
+                        } 
+                        if (r) r.dispose && r.dispose(); 
+                        if (lr) lr.dispose && lr.dispose(); 
+                    } catch (e) { /* ignore */ } 
+                    window.__threeRenderer = null; 
+                    window.__threeLabelRenderer = null; 
+                    window.__threeScene = null; 
+                    window.__threeCamera = null; 
+                    window.__threeControls = null; 
+                } 
+ 
+                // Clear particles 
+                balls = []; 
+                isExploded = false; 
+                canvas.style.display = 'block'; 
+                if (animFrameId) cancelAnimationFrame(animFrameId); 
+                animFrameId = null; 
+                ctx.clearRect(0, 0, canvas.width, canvas.height); 
+ 
+                // Show overlay 
+                const overlay = document.getElementById('initialOverlay'); 
+                overlay.style.display = 'flex'; 
+                void overlay.offsetWidth; 
+                overlay.style.opacity = '1'; 
+ 
+                // Reset scroll 
+                const msgScroll = document.getElementById('messageScroll'); 
+                if (msgScroll) msgScroll.style.transform = 'translateY(0px)'; 
+ 
+                // Reset season / eclipse 
+                document.getElementById('seasonVal').textContent = 'Summer'; 
+                const badge = document.getElementById('eclipseBadge'); 
+                badge.textContent = 'Normal'; 
+                badge.className = 'eclipse-alert eclipse-none'; 
+ 
+                // Reset sliders 
+                const scaleSlider = document.getElementById('scaleSlider'); 
+                if (scaleSlider) { scaleSlider.value = '1.0'; 
+                    document.getElementById('scaleValue').textContent = '1.00×'; } 
+                const speedSlider = document.getElementById('speedSlider'); 
+                if (speedSlider) { speedSlider.value = '1.0'; 
+                    document.getElementById('speedValue').textContent = '1.00×'; } 
+            } 
+ 
+            // ---- Events ---- 
+            const initialOverlay = document.getElementById('initialOverlay'); 
+            initialOverlay.addEventListener('mousedown', (e) => triggerBigBang(e.clientX, e.clientY)); 
+            initialOverlay.addEventListener('touchstart', (e) => { 
+                const t = e.touches[0]; 
+                triggerBigBang(t.clientX, t.clientY); 
+            }, { passive: true }); 
+ 
+            document.getElementById('exitBtn').addEventListener('click', resetAndExit); 
+ 
+            window.addEventListener('resize', () => { 
+                W = window.innerWidth; 
+                H = window.innerHeight; 
+                canvas.width = W; 
+                canvas.height = H; 
+                if (window.__onResize3D) window.__onResize3D(); 
+            }); 
+ 
+            renderParticles(); 
+            window.__resetUniverse = resetAndExit; 
+            console.log('🌌 Mahasangrah 3D ready – click to begin!'); 
+        })(); 
+    </script> 
+ 
+    <!-- ============================================================ --> 
+    <!-- SCRIPT: Three.js 3D Universe (ES Module)                     --> 
+    <!-- ============================================================ --> 
+    <script type="importmap"> 
+        { 
+            "imports": { 
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js", 
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/" 
+            } 
+        } 
+    </script> 
+ 
+    <script type="module"> 
+        import * as THREE from 'three'; 
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js'; 
+        import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js'; 
+ 
+        let renderer, labelRenderer, scene, camera, controls; 
+        let planets = []; 
+        let asteroidBelt, asteroidPositionsOriginal; 
+        let trailLines = []; 
+        let animationId = null; 
+        let solarScale = 1.0; 
+        let speedMultiplier = 1.0; 
+        const SUN_OFFSET_Y = -1.0; 
+ 
+        const planetData = [ 
+            { name: 'Mercury', radius: 0.7, distance: 5.5, color: 0xb0b0b0, speed: 0.045 }, 
+            { name: 'Venus', radius: 1.1, distance: 8.5, color: 0xe3bb76, speed: 0.032 }, 
+            { name: 'Earth', radius: 1.3, distance: 12.5, color: 0x4287f5, speed: 0.020, hasMoon: true, 
+                moonDist: 2.2, moonRadius: 0.4 }, 
+            { name: 'Mars', radius: 0.9, distance: 16.5, color: 0xd9534f, speed: 0.015 }, 
+            { name: 'Jupiter', radius: 2.4, distance: 22.5, color: 0xb08f5c, speed: 0.009 }, 
+            { name: 'Saturn', radius: 1.9, distance: 29.0, color: 0xe2bf7d, speed: 0.006, hasRing: true }, 
+            { name: 'Uranus', radius: 1.4, distance: 35.5, color: 0x4bcae3, speed: 0.004 }, 
+            { name: 'Neptune', radius: 1.3, distance: 42.0, color: 0x3355f4, speed: 0.003 } 
+        ]; 
+ 
+        window.init3DUniverse = function() { 
+            // Cleanup previous 
+            if (window.__threeRenderer) { 
+                try { 
+                    if (renderer && renderer.domElement && renderer.domElement.parentNode) { 
+                        renderer.domElement.parentNode.removeChild(renderer.domElement); 
+                    } 
+                    if (labelRenderer && labelRenderer.domElement && labelRenderer.domElement.parentNode) { 
+                        labelRenderer.domElement.parentNode.removeChild(labelRenderer.domElement); 
+                    } 
+                    if (renderer) renderer.dispose && renderer.dispose(); 
+                    if (labelRenderer) labelRenderer.dispose && labelRenderer.dispose(); 
+                } catch (e) { /* ignore */ } 
+                window.__threeRenderer = null; 
+                window.__threeLabelRenderer = null; 
+                window.__threeScene = null; 
+                window.__threeCamera = null; 
+                window.__threeControls = null; 
+            } 
+ 
+            const container = document.getElementById('canvas-container'); 
+            while (container.firstChild) container.removeChild(container.firstChild); 
+ 
+            const width = container.clientWidth || window.innerWidth; 
+            const height = container.clientHeight || (window.innerHeight - 230); 
+ 
+            scene = new THREE.Scene(); 
+            scene.background = new THREE.Color(0x000008); 
+ 
+            camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000); 
+            camera.position.set(0, 28 + SUN_OFFSET_Y, 50); 
+ 
+            renderer = new THREE.WebGLRenderer({ antialias: true }); 
+            renderer.setSize(width, height); 
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); 
+            container.appendChild(renderer.domElement); 
+ 
+            labelRenderer = new CSS2DRenderer(); 
+            labelRenderer.setSize(width, height); 
+            labelRenderer.domElement.style.position = 'absolute'; 
+            labelRenderer.domElement.style.top = '0'; 
+            labelRenderer.domElement.style.left = '0'; 
+            labelRenderer.domElement.style.pointerEvents = 'none'; 
+            container.appendChild(labelRenderer.domElement); 
+ 
+            controls = new OrbitControls(camera, renderer.domElement); 
+            controls.enableDamping = true; 
+            controls.dampingFactor = 0.08; 
+            controls.target.set(0, SUN_OFFSET_Y, 0); 
+            controls.autoRotate = false; 
+            controls.maxPolarAngle = Math.PI * 0.85; 
+            controls.minDistance = 8; 
+            controls.maxDistance = 120; 
+ 
+            // Lights 
+            const ambient = new THREE.AmbientLight(0x505060, 0.6); 
+            scene.add(ambient); 
+            const sunLight = new THREE.PointLight(0xffeedd, 2.8, 0, 0); 
+            sunLight.position.set(0, SUN_OFFSET_Y, 0); 
+            scene.add(sunLight); 
+            const fillLight = new THREE.DirectionalLight(0x4466ff, 0.4); 
+            fillLight.position.set(20, 30, 20); 
+            scene.add(fillLight); 
+ 
+            // Sun 
+            const sunGeo = new THREE.SphereGeometry(3.0, 48, 48); 
+            const sunMat = new THREE.MeshStandardMaterial({ 
+                color: 0xffcc00, 
+                emissive: 0xff8800, 
+                emissiveIntensity: 1.8 
+            }); 
+            const sunMesh = new THREE.Mesh(sunGeo, sunMat); 
+            sunMesh.position.set(0, SUN_OFFSET_Y, 0); 
+            scene.add(sunMesh); 
+ 
+            // Sun glow 
+            const glowTexture = (() => { 
+                const c = document.createElement('canvas'); 
+                c.width = 128; 
+                c.height = 128; 
+                const cx = c.getContext('2d'); 
+                const grad = cx.createRadialGradient(64, 64, 0, 64, 64, 64); 
+                grad.addColorStop(0, 'rgba(255,200,80,1)'); 
+                grad.addColorStop(0.2, 'rgba(255,180,60,0.8)'); 
+                grad.addColorStop(0.6, 'rgba(255,100,20,0.3)'); 
+                grad.addColorStop(1, 'rgba(255,50,0,0)'); 
+                cx.fillStyle = grad; 
+                cx.fillRect(0, 0, 128, 128); 
+                return new THREE.CanvasTexture(c); 
+            })(); 
+            const glowMat = new THREE.SpriteMaterial({ map: glowTexture, blending: THREE.AdditiveBlending, 
+                depthWrite: false, transparent: true }); 
+            const glowSprite = new THREE.Sprite(glowMat); 
+            glowSprite.scale.set(12, 12, 1); 
+            glowSprite.position.set(0, SUN_OFFSET_Y, 0); 
+            scene.add(glowSprite); 
+ 
+            const sunLabelDiv = document.createElement('div'); 
+            sunLabelDiv.textContent = '☀️ Sun'; 
+            sunLabelDiv.className = 'planet-label sun-label'; 
+            const sunLabel = new CSS2DObject(sunLabelDiv); 
+            sunLabel.position.set(0, 4.6, 0); 
+            sunMesh.add(sunLabel); 
+ 
+            // Planets & Trails 
+            planets = []; 
+            trailLines = []; 
+            let earthPlanet = null; 
+ 
+            planetData.forEach((data) => { 
+                const geo = new THREE.SphereGeometry(data.radius, 32, 32); 
+                const mat = new THREE.MeshStandardMaterial({ color: data.color, roughness: 0.35, 
+                    metalness: 0.05 }); 
+                const mesh = new THREE.Mesh(geo, mat); 
+                scene.add(mesh); 
+ 
+                const labelDiv = document.createElement('div'); 
+                labelDiv.textContent = data.name; 
+                labelDiv.className = 'planet-label'; 
+                const label = new CSS2DObject(labelDiv); 
+                label.position.set(0, data.radius + 1.2, 0); 
+                mesh.add(label); 
+ 
+                const planetObj = { 
+                    mesh, 
+                    data, 
+                    angle: Math.random() * Math.PI * 2, 
+                    moonAngle: 0, 
+                    moonMesh: null, 
+                    originalDistance: data.distance, 
+                    originalRadius: data.radius 
+                }; 
+                planets.push(planetObj); 
+                if (data.name === 'Earth') earthPlanet = planetObj; 
+ 
+                // Moon 
+                if (data.hasMoon) { 
+                    const mGeo = new THREE.SphereGeometry(data.moonRadius, 20, 20); 
+                    const mMat = new THREE.MeshStandardMaterial({ color: 0xcccccc, roughness: 0.8 }); 
+                    const moon = new THREE.Mesh(mGeo, mMat); 
+                    scene.add(moon); 
+                    planetObj.moonMesh = moon; 
+                    const mLabelDiv = document.createElement('div'); 
+                    mLabelDiv.textContent = '🌙 Moon'; 
+                    mLabelDiv.className = 'planet-label moon-label'; 
+                    const mLabel = new CSS2DObject(mLabelDiv); 
+                    mLabel.position.set(0, data.moonRadius + 0.6, 0); 
+                    moon.add(mLabel); 
+                } 
+ 
+                // Saturn ring 
+                if (data.hasRing) { 
+                    const rGeo = new THREE.RingGeometry(data.radius * 1.3, data.radius * 2.1, 48); 
+                    const rMat = new THREE.MeshBasicMaterial({ 
+                        color: 0xc8b07a, 
+                        side: THREE.DoubleSide, 
+                        transparent: true, 
+                        opacity: 0.5 
+                    }); 
+                    const ring = new THREE.Mesh(rGeo, rMat); 
+                    ring.rotation.x = Math.PI / 2.2; 
+                    mesh.add(ring); 
+                } 
+ 
+                // Orbit trail 
+                const segments = 80; 
+                const pts = []; 
+                for (let i = 0; i <= segments; i++) { 
+                    const theta = (i / segments) * Math.PI * 2; 
+                    pts.push(new THREE.Vector3( 
+                        data.distance * Math.cos(theta), 
+                        SUN_OFFSET_Y, 
+                        data.distance * Math.sin(theta) 
+                    )); 
+                } 
+                const trailGeo = new THREE.BufferGeometry().setFromPoints(pts); 
+                const trailMat = new THREE.LineDashedMaterial({ 
+                    color: data.color, 
+                    dashSize: 0.5, 
+                    gapSize: 0.35, 
+                    transparent: true, 
+                    opacity: 0.2 
+                }); 
+                const trail = new THREE.Line(trailGeo, trailMat); 
+                trail.computeLineDistances(); 
+                scene.add(trail); 
+                trailLines.push({ line: trail, originalPoints: pts, color: data.color }); 
+            }); 
+ 
+            // Asteroid Belt 
+            const asteroidCount = 1400; 
+            const astGeo = new THREE.BufferGeometry(); 
+            const astPos = new Float32Array(asteroidCount * 3); 
+            for (let i = 0; i < asteroidCount; i++) { 
+                const r = 18.5 + Math.random() * 3.8; 
+                const angle = Math.random() * Math.PI * 2; 
+                astPos[i * 3] = r * Math.cos(angle); 
+                astPos[i * 3 + 1] = (Math.random() - 0.5) * 1.2 + SUN_OFFSET_Y; 
+                astPos[i * 3 + 2] = r * Math.sin(angle); 
+            } 
+            astGeo.setAttribute('position', new THREE.BufferAttribute(astPos, 3)); 
+            asteroidBelt = new THREE.Points(astGeo, new THREE.PointsMaterial({ 
+                color: 0xaa9977, 
+                size: 0.2, 
+                transparent: true, 
+                opacity: 0.6 
+            })); 
+            scene.add(asteroidBelt); 
+            asteroidPositionsOriginal = new Float32Array(astPos); 
+ 
+            // Stars 
+            const starCount = 2500; 
+            const starPos = new Float32Array(starCount * 3); 
+            for (let i = 0; i < starCount; i++) { 
+                const radius = 90 + Math.random() * 120; 
+                const theta = Math.random() * Math.PI * 2; 
+                const phi = Math.acos(2 * Math.random() - 1); 
+                starPos[i * 3] = radius * Math.sin(phi) * Math.cos(theta); 
+                starPos[i * 3 + 1] = radius * Math.cos(phi) + SUN_OFFSET_Y; 
+                starPos[i * 3 + 2] = radius * Math.sin(phi) * Math.sin(theta); 
+            } 
+            const starGeo2 = new THREE.BufferGeometry(); 
+            starGeo2.setAttribute('position', new THREE.BufferAttribute(starPos, 3)); 
+            const starMat2 = new THREE.PointsMaterial({ color: 0xffffff, size: 0.45, transparent: true, 
+                opacity: 0.85 }); 
+            const stars = new THREE.Points(starGeo2, starMat2); 
+            scene.add(stars); 
+ 
+            // Store refs 
+            window.__threeRenderer = renderer; 
+            window.__threeLabelRenderer = labelRenderer; 
+            window.__threeScene = scene; 
+            window.__threeCamera = camera; 
+            window.__threeControls = controls; 
+ 
+            // ---- Scale update ---- 
+            function updateScale(scale) { 
+                solarScale = scale; 
+                trailLines.forEach((item) => { 
+                    const pts = item.originalPoints.map(p => new THREE.Vector3(p.x * scale, p.y, p.z * scale)); 
+                    const newGeo = new THREE.BufferGeometry().setFromPoints(pts); 
+                    item.line.geometry.dispose(); 
+                    item.line.geometry = newGeo; 
+                    item.line.computeLineDistances(); 
+                }); 
+                if (asteroidBelt && asteroidPositionsOriginal) { 
+                    const pos = asteroidBelt.geometry.attributes.position.array; 
+                    for (let i = 0; i < pos.length; i += 3) { 
+                        pos[i] = asteroidPositionsOriginal[i] * scale; 
+                        pos[i + 2] = asteroidPositionsOriginal[i + 2] * scale; 
+                    } 
+                    asteroidBelt.geometry.attributes.position.needsUpdate = true; 
+                } 
+            } 
+ 
+            function updateSpeed(speed) { 
+                speedMultiplier = speed; 
+            } 
+ 
+            // Slider events 
+            document.getElementById('scaleSlider').addEventListener('input', (e) => { 
+                const val = parseFloat(e.target.value); 
+                document.getElementById('scaleValue').textContent = val.toFixed(2) + '×'; 
+                updateScale(val); 
+            }); 
+            document.getElementById('speedSlider').addEventListener('input', (e) => { 
+                const val = parseFloat(e.target.value); 
+                document.getElementById('speedValue').textContent = val.toFixed(2) + '×'; 
+                updateSpeed(val); 
+            }); 
+ 
+            // ---- Animation ---- 
+            const seasonValEl = document.getElementById('seasonVal'); 
+            const eclipseBadgeEl = document.getElementById('eclipseBadge'); 
+            const messageScroll = document.getElementById('messageScroll'); 
+            const messageWrapper = document.getElementById('messageWrapper'); 
+            let scrollY = 0; 
+ 
+            function animate() { 
+                animationId = requestAnimationFrame(animate); 
+ 
+                const delta = 0.016 * speedMultiplier; 
+                const scale = solarScale; 
+ 
+                planets.forEach((p) => { 
+                    p.angle += p.data.speed * delta * 12; 
+                    const dist = p.originalDistance * scale; 
+                    const rad = p.originalRadius * scale; 
+                    const x = dist * Math.cos(p.angle); 
+                    const z = dist * Math.sin(p.angle); 
+                    p.mesh.position.set(x, SUN_OFFSET_Y, z); 
+                    p.mesh.scale.set(rad / p.originalRadius, rad / p.originalRadius, rad / p.originalRadius); 
+ 
+                    if (p.data.name === 'Earth') { 
+                        p.moonAngle += 0.05 * speedMultiplier; 
+                        if (p.moonMesh) { 
+                            const moonDist = p.data.moonDist * scale; 
+                            const mx = x + moonDist * Math.cos(p.moonAngle); 
+                            const mz = z + moonDist * Math.sin(p.moonAngle); 
+                            p.moonMesh.position.set(mx, SUN_OFFSET_Y + 0.25 * Math.sin(p.moonAngle), mz); 
+                            const moonRad = p.data.moonRadius * scale; 
+                            p.moonMesh.scale.set(moonRad / p.data.moonRadius, moonRad / p.data.moonRadius, 
+                                moonRad / p.data.moonRadius); 
+                        } 
+ 
+                        let norm = ((p.angle % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI); 
+                        if (norm < Math.PI / 2) seasonValEl.textContent = 'Summer ☀️'; 
+                        else if (norm < Math.PI) seasonValEl.textContent = 'Monsoon 🌧️'; 
+                        else if (norm < 3 * Math.PI / 2) seasonValEl.textContent = 'Autumn 🍂'; 
+                        else seasonValEl.textContent = 'Winter ❄️'; 
+ 
+                        const moonAngle = p.moonAngle; 
+                        const diff = Math.abs((p.angle % (2 * Math.PI)) - (moonAngle % (2 * Math.PI))); 
+                        const minDiff = Math.min(diff, 2 * Math.PI - diff); 
+                        if (minDiff < 0.15) { 
+                            eclipseBadgeEl.textContent = '🌞 Solar Eclipse'; 
+                            eclipseBadgeEl.className = 'eclipse-alert eclipse-solar'; 
+                        } else if (minDiff < 0.35) { 
+                            eclipseBadgeEl.textContent = '🌕 Lunar Eclipse'; 
+                            eclipseBadgeEl.className = 'eclipse-alert eclipse-lunar'; 
+                        } else { 
+                            eclipseBadgeEl.textContent = 'Normal'; 
+                            eclipseBadgeEl.className = 'eclipse-alert eclipse-none'; 
+                        } 
+                    } 
+                }); 
+ 
+                if (asteroidBelt) asteroidBelt.rotation.y += 0.0008 * speedMultiplier; 
+ 
+                scrollY -= 0.35 * speedMultiplier; 
+                const maxScroll = -(messageScroll.scrollHeight - messageWrapper.clientHeight); 
+                if (scrollY < maxScroll) scrollY = messageWrapper.clientHeight * 0.2; 
+                messageScroll.style.transform = `translateY(${scrollY}px)`; 
+ 
+                controls.update(); 
+                renderer.render(scene, camera); 
+                labelRenderer.render(scene, camera); 
+            } 
+ 
+            animate(); 
+ 
+            // Resize 
+            window.__onResize3D = function() { 
+                const w = container.clientWidth || window.innerWidth; 
+                const h = container.clientHeight || (window.innerHeight - 230); 
+                if (camera) { 
+                    camera.aspect = w / h; 
+                    camera.updateProjectionMatrix(); 
+                } 
+                if (renderer) renderer.setSize(w, h); 
+                if (labelRenderer) labelRenderer.setSize(w, h); 
+            }; 
+            window.addEventListener('resize', window.__onResize3D); 
+ 
+            // Cleanup 
+            window.addEventListener('beforeunload', () => { 
+                if (animationId) cancelAnimationFrame(animationId); 
+                try { 
+                    if (renderer) { renderer.dispose(); 
+                        renderer = null; } 
+                    if (labelRenderer) { labelRenderer.dispose(); 
+                        labelRenderer = null; } 
+                } catch (e) { /* ignore */ } 
+            }); 
+ 
+            console.log('🚀 3D Universe ready with Scale & Speed controls'); 
+        }; 
+ 
+        // Auto-init if container visible 
+        if (document.getElementById('universe-container').style.display !== 'none') { 
+            setTimeout(() => { if (window.init3DUniverse) window.init3DUniverse(); }, 100); 
+        } 
+    </script> 
+</body> 
+</html> 
