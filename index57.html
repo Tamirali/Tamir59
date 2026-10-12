@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🚆 Live Train Bheed Tracker</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root {
+    --bg: #f4f6f9;
+    --card-bg: #ffffff;
+    --text: #1f1f1f;
+    --text-muted: #666;
+    --border: #e0e0e0;
+    --primary: #1a73e8;
+    --primary-hover: #1557b0;
+    --danger: #d93025;
+    --warning: #f29900;
+    --success: #137333;
+    --shadow: 0 4px 12px rgba(0,0,0,0.08);
+    --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+}
+[data-theme="dark"] {
+    --bg: #0f1419;
+    --card-bg: #1a1f26;
+    --text: #e8eaed;
+    --text-muted: #9aa0a6;
+    --border: #2d333b;
+    --primary: #4c8bf5;
+    --danger: #f28b82;
+    --warning: #fdd663;
+    --success: #81c995;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 16px;
+    transition: background 0.3s, color 0.3s;
+    line-height: 1.5;
+}
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    background: var(--card-bg);
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+}
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+h1 { color: var(--danger); font-size: 22px; margin-bottom: 4px; }
+.subtitle { color: var(--text-muted); font-size: 13px; }
+.header-controls { display: flex; gap: 8px; }
+.icon-btn {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s;
+    font-family: inherit;
+}
+.icon-btn:hover { background: var(--primary); color: white; border-color: var(--primary); }
+.notice {
+    background: rgba(19,115,51,0.08);
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    margin-bottom: 16px;
+    border-left: 4px solid var(--success);
+}
+.station-selector {
+    background: rgba(26,115,232,0.08);
+    padding: 16px;
+    border-radius: 10px;
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+.select-wrap { flex: 1; min-width: 240px; }
+.select-wrap label { display: block; font-size: 13px; margin-bottom: 6px; }
+select, input[type="text"] {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 14px;
+    background: var(--card-bg);
+    color: var(--text);
+    font-family: inherit;
+}
+select:focus, input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(26,115,232,0.15);
+}
+button { font-family: inherit; cursor: pointer; border: none; border-radius: 8px; font-size: 14px; transition: all 0.2s; font-weight: 500; }
+.btn-primary { background: var(--primary); color: white; padding: 11px 18px; }
+.btn-primary:hover:not(:disabled) { background: var(--primary-hover); transform: translateY(-1px); }
+.btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+.btn-secondary {
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 10px 16px;
+    font-size: 18px;
+}
+.btn-secondary:hover { background: var(--primary); color: white; }
+.search-row { display: flex; gap: 10px; margin-bottom: 16px; }
+.search-row input { flex: 1; }
+.stats-bar {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 16px;
+}
+.stat {
+    background: var(--bg);
+    padding: 12px;
+    border-radius: 10px;
+    text-align: center;
+    border: 1px solid var(--border);
+}
+.stat-num { display: block; font-size: 22px; font-weight: 700; color: var(--primary); }
+.stat-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+.chart-card {
+    background: var(--bg);
+    padding: 16px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    border: 1px solid var(--border);
+}
+.chart-header h3 { font-size: 14px; margin-bottom: 12px; }
+.chart-wrap { height: 140px; position: relative; }
+.section-title {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--primary);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+.live-badge { font-size: 11px; color: var(--success); font-weight: 500; }
+.trains-list { display: flex; flex-direction: column; gap: 12px; }
+.train-card {
+    border: 1px solid var(--border);
+    padding: 16px;
+    border-radius: 10px;
+    background: var(--card-bg);
+    transition: all 0.2s;
+    animation: fadeIn 0.3s ease-in;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.train-card:hover { box-shadow: var(--shadow-lg); border-color: var(--primary); }
+.train-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+.train-name { font-size: 15px; font-weight: 600; color: var(--primary); }
+.train-time {
+    background: rgba(217,48,37,0.12);
+    color: var(--danger);
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+.coach-info {
+    font-size: 13px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: var(--bg);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.badge-high, .badge-medium, .badge-low {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 12px;
+}
+.badge-high { background: rgba(217,48,37,0.15); color: var(--danger); }
+.badge-medium { background: rgba(242,153,0,0.18); color: var(--warning); }
+.badge-low { background: rgba(19,115,51,0.15); color: var(--success); }
+.report-box {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+.report-btns { display: flex; gap: 6px; flex-wrap: wrap; }
+.report-btns button { padding: 6px 10px; font-size: 11px; color: white; }
+.btn-red { background: var(--danger); }
+.btn-yellow { background: var(--warning); color: #333 !important; }
+.btn-green { background: var(--success); }
+.report-btns button:hover { transform: translateY(-1px); filter: brightness(1.1); }
+.footer { margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border); text-align: center; font-size: 12px; color: var(--text-muted); }
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none;
+}
+.toast {
+    background: var(--card-bg);
+    color: var(--text);
+    padding: 14px 20px;
+    border-radius: 10px;
+    box-shadow: var(--shadow-lg);
+    border-left: 4px solid var(--primary);
+    animation: slideIn 0.3s ease-out;
+    max-width: 320px;
+    font-size: 14px;
+    pointer-events: auto;
+}
+.toast.success { border-left-color: var(--success); }
+.toast.error { border-left-color: var(--danger); }
+.toast.warning { border-left-color: var(--warning); }
+.toast.hide { animation: slideOut 0.3s ease-in forwards; }
+@keyframes slideIn {
+    from { transform: translateX(400px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+@keyframes slideOut {
+    to { transform: translateX(400px); opacity: 0; }
+}
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+}
+.modal.active { display: flex; }
+.modal-content {
+    background: var(--card-bg);
+    padding: 24px;
+    border-radius: 12px;
+    max-width: 480px;
+    width: 100%;
+    position: relative;
+    animation: scaleIn 0.3s;
+}
+@keyframes scaleIn {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+.modal-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: var(--bg);
+    color: var(--text);
+    padding: 6px 10px;
+    border-radius: 50%;
+    font-size: 14px;
+    border: 1px solid var(--border);
+}
+.modal h3 { margin-bottom: 6px; font-size: 18px; }
+.modal-subtitle { color: var(--text-muted); font-size: 13px; margin-bottom: 16px; }
+.crowd-options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
+.crowd-opt {
+    padding: 16px 8px;
+    color: white;
+    font-weight: 600;
+    font-size: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: center;
+    border-radius: 10px;
+}
+.crowd-opt .emoji { font-size: 22px; }
+.crowd-high { background: var(--danger); }
+.crowd-medium { background: var(--warning); color: #333 !important; }
+.crowd-low { background: var(--success); }
+.crowd-opt:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+.photo-label {
+    display: block;
+    padding: 12px;
+    border: 2px dashed var(--border);
+    border-radius: 8px;
+    text-align: center;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--text-muted);
+    transition: all 0.2s;
+}
+.photo-label:hover { border-color: var(--primary); color: var(--primary); }
+.photo-preview img {
+    max-width: 100%;
+    margin-top: 10px;
+    border-radius: 8px;
+    max-height: 150px;
+    display: block;
+}
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-muted);
+    font-size: 14px;
+}
+.empty-state .emoji { font-size: 48px; display: block; margin-bottom: 12px; }
+@media (max-width: 600px) {
+    body { padding: 8px; }
+    .container { padding: 16px; }
+    h1 { font-size: 18px; }
+    .station-selector { flex-direction: column; align-items: stretch; }
+    .station-selector .btn-primary { width: 100%; }
+    .stat-num { font-size: 18px; }
+    .train-header { flex-direction: column; align-items: flex-start; }
+    .report-box { flex-direction: column; align-items: stretch; }
+    .report-btns button { flex: 1; }
+    .crowd-options { grid-template-columns: 1fr; }
+    .toast-container { left: 12px; right: 12px; top: 12px; }
+    .toast { max-width: none; }
+}
+button:focus-visible, select:focus-visible, input:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+</style>
+</head>
+<body>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<div class="container">
+    <header class="header">
+        <div>
+            <h1>🚆 <span id="appTitle">Live Train Bheed Tracker</span></h1>
+            <p class="subtitle" id="subtitle">Yatriyon dwara di gayi live jankari</p>
+        </div>
+        <div class="header-controls">
+            <button class="icon-btn" id="langBtn" onclick="toggleLanguage()" title="Change Language">
+                🌐 <span id="langLabel">EN</span>
+            </button>
+            <button class="icon-btn" id="themeBtn" onclick="toggleTheme()" title="Toggle Theme">
+                <span id="themeIcon">🌙</span>
+            </button>
+        </div>
+    </header>
+
+    <div class="notice">
+        💡 <b id="tipLabel">Tip:</b> <span id="tipText">GPS na chale toh dropdown se junction chunein.</span>
+    </div>
+
+    <div class="station-selector">
+        <div class="select-wrap">
+            <label for="stationSelect" id="chooseLabel"><b>Apna Junction Chunein:</b></label>
+            <select id="stationSelect" onchange="loadStationTrains()">
+                <option value="NDLS">New Delhi Junction (NDLS)</option>
+                <option value="CNB">Kanpur Central (CNB)</option>
+                <option value="PNBE">Patna Junction (PNBE)</option>
+                <option value="BJU">Barauni Junction (BJU)</option>
+                <option value="LKO">Lucknow Charbagh (LKO)</option>
+                <option value="BSB">Varanasi Junction (BSB)</option>
+                <option value="GAYA">Gaya Junction (GAYA)</option>
+                <option value="DDU">Pt. DDU Junction (DDU)</option>
+            </select>
+        </div>
+        <button class="btn-primary" onclick="detectLocation()" id="locBtn">
+            <span id="locBtnText">📍 Mera Location Detect Karein</span>
+        </button>
+    </div>
+
+    <div class="search-row">
+        <input type="text" id="searchInput" placeholder="🔍 Train number ya naam..."
+               onkeyup="searchManualTrain()">
+        <button class="btn-secondary" onclick="refreshData()" title="Refresh">🔄</button>
+    </div>
+
+    <div class="stats-bar">
+        <div class="stat">
+            <span class="stat-num" id="totalTrains">0</span>
+            <span class="stat-label" id="statTrainsLabel">Trains</span>
+        </div>
+        <div class="stat">
+            <span class="stat-num" id="highCrowd">0</span>
+            <span class="stat-label" id="statRushLabel">Heavy Rush</span>
+        </div>
+        <div class="stat">
+            <span class="stat-num" id="reportCount">0</span>
+            <span class="stat-label" id="statReportsLabel">Reports</span>
+        </div>
+    </div>
+
+    <div class="chart-card">
+        <div class="chart-header">
+            <h3 id="chartTitle">📈 Bheed Trend (Pichle 2 ghante)</h3>
+        </div>
+        <div class="chart-wrap">
+            <canvas id="trendChart"></canvas>
+        </div>
+    </div>
+
+    <div>
+        <div class="section-title">
+            <span id="sectionHeading">Agle 1 Ghante Mein Aane Wali Trains</span>
+            <span class="live-badge" id="liveLabel">🔄 Live</span>
+        </div>
+        <div id="trainsContainer" class="trains-list"></div>
+    </div>
+
+    <footer class="footer">
+        <p id="footerText">Crowdsourced data - Indian Railways se affiliated nahi hai</p>
+    </footer>
+</div>
+
+<div class="modal" id="reportModal">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeModal()">✕</button>
+        <h3 id="modalTitle">Bheed Report Karein</h3>
+        <p class="modal-subtitle" id="modalTrainName"></p>
+        <div class="crowd-options">
+            <button class="crowd-opt crowd-high" onclick="submitReport('heavy')">
+                <span class="emoji">🔴</span>
+                <span id="optHeavy">Bahut Bhid</span>
+            </button>
+            <button class="crowd-opt crowd-medium" onclick="submitReport('medium')">
+                <span class="emoji">🟡</span>
+                <span id="optMedium">Thodi Jagah</span>
+            </button>
+            <button class="crowd-opt crowd-low" onclick="submitReport('low')">
+                <span class="emoji">🟢</span>
+                <span id="optLow">Khali</span>
+            </button>
+        </div>
+        <div>
+            <label for="photoInput" class="photo-label" id="photoLabel">
+                📷 Photo Upload Karein (Optional)
+            </label>
+            <input type="file" id="photoInput" accept="image/*" style="display:none;">
+            <div id="photoPreview" class="photo-preview"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+// ==================== TRANSLATIONS ====================
+const TRANSLATIONS = {
+    hi: {
+        appTitle: "Live Train Bheed Tracker",
+        subtitle: "Yatriyon dwara di gayi live jankari",
+        tipLabel: "Tip:",
+        tipText: "GPS na chale toh dropdown se junction chunein. Reports 24 ghante save rehti hain.",
+        chooseLabel: "Apna Junction Chunein:",
+        locBtnText: "📍 Mera Location Detect Karein",
+        statTrainsLabel: "Trains",
+        statRushLabel: "Bahut Bhid",
+        statReportsLabel: "Reports",
+        chartTitle: "📈 Bheed Trend (Pichle 2 ghante)",
+        sectionHeading: "Agle 1 Ghante Mein Aane Wali Trains",
+        liveLabel: "🔄 Live",
+        footerText: "Crowdsourced data - Indian Railways se affiliated nahi hai",
+        modalTitle: "Bheed Report Karein",
+        optHeavy: "Bahut Bhid",
+        optMedium: "Thodi Jagah",
+        optLow: "Khali",
+        photoLabel: "📷 Photo Upload Karein (Optional)",
+        searchPlaceholder: "🔍 Train number ya naam...",
+        noTrains: "Agle 1 ghante mein koi train nahi mili.",
+        searchResults: "Search Results",
+        thanks: "✅ Dhanyawad! Aapki report update ho gayi.",
+        rateLimited: "⏳ Aap 5 minute mein ek hi train ko dobara report nahi kar sakte.",
+        gpsFail: "❌ GPS access nahi mila. Dropdown se station chunein.",
+        gpsSuccess: "✅ Location detect ho gayi!",
+        photoTooBig: "❌ Photo 2MB se choti honi chahiye.",
+        refreshing: "🔄 Data refresh ho raha hai...",
+        gpsDetecting: "⏳ Detecting..."
+    },
+    en: {
+        appTitle: "Live Train Crowd Tracker",
+        subtitle: "Live info reported by fellow passengers",
+        tipLabel: "Tip:",
+        tipText: "If GPS fails, select junction from dropdown. Reports saved for 24 hours.",
+        chooseLabel: "Choose Your Junction:",
+        locBtnText: "📍 Detect My Location",
+        statTrainsLabel: "Trains",
+        statRushLabel: "Heavy Rush",
+        statReportsLabel: "Reports",
+        chartTitle: "📈 Crowd Trend (Last 2 hours)",
+        sectionHeading: "Trains Arriving in Next 1 Hour",
+        liveLabel: "🔄 Live",
+        footerText: "Crowdsourced data - Not affiliated with Indian Railways",
+        modalTitle: "Report Crowd Level",
+        optHeavy: "Heavy Rush",
+        optMedium: "Some Space",
+        optLow: "Empty",
+        photoLabel: "📷 Upload Photo (Optional)",
+        searchPlaceholder: "🔍 Search train number or name...",
+        noTrains: "No trains found in next 1 hour.",
+        searchResults: "Search Results",
+        thanks: "✅ Thank you! Your report has been updated.",
+        rateLimited: "⏳ You can't report same train within 5 minutes.",
+        gpsFail: "❌ GPS access denied. Select station from dropdown.",
+        gpsSuccess: "✅ Location detected!",
+        photoTooBig: "❌ Photo must be less than 2MB.",
+        refreshing: "🔄 Refreshing data...",
+        gpsDetecting: "⏳ Detecting..."
+    }
+};
+
+// ==================== DEFAULT DATA ====================
+const DEFAULT_DATA = {
+    "NDLS": [
+        { id: 1, number: "12556", name: "Gorakhdham Express", time: "Agle 12 mins mein", crowdText: "Bahut Zyada", badge: "badge-high", source: "Yatriyon dwara reported", reports: 8, verified: true },
+        { id: 2, number: "12951", name: "Mumbai Rajdhani", time: "Agle 45 mins mein", crowdText: "Madhyam", badge: "badge-medium", source: "Yatriyon dwara reported", reports: 5, verified: false }
+    ],
+    "CNB": [
+        { id: 3, number: "12556", name: "Gorakhdham Express", time: "Agle 30 mins mein", crowdText: "Bahut Zyada", badge: "badge-high", source: "Yatriyon dwara reported", reports: 12, verified: true },
+        { id: 4, number: "12301", name: "Howrah Rajdhani Express", time: "Agle 15 mins mein", crowdText: "Kam / Normal", badge: "badge-low", source: "Yatriyon dwara reported", reports: 3, verified: false }
+    ],
+    "PNBE": [
+        { id: 5, number: "13239", name: "Patna Kota Express", time: "Agle 10 mins mein", crowdText: "Pair rakhne ki jagah nahi", badge: "badge-high", source: "Yatriyon dwara reported", reports: 15, verified: true }
+    ],
+    "BJU": [
+        { id: 6, number: "15203", name: "Barauni-Lucknow Express", time: "Agle 20 mins mein", crowdText: "Madhyam", badge: "badge-medium", source: "Yatriyon dwara reported", reports: 4, verified: false }
+    ],
+    "LKO": [
+        { id: 7, number: "12875", name: "Neelachal Express", time: "Agle 25 mins mein", crowdText: "Bahut Zyada", badge: "badge-high", source: "Yatriyon dwara reported", reports: 9, verified: true }
+    ],
+    "BSB": [
+        { id: 8, number: "12560", name: "Shiv Ganga Express", time: "Agle 35 mins mein", crowdText: "Thodi Jagah", badge: "badge-medium", source: "Yatriyon dwara reported", reports: 6, verified: false }
+    ],
+    "GAYA": [
+        { id: 9, number: "12321", name: "Mumbai Mail", time: "Agle 18 mins mein", crowdText: "Normal", badge: "badge-low", source: "Yatriyon dwara reported", reports: 2, verified: false }
+    ],
+    "DDU": [
+        { id: 10, number: "12302", name: "Howrah Rajdhani", time: "Agle 8 mins mein", crowdText: "Bahut Zyada", badge: "badge-high", source: "Yatriyon dwara reported", reports: 11, verified: true }
+    ]
+};
+
+// ==================== STATE ====================
+let junctionDatabase = {};
+let currentStation = 'NDLS';
+let currentLang = 'hi';
+let currentTheme = 'light';
+let trendChart = null;
+let currentReportTrainId = null;
+let currentPhotoData = null;
+
+// ==================== INIT ====================
+function init() {
+    loadPreferences();
+    loadData();
+    applyTheme();
+    applyLanguage();
+    loadStationTrains();
+    initChart();
+
+    // Photo upload listener
+    document.getElementById('photoInput').addEventListener('change', handlePhotoUpload);
+    
+    // Modal outside click
+    document.getElementById('reportModal').addEventListener('click', (e) => {
+        if (e.target.id === 'reportModal') closeModal();
+    });
+    
+    // ESC key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeModal();
+    });
+}
+
+function loadPreferences() {
+    try {
+        const prefs = JSON.parse(localStorage.getItem('trainBheedPrefs')) || {};
+        currentLang = prefs.lang || 'hi';
+        currentTheme = prefs.theme || 'light';
+        currentStation = prefs.lastStation || 'NDLS';
+    } catch (e) {
+        currentLang = 'hi';
+        currentTheme = 'light';
+        currentStation = 'NDLS';
+    }
+    document.getElementById('stationSelect').value = currentStation;
+}
+
+function savePreferences() {
+    localStorage.setItem('trainBheedPrefs', JSON.stringify({
+        lang: currentLang,
+        theme: currentTheme,
+        lastStation: currentStation
+    }));
+}
+
+function loadData() {
+    try {
+        const stored = JSON.parse(localStorage.getItem('trainBheedData'));
+        if (stored && stored.timestamp && (Date.now() - stored.timestamp < 24 * 60 * 60 * 1000)) {
+            junctionDatabase = stored.data;
+        } else {
+            junctionDatabase = JSON.parse(JSON.stringify(DEFAULT_DATA));
+            saveData();
+        }
+    } catch (e) {
+        junctionDatabase = JSON.parse(JSON.stringify(DEFAULT_DATA));
+        saveData();
+    }
+}
+
+function saveData() {
+    localStorage.setItem('trainBheedData', JSON.stringify({
+        data: junctionDatabase,
+        timestamp: Date.now()
+    }));
+}
+
+// ==================== RENDER ====================
+function loadStationTrains() {
+    currentStation = document.getElementById('stationSelect').value;
+    savePreferences();
+    
+    const trains = junctionDatabase[currentStation] || [];
+    const junctionName = document.getElementById('stationSelect').selectedOptions[0].text;
+    
+    renderTrains(trains, junctionName + " - " + t('sectionHeading'));
+    updateStats();
+    updateChart();
+}
+
+function renderTrains(trains, headingText) {
+    const container = document.getElementById('trainsContainer');
+    if (headingText) document.getElementById('sectionHeading').innerText = headingText;
+    
+    if (trains.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <span class="emoji">🚭</span>
+                ${t('noTrains')}
+            </div>
+        `;
+        return;
+    }
+    
+    container.innerHTML = trains.map(train => `
+        <div class="train-card">
+            <div class="train-header">
+                <span class="train-name">
+                    🚆 ${escapeHtml(train.number)} - ${escapeHtml(train.name)}
+                    ${train.verified ? ' ✅' : ''}
+                </span>
+                <span class="train-time">⏱️ ${escapeHtml(train.time)}</span>
+            </div>
+            <div class="coach-info">
+                <span><b>General:</b> <span class="${train.badge}">${escapeHtml(train.crowdText)}</span></span>
+                <span style="font-size: 11px; color: var(--text-muted);">
+                    📌 ${escapeHtml(train.source)} • 👥 ${train.reports || 0} reports
+                </span>
+            </div>
+            <div class="report-box">
+                <span>Kya yeh sahi hai? Apni report dein:</span>
+                <div class="report-btns">
+                    <button class="btn-red" onclick="openReportModal(${train.id})">🔴 Report</button>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function updateStats() {
+    const trains = junctionDatabase[currentStation] || [];
+    const heavy = trains.filter(t => t.badge === 'badge-high').length;
+    const reports = trains.reduce((sum, t) => sum + (t.reports || 0), 0);
+    
+    document.getElementById('totalTrains').innerText = trains.length;
+    document.getElementById('highCrowd').innerText = heavy;
+    document.getElementById('reportCount').innerText = reports;
+}
+
+// ==================== REPORT ====================
+function openReportModal(trainId) {
+    const train = findTrain(trainId);
+    if (!train) return;
+    
+    const lastReport = localStorage.getItem('report_' + trainId);
+    if (lastReport && (Date.now() - parseInt(lastReport)) < 5 * 60 * 1000) {
+        const remaining = Math.ceil((5 * 60 * 1000 - (Date.now() - parseInt(lastReport))) / 60000);
+        showToast(t('rateLimited') + " (" + remaining + " min)", 'warning');
+        return;
+    }
+    
+    currentReportTrainId = trainId;
+    currentPhotoData = null;
+    document.getElementById('modalTrainName').innerText = train.number + " - " + train.name;
+    document.getElementById('photoPreview').innerHTML = '';
+    document.getElementById('photoInput').value = '';
+    document.getElementById('reportModal').classList.add('active');
+}
+
+function closeModal() {
+    document.getElementById('reportModal').classList.remove('active');
+    currentReportTrainId = null;
+    currentPhotoData = null;
+}
+
+function submitReport(crowdLevel) {
+    if (!currentReportTrainId) return;
+    
+    const map = {
+        heavy: { text: 'Bahut Zyada', badge: 'badge-high' },
+        medium: { text: 'Madhyam', badge: 'badge-medium' },
+        low: { text: 'Khali / Normal', badge: 'badge-low' }
+    };
+    
+    const info = map[crowdLevel];
+    let found = false;
+    
+    for (let station in junctionDatabase) {
+        junctionDatabase[station].forEach(train => {
+            if (train.id === currentReportTrainId) {
+                train.crowdText = info.text;
+                train.badge = info.badge;
+                train.source = 'Abhi-abhi live update';
+                train.reports = (train.reports || 0) + 1;
+                found = true;
+            }
+        });
+    }
+    
+    if (found) {
+        localStorage.setItem('report_' + currentReportTrainId, Date.now());
+        saveData();
+        showToast(t('thanks'), 'success');
+    }
+    
+    closeModal();
+    loadStationTrains();
+}
+
+function findTrain(id) {
+    for (let station in junctionDatabase) {
+        const found = junctionDatabase[station].find(t => t.id === id);
+        if (found) return found;
+    }
+    return null;
+}
+
+function handlePhotoUpload(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    if (file.size > 2 * 1024 * 1024) {
+        showToast(t('photoTooBig'), 'error');
+        e.target.value = '';
+        return;
+    }
+    
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+        currentPhotoData = ev.target.result;
+        document.getElementById('photoPreview').innerHTML = 
+            '<img src="' + ev.target.result + '" alt="Preview">';
+    };
+    reader.readAsDataURL(file);
+}
+
+// ==================== GPS ====================
+function detectLocation() {
+    const btn = document.getElementById('locBtn');
+    const btnText = document.getElementById('locBtnText');
+    const originalText = btnText.innerText;
+    
+    btn.disabled = true;
+    btnText.innerText = t('gpsDetecting');
+    
+    if (!navigator.geolocation) {
+        showToast(t('gpsFail'), 'error');
+        btn.disabled = false;
+        btnText.innerText = originalText;
+        return;
+    }
+    
+    navigator.geolocation.getCurrentPosition(
+        function(position) {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+            
+            fetch('https://nominatim.openstreetmap.org/reverse?lat=' + lat + '&lon=' + lon + '&format=json')
+                .then(r => r.json())
+                .then(data => {
+                    const city = ((data.address && (data.address.city || data.address.state_district || data.address.state)) || '').toLowerCase();
+                    let detected = 'NDLS';
+                    if (city.indexOf('kanpur') > -1) detected = 'CNB';
+                    else if (city.indexOf('patna') > -1) detected = 'PNBE';
+                    else if (city.indexOf('barauni') > -1 || city.indexOf('begusarai') > -1) detected = 'BJU';
+                    else if (city.indexOf('lucknow') > -1) detected = 'LKO';
+                    else if (city.indexOf('varanasi') > -1 || city.indexOf('banaras') > -1) detected = 'BSB';
+                    else if (city.indexOf('gaya') > -1) detected = 'GAYA';
+                    else if (city.indexOf('delhi') > -1) detected = 'NDLS';
+                    
+                    document.getElementById('stationSelect').value = detected;
+                    loadStationTrains();
+                    showToast(t('gpsSuccess') + ' ' + detected, 'success');
+                })
+                .catch(() => {
+                    document.getElementById('stationSelect').value = 'NDLS';
+                    loadStationTrains();
+                    showToast(t('gpsSuccess') + ' NDLS', 'success');
+                })
+                .finally(() => {
+                    btn.disabled = false;
+                    btnText.innerText = originalText;
+                });
+        },
+        function(error) {
+            showToast(t('gpsFail'), 'error');
+            btn.disabled = false;
+            btnText.innerText = originalText;
+        },
+        { timeout: 8000, enableHighAccuracy: true }
+    );
+}
+
+// ==================== SEARCH ====================
+function searchManualTrain() {
+    const query = document.getElementById('searchInput').value.toLowerCase().trim();
+    const trains = junctionDatabase[currentStation] || [];
+    
+    if (query === "") {
+        loadStationTrains();
+        return;
+    }
+    
+    const filtered = trains.filter(t =>
+        t.number.indexOf(query) > -1 || t.name.toLowerCase().indexOf(query) > -1
+    );
+    renderTrains(filtered, t('searchResults') + ': "' + escapeHtml(query) + '"');
+}
+
+// ==================== THEME / LANG ====================
+function toggleTheme() {
+    currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+    applyTheme();
+    savePreferences();
+    updateChartTheme();
+}
+
+function applyTheme() {
+    document.documentElement.setAttribute('data-theme', currentTheme);
+    document.getElementById('themeIcon').innerText = currentTheme === 'dark' ? '☀️' : '🌙';
+}
+
+function toggleLanguage() {
+    currentLang = currentLang === 'hi' ? 'en' : 'hi';
+    applyLanguage();
+    savePreferences();
+    
+    // Re-render trains & chart
+    const stationName = document.getElementById('stationSelect').selectedOptions[0].text;
+    const trains = junctionDatabase[currentStation] || [];
+    renderTrains(trains, stationName + " - " + t('sectionHeading'));
+    updateChartTheme();
+}
+
+function applyLanguage() {
+    document.documentElement.lang = currentLang;
+    const T = TRANSLATIONS[currentLang];
+    
+    document.getElementById('appTitle').innerText = T.appTitle;
+    document.getElementById('subtitle').innerText = T.subtitle;
+    document.getElementById('tipLabel').innerText = T.tipLabel;
+    document.getElementById('tipText').innerText = T.tipText;
+    document.getElementById('chooseLabel').innerHTML = '<b>' + T.chooseLabel + '</b>';
+    document.getElementById('locBtnText').innerText = T.locBtnText;
+    document.getElementById('statTrainsLabel').innerText = T.statTrainsLabel;
+    document.getElementById('statRushLabel').innerText = T.statRushLabel;
+    document.getElementById('statReportsLabel').innerText = T.statReportsLabel;
+    document.getElementById('chartTitle').innerText = T.chartTitle;
+    document.getElementById('liveLabel').innerText = T.liveLabel;
+    document.getElementById('footerText').innerText = T.footerText;
+    document.getElementById('modalTitle').innerText = T.modalTitle;
+    document.getElementById('optHeavy').innerText = T.optHeavy;
+    document.getElementById('optMedium').innerText = T.optMedium;
+    document.getElementById('optLow').innerText = T.optLow;
+    document.getElementById('photoLabel').innerText = T.photoLabel;
+    document.getElementById('searchInput').placeholder = T.searchPlaceholder;
+    document.getElementById('langLabel').innerText = currentLang === 'hi' ? 'EN' : 'हि';
+}
+
+function t(key) {
+    return TRANSLATIONS[currentLang][key] || key;
+}
+
+// ==================== CHART ====================
+function initChart() {
+    const ctx = document.getElementById('trendChart').getContext('2d');
+    const data = generateTrendData();
+    const isDark = currentTheme === 'dark';
+    
+    trendChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: data.labels,
+            datasets: [{
+                label: 'Crowd %',
+                data: data.values,
+                borderColor: '#1a73e8',
+                backgroundColor: 'rgba(26,115,232,0.15)',
+                tension: 0.4,
+                fill: true,
+                pointBackgroundColor: '#1a73e8',
+                pointRadius: 4,
+                pointHoverRadius: 6
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100,
+                    ticks: { color: isDark ? '#9aa0a6' : '#666', font: { size: 10 } },
+                    grid: { color: isDark ? '#2d333b' : '#eee' }
+                },
+                x: {
+                    ticks: { color: isDark ? '#9aa0a6' : '#666', font: { size: 10 } },
+                    grid: { display: false }
+                }
+            }
+        }
+    });
+}
+
+function updateChart() {
+    if (!trendChart) return;
+    const data = generateTrendData();
+    trendChart.data.labels = data.labels;
+    trendChart.data.datasets[0].data = data.values;
+    trendChart.update();
+}
+
+function updateChartTheme() {
+    if (!trendChart) return;
+    const isDark = currentTheme === 'dark';
+    trendChart.options.scales.y.ticks.color = isDark ? '#9aa0a6' : '#666';
+    trendChart.options.scales.x.ticks.color = isDark ? '#9aa0a6' : '#666';
+    trendChart.options.scales.y.grid.color = isDark ? '#2d333b' : '#eee';
+    trendChart.update();
+}
+
+function generateTrendData() {
+    const trains = junctionDatabase[currentStation] || [];
+    const labels = ['-2h', '-1.5h', '-1h', '-30m', 'Abhi'];
+    const values = [30, 45, 55, 70, 0];
+    
+    if (trains.length > 0) {
+        let total = 0;
+        trains.forEach(t => {
+            if (t.badge === 'badge-high') total += 100;
+            else if (t.badge === 'badge-medium') total += 50;
+            else total += 20;
+        });
+        values[4] = Math.round(total / trains.length);
+    }
+    
+    return { labels: labels, values: values };
+}
+
+// ==================== TOAST ====================
+function showToast(message, type, duration) {
+    type = type || 'info';
+    duration = duration || 3500;
+    
+    const container = document.getElementById('toastContainer');
+    const toast = document.createElement('div');
+    toast.className = 'toast ' + type;
+    toast.innerText = message;
+    container.appendChild(toast);
+    
+    setTimeout(function() {
+        toast.classList.add('hide');
+        setTimeout(function() { toast.remove(); }, 300);
+    }, duration);
+}
+
+// ==================== REFRESH ====================
+function refreshData() {
+    showToast(t('refreshing'), 'info', 1200);
+    setTimeout(function() {
+        loadStationTrains();
+    }, 300);
+}
+
+// ==================== UTILS ====================
+function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = String(str);
+    return div.innerHTML;
+}
+
+// ==================== START ====================
+window.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
