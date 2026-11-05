@@ -1,0 +1,549 @@
+
+<!DOCTYPE html> 
+<html lang="hi"> 
+<head> 
+    <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>📚 महासंग्रह — नई पीढ़ी</title> 
+    <style> 
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+        } 
+ 
+        body, 
+        html { 
+            width: 100%; 
+            min-height: 100vh; 
+            font-family: 'Segoe UI', 'Arial', sans-serif; 
+            background: #0a0a14; 
+            color: #fff; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            padding: 12px; 
+        } 
+ 
+        .mobile-screen { 
+            display: flex; 
+            flex-direction: column; 
+            width: 100%; 
+            max-width: 500px; 
+            min-height: 95vh; 
+            border: 2px solid rgba(0, 255, 255, 0.25); 
+            border-radius: 32px; 
+            background: radial-gradient(ellipse at 30% 20%, #1b0f30, #070712 80%); 
+            box-shadow: 0 0 80px rgba(0, 150, 255, 0.15), 0 0 160px rgba(255, 0, 150, 0.08); 
+            backdrop-filter: blur(2px); 
+            padding: 18px 16px 30px 16px; 
+            overflow-y: auto; 
+        } 
+ 
+        /* 🏷️ बैनर */ 
+        .banner { 
+            width: 100%; 
+            text-align: center; 
+            padding: 20px 15px; 
+            background: rgba(8, 8, 30, 0.75); 
+            backdrop-filter: blur(14px); 
+            border-radius: 20px; 
+            border: 1.5px solid rgba(0, 255, 255, 0.4); 
+            box-shadow: 0 0 50px rgba(0, 255, 255, 0.15), inset 0 0 50px rgba(255, 0, 200, 0.05); 
+            animation: borderPulse 3s infinite alternate; 
+            margin-bottom: 20px; 
+            flex-shrink: 0; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 12px; 
+        } 
+ 
+        @keyframes borderPulse { 
+            0% { 
+                border-color: rgba(0, 255, 255, 0.3); 
+                box-shadow: 0 0 30px rgba(0, 255, 255, 0.1); 
+            } 
+            100% { 
+                border-color: rgba(255, 0, 200, 0.6); 
+                box-shadow: 0 0 60px rgba(255, 0, 200, 0.25), 0 0 120px rgba(0, 200, 255, 0.1); 
+            } 
+        } 
+ 
+        .banner h2 { 
+            font-size: 22px; 
+            font-weight: 900; 
+            letter-spacing: 1px; 
+            background: linear-gradient(90deg, #ff0080, #ff8c00, #40e0d0, #ff0080); 
+            background-size: 300% 100%; 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            animation: gradientShift 3s ease infinite; 
+            line-height: 1.4; 
+        } 
+ 
+        @keyframes gradientShift { 
+            0% { background-position: 0% 50%; } 
+            50% { background-position: 100% 50%; } 
+            100% { background-position: 0% 50%; } 
+        } 
+ 
+        .banner p { 
+            color: #b0e0ff; 
+            font-size: 14px; 
+            font-weight: 600; 
+            background: rgba(0, 0, 0, 0.4); 
+            display: inline-block; 
+            padding: 6px 16px; 
+            border-radius: 40px; 
+            border: 1px solid rgba(0, 200, 255, 0.3); 
+            backdrop-filter: blur(4px); 
+            letter-spacing: 0.5px; 
+            box-shadow: 0 0 20px rgba(0, 150, 255, 0.2); 
+        } 
+ 
+        /* 📍 न्यू बटन सेक्शन (WhatsApp & Location) */ 
+        .action-buttons { 
+            display: flex; 
+            gap: 10px; 
+            width: 100%; 
+            justify-content: center; 
+            margin-top: 5px; 
+        } 
+ 
+        .action-btn { 
+            flex: 1; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 8px; 
+            padding: 12px 10px; 
+            border-radius: 12px; 
+            font-size: 15px; 
+            font-weight: 700; 
+            text-decoration: none; 
+            color: #fff; 
+            transition: transform 0.2s, box-shadow 0.2s; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4); 
+        } 
+ 
+        .action-btn:active { 
+            transform: scale(0.96); 
+        } 
+ 
+        .whatsapp-btn { 
+            background: linear-gradient(135deg, #25D366, #128C7E); 
+            border: 1px solid #5cf795; 
+        } 
+        .whatsapp-btn:hover { 
+            box-shadow: 0 0 20px rgba(37, 211, 102, 0.5); 
+        } 
+ 
+        .location-btn { 
+            background: linear-gradient(135deg, #ea4335, #b31412); 
+            border: 1px solid #ff7b72; 
+        } 
+        .location-btn:hover { 
+            box-shadow: 0 0 20px rgba(234, 67, 53, 0.5); 
+        } 
+ 
+        .action-btn svg { 
+            width: 20px; 
+            height: 20px; 
+            fill: currentColor; 
+        } 
+ 
+        /* 📚 लाइब्रेरी सेक्शन */ 
+        .library-section { 
+            background: linear-gradient(135deg, #100c22, #1f1140); 
+            border-radius: 28px; 
+            padding: 18px 14px; 
+            box-shadow: inset 0 10px 40px rgba(255, 0, 200, 0.05); 
+            border: 2px solid rgba(255, 200, 0, 0.10); 
+            flex: 1; 
+            min-height: 200px; 
+            display: flex; 
+            flex-direction: column; 
+        } 
+ 
+        .controls { 
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: 10px; 
+            margin-bottom: 14px; 
+            align-items: center; 
+            flex-shrink: 0; 
+        } 
+ 
+        .controls .title { 
+            color: #d4bfff; 
+            font-size: 16px; 
+            font-weight: 700; 
+            text-shadow: 0 0 20px rgba(180, 130, 255, 0.3); 
+            background: rgba(0, 0, 0, 0.3); 
+            padding: 6px 14px; 
+            border-radius: 40px; 
+            border: 1px solid rgba(200, 150, 255, 0.2); 
+            backdrop-filter: blur(4px); 
+            margin-right: auto; 
+        } 
+ 
+        .btn-group { 
+            display: flex; 
+            gap: 8px; 
+            flex-wrap: wrap; 
+            align-items: center; 
+        } 
+ 
+        /* सर्च बॉक्स */ 
+        .search-group { 
+            display: flex; 
+            gap: 8px; 
+            align-items: center; 
+            width: 100%; 
+            margin-bottom: 12px; 
+        } 
+ 
+        .search-group input { 
+            flex: 1; 
+            padding: 12px 16px; 
+            border-radius: 60px; 
+            border: 2px solid rgba(255, 255, 255, 0.15); 
+            background: rgba(0, 0, 0, 0.5); 
+            color: #fff; 
+            font-size: 15px; 
+            outline: none; 
+            transition: border 0.3s; 
+            min-width: 100px; 
+        } 
+ 
+        .search-group input:focus { 
+            border-color: #ff8800; 
+            box-shadow: 0 0 30px rgba(255, 136, 0, 0.2); 
+        } 
+ 
+        .search-btn { 
+            background: linear-gradient(135deg, #00c6ff, #0072ff); 
+            color: #fff; 
+            border: none; 
+            border-radius: 60px; 
+            padding: 12px 20px; 
+            font-weight: 800; 
+            cursor: pointer; 
+            transition: all 0.25s; 
+            text-transform: uppercase; 
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5); 
+            font-size: 15px; 
+        } 
+ 
+        .search-btn:hover { 
+            transform: scale(1.05); 
+            box-shadow: 0 0 30px #0072ff; 
+        } 
+ 
+        /* 🔘 एडिट/सेव/ऐड बटन */ 
+        .edit-btn, 
+        .save-btn, 
+        .add-btn { 
+            font-weight: 800; 
+            border: none; 
+            border-radius: 60px; 
+            cursor: pointer; 
+            transition: all 0.25s cubic-bezier(0.2, 0.9, 0.4, 1); 
+            text-transform: uppercase; 
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5); 
+            padding: 10px 18px; 
+            font-size: 14px; 
+            display: inline-flex; 
+            align-items: center; 
+            justify-content: center; 
+        } 
+ 
+        .edit-btn { 
+            background: linear-gradient(135deg, #ffaa33, #ff5500); 
+            color: #fff; 
+            border: 2px solid #ffcc44; 
+        } 
+ 
+        .edit-btn.active { 
+            background: linear-gradient(135deg, #00cc88, #00aa66); 
+            border-color: #88ffbb; 
+        } 
+ 
+        .save-btn { 
+            background: linear-gradient(135deg, #00f5a0, #00b4f5); 
+            color: #0a0a1a; 
+            border: 2px solid #88ffdd; 
+            display: none; 
+        } 
+ 
+        .save-btn.show { 
+            display: inline-flex; 
+        } 
+ 
+        .add-btn { 
+            background: linear-gradient(135deg, #a855f7, #7c3aed); 
+            color: #fff; 
+            border: 2px solid #c084fc; 
+        } 
+ 
+        /* 📖 चैप्टर बटन */ 
+        .horizontal-scroll-container { 
+            display: flex; 
+            gap: 14px; 
+            overflow-x: auto; 
+            padding: 8px 4px 16px 4px; 
+            scroll-behavior: smooth; 
+            scrollbar-width: thin; 
+            scrollbar-color: #ff44aa #1a0a2e; 
+            flex: 1; 
+            align-items: flex-start; 
+            min-height: 70px; 
+        } 
+ 
+        .horizontal-scroll-container::-webkit-scrollbar { 
+            height: 6px; 
+        } 
+ 
+        .horizontal-scroll-container::-webkit-scrollbar-track { 
+            background: #110a22; 
+            border-radius: 20px; 
+        } 
+ 
+        .horizontal-scroll-container::-webkit-scrollbar-thumb { 
+            background: linear-gradient(90deg, #ff8800, #ff44aa, #00ccff); 
+            border-radius: 20px; 
+        } 
+ 
+        .library-hz-btn { 
+            flex: 0 0 auto; 
+            background: linear-gradient(145deg, #22113a, #110722); 
+            color: #fff; 
+            padding: 16px 24px; 
+            border-radius: 60px; 
+            font-size: 18px; 
+            font-weight: 700; 
+            border: 2px solid rgba(255, 255, 255, 0.1); 
+            min-width: 130px; 
+            text-align: center; 
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.08); 
+            transition: all 0.2s ease; 
+            text-decoration: none; 
+            cursor: pointer; 
+        } 
+ 
+        .library-hz-btn:hover { 
+            transform: scale(1.03) translateY(-2px); 
+            box-shadow: 0 12px 40px rgba(255, 200, 0, 0.2); 
+        } 
+ 
+        .library-hz-btn.editing { 
+            background: linear-gradient(145deg, #2a1a4a, #1a0a3a); 
+            border: 2px dashed #ffcc44 !important; 
+            cursor: text; 
+            user-select: text; 
+        } 
+ 
+        .library-hz-btn.highlight { 
+            border: 4px solid #ffcc00 !important; 
+            box-shadow: 0 0 60px #ffcc00, 0 0 120px #ff8800 !important; 
+            transform: scale(1.08); 
+        } 
+ 
+        @media (max-width: 420px) { 
+            .banner h2 { font-size: 18px; } 
+            .action-btn { font-size: 13px; padding: 10px 5px; } 
+            .controls .title { font-size: 14px; } 
+        } 
+    </style> 
+</head> 
+<body> 
+    <div class="mobile-screen"> 
+ 
+        <!-- 🏷️ बैनर (यहाँ से स्किल वर्क टेक्स्ट हटा दिया गया है) --> 
+        <div class="banner"> 
+            <h2>✦ महासंग्रह — नई पीढ़ी ✦</h2> 
+            <p>⚡ PRESENT BY TAMIR ALI | +91 8797221991 ⚡</p> 
+              
+            <!-- 📍 WhatsApp और Location बटन --> 
+            <div class="action-buttons"> 
+                <!-- WhatsApp Button --> 
+                <a href="https://wa.me/918797221991?text=Hello%20Tamir%20Ali,%20mujhe%20aapki%20service%20chahiye." class="action-btn whatsapp-btn" target="_blank"> 
+                    <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662c1.746.953 3.7 1.458 5.703 1.459h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg> 
+                    WhatsApp 
+                </a> 
+                  
+                <!-- Location Button (Google Maps) --> 
+                <a href="https://www.google.com/maps?q=26.178966,84.398689" class="action-btn location-btn" target="_blank"> 
+                    <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg> 
+                    Location 
+                </a> 
+            </div> 
+        </div> 
+ 
+        <!-- 📚 लाइब्रेरी --> 
+        <div class="library-section"> 
+            <div class="controls"> 
+                <span class="title">📚 महासंग्रह — चैप्टर</span> 
+                <div class="btn-group"> 
+                    <button class="edit-btn" id="editBtn">✏️ Edit</button> 
+                    <button class="save-btn" id="saveBtn">💾 Save</button> 
+                    <button class="add-btn" id="addBtn">➕ Add</button> 
+                </div> 
+            </div> 
+ 
+            <!-- सर्च बॉक्स --> 
+            <div class="search-group"> 
+                <input type="text" id="searchInput" placeholder="🔍 नंबर या नाम खोजें..."> 
+                <button class="search-btn" id="searchBtn">खोज</button> 
+            </div> 
+ 
+            <div class="horizontal-scroll-container" id="hzScrollContainer"></div> 
+        </div> 
+ 
+    </div> 
+ 
+    <script> 
+        (function() { 
+            'use strict'; 
+ 
+            const TOTAL_FILES = 59; 
+            const container = document.getElementById('hzScrollContainer'); 
+            const editBtn = document.getElementById('editBtn'); 
+            const saveBtn = document.getElementById('saveBtn'); 
+            const addBtn = document.getElementById('addBtn'); 
+            const searchInput = document.getElementById('searchInput'); 
+            const searchBtn = document.getElementById('searchBtn'); 
+ 
+            let isEditMode = false; 
+            let chapterNames = JSON.parse(localStorage.getItem('myChapters')) || 
+                Array.from({ length: TOTAL_FILES }, (_, i) => `📖 चैप्टर ${i + 1}`); 
+ 
+            // ========== रेंडर ========== 
+            function renderButtons() { 
+                container.innerHTML = ''; 
+                chapterNames.forEach((name, i) => { 
+                    const btn = document.createElement('a'); 
+                    btn.className = 'library-hz-btn'; 
+                    btn.href = `index${i + 1}.html`; 
+                    btn.innerText = name; 
+                    btn.dataset.index = i + 1; 
+ 
+                    if (isEditMode) { 
+                        btn.classList.add('editing'); 
+                        btn.contentEditable = "true"; 
+                    } 
+ 
+                    btn.addEventListener('click', function(e) { 
+                        if (isEditMode) { 
+                            e.preventDefault(); 
+                        } 
+                    }); 
+ 
+                    container.appendChild(btn); 
+                }); 
+            } 
+            renderButtons(); 
+ 
+            // ========== Edit Mode ========== 
+            function toggleEdit() { 
+                isEditMode = !isEditMode; 
+                if (isEditMode) { 
+                    editBtn.classList.add('active'); 
+                    editBtn.textContent = '🔒 Lock'; 
+                    saveBtn.classList.add('show'); 
+                    alert('✏️ अब आप किसी भी चैप्टर नाम पर क्लिक करके उसे टाइप करके बदल सकते हैं। बदलने के बाद "Save" बटन दबाएँ।'); 
+                } else { 
+                    editBtn.classList.remove('active'); 
+                    editBtn.textContent = '✏️ Edit'; 
+                    saveBtn.classList.remove('show'); 
+                } 
+                renderButtons(); 
+            } 
+ 
+            // ========== Save ========== 
+            function saveChapters() { 
+                const btns = document.querySelectorAll('.library-hz-btn'); 
+                const newNames = Array.from(btns).map(b => b.innerText); 
+                localStorage.setItem('myChapters', JSON.stringify(newNames)); 
+                chapterNames = newNames; 
+ 
+                if (isEditMode) { 
+                    isEditMode = false; 
+                    editBtn.classList.remove('active'); 
+                    editBtn.textContent = '✏️ Edit'; 
+                    saveBtn.classList.remove('show'); 
+                } 
+ 
+                alert('✅ सभी चैप्टर के नाम सेव हो गए!'); 
+                renderButtons(); 
+            } 
+ 
+            // ========== Add Chapter ========== 
+            function addChapter() { 
+                const newIndex = chapterNames.length + 1; 
+                const newName = prompt(`नए चैप्टर का नाम लिखें (यह index${newIndex}.html से जुड़ेगा):`, `📖 चैप्टर ${newIndex}`); 
+                if (newName && newName.trim() !== '') { 
+                    chapterNames.push(newName.trim()); 
+                    localStorage.setItem('myChapters', JSON.stringify(chapterNames)); 
+                    renderButtons(); 
+                } 
+            } 
+ 
+            // ========== सर्च फंक्शन ========== 
+            function performSearch() { 
+                const query = searchInput.value.trim(); 
+                if (query === '') { 
+                    alert('कृपया कुछ खोजें (नंबर या नाम)।'); 
+                    return; 
+                } 
+ 
+                const btns = document.querySelectorAll('.library-hz-btn'); 
+                btns.forEach(b => b.classList.remove('highlight')); 
+ 
+                let found = false; 
+                const num = parseInt(query, 10); 
+                if (!isNaN(num) && num >= 1 && num <= chapterNames.length) { 
+                    btns.forEach(b => { 
+                        if (parseInt(b.dataset.index, 10) === num) { 
+                            b.classList.add('highlight'); 
+                            b.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' }); 
+                            found = true; 
+                        } 
+                    }); 
+                    if (found) { 
+                        searchInput.value = ''; 
+                        return; 
+                    } 
+                } 
+ 
+                const lowerQuery = query.toLowerCase(); 
+                btns.forEach(b => { 
+                    const text = b.innerText.toLowerCase(); 
+                    if (text.includes(lowerQuery)) { 
+                        b.classList.add('highlight'); 
+                        b.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' }); 
+                        found = true; 
+                    } 
+                }); 
+ 
+                if (!found) { 
+                    alert(`"${query}" से मेल खाने वाला कोई चैप्टर नहीं मिला।`); 
+                } else { 
+                    searchInput.value = ''; 
+                } 
+            } 
+ 
+            // ========== इवेंट ========== 
+            editBtn.addEventListener('click', toggleEdit); 
+            saveBtn.addEventListener('click', saveChapters); 
+            addBtn.addEventListener('click', addChapter); 
+            searchBtn.addEventListener('click', performSearch); 
+            searchInput.addEventListener('keypress', function(e) { 
+                if (e.key === 'Enter') { 
+                    performSearch(); 
+                } 
+            }); 
+        })(); 
+    </script> 
+</body> 
+</html> 
