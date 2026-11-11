@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photo Gallery Project</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        input[type="file"] {
+            margin: 15px 0;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #status {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        .media-gallery {
+            margin-top: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+        .media-item {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        /* Modal / Zoom Styling */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            padding-top: 50px;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.9);
+        }
+        .modal-content {
+            margin: auto;
+            display: block;
+            max-width: 90%;
+            max-height: 80vh;
+            border-radius: 5px;
+        }
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .instructions {
+            font-size: 13px;
+            color: #666;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Photo Gallery Project</h2>
+        
+        <input type="file" id="imageFile" accept="image/*"><br>
+        <button onclick="compressAndUpload()">Upload Karein</button>
+        
+        <p id="status"></p>
+
+        <h3>Saved Photos:</h3>
+        <p class="instructions">Tap karein: Zoom | 5 Second hold: Delete</p>
+        <div class="media-gallery" id="mediaGallery"></div>
+    </div>
+
+    <!-- Zoom Modal -->
+    <div id="zoomModal" class="modal">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <img class="modal-content" id="modalImg">
+    </div>
+
+    <!-- Firebase SDK (Modular Version v10) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref as dbRef, push, onValue, remove, query, orderByChild, limitToLast } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCwpHJR49lhq8IPfa5aYFOkHuvjy-jQnlA",
+            authDomain: "galary-9a304.firebaseapp.com",
+            projectId: "galary-9a304",
+            storageBucket: "galary-9a304.firebasestorage.app",
+            messagingSenderId: "852527168390",
+            appId: "1:852527168390:web:27789bba3bf461c3c20a07",
+            measurementId: "G-8JQ7XZ7WGL"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        // Auto Compression & Upload
+        window.compressAndUpload = function() {
+            const fileInput = document.getElementById('imageFile');
+            const file = fileInput.files[0];
+            const statusText = document.getElementById('status');
+
+            if (!file) {
+                alert("Pehle koi photo select karein!");
+                return;
+            }
+
+            statusText.innerText = "Photo compress ho rahi hai...";
+
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+
+            reader.onload = function(event) {
+                const img = new Image();
+                img.src = event.target.result;
+
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+
+                    const MAX_WIDTH = 800;
+                    const MAX_HEIGHT = 800;
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > MAX_WIDTH) {
+                            height *= MAX_WIDTH / width;
+                            width = MAX_WIDTH;
+                        }
+                    } else {
+                        if (height > MAX_HEIGHT) {
+                            width *= MAX_HEIGHT / height;
+                            height = MAX_HEIGHT;
+                        }
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.6);
+
+                    statusText.innerText = "Database mein save ho rahi hai...";
+
+                    const mediaListRef = dbRef(database, 'compressed_photos');
+                    push(mediaListRef, {
+                        imageUri: compressedDataUrl,
+                        timestamp: Date.now()
+                    }).then(() => {
+                        statusText.innerText = "Successfully Upload Ho Gayi!";
+                        fileInput.value = "";
+                    }).catch((err) => {
+                        console.error("Database error:", err);
+                        statusText.innerText = "Save karne me error aaya!";
+                    });
+                };
+            };
+        };
+
+        // Load Images securely with Realtime Listener
+        function loadImages() {
+            const gallery = document.getElementById('mediaGallery');
+            const mediaListRef = dbRef(database, 'compressed_photos');
+            // Latest 50 photos load karne ke liye query taaki fast chale
+            const recentQuery = query(mediaListRef, orderByChild('timestamp'), limitToLast(50));
+
+            onValue(recentQuery, (snapshot) => {
+                gallery.innerHTML = "";
+                const data = snapshot.val();
+                
+                if (data) {
+                    // Entries ko reverse karke nayi photo sabse upar dikhana
+                    const entries = Object.entries(data).reverse();
+
+                    entries.forEach(([key, item]) => {
+                        if (item.imageUri) {
+                            const img = document.createElement('img');
+                            img.src = item.imageUri;
+                            img.className = 'media-item';
+                            
+                            let pressTimer;
+                            let isLongPress = false;
+
+                            const startPress = function() {
+                                isLongPress = false;
+                                pressTimer = setTimeout(() => {
+                                    isLongPress = true;
+                                    if (confirm("Kya aap is photo ko delete karna chahte hain?")) {
+                                        deletePhoto(key);
+                                    }
+                                }, 5000); // 5 Seconds hold
+                            };
+
+                            const endPress = function() {
+                                clearTimeout(pressTimer);
+                                if (!isLongPress) {
+                                    const modal = document.getElementById('zoomModal');
+                                    const modalImg = document.getElementById('modalImg');
+                                    modal.style.display = "block";
+                                    modalImg.src = img.src;
+                                }
+                            };
+
+                            img.addEventListener('mousedown', startPress);
+                            img.addEventListener('mouseup', endPress);
+                            img.addEventListener('mouseleave', () => clearTimeout(pressTimer));
+
+                            img.addEventListener('touchstart', startPress);
+                            img.addEventListener('touchend', endPress);
+
+                            gallery.appendChild(img);
+                        }
+                    });
+                }
+            });
+        }
+
+        // Database se photo delete karne ka function
+        function deletePhoto(uniqueKey) {
+            const photoRef = dbRef(database, 'compressed_photos/' + uniqueKey);
+            remove(photoRef).then(() => {
+                alert("Photo successfully delete ho gayi!");
+            }).catch((error) => {
+                console.error("Delete karne mein error:", error);
+                alert("Delete nahi ho payi!");
+            });
+        }
+
+        // Modal band karne ka function
+        window.closeModal = function() {
+            document.getElementById('zoomModal').style.display = "none";
+        }
+
+        window.onload = function() {
+            loadImages();
+        };
+    </script>
+
+</body>
+</html>
