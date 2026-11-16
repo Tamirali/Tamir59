@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>तमीर अली - महासंग्रह गैलरी</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; margin: 0; padding: 0; color: #333; }
+        header { background: #1a252f; color: white; text-align: center; padding: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .container { max-width: 1200px; margin: 20px auto; padding: 0 15px; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        .card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08); display: flex; flex-direction: column; justify-content: space-between; margin-bottom: 15px; }
+        .card img { width: 100%; height: 240px; object-fit: cover; background: #e2e8f0; }
+        .card-body { padding: 15px; }
+        .title { font-size: 17px; font-weight: bold; margin-bottom: 8px; color: #1e293b; }
+        .upload-box { background: #fff; padding: 20px; margin: 15px; border-radius: 10px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        input[type="file"], input[type="text"] { width: 90%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 5px; }
+        button { background: #27ae60; color: white; border: none; padding: 10px 20px; border-radius: 5px; font-weight: bold; cursor: pointer; }
+        button:hover { background: #219653; }
+        .btn-whatsapp { display: block; text-align: center; background: #25d366; color: white; text-decoration: none; padding: 10px; border-radius: 6px; font-weight: bold; margin: 15px; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🌟 तमीर अली - महासंग्रह शोकेस</h1>
+        <p>ऑटो-सेव ऑफलाइन गैलरी (फोटो कभी गायब नहीं होगी)</p>
+    </header>
+
+    <!-- नया फोटो जोड़ने का फॉर्म -->
+    <div class="upload-box">
+        <h3>नया आइटम और फोटो जोड़ें</h3>
+        <input type="text" id="itemTitle" placeholder="आइटम का नाम (जैसे - मार्कशीट या फोटो)"><br>
+        <input type="file" id="itemImage" accept="image/*"><br>
+        <button onclick="saveNewItem()">फोन में सेव करें</button>
+    </div>
+
+    <div class="container" id="itemContainer">
+        <!-- यहाँ आइटम्स दिखेंगे -->
+    </div>
+
+    <script>
+        // पेज खुलते ही लोकल स्टोरेज से डेटा दिखाना
+        window.onload = displayItems;
+
+        function saveNewItem() {
+            const title = document.getElementById('itemTitle').value;
+            const fileInput = document.getElementById('itemImage');
+
+            if (!title || fileInput.files.length === 0) {
+                alert('कृपया नाम और फोटो दोनों चुनें!');
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function(event) {
+                const base64Image = event.target.result; // फोटो को कोड में बदलना
+                const newItem = { title: title, image: base64Image };
+
+                let items = JSON.parse(localStorage.getItem('tamirGallery')) || [];
+                items.push(newItem);
+
+                localStorage.setItem('tamirGallery', JSON.stringify(items));
+                alert('सफलतापूर्वक सेव हो गया!');
+                displayItems();
+
+                document.getElementById('itemTitle').value = '';
+                document.getElementById('itemImage').value = '';
+            };
+
+            reader.readAsDataURL(file);
+        }
+
+        function displayItems() {
+            const container = document.getElementById('itemContainer');
+            container.innerHTML = '';
+
+            let items = JSON.parse(localStorage.getItem('tamirGallery')) || [];
+
+            if (items.length === 0) {
+                container.innerHTML = '<p style="text-align:center; width:100%;">अभी कोई फोटो सेव नहीं है। ऊपर दिए गए फॉर्म से जोड़ें।</p>';
+                return;
+            }
+
+            items.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <div>
+                        <img src="${item.image}" alt="${item.title}">
+                        <div class="card-body">
+                            <div class="title">${item.title}</div>
+                        </div>
+                    </div>
+                    <a class="btn-whatsapp" href="https://wa.me/?text=${encodeURIComponent(item.title)}" target="_blank">
+                        💬 शेयर करें / WhatsApp
+                    </a>
+                `;
+                container.appendChild(card);
+            });
+        }
+    </script>
+
+</body>
+</html>
